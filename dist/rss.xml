@@ -1,4 +1,105 @@
-<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Thrinisty&apos;s Blog</title><description>New Blog</description><link>https://thrinisty.github.io/</link><language>zh_CN</language><item><title>Spring笔记（Bean实例化）</title><link>https://thrinisty.github.io/posts/spring%E7%AC%94%E8%AE%B0bean%E5%AE%9E%E4%BE%8B%E5%8C%96/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/spring%E7%AC%94%E8%AE%B0bean%E5%AE%9E%E4%BE%8B%E5%8C%96/</guid><description>Bean的多种实例化方式</description><pubDate>Sun, 25 May 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;Spring笔记&lt;/h1&gt;
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Thrinisty&apos;s Blog</title><description>New Blog</description><link>https://thrinisty.github.io/</link><language>zh_CN</language><item><title>LeetCode刷题（组合总和，公共祖先）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E7%BB%84%E5%90%88%E6%80%BB%E5%92%8C%E5%85%AC%E5%85%B1%E7%A5%96%E5%85%88/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E7%BB%84%E5%90%88%E6%80%BB%E5%92%8C%E5%85%AC%E5%85%B1%E7%A5%96%E5%85%88/</guid><description>组合总和，二叉树的最近公共祖先</description><pubDate>Sun, 25 May 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;组合总和&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;给你一个 &lt;strong&gt;无重复元素&lt;/strong&gt; 的整数数组 &lt;code&gt;candidates&lt;/code&gt; 和一个目标整数 &lt;code&gt;target&lt;/code&gt; ，找出 &lt;code&gt;candidates&lt;/code&gt; 中可以使数字和为目标数 &lt;code&gt;target&lt;/code&gt; 的 所有 &lt;strong&gt;不同组合&lt;/strong&gt; ，并以列表形式返回。你可以按 &lt;strong&gt;任意顺序&lt;/strong&gt; 返回这些组合。&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;candidates&lt;/code&gt; 中的 &lt;strong&gt;同一个&lt;/strong&gt; 数字可以 &lt;strong&gt;无限制重复被选取&lt;/strong&gt; 。如果至少一个数字的被选数量不同，则两种组合是不同的。&lt;/p&gt;
+&lt;p&gt;对于给定的输入，保证和为 &lt;code&gt;target&lt;/code&gt; 的不同组合数少于 &lt;code&gt;150&lt;/code&gt; 个。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：candidates = [2,3,6,7], target = 7
+输出：[[2,2,3],[7]]
+解释：
+2 和 3 可以形成一组候选，2 + 2 + 3 = 7 。注意 2 可以使用多次。
+7 也是一个候选， 7 = 7 。
+仅有这两种组合。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入: candidates = [2,3,5], target = 8
+输出: [[2,2,2,2],[2,3,3],[3,5]]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 3：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入: candidates = [2], target = 1
+输出: []
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;经典的回溯法求解：思路类似于之前做过的全排列，终止判断条件为target=0或者数组遍历完成target 任然不满足条件&lt;/p&gt;
+&lt;p&gt;在调用的基础上，分为了跳过当前位置的数字，以及使用当前数字两种情况，在使用的时候使list增加被使用的数字，在递归调用传入新的目标数字和后删除&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    List&amp;lt;List&amp;lt;Integer&amp;gt;&amp;gt; result = new ArrayList&amp;lt;&amp;gt;();
+    public List&amp;lt;List&amp;lt;Integer&amp;gt;&amp;gt; combinationSum(int[] candidates, int target) {
+        List&amp;lt;Integer&amp;gt; list = new ArrayList&amp;lt;&amp;gt;();
+        fun(candidates, target, list, 0);
+        return result;
+    }
+
+    public void fun(int[] candidates, int target, List&amp;lt;Integer&amp;gt; list, int idx) {
+        if(idx == candidates.length) {
+            return;
+        }
+        if(target == 0) {
+            result.add(new ArrayList&amp;lt;Integer&amp;gt;(list));
+            return;
+        }
+        fun(candidates, target, list, idx + 1);
+        
+        int newNum = candidates[idx];
+        int newTarget = target - newNum;
+        if(newTarget &amp;gt;= 0) {
+            list.add(newNum);
+            fun(candidates, newTarget, list, idx);
+            list.remove(new Integer(newNum));
+        }
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1&gt;二叉树的最近公共祖先&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;给定一个二叉树, 找到该树中两个指定节点的最近公共祖先。&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://baike.baidu.com/item/%E6%9C%80%E8%BF%91%E5%85%AC%E5%85%B1%E7%A5%96%E5%85%88/8918834?fr=aladdin&quot;&gt;百度百科&lt;/a&gt;中最近公共祖先的定义为：“对于有根树 T 的两个节点 p、q，最近公共祖先表示为一个节点 x，满足 x 是 p、q 的祖先且 x 的深度尽可能大（&lt;strong&gt;一个节点也可以是它自己的祖先&lt;/strong&gt;）。”&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/165.png&quot; alt=&quot;165&quot; /&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：root = [3,5,1,6,2,0,8,null,null,7,4], p = 5, q = 1
+输出：3
+解释：节点 5 和节点 1 的最近公共祖先是节点 3 。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/165.png&quot; alt=&quot;165&quot; /&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：root = [3,5,1,6,2,0,8,null,null,7,4], p = 5, q = 4
+输出：5
+解释：节点 5 和节点 4 的最近公共祖先是节点 5 。因为根据定义最近公共祖先节点可以为节点本身。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 3：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：root = [1,2], p = 1, q = 2
+输出：1
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;如果当前节点是 null 或者是目标节点之一（p 或 q），直接返回当前节点。
+递归左右子树：
+左子树返回值为 l，右子树返回值为 r。
+根据左右子树的返回值判断：
+如果左子树返回 null，说明 p 和 q 都在右子树中，返回右子树的结果。
+如果右子树返回 null，说明 p 和 q 都在左子树中，返回左子树的结果。
+如果左右子树都不为 null，说明当前节点就是最近公共祖先，返回当前节点。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
+        if(root == null || root == p || root == q) {
+            return root;
+        }
+        TreeNode l = lowestCommonAncestor(root.left, p, q);
+        TreeNode r = lowestCommonAncestor(root.right, p, q);
+        TreeNode father;
+        if(l == null) {
+            father = r;
+        } else {
+            if(r == null) {
+                father = l;
+            } else {
+                father = root;
+            }
+        }
+        return father;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+</content:encoded></item><item><title>Spring笔记（实例化方式，生命周期，循环依赖）</title><link>https://thrinisty.github.io/posts/spring%E7%AC%94%E8%AE%B0%E5%AE%9E%E4%BE%8B%E5%8C%96%E6%96%B9%E5%BC%8F%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F%E5%BE%AA%E7%8E%AF%E4%BE%9D%E8%B5%96/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/spring%E7%AC%94%E8%AE%B0%E5%AE%9E%E4%BE%8B%E5%8C%96%E6%96%B9%E5%BC%8F%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F%E5%BE%AA%E7%8E%AF%E4%BE%9D%E8%B5%96/</guid><description>Bean的多种实例化方式，十部生命周期，Bean的循环依赖</description><pubDate>Sun, 25 May 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;Spring笔记&lt;/h1&gt;
 &lt;p&gt;​	之前的Spring的学习计划因为考试和作业被稍微耽搁了一下，原本计划是到30号以后再继续学习的，但是最近稍微忙了一下，把编译原理理论给复习完了（其实上课听了的话不会话太长时间）&lt;/p&gt;
 &lt;p&gt;​	考试在28号，打算在27号和28号的两天早上再做一做题目热手，24-26号这三天还是可以抽得出时间稍微学习一下。&lt;/p&gt;
 &lt;h2&gt;Bean实例化&lt;/h2&gt;
@@ -154,107 +255,268 @@ public void test04() {
     &amp;lt;property name=&quot;strDate&quot; value=&quot;1980-10-11&quot;/&amp;gt;
 &amp;lt;/bean&amp;gt;
 &lt;/code&gt;&lt;/pre&gt;
-</content:encoded></item><item><title>LeetCode刷题（组合总和，公共祖先）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E7%BB%84%E5%90%88%E6%80%BB%E5%92%8C%E5%85%AC%E5%85%B1%E7%A5%96%E5%85%88/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E7%BB%84%E5%90%88%E6%80%BB%E5%92%8C%E5%85%AC%E5%85%B1%E7%A5%96%E5%85%88/</guid><description>组合总和，二叉树的最近公共祖先</description><pubDate>Sun, 25 May 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;组合总和&lt;/h1&gt;
-&lt;h2&gt;题目描述&lt;/h2&gt;
-&lt;p&gt;给你一个 &lt;strong&gt;无重复元素&lt;/strong&gt; 的整数数组 &lt;code&gt;candidates&lt;/code&gt; 和一个目标整数 &lt;code&gt;target&lt;/code&gt; ，找出 &lt;code&gt;candidates&lt;/code&gt; 中可以使数字和为目标数 &lt;code&gt;target&lt;/code&gt; 的 所有 &lt;strong&gt;不同组合&lt;/strong&gt; ，并以列表形式返回。你可以按 &lt;strong&gt;任意顺序&lt;/strong&gt; 返回这些组合。&lt;/p&gt;
-&lt;p&gt;&lt;code&gt;candidates&lt;/code&gt; 中的 &lt;strong&gt;同一个&lt;/strong&gt; 数字可以 &lt;strong&gt;无限制重复被选取&lt;/strong&gt; 。如果至少一个数字的被选数量不同，则两种组合是不同的。&lt;/p&gt;
-&lt;p&gt;对于给定的输入，保证和为 &lt;code&gt;target&lt;/code&gt; 的不同组合数少于 &lt;code&gt;150&lt;/code&gt; 个。&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;输入：candidates = [2,3,6,7], target = 7
-输出：[[2,2,3],[7]]
-解释：
-2 和 3 可以形成一组候选，2 + 2 + 3 = 7 。注意 2 可以使用多次。
-7 也是一个候选， 7 = 7 。
-仅有这两种组合。
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;输入: candidates = [2,3,5], target = 8
-输出: [[2,2,2,2],[2,3,3],[3,5]]
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;strong&gt;示例 3：&lt;/strong&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;输入: candidates = [2], target = 1
-输出: []
-&lt;/code&gt;&lt;/pre&gt;
-&lt;h2&gt;题解&lt;/h2&gt;
-&lt;p&gt;经典的回溯法求解：思路类似于之前做过的全排列，终止判断条件为target=0或者数组遍历完成target 任然不满足条件&lt;/p&gt;
-&lt;p&gt;在调用的基础上，分为了跳过当前位置的数字，以及使用当前数字两种情况，在使用的时候使list增加被使用的数字，在递归调用传入新的目标数字和后删除&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;class Solution {
-    List&amp;lt;List&amp;lt;Integer&amp;gt;&amp;gt; result = new ArrayList&amp;lt;&amp;gt;();
-    public List&amp;lt;List&amp;lt;Integer&amp;gt;&amp;gt; combinationSum(int[] candidates, int target) {
-        List&amp;lt;Integer&amp;gt; list = new ArrayList&amp;lt;&amp;gt;();
-        fun(candidates, target, list, 0);
-        return result;
+&lt;h2&gt;Bean生命周期&lt;/h2&gt;
+&lt;p&gt;Bean的生命周期：Bean对象的创建，销毁是在什么时候进行的&lt;/p&gt;
+&lt;h3&gt;五步生命周期&lt;/h3&gt;
+&lt;p&gt;Bean实例化 -&amp;gt; Bean属性赋值 -&amp;gt; 初始化Bean -&amp;gt; 使用Bean -&amp;gt; 销毁Bean&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;package com.thrinisty.bean;
+
+public class User {
+    private String name;
+
+    public void setName(String name) {
+        System.out.println(&quot;第二步：属性赋值&quot;);
+        this.name = name;
     }
 
-    public void fun(int[] candidates, int target, List&amp;lt;Integer&amp;gt; list, int idx) {
-        if(idx == candidates.length) {
-            return;
-        }
-        if(target == 0) {
-            result.add(new ArrayList&amp;lt;Integer&amp;gt;(list));
-            return;
-        }
-        fun(candidates, target, list, idx + 1);
-        
-        int newNum = candidates[idx];
-        int newTarget = target - newNum;
-        if(newTarget &amp;gt;= 0) {
-            list.add(newNum);
-            fun(candidates, newTarget, list, idx);
-            list.remove(new Integer(newNum));
-        }
+    public User() {
+        System.out.println(&quot;第一步：User无参构造器&quot;);
+    }
+
+    public void initBean() {
+        System.out.println(&quot;第三步：初始化Bean&quot;);
+    }
+
+    public void destroyBean() {
+        System.out.println(&quot;第五步：销毁Bean&quot;);
+    }
+
+    @Override
+    public String toString() {
+        return &quot;User{&quot; +
+                &quot;name=&apos;&quot; + name + &apos;\&apos;&apos; +
+                &apos;}&apos;;
     }
 }
 &lt;/code&gt;&lt;/pre&gt;
-&lt;h1&gt;二叉树的最近公共祖先&lt;/h1&gt;
-&lt;h2&gt;题目描述&lt;/h2&gt;
-&lt;p&gt;给定一个二叉树, 找到该树中两个指定节点的最近公共祖先。&lt;/p&gt;
-&lt;p&gt;&lt;a href=&quot;https://baike.baidu.com/item/%E6%9C%80%E8%BF%91%E5%85%AC%E5%85%B1%E7%A5%96%E5%85%88/8918834?fr=aladdin&quot;&gt;百度百科&lt;/a&gt;中最近公共祖先的定义为：“对于有根树 T 的两个节点 p、q，最近公共祖先表示为一个节点 x，满足 x 是 p、q 的祖先且 x 的深度尽可能大（&lt;strong&gt;一个节点也可以是它自己的祖先&lt;/strong&gt;）。”&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;../images/165.png&quot; alt=&quot;165&quot; /&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;输入：root = [3,5,1,6,2,0,8,null,null,7,4], p = 5, q = 1
-输出：3
-解释：节点 5 和节点 1 的最近公共祖先是节点 3 。
+&lt;p&gt;Spring中指定初始，销毁方法&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;bean id=&quot;user&quot; class=&quot;com.thrinisty.bean.User&quot;
+    init-method=&quot;initBean&quot; destroy-method=&quot;destroyBean&quot;&amp;gt;
+    &amp;lt;property name=&quot;name&quot; value=&quot;Jack&quot;/&amp;gt;
+&amp;lt;/bean&amp;gt;
 &lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;../images/165.png&quot; alt=&quot;165&quot; /&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;输入：root = [3,5,1,6,2,0,8,null,null,7,4], p = 5, q = 4
-输出：5
-解释：节点 5 和节点 4 的最近公共祖先是节点 5 。因为根据定义最近公共祖先节点可以为节点本身。
+&lt;p&gt;测试程序&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@Test
+public void test01() {
+    ApplicationContext context = new ClassPathXmlApplicationContext(&quot;spring.xml&quot;);
+    User user = context.getBean(&quot;user&quot;, User.class);
+    System.out.println(&quot;第四步：使用Bean&quot; + user);
+    ClassPathXmlApplicationContext cac = (ClassPathXmlApplicationContext)context;
+    cac.close();
+}
 &lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;strong&gt;示例 3：&lt;/strong&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;输入：root = [1,2], p = 1, q = 2
-输出：1
+&lt;p&gt;注意要使用close方法销毁Context需要向下转型为ClassPathXmlApplicationContext&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;第一步：User无参构造器
+第二步：属性赋值
+第三步：初始化Bean
+第四步：使用BeanUser{name=&apos;Jack&apos;}
+第五步：销毁Bean
 &lt;/code&gt;&lt;/pre&gt;
-&lt;h2&gt;题解&lt;/h2&gt;
-&lt;p&gt;如果当前节点是 null 或者是目标节点之一（p 或 q），直接返回当前节点。
-递归左右子树：
-左子树返回值为 l，右子树返回值为 r。
-根据左右子树的返回值判断：
-如果左子树返回 null，说明 p 和 q 都在右子树中，返回右子树的结果。
-如果右子树返回 null，说明 p 和 q 都在左子树中，返回左子树的结果。
-如果左右子树都不为 null，说明当前节点就是最近公共祖先，返回当前节点。&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;class Solution {
-    public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
-        if(root == null || root == p || root == q) {
-            return root;
-        }
-        TreeNode l = lowestCommonAncestor(root.left, p, q);
-        TreeNode r = lowestCommonAncestor(root.right, p, q);
-        TreeNode father;
-        if(l == null) {
-            father = r;
-        } else {
-            if(r == null) {
-                father = l;
-            } else {
-                father = root;
-            }
-        }
-        return father;
+&lt;h3&gt;七步生命周期&lt;/h3&gt;
+&lt;p&gt;Bean实例化 -&amp;gt; Bean属性赋值 -&amp;gt; 初始化Bean -&amp;gt; 使用Bean -&amp;gt; 销毁Bean&lt;/p&gt;
+&lt;p&gt;在初始化Bean前后可以各加一个生命期，通过Bean后处理器实现&lt;/p&gt;
+&lt;p&gt;执行Bean后处理器before方法-&amp;gt; 初始化Bean -&amp;gt; 执行Bean后处理器after方法&lt;/p&gt;
+&lt;p&gt;创建Bean后处理器&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class LogBeanPostProcessor implements BeanPostProcessor {
+    @Override
+    public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
+        System.out.println(&quot;Before BeanPostProcessor&quot;);
+        return BeanPostProcessor.super.postProcessBeforeInitialization(bean, beanName);
+    }
+
+    @Override
+    public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
+        System.out.println(&quot;After BeanPostProcessor&quot;);
+        return BeanPostProcessor.super.postProcessAfterInitialization(bean, beanName);
     }
 }
 &lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Spring配置，对所有当前的xml中的Bean对象都有用&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;bean class=&quot;com.thrinisty.bean.LogBeanPostProcessor&quot;/&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;第一步：User无参构造器
+第二步：属性赋值
+Before BeanPostProcessor
+第三步：初始化Bean
+After BeanPostProcessor
+第四步：使用BeanUser{name=&apos;Jack&apos;}
+第五步：销毁Bean
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;十步生命周期&lt;/h3&gt;
+&lt;p&gt;1.在Bean后处理器Before方法之前：检测Bean是否实现BeanNameAware接口，BeanClassLoaderAware接口，BeanFactoryAware接口&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class User implements BeanNameAware,
+        BeanClassLoaderAware, BeanFactoryAware {
+    private String name;
+
+    @Override
+    public void setBeanName(String name) {
+        System.out.println(&quot;Bean名字&quot;);
+    }
+
+    @Override
+    public void setBeanClassLoader(ClassLoader classLoader) {
+        System.out.println(&quot;Bean类加载器&quot;);
+    }
+
+    @Override
+    public void setBeanFactory(BeanFactory beanFactory) throws BeansException {
+        System.out.println(&quot;BeanFactory地址&quot;);
+    }
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;2.在Bean后处理器Before方法之后：检测Bean是否实现InitializingBean接口&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@Override
+public void afterPropertiesSet() throws Exception {
+    System.out.println(&quot;After PropertiesSet&quot;);
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;3.销毁Bean之前，使用Bean之后：检测Bean是否实现DisposableBean接口&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@Override
+public void destroy() throws Exception {
+    System.out.println(&quot;DisposableBean destroy&quot;);
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;第一步：User无参构造器
+第二步：属性赋值
+
+Bean名字
+Bean类加载器
+BeanFactory地址
+Before BeanPostProcessor
+After PropertiesSet
+
+第三步：初始化Bean
+After BeanPostProcessor
+第四步：使用BeanUser{name=&apos;Jack&apos;}
+DisposableBean destroy
+
+第五步：销毁Bean
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;:::warning&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Spring只对singleton的Bean进行完整的生命周期管理&lt;/li&gt;
+&lt;li&gt;如果是prototype作用域的Bean，Spring只负责将Bean初始化完毕，一旦用户获取到Bean，Spring就不再管理Bean生命周期（管理前八步）&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;:::&lt;/p&gt;
+&lt;h3&gt;Spring管理new对象&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;@Test
+public void test02(){
+    Student student = new Student();
+    //创建一个工厂对象，使用工厂对象完成new对象实例在Spring中的注册
+    DefaultListableBeanFactory factory = new DefaultListableBeanFactory();
+    factory.registerSingleton(&quot;student&quot;, student);
+
+    Student student1 = factory.getBean(&quot;student&quot;, Student.class);
+    System.out.println(student);
+    System.out.println(student1);
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;com.thrinisty.bean.Student@26b3fd41
+com.thrinisty.bean.Student@26b3fd41
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;使用的是同一个对象&lt;/p&gt;
+&lt;h2&gt;Bean的循环依赖&lt;/h2&gt;
+&lt;p&gt;循环依赖定义：A对象中有B属性，B对象中有A属性&lt;/p&gt;
+&lt;p&gt;创建夫妻两个对象类，注意避免循环调用toString&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;package com.thrinisty.bean;
+
+public class Husband {
+    private String name;
+    private Wife wife;
+
+    public String getName() {
+        return name;
+    }
+
+    @Override
+    public String toString() {
+        return &quot;Husband{&quot; +
+                &quot;name=&apos;&quot; + name + &apos;\&apos;&apos; +
+                &quot;, wife=&quot; + wife.getName() +
+                &apos;}&apos;;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setWife(Wife wife) {
+        this.wife = wife;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;package com.thrinisty.bean;
+
+public class Wife {
+    private String name;
+    private Husband husband;
+
+    public String getName() {
+        return name;
+    }
+
+    @Override
+    public String toString() {
+        return &quot;Wife{&quot; +
+                &quot;name=&apos;&quot; + name + &apos;\&apos;&apos; +
+                &quot;, husband=&quot; + husband.getName() +
+                &apos;}&apos;;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setHusband(Husband husband) {
+        this.husband = husband;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;单例模式&lt;/h3&gt;
+&lt;p&gt;spring配置&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;bean id=&quot;husbandBean&quot; class=&quot;com.thrinisty.bean.Husband&quot;&amp;gt;
+    &amp;lt;property name=&quot;name&quot; value=&quot;Jack&quot;/&amp;gt;
+    &amp;lt;property name=&quot;wife&quot; ref=&quot;wifeBean&quot;/&amp;gt;
+&amp;lt;/bean&amp;gt;
+&amp;lt;bean id=&quot;wifeBean&quot; class=&quot;com.thrinisty.bean.Wife&quot;&amp;gt;
+    &amp;lt;property name=&quot;name&quot; value=&quot;Rose&quot;/&amp;gt;
+    &amp;lt;property name=&quot;husband&quot; ref=&quot;husbandBean&quot;/&amp;gt;
+&amp;lt;/bean&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;循环依赖(单例)在测试中没有问题&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@Test
+public void test01() {
+    ApplicationContext context = new ClassPathXmlApplicationContext(&quot;spring.xml&quot;);
+    Husband husband = context.getBean(&quot;husbandBean&quot;, Husband.class);
+    System.out.println(husband);
+    Wife wife = context.getBean(&quot;wifeBean&quot;, Wife.class);
+    System.out.println(wife);
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;singleton + setter ：Spring为Bean的管理主要分为两个阶段&lt;/p&gt;
+&lt;p&gt;1.Spring容器加载的时候，实例化Bean，只需要任意一个Bean实例化之后，马上进行“曝光”（不等属性赋值）&lt;/p&gt;
+&lt;p&gt;2.Bean曝光之后再进行属性赋值，调用set方法进行赋值&lt;/p&gt;
+&lt;p&gt;:::warning&lt;/p&gt;
+&lt;p&gt;只有scope使singleton情况下，Bean才会采取提前曝光&lt;/p&gt;
+&lt;p&gt;:::&lt;/p&gt;
+&lt;h3&gt;多例模式&lt;/h3&gt;
+&lt;p&gt;修改Bean的scope范围&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;bean id=&quot;husbandBean&quot; class=&quot;com.thrinisty.bean.Husband&quot; scope=&quot;prototype&quot;&amp;gt;
+    &amp;lt;property name=&quot;name&quot; value=&quot;Jack&quot;/&amp;gt;
+    &amp;lt;property name=&quot;wife&quot; ref=&quot;wifeBean&quot;/&amp;gt;
+&amp;lt;/bean&amp;gt;
+&amp;lt;bean id=&quot;wifeBean&quot; class=&quot;com.thrinisty.bean.Wife&quot; scope=&quot;prototype&quot;&amp;gt;
+    &amp;lt;property name=&quot;name&quot; value=&quot;Rose&quot;/&amp;gt;
+    &amp;lt;property name=&quot;husband&quot; ref=&quot;husbandBean&quot;/&amp;gt;
+&amp;lt;/bean&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;因为每一次赋值都会创建新的Bean对象，会出现异常&lt;/p&gt;
+&lt;p&gt;可以将husbandBean范围改为单例，就可以正常执行，不会出现循环创建Bean&lt;/p&gt;
+&lt;p&gt;:::tip&lt;/p&gt;
+&lt;p&gt;当两个循环依赖的Bean对象都是prototype才会发生循环创建异常&lt;/p&gt;
+&lt;p&gt;:::&lt;/p&gt;
+&lt;h3&gt;构造注入&lt;/h3&gt;
+&lt;p&gt;无法解决循环依赖&lt;/p&gt;
+&lt;p&gt;对于构造创建循环依赖的两个对象，是没有办法进行曝光赋值的，因为对象没有创建出来，创建对象依赖于另一个对象，无法执行set单例中的第一个阶段完成曝光&lt;/p&gt;
 </content:encoded></item><item><title>LeetCode刷题（反转链表，二叉树展开，独立数字）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E5%8F%8D%E8%BD%AC%E9%93%BE%E8%A1%A8%E4%BA%8C%E5%8F%89%E6%A0%91%E5%B1%95%E5%BC%80%E7%8B%AC%E7%AB%8B%E6%95%B0%E5%AD%97/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E5%8F%8D%E8%BD%AC%E9%93%BE%E8%A1%A8%E4%BA%8C%E5%8F%89%E6%A0%91%E5%B1%95%E5%BC%80%E7%8B%AC%E7%AB%8B%E6%95%B0%E5%AD%97/</guid><description>反转链表，二叉树展开，独立数字</description><pubDate>Sat, 24 May 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;反转链表&lt;/h1&gt;
 &lt;h2&gt;题目描述&lt;/h2&gt;
 &lt;p&gt;给你单链表的头节点 &lt;code&gt;head&lt;/code&gt; ，请你反转链表，并返回反转后的链表。&lt;/p&gt;
