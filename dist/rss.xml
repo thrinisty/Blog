@@ -101,6 +101,160 @@ public void test04() {
 &lt;li&gt;FactoryBean：是一个Bean，是一个可以辅助Spring实例化Bean对象的一个Bean对象，而在Spring中Bean分为普通Bean与工厂Bean&lt;/li&gt;
 &lt;/ol&gt;
 &lt;p&gt;:::&lt;/p&gt;
+&lt;h2&gt;FactoryBean实际使用&lt;/h2&gt;
+&lt;p&gt;以前我们使用set注入实现日期的赋值&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class Student {
+    private Date birth;
+
+    public void setBirth(Date birth) {
+        this.birth = birth;
+    }
+
+    @Override
+    public String toString() {
+        return &quot;Student{&quot; +
+                &quot;birth=&quot; + birth +
+                &apos;}&apos;;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;在配置中关联nowTime Bean对象，实现日期的注入&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;bean id=&quot;student&quot; class=&quot;com.thrinisty.bean.Student&quot;&amp;gt;
+    &amp;lt;property name=&quot;birth&quot; ref=&quot;nowTime&quot;/&amp;gt;
+&amp;lt;/bean&amp;gt;
+&amp;lt;bean id=&quot;nowTime&quot; class=&quot;java.util.Date&quot;/&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;但是这样没有办法调用有参构造器传入指定的时间，不能作为生日使用（当前时间），接下来我们使用FactoryBean注入Date日期&lt;/p&gt;
+&lt;p&gt;工厂Bean，辅助加工Date属性&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class DateFactoryBean implements FactoryBean&amp;lt;Date&amp;gt; {
+    private String strDate;
+
+    public void setStrDate(String strDate) {
+        this.strDate = strDate;
+    }
+
+    @Override
+    public Date getObject() throws Exception {
+        SimpleDateFormat sdf = new SimpleDateFormat(&quot;yyyy-MM-dd&quot;);
+        Date date = sdf.parse(strDate);
+        return date;
+    }
+
+    @Override
+    public Class&amp;lt;?&amp;gt; getObjectType() {
+        return null;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;构造配置，使用工厂Bean提供的Date对象关联student的日期类&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;bean id=&quot;student&quot; class=&quot;com.thrinisty.bean.Student&quot;&amp;gt;
+    &amp;lt;property name=&quot;birth&quot; ref=&quot;birth&quot;/&amp;gt;
+&amp;lt;/bean&amp;gt;
+&amp;lt;bean id=&quot;birth&quot; class=&quot;com.thrinisty.bean.DateFactoryBean&quot;&amp;gt;
+    &amp;lt;property name=&quot;strDate&quot; value=&quot;1980-10-11&quot;/&amp;gt;
+&amp;lt;/bean&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+</content:encoded></item><item><title>LeetCode刷题（组合总和，公共祖先）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E7%BB%84%E5%90%88%E6%80%BB%E5%92%8C%E5%85%AC%E5%85%B1%E7%A5%96%E5%85%88/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E7%BB%84%E5%90%88%E6%80%BB%E5%92%8C%E5%85%AC%E5%85%B1%E7%A5%96%E5%85%88/</guid><description>组合总和，二叉树的最近公共祖先</description><pubDate>Sun, 25 May 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;组合总和&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;给你一个 &lt;strong&gt;无重复元素&lt;/strong&gt; 的整数数组 &lt;code&gt;candidates&lt;/code&gt; 和一个目标整数 &lt;code&gt;target&lt;/code&gt; ，找出 &lt;code&gt;candidates&lt;/code&gt; 中可以使数字和为目标数 &lt;code&gt;target&lt;/code&gt; 的 所有 &lt;strong&gt;不同组合&lt;/strong&gt; ，并以列表形式返回。你可以按 &lt;strong&gt;任意顺序&lt;/strong&gt; 返回这些组合。&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;candidates&lt;/code&gt; 中的 &lt;strong&gt;同一个&lt;/strong&gt; 数字可以 &lt;strong&gt;无限制重复被选取&lt;/strong&gt; 。如果至少一个数字的被选数量不同，则两种组合是不同的。&lt;/p&gt;
+&lt;p&gt;对于给定的输入，保证和为 &lt;code&gt;target&lt;/code&gt; 的不同组合数少于 &lt;code&gt;150&lt;/code&gt; 个。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：candidates = [2,3,6,7], target = 7
+输出：[[2,2,3],[7]]
+解释：
+2 和 3 可以形成一组候选，2 + 2 + 3 = 7 。注意 2 可以使用多次。
+7 也是一个候选， 7 = 7 。
+仅有这两种组合。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入: candidates = [2,3,5], target = 8
+输出: [[2,2,2,2],[2,3,3],[3,5]]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 3：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入: candidates = [2], target = 1
+输出: []
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;经典的回溯法求解：思路类似于之前做过的全排列，终止判断条件为target=0或者数组遍历完成target 任然不满足条件&lt;/p&gt;
+&lt;p&gt;在调用的基础上，分为了跳过当前位置的数字，以及使用当前数字两种情况，在使用的时候使list增加被使用的数字，在递归调用传入新的目标数字和后删除&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    List&amp;lt;List&amp;lt;Integer&amp;gt;&amp;gt; result = new ArrayList&amp;lt;&amp;gt;();
+    public List&amp;lt;List&amp;lt;Integer&amp;gt;&amp;gt; combinationSum(int[] candidates, int target) {
+        List&amp;lt;Integer&amp;gt; list = new ArrayList&amp;lt;&amp;gt;();
+        fun(candidates, target, list, 0);
+        return result;
+    }
+
+    public void fun(int[] candidates, int target, List&amp;lt;Integer&amp;gt; list, int idx) {
+        if(idx == candidates.length) {
+            return;
+        }
+        if(target == 0) {
+            result.add(new ArrayList&amp;lt;Integer&amp;gt;(list));
+            return;
+        }
+        fun(candidates, target, list, idx + 1);
+        
+        int newNum = candidates[idx];
+        int newTarget = target - newNum;
+        if(newTarget &amp;gt;= 0) {
+            list.add(newNum);
+            fun(candidates, newTarget, list, idx);
+            list.remove(new Integer(newNum));
+        }
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1&gt;二叉树的最近公共祖先&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;给定一个二叉树, 找到该树中两个指定节点的最近公共祖先。&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://baike.baidu.com/item/%E6%9C%80%E8%BF%91%E5%85%AC%E5%85%B1%E7%A5%96%E5%85%88/8918834?fr=aladdin&quot;&gt;百度百科&lt;/a&gt;中最近公共祖先的定义为：“对于有根树 T 的两个节点 p、q，最近公共祖先表示为一个节点 x，满足 x 是 p、q 的祖先且 x 的深度尽可能大（&lt;strong&gt;一个节点也可以是它自己的祖先&lt;/strong&gt;）。”&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/165.png&quot; alt=&quot;165&quot; /&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：root = [3,5,1,6,2,0,8,null,null,7,4], p = 5, q = 1
+输出：3
+解释：节点 5 和节点 1 的最近公共祖先是节点 3 。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/165.png&quot; alt=&quot;165&quot; /&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：root = [3,5,1,6,2,0,8,null,null,7,4], p = 5, q = 4
+输出：5
+解释：节点 5 和节点 4 的最近公共祖先是节点 5 。因为根据定义最近公共祖先节点可以为节点本身。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 3：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：root = [1,2], p = 1, q = 2
+输出：1
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;如果当前节点是 null 或者是目标节点之一（p 或 q），直接返回当前节点。
+递归左右子树：
+左子树返回值为 l，右子树返回值为 r。
+根据左右子树的返回值判断：
+如果左子树返回 null，说明 p 和 q 都在右子树中，返回右子树的结果。
+如果右子树返回 null，说明 p 和 q 都在左子树中，返回左子树的结果。
+如果左右子树都不为 null，说明当前节点就是最近公共祖先，返回当前节点。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
+        if(root == null || root == p || root == q) {
+            return root;
+        }
+        TreeNode l = lowestCommonAncestor(root.left, p, q);
+        TreeNode r = lowestCommonAncestor(root.right, p, q);
+        TreeNode father;
+        if(l == null) {
+            father = r;
+        } else {
+            if(r == null) {
+                father = l;
+            } else {
+                father = root;
+            }
+        }
+        return father;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
 </content:encoded></item><item><title>LeetCode刷题（反转链表，二叉树展开，独立数字）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E5%8F%8D%E8%BD%AC%E9%93%BE%E8%A1%A8%E4%BA%8C%E5%8F%89%E6%A0%91%E5%B1%95%E5%BC%80%E7%8B%AC%E7%AB%8B%E6%95%B0%E5%AD%97/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E5%8F%8D%E8%BD%AC%E9%93%BE%E8%A1%A8%E4%BA%8C%E5%8F%89%E6%A0%91%E5%B1%95%E5%BC%80%E7%8B%AC%E7%AB%8B%E6%95%B0%E5%AD%97/</guid><description>反转链表，二叉树展开，独立数字</description><pubDate>Sat, 24 May 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;反转链表&lt;/h1&gt;
 &lt;h2&gt;题目描述&lt;/h2&gt;
 &lt;p&gt;给你单链表的头节点 &lt;code&gt;head&lt;/code&gt; ，请你反转链表，并返回反转后的链表。&lt;/p&gt;
@@ -223,7 +377,7 @@ public void test04() {
     }
 }
 &lt;/code&gt;&lt;/pre&gt;
-</content:encoded></item><item><title>LeetCode刷题（乘积数组）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E9%99%A4%E8%87%AA%E7%94%9F%E4%BB%A5%E5%A4%96%E6%95%B0%E7%BB%84%E7%9A%84%E4%B9%98%E7%A7%AF/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E9%99%A4%E8%87%AA%E7%94%9F%E4%BB%A5%E5%A4%96%E6%95%B0%E7%BB%84%E7%9A%84%E4%B9%98%E7%A7%AF/</guid><description>除自生以外数组的乘积</description><pubDate>Fri, 23 May 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;除自生以外数组的乘积&lt;/h1&gt;
+</content:encoded></item><item><title>LeetCode刷题（乘积数组，重建队列）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E9%99%A4%E8%87%AA%E7%94%9F%E4%BB%A5%E5%A4%96%E6%95%B0%E7%BB%84%E7%9A%84%E4%B9%98%E7%A7%AF%E4%B9%98%E7%A7%AF%E6%95%B0%E7%BB%84%E9%87%8D%E5%BB%BA%E9%98%9F%E5%88%97/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E9%99%A4%E8%87%AA%E7%94%9F%E4%BB%A5%E5%A4%96%E6%95%B0%E7%BB%84%E7%9A%84%E4%B9%98%E7%A7%AF%E4%B9%98%E7%A7%AF%E6%95%B0%E7%BB%84%E9%87%8D%E5%BB%BA%E9%98%9F%E5%88%97/</guid><description>除自生以外数组的乘积，根据身高重建队列</description><pubDate>Fri, 23 May 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;除自生以外数组的乘积&lt;/h1&gt;
 &lt;h2&gt;题目描述&lt;/h2&gt;
 &lt;p&gt;给你一个整数数组 &lt;code&gt;nums&lt;/code&gt;，返回 数组 &lt;code&gt;answer&lt;/code&gt; ，其中 &lt;code&gt;answer[i]&lt;/code&gt; 等于 &lt;code&gt;nums&lt;/code&gt; 中除 &lt;code&gt;nums[i]&lt;/code&gt; 之外其余各元素的乘积 。&lt;/p&gt;
 &lt;p&gt;题目数据 &lt;strong&gt;保证&lt;/strong&gt; 数组 &lt;code&gt;nums&lt;/code&gt;之中任意元素的全部前缀元素和后缀的乘积都在 &lt;strong&gt;32 位&lt;/strong&gt; 整数范围内。&lt;/p&gt;

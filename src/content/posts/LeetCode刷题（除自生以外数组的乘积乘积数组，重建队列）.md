@@ -1,8 +1,8 @@
 ---
-title: LeetCode刷题（乘积数组）
+title: LeetCode刷题（乘积数组，重建队列）
 published: 2025-05-23
 updated: 2025-05-23
-description: '除自生以外数组的乘积'
+description: '除自生以外数组的乘积，根据身高重建队列'
 image: ''
 tags: [LeetCode]
 category: 'LeetCode'

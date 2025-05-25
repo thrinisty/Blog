@@ -176,3 +176,72 @@ BeanFactory与FactoryBean的区别
 2. FactoryBean：是一个Bean，是一个可以辅助Spring实例化Bean对象的一个Bean对象，而在Spring中Bean分为普通Bean与工厂Bean
 
 :::
+
+
+
+## FactoryBean实际使用
+
+以前我们使用set注入实现日期的赋值
+
+```java
+public class Student {
+    private Date birth;
+
+    public void setBirth(Date birth) {
+        this.birth = birth;
+    }
+
+    @Override
+    public String toString() {
+        return "Student{" +
+                "birth=" + birth +
+                '}';
+    }
+}
+```
+
+在配置中关联nowTime Bean对象，实现日期的注入
+
+```html
+<bean id="student" class="com.thrinisty.bean.Student">
+    <property name="birth" ref="nowTime"/>
+</bean>
+<bean id="nowTime" class="java.util.Date"/>
+```
+
+但是这样没有办法调用有参构造器传入指定的时间，不能作为生日使用（当前时间），接下来我们使用FactoryBean注入Date日期
+
+工厂Bean，辅助加工Date属性
+
+```java
+public class DateFactoryBean implements FactoryBean<Date> {
+    private String strDate;
+
+    public void setStrDate(String strDate) {
+        this.strDate = strDate;
+    }
+
+    @Override
+    public Date getObject() throws Exception {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        Date date = sdf.parse(strDate);
+        return date;
+    }
+
+    @Override
+    public Class<?> getObjectType() {
+        return null;
+    }
+}
+```
+
+构造配置，使用工厂Bean提供的Date对象关联student的日期类
+
+```html
+<bean id="student" class="com.thrinisty.bean.Student">
+    <property name="birth" ref="birth"/>
+</bean>
+<bean id="birth" class="com.thrinisty.bean.DateFactoryBean">
+    <property name="strDate" value="1980-10-11"/>
+</bean>
+```
