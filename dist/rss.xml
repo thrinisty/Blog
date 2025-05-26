@@ -1,4 +1,112 @@
-<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Thrinisty&apos;s Blog</title><description>New Blog</description><link>https://thrinisty.github.io/</link><language>zh_CN</language><item><title>LeetCode刷题（组合总和，公共祖先）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E7%BB%84%E5%90%88%E6%80%BB%E5%92%8C%E5%85%AC%E5%85%B1%E7%A5%96%E5%85%88/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E7%BB%84%E5%90%88%E6%80%BB%E5%92%8C%E5%85%AC%E5%85%B1%E7%A5%96%E5%85%88/</guid><description>组合总和，二叉树的最近公共祖先</description><pubDate>Sun, 25 May 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;组合总和&lt;/h1&gt;
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Thrinisty&apos;s Blog</title><description>New Blog</description><link>https://thrinisty.github.io/</link><language>zh_CN</language><item><title>LeetCode刷题（构造二叉树）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E6%9E%84%E9%80%A0%E4%BA%8C%E5%8F%89%E6%A0%91/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E6%9E%84%E9%80%A0%E4%BA%8C%E5%8F%89%E6%A0%91/</guid><description>从前序与中序遍历序列构造二叉树</description><pubDate>Mon, 26 May 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;前序与中序遍历序列构造二叉树&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;给定两个整数数组 &lt;code&gt;preorder&lt;/code&gt; 和 &lt;code&gt;inorder&lt;/code&gt; ，其中 &lt;code&gt;preorder&lt;/code&gt; 是二叉树的&lt;strong&gt;先序遍历&lt;/strong&gt;， &lt;code&gt;inorder&lt;/code&gt; 是同一棵树的&lt;strong&gt;中序遍历&lt;/strong&gt;，请构造二叉树并返回其根节点。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 1:&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/166.jpg&quot; alt=&quot;166&quot; /&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入: preorder = [3,9,20,15,7],inorder = [9,3,15,20,7]
+输出: [3,9,20,null,null,15,7]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2:&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入: preorder = [-1], inorder = [-1]
+输出: [-1]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public TreeNode buildTree(int[] preorder, int[] inorder) {
+        if(preorder.length == 0 || inorder.length == 0) {
+            return null;
+        }
+        int root_val = preorder[0];
+        TreeNode root = new TreeNode(root_val);
+        for(int i = 0; i &amp;lt; preorder.length; i++) {
+            if(root_val == inorder[i]) {
+                int[] pre_left = Arrays.copyOfRange(preorder, 1, i + 1);
+                int[] in_left = Arrays.copyOfRange(inorder, 0, i);
+                root.left = buildTree(pre_left, in_left);
+                
+                int[] pre_right = Arrays.copyOfRange(preorder, i + 1, preorder.length);
+                int[] in_right = Arrays.copyOfRange(inorder, i + 1, inorder.length);
+                root.right = buildTree(pre_right, in_right); 
+                break;
+            }   
+        }
+        return root;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1&gt;前缀树&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;&lt;strong&gt;前缀树&lt;/strong&gt; 是一种树形数据结构，用于高效地存储和检索字符串数据集中的键。这一数据结构有相当多的应用情景，例如自动补全和拼写检查。&lt;/p&gt;
+&lt;p&gt;请你实现 Trie 类：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;Trie()&lt;/code&gt; 初始化前缀树对象。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;void insert(String word)&lt;/code&gt; 向前缀树中插入字符串 &lt;code&gt;word&lt;/code&gt; 。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;boolean search(String word)&lt;/code&gt; 如果字符串 &lt;code&gt;word&lt;/code&gt; 在前缀树中，返回 &lt;code&gt;true&lt;/code&gt;（即，在检索之前已经插入）；否则，返回 &lt;code&gt;false&lt;/code&gt; 。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;boolean startsWith(String prefix)&lt;/code&gt; 如果之前已经插入的字符串 &lt;code&gt;word&lt;/code&gt; 的前缀之一为 &lt;code&gt;prefix&lt;/code&gt; ，返回 &lt;code&gt;true&lt;/code&gt; ；否则，返回 &lt;code&gt;false&lt;/code&gt; 。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;示例：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入
+[&quot;Trie&quot;, &quot;insert&quot;, &quot;search&quot;, &quot;search&quot;, &quot;startsWith&quot;, &quot;insert&quot;, &quot;search&quot;]
+[[], [&quot;apple&quot;], [&quot;apple&quot;], [&quot;app&quot;], [&quot;app&quot;], [&quot;app&quot;], [&quot;app&quot;]]
+输出
+[null, null, true, false, true, null, true]
+
+解释
+Trie trie = new Trie();
+trie.insert(&quot;apple&quot;);
+trie.search(&quot;apple&quot;);   // 返回 True
+trie.search(&quot;app&quot;);     // 返回 False
+trie.startsWith(&quot;app&quot;); // 返回 True
+trie.insert(&quot;app&quot;);
+trie.search(&quot;app&quot;);     // 返回 True
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;相关模板&lt;/p&gt;
+&lt;p&gt;在理解前缀树的定义之后，实现的思路并不复杂，但和传统的二叉树实现有些不同，创建了一个Node类用于存储树的结构，而并非直接递归的使用Trie&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Node {
+        Node[] son = new Node[26];
+        boolean end;
+    }
+
+class Trie {
+    private Node root = new Node();
+
+    public void insert(String word) {
+        Node cur = root;
+        char[] words = word.toCharArray();
+        for(char c : words) {
+            int i = c - &apos;a&apos;;
+            if(cur.son[i] == null) {
+                cur.son[i] = new Node();
+            }
+            cur = cur.son[i];
+        }
+        cur.end = true;
+    }
+    
+    public boolean search(String word) {
+        return find(word) == 2;
+    }
+    
+    public boolean startsWith(String prefix) {
+        return find(prefix) != 0;
+    }
+
+    private int find(String word) {
+        Node cur = root;
+        char[] words = word.toCharArray();
+        for(char c : words) {
+            int i = c - &apos;a&apos;;
+            if(cur.son[i] == null) {
+                return 0;
+            }
+            cur = cur.son[i];
+        }
+        return cur.end ? 2 : 1;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+</content:encoded></item><item><title>LeetCode刷题（组合总和，公共祖先）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E7%BB%84%E5%90%88%E6%80%BB%E5%92%8C%E5%85%AC%E5%85%B1%E7%A5%96%E5%85%88/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E7%BB%84%E5%90%88%E6%80%BB%E5%92%8C%E5%85%AC%E5%85%B1%E7%A5%96%E5%85%88/</guid><description>组合总和，二叉树的最近公共祖先</description><pubDate>Sun, 25 May 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;组合总和&lt;/h1&gt;
 &lt;h2&gt;题目描述&lt;/h2&gt;
 &lt;p&gt;给你一个 &lt;strong&gt;无重复元素&lt;/strong&gt; 的整数数组 &lt;code&gt;candidates&lt;/code&gt; 和一个目标整数 &lt;code&gt;target&lt;/code&gt; ，找出 &lt;code&gt;candidates&lt;/code&gt; 中可以使数字和为目标数 &lt;code&gt;target&lt;/code&gt; 的 所有 &lt;strong&gt;不同组合&lt;/strong&gt; ，并以列表形式返回。你可以按 &lt;strong&gt;任意顺序&lt;/strong&gt; 返回这些组合。&lt;/p&gt;
 &lt;p&gt;&lt;code&gt;candidates&lt;/code&gt; 中的 &lt;strong&gt;同一个&lt;/strong&gt; 数字可以 &lt;strong&gt;无限制重复被选取&lt;/strong&gt; 。如果至少一个数字的被选数量不同，则两种组合是不同的。&lt;/p&gt;
@@ -96,6 +204,18 @@
             }
         }
         return father;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;或者通过三目运算符简化一下&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
+        if(root == null || root == p || root == q) {
+            return root;
+        }
+        TreeNode left = lowestCommonAncestor(root.left, p, q);
+        TreeNode right = lowestCommonAncestor(root.right, p, q);
+        return left == null ? right : (right == null ? left : root);
     }
 }
 &lt;/code&gt;&lt;/pre&gt;
