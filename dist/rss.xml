@@ -1,4 +1,159 @@
-<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Thrinisty&apos;s Blog</title><description>New Blog</description><link>https://thrinisty.github.io/</link><language>zh_CN</language><item><title>LeetCode刷题（构造二叉树）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E6%9E%84%E9%80%A0%E4%BA%8C%E5%8F%89%E6%A0%91/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E6%9E%84%E9%80%A0%E4%BA%8C%E5%8F%89%E6%A0%91/</guid><description>从前序与中序遍历序列构造二叉树</description><pubDate>Mon, 26 May 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;前序与中序遍历序列构造二叉树&lt;/h1&gt;
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Thrinisty&apos;s Blog</title><description>New Blog</description><link>https://thrinisty.github.io/</link><language>zh_CN</language><item><title>LeetCode刷题（最小路径和）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E6%9C%80%E5%B0%8F%E8%B7%AF%E5%BE%84%E5%92%8C/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E6%9C%80%E5%B0%8F%E8%B7%AF%E5%BE%84%E5%92%8C/</guid><description>路径和动态规划</description><pubDate>Tue, 27 May 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;最小路径和&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;给定一个包含非负整数的 &lt;code&gt;*m* x *n*&lt;/code&gt; 网格 &lt;code&gt;grid&lt;/code&gt; ，请找出一条从左上角到右下角的路径，使得路径上的数字总和为最小。&lt;/p&gt;
+&lt;p&gt;**说明：**每次只能向下或者向右移动一步。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/167.jpg&quot; alt=&quot;167&quot; /&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：grid = [[1,3,1],[1,5,1],[4,2,1]]
+输出：7
+解释：因为路径 1→3→1→1→1 的总和最小。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：grid = [[1,2,3],[4,5,6]]
+输出：12
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;提示：&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;m == grid.length&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;n == grid[i].length&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;1 &amp;lt;= m, n &amp;lt;= 200&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;0 &amp;lt;= grid[i][j] &amp;lt;= 200&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;使用动态规划求解，创建一个结果二维数组，赋予初始行列累加值，遍历剩余数组元素，取上左中小的结果加上目标数组对应的值，即为到该元素位置的最短路径&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public int minPathSum(int[][] grid) {
+        if(grid == null || grid.length == 0 || grid[0].length == 0) {
+            return 0;
+        }
+        int row = grid.length;
+        int col = grid[0].length;
+        int[][] result = new int[row][col];
+        result[0][0] = grid[0][0];
+        for(int i = 1; i &amp;lt; row; i++) {
+            result[i][0] = result[i - 1][0] + grid[i][0];
+        }
+        for(int j = 1; j &amp;lt; col; j++) {
+            result[0][j] = result[0][j - 1] + grid[0][j];
+        }
+        for(int i = 1; i &amp;lt; row; i++) {
+            for(int j = 1; j &amp;lt; col; j++) {
+                result[i][j] = Math.min(result[i - 1][j], result[i][j - 1]) + grid[i][j];
+            }
+        }
+        return result[row - 1][col - 1];
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1&gt;不同的二叉搜索树&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;给你一个整数 &lt;code&gt;n&lt;/code&gt; ，求恰由 &lt;code&gt;n&lt;/code&gt; 个节点组成且节点值从 &lt;code&gt;1&lt;/code&gt; 到 &lt;code&gt;n&lt;/code&gt; 互不相同的 &lt;strong&gt;二叉搜索树&lt;/strong&gt; 有多少种？返回满足题意的二叉搜索树的种数。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/168.jpg&quot; alt=&quot;168&quot; /&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：n = 3
+输出：5
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：n = 1
+输出：1
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;1.动态规划求解&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public int numTrees(int n) {
+        int[] G = new int[n + 1];
+        G[0] = 1;
+        G[1] = 1;
+        for(int i = 2; i &amp;lt;= n; i++) {
+            //遍历到n的每一个结果数组，赋予对应的结果值
+            for(int j = 1; j &amp;lt;= i; j++) {
+                //j为节点，依次遍历对应编号的节点
+                int leftNum = G[j - 1];
+                //左侧有就j-1个节点，复用G中的结果情况
+                int rightNum = G[i - j];
+                //右侧有i-j个节点，复用其对应长的的结果
+                G[i] += leftNum * rightNum;
+                //求左右两侧的乘积，代表选取对应节点的情况总数
+                //最后在依次对每个节点所对应的可能进行累加
+            }
+        } 
+        return G[n];
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;2.数学公式求解&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public int numTrees(int n) {
+        // 提示：我们在这里需要用 long 类型防止计算过程中的溢出
+        long C = 1;
+        for (int i = 0; i &amp;lt; n; ++i) {
+            C = C * 2 * (2 * i + 1) / (i + 2);
+        }
+        return (int) C;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+</content:encoded></item><item><title>Spring笔记（手写Spring）</title><link>https://thrinisty.github.io/posts/spring%E7%AC%94%E8%AE%B0%E6%89%8B%E5%86%99spring/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/spring%E7%AC%94%E8%AE%B0%E6%89%8B%E5%86%99spring/</guid><description>简单地手写一个Spring框架</description><pubDate>Mon, 26 May 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;Spring笔记&lt;/h1&gt;
+&lt;h2&gt;回顾反射&lt;/h2&gt;
+&lt;p&gt;写一个类，通过反射执行方法&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;package com.thrinisty.bean;
+
+public class User {
+    private String name;
+    private int age;
+
+    public User() {}
+
+    @Override
+    public String toString() {
+        return &quot;User{&quot; +
+                &quot;name=&apos;&quot; + name + &apos;\&apos;&apos; +
+                &quot;, age=&quot; + age +
+                &apos;}&apos;;
+    }
+
+    public User(String name, int age) {
+        this.name = name;
+        this.age = age;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;反射的调用步骤&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class Main {
+    public static void main(String[] args) throws Exception{
+        Class&amp;lt;?&amp;gt; cls = Class.forName(&quot;com.thrinisty.bean.User&quot;);
+        Constructor&amp;lt;?&amp;gt; constructor = cls.getConstructor();
+        Object user = constructor.newInstance();
+
+        Field nameField = cls.getDeclaredField(&quot;name&quot;);
+        Field ageField = cls.getDeclaredField(&quot;age&quot;);
+
+        Method setName = cls.getMethod(&quot;setName&quot;, nameField.getType());
+        setName.invoke(user, &quot;John&quot;);
+        Method setAge = cls.getMethod(&quot;setAge&quot;, ageField.getType());
+        setAge.invoke(user, 18);
+        System.out.println(user);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;手写Spring&lt;/h2&gt;
+</content:encoded></item><item><title>LeetCode刷题（构造二叉树，前缀树）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E6%9E%84%E9%80%A0%E4%BA%8C%E5%8F%89%E6%A0%91%E5%89%8D%E7%BC%80%E6%A0%91/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E6%9E%84%E9%80%A0%E4%BA%8C%E5%8F%89%E6%A0%91%E5%89%8D%E7%BC%80%E6%A0%91/</guid><description>从前序与中序遍历序列构造二叉树，实现前缀树</description><pubDate>Mon, 26 May 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;前序与中序遍历序列构造二叉树&lt;/h1&gt;
 &lt;h2&gt;题目描述&lt;/h2&gt;
 &lt;p&gt;给定两个整数数组 &lt;code&gt;preorder&lt;/code&gt; 和 &lt;code&gt;inorder&lt;/code&gt; ，其中 &lt;code&gt;preorder&lt;/code&gt; 是二叉树的&lt;strong&gt;先序遍历&lt;/strong&gt;， &lt;code&gt;inorder&lt;/code&gt; 是同一棵树的&lt;strong&gt;中序遍历&lt;/strong&gt;，请构造二叉树并返回其根节点。&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;示例 1:&lt;/strong&gt;&lt;/p&gt;
@@ -132,28 +287,29 @@ class Trie {
 &lt;p&gt;在调用的基础上，分为了跳过当前位置的数字，以及使用当前数字两种情况，在使用的时候使list增加被使用的数字，在递归调用传入新的目标数字和后删除&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;class Solution {
     List&amp;lt;List&amp;lt;Integer&amp;gt;&amp;gt; result = new ArrayList&amp;lt;&amp;gt;();
+    List&amp;lt;Integer&amp;gt; list = new ArrayList&amp;lt;&amp;gt;();
+
     public List&amp;lt;List&amp;lt;Integer&amp;gt;&amp;gt; combinationSum(int[] candidates, int target) {
-        List&amp;lt;Integer&amp;gt; list = new ArrayList&amp;lt;&amp;gt;();
-        fun(candidates, target, list, 0);
+        fun(candidates, target, 0);
         return result;
     }
 
-    public void fun(int[] candidates, int target, List&amp;lt;Integer&amp;gt; list, int idx) {
-        if(idx == candidates.length) {
-            return;
-        }
+    public void fun(int[] candidates, int target, int idx) {
         if(target == 0) {
             result.add(new ArrayList&amp;lt;Integer&amp;gt;(list));
             return;
         }
-        fun(candidates, target, list, idx + 1);
-        
+        if(idx == candidates.length) {
+            return;
+        }
+        fun(candidates, target, idx + 1);
+
         int newNum = candidates[idx];
         int newTarget = target - newNum;
         if(newTarget &amp;gt;= 0) {
             list.add(newNum);
-            fun(candidates, newTarget, list, idx);
-            list.remove(new Integer(newNum));
+            fun(candidates, newTarget, idx);
+            list.remove(list.size() - 1);
         }
     }
 }
@@ -850,9 +1006,30 @@ public void test01() {
         for(int [] person : people) {
             ans.add(person[1], person);
         }
-        int[][] result = new int[ans.size()][2];
-        ans.toArray(result);
-        return result;
+       ans.toArray(people);
+        return people;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public int[][] reconstructQueue(int[][] people) {
+        Arrays.sort(people, new Comparator&amp;lt;int[]&amp;gt;() {
+            public int compare(int[] person1, int[] person2) {
+                if(person1[0] != person2[0]) {
+                    return person2[0] - person1[0];
+                }
+                return person1[1] - person2[1];
+            }
+        });
+        List&amp;lt;int[]&amp;gt; ans = new ArrayList&amp;lt;&amp;gt;();
+        for(int[] person : people) {
+            ans.add(person[1], person);
+        }
+        int n = ans.size();
+        for(int i = 0; i &amp;lt; n; i++) {
+            people[i] = ans.get(i);
+        }
+        return people;
     }
 }
 &lt;/code&gt;&lt;/pre&gt;

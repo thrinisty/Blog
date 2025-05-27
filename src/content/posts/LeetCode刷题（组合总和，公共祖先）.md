@@ -57,28 +57,29 @@ draft: false
 ```java
 class Solution {
     List<List<Integer>> result = new ArrayList<>();
+    List<Integer> list = new ArrayList<>();
+
     public List<List<Integer>> combinationSum(int[] candidates, int target) {
-        List<Integer> list = new ArrayList<>();
-        fun(candidates, target, list, 0);
+        fun(candidates, target, 0);
         return result;
     }
 
-    public void fun(int[] candidates, int target, List<Integer> list, int idx) {
-        if(idx == candidates.length) {
-            return;
-        }
+    public void fun(int[] candidates, int target, int idx) {
         if(target == 0) {
             result.add(new ArrayList<Integer>(list));
             return;
         }
-        fun(candidates, target, list, idx + 1);
-        
+        if(idx == candidates.length) {
+            return;
+        }
+        fun(candidates, target, idx + 1);
+
         int newNum = candidates[idx];
         int newTarget = target - newNum;
         if(newTarget >= 0) {
             list.add(newNum);
-            fun(candidates, newTarget, list, idx);
-            list.remove(new Integer(newNum));
+            fun(candidates, newTarget, idx);
+            list.remove(list.size() - 1);
         }
     }
 }

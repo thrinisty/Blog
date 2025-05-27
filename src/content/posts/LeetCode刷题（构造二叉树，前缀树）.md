@@ -1,8 +1,8 @@
 ---
-title: LeetCode刷题（构造二叉树）
+title: LeetCode刷题（构造二叉树，前缀树）
 published: 2025-05-26
 updated: 2025-05-26
-description: '从前序与中序遍历序列构造二叉树'
+description: '从前序与中序遍历序列构造二叉树，实现前缀树'
 image: ''
 tags: [LeetCode]
 category: 'LeetCode'
