@@ -1,8 +1,8 @@
 ---
-title: LeetCode刷题（最小路径和）
+title: LeetCode刷题（最小路径和，穷举二叉搜索树）
 published: 2025-05-27
 updated: 2025-05-27
-description: '路径和动态规划'
+description: '路径和动态规划，穷举二叉搜索树'
 image: ''
 tags: [LeetCode]
 category: 'LeetCode'

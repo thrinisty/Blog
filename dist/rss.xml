@@ -1,4 +1,63 @@
-<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Thrinisty&apos;s Blog</title><description>New Blog</description><link>https://thrinisty.github.io/</link><language>zh_CN</language><item><title>LeetCode刷题（最小路径和）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E6%9C%80%E5%B0%8F%E8%B7%AF%E5%BE%84%E5%92%8C/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E6%9C%80%E5%B0%8F%E8%B7%AF%E5%BE%84%E5%92%8C/</guid><description>路径和动态规划</description><pubDate>Tue, 27 May 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;最小路径和&lt;/h1&gt;
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Thrinisty&apos;s Blog</title><description>New Blog</description><link>https://thrinisty.github.io/</link><language>zh_CN</language><item><title>LeetCode刷题（戳气球，字母异位词分组）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E6%88%B3%E6%B0%94%E7%90%83%E5%AD%97%E6%AF%8D%E5%BC%82%E4%BD%8D%E8%AF%8D%E5%88%86%E7%BB%84/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E6%88%B3%E6%B0%94%E7%90%83%E5%AD%97%E6%AF%8D%E5%BC%82%E4%BD%8D%E8%AF%8D%E5%88%86%E7%BB%84/</guid><description>戳气球，字母异位词分组</description><pubDate>Wed, 28 May 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;戳气球&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;有 &lt;code&gt;n&lt;/code&gt; 个气球，编号为&lt;code&gt;0&lt;/code&gt; 到 &lt;code&gt;n - 1&lt;/code&gt;，每个气球上都标有一个数字，这些数字存在数组 &lt;code&gt;nums&lt;/code&gt; 中。&lt;/p&gt;
+&lt;p&gt;现在要求你戳破所有的气球。戳破第 &lt;code&gt;i&lt;/code&gt; 个气球，你可以获得 &lt;code&gt;nums[i - 1] * nums[i] * nums[i + 1]&lt;/code&gt; 枚硬币。 这里的 &lt;code&gt;i - 1&lt;/code&gt; 和 &lt;code&gt;i + 1&lt;/code&gt; 代表和 &lt;code&gt;i&lt;/code&gt; 相邻的两个气球的序号。如果 &lt;code&gt;i - 1&lt;/code&gt;或 &lt;code&gt;i + 1&lt;/code&gt; 超出了数组的边界，那么就当它是一个数字为 &lt;code&gt;1&lt;/code&gt; 的气球。&lt;/p&gt;
+&lt;p&gt;求所能获得硬币的最大数量。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：nums = [3,1,5,8]
+输出：167
+解释：
+nums = [3,1,5,8] --&amp;gt; [3,5,8] --&amp;gt; [3,8] --&amp;gt; [8] --&amp;gt; []
+coins =  3*1*5    +   3*5*8   +  1*3*8  + 1*8*1 = 167
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：nums = [1,5]
+输出：10
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;以现在的水平而言，不看题解只能够想到构造一个新的数组用于存储开始和结尾的1，看了题解后明确思路，通过三重循环进行二维数组的动态规划得出答案&lt;/p&gt;
+&lt;p&gt;:::tip&lt;/p&gt;
+&lt;p&gt;三重循环分别代表的意义：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;取对应区间的长度，从最小区间3开始&lt;/li&gt;
+&lt;li&gt;取对应长度区间的起始位置，根据长度的增加，上界依次减小&lt;/li&gt;
+&lt;li&gt;在长度区间内，遍历开区间的节点，迭代最大的区间结果最大值&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;:::&lt;/p&gt;
+&lt;p&gt;在起始len为3的时候，left和right都是0，其实也就是只有一个气球可以戳&lt;/p&gt;
+&lt;p&gt;在后续的len为4的时候会使用到len为3时存储的开区间分别给左右两侧赋值，即左右两侧的结果都是最大的情况，再根据剩下的节点左右乘以len长度对应的边界节点数字，相加就是len为4在最后戳对应结点的时候的最大结果，而res是为了记录遍历所有对应节点中剩余最后节点取置最大的结果，并将其写入结果集二维数组中，用以下一次个长度的使用&lt;/p&gt;
+&lt;p&gt;另外注意：因为是最后一个被戳爆的，所以它周边没有球了！没有球了！只有这个开区间首尾的 i 和 j 了！！
+这就是为什么DP的状态转移方程是只和 i 和 j 位置的数字有关&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public int maxCoins(int[] nums) {
+        int n = nums.length;
+        int temp[] = new int[n + 2];
+        temp[0] = 1;
+        temp[n + 1] = 1;
+        for(int i = 0; i &amp;lt; n; i++) {
+            temp[i + 1] = nums[i];
+        } 
+        int dp[][] = new int[n + 2][n + 2];
+        for(int len = 3; len &amp;lt;= n + 2; len++) {
+            for(int i = 0; i &amp;lt;= n + 2 - len; i++) {
+                int res = 0;
+                int r_b = i + len - 1;
+                for(int k = i + 1; k &amp;lt; r_b; k++) {
+                    int left = dp[i][k];
+                    int right = dp[k][r_b];
+                    res = Math.max(res, temp[i] * temp[k] * temp[r_b] + left + right);
+                }
+                dp[i][r_b] = res;
+            }
+        }
+        return dp[0][n + 1];
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1&gt;字母异位词分组&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+</content:encoded></item><item><title>LeetCode刷题（最小路径和，穷举二叉搜索树）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E6%9C%80%E5%B0%8F%E8%B7%AF%E5%BE%84%E5%92%8C%E7%A9%B7%E4%B8%BE%E4%BA%8C%E5%8F%89%E6%90%9C%E7%B4%A2%E6%A0%91/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E6%9C%80%E5%B0%8F%E8%B7%AF%E5%BE%84%E5%92%8C%E7%A9%B7%E4%B8%BE%E4%BA%8C%E5%8F%89%E6%90%9C%E7%B4%A2%E6%A0%91/</guid><description>路径和动态规划，穷举二叉搜索树</description><pubDate>Tue, 27 May 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;最小路径和&lt;/h1&gt;
 &lt;h2&gt;题目描述&lt;/h2&gt;
 &lt;p&gt;给定一个包含非负整数的 &lt;code&gt;*m* x *n*&lt;/code&gt; 网格 &lt;code&gt;grid&lt;/code&gt; ，请找出一条从左上角到右下角的路径，使得路径上的数字总和为最小。&lt;/p&gt;
 &lt;p&gt;**说明：**每次只能向下或者向右移动一步。&lt;/p&gt;
