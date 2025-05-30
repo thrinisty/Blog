@@ -1,8 +1,8 @@
 ---
-title: LeetCode刷题（每日温度）
+title: LeetCode刷题（每日温度，不同路径，完全平方数）
 published: 2025-05-30
 updated: 2025-05-30
-description: '每日温度（非暴力）'
+description: '每日温度（非暴力），不同路径，完全平方数'
 image: ''
 tags: [LeetCode]
 category: 'LeetCode'

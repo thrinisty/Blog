@@ -39,26 +39,231 @@ public class User {
     }
 }
 &lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;反射的调用步骤&lt;/p&gt;
+&lt;p&gt;DI核心核心代码实现：通过class类名和filed属性名称获取对象以及字段赋值&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;public class Main {
     public static void main(String[] args) throws Exception{
-        Class&amp;lt;?&amp;gt; cls = Class.forName(&quot;com.thrinisty.bean.User&quot;);
-        Constructor&amp;lt;?&amp;gt; constructor = cls.getConstructor();
-        Object user = constructor.newInstance();
+        String className = &quot;com.thrinisty.bean.User&quot;;
+        String filedName = &quot;age&quot;;
 
-        Field nameField = cls.getDeclaredField(&quot;name&quot;);
-        Field ageField = cls.getDeclaredField(&quot;age&quot;);
+        Class&amp;lt;?&amp;gt; cls = Class.forName(className);
+        Constructor&amp;lt;?&amp;gt; constructor = cls.getDeclaredConstructor();
+        String setMethodName = &quot;set&quot; + filedName.toUpperCase().charAt(0) + filedName.substring(1);
+        Field field = cls.getDeclaredField(filedName);
+        Method method = cls.getDeclaredMethod(setMethodName, field.getType());
 
-        Method setName = cls.getMethod(&quot;setName&quot;, nameField.getType());
-        setName.invoke(user, &quot;John&quot;);
-        Method setAge = cls.getMethod(&quot;setAge&quot;, ageField.getType());
-        setAge.invoke(user, 18);
+        User user = (User)constructor.newInstance();
+        method.invoke(user, 20);
         System.out.println(user);
     }
 }
 &lt;/code&gt;&lt;/pre&gt;
 &lt;h2&gt;手写Spring&lt;/h2&gt;
-</content:encoded></item><item><title>LeetCode刷题（每日温度）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E6%AF%8F%E6%97%A5%E6%B8%A9%E5%BA%A6/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E6%AF%8F%E6%97%A5%E6%B8%A9%E5%BA%A6/</guid><description>每日温度（非暴力）</description><pubDate>Fri, 30 May 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;每日温度&lt;/h1&gt;
+&lt;p&gt;Spring IoC容器实现原理：工厂模式 + 解析XML + 反射机制&lt;/p&gt;
+&lt;h3&gt;准备工作&lt;/h3&gt;
+&lt;p&gt;jar包管理：引入dom4j配置&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;dependency&amp;gt;
+    &amp;lt;groupId&amp;gt;org.dom4j&amp;lt;/groupId&amp;gt;
+    &amp;lt;artifactId&amp;gt;dom4j&amp;lt;/artifactId&amp;gt;
+    &amp;lt;version&amp;gt;2.1.4&amp;lt;/version&amp;gt; &amp;lt;!-- 使用最新版本 --&amp;gt;
+&amp;lt;/dependency&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;dependency&amp;gt;
+    &amp;lt;groupId&amp;gt;jaxen&amp;lt;/groupId&amp;gt;
+    &amp;lt;artifactId&amp;gt;jaxen&amp;lt;/artifactId&amp;gt;
+    &amp;lt;version&amp;gt;1.2.0&amp;lt;/version&amp;gt;
+&amp;lt;/dependency&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;使用者准备&lt;/h4&gt;
+&lt;p&gt;配置文件&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&amp;gt;
+&amp;lt;beans&amp;gt;
+    &amp;lt;bean id=&quot;user&quot; class=&quot;com.myspring.bean.User&quot;&amp;gt;
+        &amp;lt;property name=&quot;name&quot; value=&quot;张三&quot;/&amp;gt;
+        &amp;lt;property name=&quot;age&quot; value=&quot;18&quot;/&amp;gt;
+    &amp;lt;/bean&amp;gt;
+
+    &amp;lt;bean id=&quot;userDaoBean&quot; class=&quot;com.myspring.bean.UserDao&quot;/&amp;gt;
+
+    &amp;lt;bean id=&quot;userService&quot; class=&quot;com.myspring.bean.UserService&quot;&amp;gt;
+        &amp;lt;property name=&quot;userDao&quot; ref=&quot;userDaoBean&quot;/&amp;gt;
+    &amp;lt;/bean&amp;gt;
+&amp;lt;/beans&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;User对象&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;package com.myspring.bean;
+
+public class User {
+    private String name;
+    private int age;
+
+    @Override
+    public String toString() {
+        return &quot;User{&quot; +
+                &quot;name=&apos;&quot; + name + &apos;\&apos;&apos; +
+                &quot;, age=&quot; + age +
+                &apos;}&apos;;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;UserDao对象&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;package com.myspring.bean;
+
+public class UserDao {
+    public void insert() {
+        System.out.println(&quot;mysql 保存用户信息&quot;);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;UserService对象&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;package com.myspring.bean;
+
+public class UserService {
+    private UserDao userDao;
+
+    public void save() {
+        userDao.insert();
+    }
+
+    public UserDao getUserDao() {
+        return userDao;
+    }
+
+    public void setUserDao(UserDao userDao) {
+        this.userDao = userDao;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;开发者框架编写&lt;/h4&gt;
+&lt;p&gt;实现思路：实现ClassPathXmlApplicationContext类，私有化一个Map集合，存放bean对象的id，以及bean对象本身，提供一个getBean方法，从Map中取出对象返回&lt;/p&gt;
+&lt;p&gt;ApplicationContext 接口&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;package org.myspringframework.core;
+
+public interface ApplicationContext {
+    Object getBean(String beanName);
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;ClassPathXmlApplicationContext 接口实现类的编写&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;package org.myspringframework.core;
+
+public class ClassPathXmlApplicationContext implements ApplicationContext {
+    private Map&amp;lt;String, Object&amp;gt; singletonObject = new HashMap&amp;lt;&amp;gt;();
+
+    public ClassPathXmlApplicationContext(String configLocations) {
+        //解析配置文件，初始化所有Bean对象
+        try {
+            SAXReader reader = new SAXReader();
+            InputStream in = this.getClass().getResourceAsStream(&quot;/&quot; + configLocations);
+            //读文件,获取标签
+            Document document = reader.read(in);
+            List&amp;lt;Node&amp;gt; nodes = document.selectNodes(&quot;//bean&quot;);
+            //遍历bean标签，创建对象完成曝光
+            for (Node node : nodes) {
+                //向下转型，为使用Element接口方法
+                Element beanElt = (Element) node;
+                String id = beanElt.attributeValue(&quot;id&quot;);
+                String className = beanElt.attributeValue(&quot;class&quot;);
+                System.out.println(&quot;创建 &quot; + id + &quot; &quot; + className);
+
+                try {
+                    Class&amp;lt;?&amp;gt; cls = Class.forName(className);
+                    Constructor&amp;lt;?&amp;gt; declaredConstructor = cls.getDeclaredConstructor();
+                    Object bean = declaredConstructor.newInstance();
+                    singletonObject.put(id, bean);//曝光Bean对象，放入集合
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            }
+
+            //遍历标签，完成赋值
+            for (Node node : nodes) {
+                try {
+                    //向下转型，为使用Element接口方法
+                    Element beanElt = (Element) node;
+                    String id = beanElt.attributeValue(&quot;id&quot;);
+                    String className = beanElt.attributeValue(&quot;class&quot;);
+                    Class&amp;lt;?&amp;gt; clazz = Class.forName(className);
+                    System.out.println(&quot;赋值 &quot; + id + &quot; &quot; + className);
+                    List&amp;lt;Element&amp;gt; properties = beanElt.elements(&quot;property&quot;);
+                    for (Element property : properties) {
+                        String propertyName = property.attributeValue(&quot;name&quot;);
+                        System.out.println(propertyName);
+                        String setMethodName = &quot;set&quot; + propertyName.substring(0, 1).toUpperCase() + propertyName.substring(1);
+                        Field filed = clazz.getDeclaredField(propertyName);
+                        Method setMethod = clazz.getDeclaredMethod(setMethodName, filed.getType());
+                        String value = property.attributeValue(&quot;value&quot;);
+                        String ref = property.attributeValue(&quot;ref&quot;);
+                        if (value != null) {
+                            //获取到的value值是字符串，需要将其转为对应类型的数据再放入
+                            //支持byte short int long float double boolean char
+                            //并支持对应的包装类型
+                            String propertyTypeSimpleName = filed.getType().getSimpleName();
+                            switch (propertyTypeSimpleName) {
+                                case &quot;int&quot;:
+                                    setMethod.invoke(singletonObject.get(id), Integer.parseInt(value));
+                                    break;
+                                case &quot;String&quot;:
+                                    setMethod.invoke(singletonObject.get(id), value);
+                                    break;
+                                default:
+                            }
+                            //setMethod.invoke(singletonObject.get(id), &quot;具体值&quot;);
+                        }
+                        if (ref != null) {
+                            setMethod.invoke(singletonObject.get(id), singletonObject.get(ref));
+                        }
+                    }
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        } catch (DocumentException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public Object getBean(String beanName) {
+        return singletonObject.get(beanName);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;测试程序：使用自己编写的Spring框架进行测试&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;package com.test;
+
+import com.myspring.bean.UserService;
+import org.junit.jupiter.api.Test;
+import org.myspringframework.core.ApplicationContext;
+import org.myspringframework.core.ClassPathXmlApplicationContext;
+
+public class TestBean {
+    @Test
+    public void test() {
+        ApplicationContext context = new ClassPathXmlApplicationContext(&quot;myspring.xml&quot;);
+        Object user = context.getBean(&quot;user&quot;);
+        System.out.println(user);
+        UserService userService = (UserService)context.getBean(&quot;userService&quot;);
+        userService.save();
+        System.out.println(userService);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+</content:encoded></item><item><title>LeetCode刷题（每日温度，不同路径，完全平方数）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E6%AF%8F%E6%97%A5%E6%B8%A9%E5%BA%A6%E4%B8%8D%E5%90%8C%E8%B7%AF%E5%BE%84%E5%AE%8C%E5%85%A8%E5%B9%B3%E6%96%B9%E6%95%B0/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E6%AF%8F%E6%97%A5%E6%B8%A9%E5%BA%A6%E4%B8%8D%E5%90%8C%E8%B7%AF%E5%BE%84%E5%AE%8C%E5%85%A8%E5%B9%B3%E6%96%B9%E6%95%B0/</guid><description>每日温度（非暴力），不同路径，完全平方数</description><pubDate>Fri, 30 May 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;每日温度&lt;/h1&gt;
 &lt;h2&gt;题目描述&lt;/h2&gt;
 &lt;p&gt;给定一个整数数组 &lt;code&gt;temperatures&lt;/code&gt; ，表示每天的温度，返回一个数组 &lt;code&gt;answer&lt;/code&gt; ，其中 &lt;code&gt;answer[i]&lt;/code&gt; 是指对于第 &lt;code&gt;i&lt;/code&gt; 天，下一个更高温度出现在几天后。如果气温在这之后都不会升高，请在该位置用 &lt;code&gt;0&lt;/code&gt; 来代替。&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;示例 1:&lt;/strong&gt;&lt;/p&gt;
