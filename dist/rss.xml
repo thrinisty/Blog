@@ -1,4 +1,204 @@
-<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Thrinisty&apos;s Blog</title><description>New Blog</description><link>https://thrinisty.github.io/</link><language>zh_CN</language><item><title>LeetCode刷题（戳气球，字母异位词分组，层序遍历）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E6%88%B3%E6%B0%94%E7%90%83%E5%AD%97%E6%AF%8D%E5%BC%82%E4%BD%8D%E8%AF%8D%E5%88%86%E7%BB%84%E4%BA%8C%E5%8F%89%E6%A0%91%E5%B1%82%E5%BA%8F%E9%81%8D%E5%8E%86/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E6%88%B3%E6%B0%94%E7%90%83%E5%AD%97%E6%AF%8D%E5%BC%82%E4%BD%8D%E8%AF%8D%E5%88%86%E7%BB%84%E4%BA%8C%E5%8F%89%E6%A0%91%E5%B1%82%E5%BA%8F%E9%81%8D%E5%8E%86/</guid><description>戳气球，字母异位词分组，层序遍历二叉树</description><pubDate>Wed, 28 May 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;戳气球&lt;/h1&gt;
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Thrinisty&apos;s Blog</title><description>New Blog</description><link>https://thrinisty.github.io/</link><language>zh_CN</language><item><title>Spring笔记（手写Spring）</title><link>https://thrinisty.github.io/posts/spring%E7%AC%94%E8%AE%B0%E6%89%8B%E5%86%99spring/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/spring%E7%AC%94%E8%AE%B0%E6%89%8B%E5%86%99spring/</guid><description>简单地手写一个Spring框架</description><pubDate>Fri, 30 May 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;Spring笔记&lt;/h1&gt;
+&lt;h2&gt;回顾反射&lt;/h2&gt;
+&lt;p&gt;写一个类，通过反射执行方法&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;package com.thrinisty.bean;
+
+public class User {
+    private String name;
+    private int age;
+
+    public User() {}
+
+    @Override
+    public String toString() {
+        return &quot;User{&quot; +
+                &quot;name=&apos;&quot; + name + &apos;\&apos;&apos; +
+                &quot;, age=&quot; + age +
+                &apos;}&apos;;
+    }
+
+    public User(String name, int age) {
+        this.name = name;
+        this.age = age;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;反射的调用步骤&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class Main {
+    public static void main(String[] args) throws Exception{
+        Class&amp;lt;?&amp;gt; cls = Class.forName(&quot;com.thrinisty.bean.User&quot;);
+        Constructor&amp;lt;?&amp;gt; constructor = cls.getConstructor();
+        Object user = constructor.newInstance();
+
+        Field nameField = cls.getDeclaredField(&quot;name&quot;);
+        Field ageField = cls.getDeclaredField(&quot;age&quot;);
+
+        Method setName = cls.getMethod(&quot;setName&quot;, nameField.getType());
+        setName.invoke(user, &quot;John&quot;);
+        Method setAge = cls.getMethod(&quot;setAge&quot;, ageField.getType());
+        setAge.invoke(user, 18);
+        System.out.println(user);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;手写Spring&lt;/h2&gt;
+</content:encoded></item><item><title>LeetCode刷题（每日温度）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E6%AF%8F%E6%97%A5%E6%B8%A9%E5%BA%A6/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E6%AF%8F%E6%97%A5%E6%B8%A9%E5%BA%A6/</guid><description>每日温度（非暴力）</description><pubDate>Fri, 30 May 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;每日温度&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;给定一个整数数组 &lt;code&gt;temperatures&lt;/code&gt; ，表示每天的温度，返回一个数组 &lt;code&gt;answer&lt;/code&gt; ，其中 &lt;code&gt;answer[i]&lt;/code&gt; 是指对于第 &lt;code&gt;i&lt;/code&gt; 天，下一个更高温度出现在几天后。如果气温在这之后都不会升高，请在该位置用 &lt;code&gt;0&lt;/code&gt; 来代替。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 1:&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入: temperatures = [73,74,75,71,69,72,76,73]
+输出: [1,1,4,2,1,1,0,0]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2:&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入: temperatures = [30,40,50,60]
+输出: [1,1,1,0]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 3:&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入: temperatures = [30,60,90]
+输出: [1,1,0]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;方法一：暴力拆解 自己想出来的一般都超时 :(&lt;/p&gt;
+&lt;p&gt;两重for循环，依次遍历后续直到遇到更高的温度，返回下表差之后break跳出循环&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public int[] dailyTemperatures(int[] temperatures) {
+        int n = temperatures.length;
+        int[] result = new int[n];
+        for(int i = 0; i &amp;lt; n; i++) {
+            for(int j = i; j &amp;lt; n; j++) {
+                if(temperatures[i] &amp;lt; temperatures[j]) {
+                    result[i] = j - i;
+                    break;
+                }
+            }
+        }
+        return result;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;测试用例是可以通过的，但是提交的时候超时，测试用例中有一个非常夸张的样例，O(n^2)直接爆炸了，得使用时间复杂度更小的解法完成&lt;/p&gt;
+&lt;p&gt;方法二：&lt;/p&gt;
+&lt;p&gt;从反方向开始遍历&lt;/p&gt;
+&lt;p&gt;在上一种解法中，起始在第二层for循环的时候重复计算了很多没必要的情况，例如&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;33 21 20 34
+3  2  1  0
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;我们在判断33后续的更高温度的时候，先看21是否高于33，如果不高于33，可以不用依次遍历21后续的数字，而是直接跳转到21对应result中的下表（因为直到该下表前都没有大于21的温度，重复遍历没有必要），当21结果为0的时候，后续也没有温度更高的结果，直接使对应结果置为0&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public int[] dailyTemperatures(int[] temperatures) {
+        int n = temperatures.length;
+        int[] result = new int[n];
+        for(int i = n - 2; i &amp;gt;= 0; i--) {
+            for(int j = i + 1; j &amp;lt; n; j += result[j]) {
+                if(temperatures[i] &amp;lt; temperatures[j]) {
+                    result[i] = j - i;
+                    break;
+                } else if(result[j] == 0) {
+                    result[i] = 0;
+                    break;
+                } else {
+                    continue;
+                }
+            }
+        }
+        return result;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1&gt;不同路径&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;一个机器人位于一个 &lt;code&gt;m x n&lt;/code&gt; 网格的左上角 （起始点在下图中标记为 “Start” ）。&lt;/p&gt;
+&lt;p&gt;机器人每次只能向下或者向右移动一步。机器人试图达到网格的右下角（在下图中标记为 “Finish” ）。&lt;/p&gt;
+&lt;p&gt;问总共有多少条不同的路径？&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/170.png&quot; alt=&quot;170&quot; /&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：m = 3, n = 7
+输出：28
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：m = 3, n = 2
+输出：3
+解释：
+从左上角开始，总共有 3 条路径可以到达右下角。
+1. 向右 -&amp;gt; 向下 -&amp;gt; 向下
+2. 向下 -&amp;gt; 向下 -&amp;gt; 向右
+3. 向下 -&amp;gt; 向右 -&amp;gt; 向下
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 3：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：m = 7, n = 3
+输出：28
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 4：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：m = 3, n = 3
+输出：6
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;动态规划：和之前的最小路径类似，这里循环的操作是将上节点和左节点的走法数相加&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public int uniquePaths(int m, int n) {
+        int[][] result = new int[m][n];
+        for(int i = 0; i &amp;lt; m; i++) {
+            result[i][0] = 1;
+        }
+        for(int j = 0; j &amp;lt; n; j++) {
+            result[0][j] = 1;
+        }
+        for(int i = 1; i &amp;lt; m; i++) {
+            for(int j = 1; j &amp;lt; n; j++) {
+                result[i][j] = result[i - 1][j] + result[i][j - 1];
+            }
+        }
+        return result[m - 1][n - 1];
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1&gt;完全平方数&lt;/h1&gt;
+&lt;h2&gt;题目表述&lt;/h2&gt;
+&lt;p&gt;给你一个整数 &lt;code&gt;n&lt;/code&gt; ，返回 &lt;em&gt;和为 &lt;code&gt;n&lt;/code&gt; 的完全平方数的最少数量&lt;/em&gt; 。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;完全平方数&lt;/strong&gt; 是一个整数，其值等于另一个整数的平方；换句话说，其值等于一个整数自乘的积。例如，&lt;code&gt;1&lt;/code&gt;、&lt;code&gt;4&lt;/code&gt;、&lt;code&gt;9&lt;/code&gt; 和 &lt;code&gt;16&lt;/code&gt; 都是完全平方数，而 &lt;code&gt;3&lt;/code&gt; 和 &lt;code&gt;11&lt;/code&gt; 不是。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：n = 12
+输出：3 
+解释：12 = 4 + 4 + 4
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：n = 13
+输出：2
+解释：13 = 4 + 9
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;运用一个数组存储对应的数字可以被完全平方数表示的最小平方数个数，第二层for循环表示，每一个直到 j * j 大于 i 的情况，而min结果是剩余的数的最小平方数个数，迭代min找出，个数最小的情况，最后再加上这个i对应的完全平方数（result = min + 1）&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public int numSquares(int n) {
+        int[] result = new int [n + 1];
+        for(int i = 1; i &amp;lt;= n; i++) {
+            int min = Integer.MAX_VALUE;
+            for(int j = 1; j * j &amp;lt;= i; j++) {
+                min = Math.min(min, result[i - j * j]);
+            }
+            result[i] = min + 1;
+        }
+        return result[n];
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+</content:encoded></item><item><title>LeetCode刷题（戳气球，字母异位词分组，层序遍历）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E6%88%B3%E6%B0%94%E7%90%83%E5%AD%97%E6%AF%8D%E5%BC%82%E4%BD%8D%E8%AF%8D%E5%88%86%E7%BB%84%E4%BA%8C%E5%8F%89%E6%A0%91%E5%B1%82%E5%BA%8F%E9%81%8D%E5%8E%86/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E6%88%B3%E6%B0%94%E7%90%83%E5%AD%97%E6%AF%8D%E5%BC%82%E4%BD%8D%E8%AF%8D%E5%88%86%E7%BB%84%E4%BA%8C%E5%8F%89%E6%A0%91%E5%B1%82%E5%BA%8F%E9%81%8D%E5%8E%86/</guid><description>戳气球，字母异位词分组，层序遍历二叉树</description><pubDate>Wed, 28 May 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;戳气球&lt;/h1&gt;
 &lt;h2&gt;题目描述&lt;/h2&gt;
 &lt;p&gt;有 &lt;code&gt;n&lt;/code&gt; 个气球，编号为&lt;code&gt;0&lt;/code&gt; 到 &lt;code&gt;n - 1&lt;/code&gt;，每个气球上都标有一个数字，这些数字存在数组 &lt;code&gt;nums&lt;/code&gt; 中。&lt;/p&gt;
 &lt;p&gt;现在要求你戳破所有的气球。戳破第 &lt;code&gt;i&lt;/code&gt; 个气球，你可以获得 &lt;code&gt;nums[i - 1] * nums[i] * nums[i + 1]&lt;/code&gt; 枚硬币。 这里的 &lt;code&gt;i - 1&lt;/code&gt; 和 &lt;code&gt;i + 1&lt;/code&gt; 代表和 &lt;code&gt;i&lt;/code&gt; 相邻的两个气球的序号。如果 &lt;code&gt;i - 1&lt;/code&gt;或 &lt;code&gt;i + 1&lt;/code&gt; 超出了数组的边界，那么就当它是一个数字为 &lt;code&gt;1&lt;/code&gt; 的气球。&lt;/p&gt;
@@ -233,66 +433,6 @@ coins =  3*1*5    +   3*5*8   +  1*3*8  + 1*8*1 = 167
     }
 }
 &lt;/code&gt;&lt;/pre&gt;
-</content:encoded></item><item><title>Spring笔记（手写Spring）</title><link>https://thrinisty.github.io/posts/spring%E7%AC%94%E8%AE%B0%E6%89%8B%E5%86%99spring/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/spring%E7%AC%94%E8%AE%B0%E6%89%8B%E5%86%99spring/</guid><description>简单地手写一个Spring框架</description><pubDate>Mon, 26 May 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;Spring笔记&lt;/h1&gt;
-&lt;h2&gt;回顾反射&lt;/h2&gt;
-&lt;p&gt;写一个类，通过反射执行方法&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;package com.thrinisty.bean;
-
-public class User {
-    private String name;
-    private int age;
-
-    public User() {}
-
-    @Override
-    public String toString() {
-        return &quot;User{&quot; +
-                &quot;name=&apos;&quot; + name + &apos;\&apos;&apos; +
-                &quot;, age=&quot; + age +
-                &apos;}&apos;;
-    }
-
-    public User(String name, int age) {
-        this.name = name;
-        this.age = age;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public int getAge() {
-        return age;
-    }
-
-    public void setAge(int age) {
-        this.age = age;
-    }
-}
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;反射的调用步骤&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;public class Main {
-    public static void main(String[] args) throws Exception{
-        Class&amp;lt;?&amp;gt; cls = Class.forName(&quot;com.thrinisty.bean.User&quot;);
-        Constructor&amp;lt;?&amp;gt; constructor = cls.getConstructor();
-        Object user = constructor.newInstance();
-
-        Field nameField = cls.getDeclaredField(&quot;name&quot;);
-        Field ageField = cls.getDeclaredField(&quot;age&quot;);
-
-        Method setName = cls.getMethod(&quot;setName&quot;, nameField.getType());
-        setName.invoke(user, &quot;John&quot;);
-        Method setAge = cls.getMethod(&quot;setAge&quot;, ageField.getType());
-        setAge.invoke(user, 18);
-        System.out.println(user);
-    }
-}
-&lt;/code&gt;&lt;/pre&gt;
-&lt;h2&gt;手写Spring&lt;/h2&gt;
 </content:encoded></item><item><title>LeetCode刷题（构造二叉树，前缀树）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E6%9E%84%E9%80%A0%E4%BA%8C%E5%8F%89%E6%A0%91%E5%89%8D%E7%BC%80%E6%A0%91/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E6%9E%84%E9%80%A0%E4%BA%8C%E5%8F%89%E6%A0%91%E5%89%8D%E7%BC%80%E6%A0%91/</guid><description>从前序与中序遍历序列构造二叉树，实现前缀树</description><pubDate>Mon, 26 May 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;前序与中序遍历序列构造二叉树&lt;/h1&gt;
 &lt;h2&gt;题目描述&lt;/h2&gt;
 &lt;p&gt;给定两个整数数组 &lt;code&gt;preorder&lt;/code&gt; 和 &lt;code&gt;inorder&lt;/code&gt; ，其中 &lt;code&gt;preorder&lt;/code&gt; 是二叉树的&lt;strong&gt;先序遍历&lt;/strong&gt;， &lt;code&gt;inorder&lt;/code&gt; 是同一棵树的&lt;strong&gt;中序遍历&lt;/strong&gt;，请构造二叉树并返回其根节点。&lt;/p&gt;

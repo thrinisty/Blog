@@ -1,7 +1,7 @@
 ---
 title: Spring笔记（手写Spring）
-published: 2025-05-26
-updated: 2025-05-26
+published: 2025-05-30
+updated: 2025-05-30
 description: '简单地手写一个Spring框架'
 image: ''
 tags: [Spring]
