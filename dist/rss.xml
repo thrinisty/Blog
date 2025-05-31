@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Thrinisty&apos;s Blog</title><description>New Blog</description><link>https://thrinisty.github.io/</link><language>zh_CN</language><item><title>自学第三月份总结</title><link>https://thrinisty.github.io/posts/%E8%87%AA%E5%AD%A6%E7%AC%AC%E4%B8%89%E6%9C%88%E4%BB%BD%E6%80%BB%E7%BB%93/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/%E8%87%AA%E5%AD%A6%E7%AC%AC%E4%B8%89%E6%9C%88%E4%BB%BD%E6%80%BB%E7%BB%93/</guid><description>结束Java</description><pubDate>Sun, 01 Jun 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;自学第三月份总结&lt;/h1&gt;
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Thrinisty&apos;s Blog</title><description>New Blog</description><link>https://thrinisty.github.io/</link><language>zh_CN</language><item><title>Spring笔记（模板）</title><link>https://thrinisty.github.io/posts/spring%E7%AC%94%E8%AE%B0%E6%A8%A1%E6%9D%BF/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/spring%E7%AC%94%E8%AE%B0%E6%A8%A1%E6%9D%BF/</guid><description>Spring</description><pubDate>Sun, 01 Jun 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;Spring笔记&lt;/h1&gt;
+</content:encoded></item><item><title>自学第三月份总结</title><link>https://thrinisty.github.io/posts/%E8%87%AA%E5%AD%A6%E7%AC%AC%E4%B8%89%E6%9C%88%E4%BB%BD%E6%80%BB%E7%BB%93/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/%E8%87%AA%E5%AD%A6%E7%AC%AC%E4%B8%89%E6%9C%88%E4%BB%BD%E6%80%BB%E7%BB%93/</guid><description>结束JavaWeb，开始Spring的学习，LeetCode刷题</description><pubDate>Sun, 01 Jun 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;自学第三月份总结&lt;/h1&gt;
 &lt;p&gt;第三个月有很多的考试内容需要复习，但是好在自己还是抽空出来完成了一些学习，虽然和预期的进度差了一部分，但好在把持续学习的习惯保持了下来，以下是这个月完成的一些内容（虽然内容部分和前两个月的量没法比）&lt;/p&gt;
 &lt;p&gt;劳动节过了个生日，和同学去外边玩了下，好好放松了几天，得劳逸结合吧，人太久都是紧绷的状态是会出问题的。&lt;/p&gt;
 &lt;h2&gt;JavaWeb收尾&lt;/h2&gt;
@@ -132,6 +133,268 @@
     }
 }
 &lt;/code&gt;&lt;/pre&gt;
+</content:encoded></item><item><title>Spring笔记（注解式开发，JdbcTemplate）</title><link>https://thrinisty.github.io/posts/spring%E7%AC%94%E8%AE%B0%E6%B3%A8%E8%A7%A3%E5%BC%8F%E5%BC%80%E5%8F%91/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/spring%E7%AC%94%E8%AE%B0%E6%B3%A8%E8%A7%A3%E5%BC%8F%E5%BC%80%E5%8F%91/</guid><description>Spring IoC注解式开发，JdbcTemplate的使用</description><pubDate>Sat, 31 May 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;Spring笔记&lt;/h1&gt;
+&lt;p&gt;注解的存在是为了简化XML的配置，Spring 6倡导全注解式开发&lt;/p&gt;
+&lt;h2&gt;注解细节回顾&lt;/h2&gt;
+&lt;pre&gt;&lt;code&gt;//元注解，标注注解的注解，表示可以出现在类上和字段上
+@Target(value = {ElementType.TYPE, ElementType.FIELD})
+//@Target({ElementType.TYPE, ElementType.FIELD})
+//注解名为value，注解可以省略
+//@Target(ElementType.TYPE)
+//当数组中只有一个元素，大括号可以省略
+@Retention(RetentionPolicy.RUNTIME)
+//保持型策略，RUNTIME使注解保存在class文件中，被反射读取
+public @interface Component {
+    //定义注解属性
+    String value();
+    String name();
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;用注解标注User类&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@Component(value = &quot;123&quot;, name = &quot;jack&quot;)
+public class User {
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;通过反射读取注解元素&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class TestBean {
+    public static void main(String[] args) throws Exception {
+        Class&amp;lt;?&amp;gt; clazz = Class.forName(&quot;com.thrinisty.bean.User&quot;);
+        if(clazz.isAnnotationPresent(Component.class)) {
+            //获取类上的注解
+            Component annotation = clazz.getAnnotation(Component.class);
+            System.out.println(annotation.value());
+            System.out.println(annotation.name());
+        }
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;注解声明原理&lt;/h2&gt;
+&lt;p&gt;现在有一个包名，扫描包下的所有类，当类上有@Component注解的时候，实例化对象，然后放入Map集合中&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class TestBean {
+    public static void main(String[] args) throws Exception {
+        Map&amp;lt;String, Object&amp;gt; map = new HashMap&amp;lt;String, Object&amp;gt;();
+        //包名
+        String packageName = &quot;com.thrinisty.bean&quot;;
+        //获取路径
+        String packagePath = packageName.replaceAll(&quot;\\.&quot;, &quot;/&quot;);
+        URL url = ClassLoader.getSystemClassLoader().getResource(packagePath);
+        String path = url.getPath();//获取绝对路径
+        File file = new File(path);
+        File[] files = file.listFiles();
+        for (File f : files) {
+            String[] split = f.getName().split(&quot;\\.&quot;);
+            String className = packageName + &quot;.&quot; + split[0];
+            //获取到包下的每个类全路径
+            Class&amp;lt;?&amp;gt; clazz = Class.forName(className);
+            if (clazz.isAnnotationPresent(Component.class)) {
+                //获取注解
+                Component annotation = clazz.getAnnotation(Component.class);
+                String id = annotation.value();
+                Constructor&amp;lt;?&amp;gt; constructor = clazz.getConstructor();
+                Object object = constructor.newInstance();
+                map.put(id, object);
+            }
+        }
+        System.out.println(map.toString());
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;@Component(&quot;userBean&quot;)
+public class User {
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;@Component(&quot;orderBean&quot;)
+public class Other {
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;public class Vip {
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;被注解Component标注的会被反射实例化，并且放入map集合&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;{
+orderBean=com.thrinisty.bean.Other@2e0fa5d3, userBean=com.thrinisty.bean.User@5010be6
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;声明Bean注解&lt;/h2&gt;
+&lt;p&gt;:::tip&lt;/p&gt;
+&lt;p&gt;负责声明Bean的注解，常见的包括四个&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;@Component：组件&lt;/li&gt;
+&lt;li&gt;@Controller：控制器&lt;/li&gt;
+&lt;li&gt;@Service：业务&lt;/li&gt;
+&lt;li&gt;@Repository：仓库&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;:::&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;package org.springframework.stereotype;
+@Target({ElementType.TYPE})
+@Retention(RetentionPolicy.RUNTIME)
+@Documented
+@Indexed
+public @interface Component {
+    String value() default &quot;&quot;;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;后面三个通过@AliasFor起一个别名，其实本实质上是组件，用哪一个都可以&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;package org.springframework.stereotype;
+
+@Target({ElementType.TYPE})
+@Retention(RetentionPolicy.RUNTIME)
+@Documented
+@Component
+public @interface Controller {
+    @AliasFor(
+        annotation = Component.class
+    )
+    String value() default &quot;&quot;;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;为了增强代码的可读性：表示层建议用Controller，业务层建议用Service，数组操作层建议用Repository&lt;/p&gt;
+&lt;h3&gt;使用方式&lt;/h3&gt;
+&lt;p&gt;1.加入aop依赖&lt;/p&gt;
+&lt;p&gt;2.再Spring配置中添加context命名空间，并指定扫描的包&lt;/p&gt;
+&lt;p&gt;3.在Bean类上使用注解&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&amp;gt;
+&amp;lt;beans xmlns=&quot;http://www.springframework.org/schema/beans&quot;
+       xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
+       xmlns:context=&quot;http://www.springframework.org/schema/context&quot;
+       xsi:schemaLocation=&quot;http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+                           http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd&quot;&amp;gt;
+&amp;lt;!--        给Spring指定要扫描那些包--&amp;gt;
+    &amp;lt;context:component-scan base-package=&quot;com.bean&quot;/&amp;gt;
+&amp;lt;/beans&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;注解修饰类&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@Component(&quot;userBean&quot;)
+public class User {
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;如果不给value赋值，默认以类的首字母小写命名（vip）&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@Controller
+public class Vip {
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;测试程序，和之前一样&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class TestBean {
+    @Test
+    public void test() {
+        ApplicationContext context = new ClassPathXmlApplicationContext(&quot;spring.xml&quot;);
+        Vip vip = context.getBean(&quot;vip&quot;, Vip.class);
+        User user = context.getBean(&quot;userBean&quot;, User.class);
+        System.out.println(user.toString() + &quot; &quot; + vip.toString());
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;多包扫描&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;package com.dao;
+
+import org.springframework.stereotype.Component;
+
+@Component
+public class Manager {
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;第一种解决方式：用，隔开即可&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;context:component-scan base-package=&quot;com.bean, com.dao&quot;/&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;第二种解决方式：指定父包&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;context:component-scan base-package=&quot;com&quot;/&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;选择性实例化&lt;/h3&gt;
+&lt;p&gt;假设现在又很多Bean，被四种注解标注，现在需要实例化其中一种注解的Bean，而其余的不参与实例化&lt;/p&gt;
+&lt;h4&gt;第一种解法&lt;/h4&gt;
+&lt;p&gt;利用 use-default-filters=&quot;false 使所有Bean注解失效&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;context:component-scan base-package=&quot;com.bean&quot; use-default-filters=&quot;false&quot;/&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;再使用&amp;lt;context:include-filter type=&quot;annotation&quot; expression=&quot;org.springframework.stereotype.Controller&quot;/&amp;gt;指定注解全路径，使其生效&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;context:component-scan base-package=&quot;com.bean&quot; use-default-filters=&quot;false&quot;&amp;gt;
+    &amp;lt;context:include-filter type=&quot;annotation&quot; expression=&quot;org.springframework.stereotype.Controller&quot;/&amp;gt;
+&amp;lt;/context:component-scan&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;第二种解法&lt;/h4&gt;
+&lt;p&gt;先全部生效，再关闭不需要的注解&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;context:component-scan base-package=&quot;com.bean&quot; use-default-filters=&quot;true&quot;&amp;gt;
+    &amp;lt;context:exclude-filter type=&quot;annotation&quot; expression=&quot;org.springframework.stereotype.Controller&quot;/&amp;gt;
+&amp;lt;/context:component-scan&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;Component Manager
+Component User
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;测试程序&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class TestBean {
+    @Test
+    public void test() {
+        ApplicationContext context = new ClassPathXmlApplicationContext(&quot;spring.xml&quot;);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;Controller Servlet
+Controller Vip
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;注入Bean注解&lt;/h2&gt;
+&lt;p&gt;:::tip&lt;/p&gt;
+&lt;p&gt;负责注入Bean的注解，常见的包括四个&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;@Value：专门用于注入简单类型（可以使用在属性和方法上）&lt;/li&gt;
+&lt;li&gt;@Autowired&lt;/li&gt;
+&lt;li&gt;@Qualifier&lt;/li&gt;
+&lt;li&gt;@Resource&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;:::&lt;/p&gt;
+&lt;h3&gt;Value注解&lt;/h3&gt;
+&lt;p&gt;用于注入简单类型&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@Component
+public class MyDataSource implements DataSource {
+    @Value(&quot;com.mysql,cj.jdbc.Driver&quot;)
+    private String driver;
+    @Value(&quot;jdbc:mysql://localhost:3306/spring6&quot;)
+    private String url;
+    @Value(&quot;root&quot;)
+    private String username;
+    @Value(&quot;123456&quot;)
+    private String password;
+    @Override
+    public String toString() {
+        return &quot;MyDataSource{&quot; +
+                &quot;driver=&apos;&quot; + driver + &apos;\&apos;&apos; +
+                &quot;, url=&apos;&quot; + url + &apos;\&apos;&apos; +
+                &quot;, username=&apos;&quot; + username + &apos;\&apos;&apos; +
+                &quot;, password=&apos;&quot; + password + &apos;\&apos;&apos; +
+                &apos;}&apos;;
+    }
+    ...
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;通过构造方法参数赋值完成注入&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@Component
+public class MyDataSource implements DataSource {
+    private String driver;
+    private String url;
+    private String username;
+    private String password;
+
+    public MyDataSource(@Value(&quot;com.mysql,cj.jdbc.Driver&quot;) String driver,
+                        @Value(&quot;jdbc:mysql://localhost:3306/spring6&quot;)String url,
+                        @Value(&quot;root&quot;)String username,
+                        @Value(&quot;123456&quot;)String password) {
+        this.driver = driver;
+        this.url = url;
+        this.username = username;
+        this.password = password;
+    }
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;测试程序&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@Test
+public void test() {
+    ApplicationContext context = new ClassPathXmlApplicationContext(&quot;spring.xml&quot;);
+    MyDataSource dataSource = context.getBean(&quot;myDataSource&quot;, MyDataSource.class);
+    System.out.println(dataSource);
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;MyDataSource{driver=&apos;com.mysql,cj.jdbc.Driver&apos;, url=&apos;jdbc:mysql://localhost:3306/spring6&apos;, username=&apos;root&apos;, password=&apos;123456&apos;}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;Autowired注解&lt;/h3&gt;
+&lt;p&gt;Autowired注解可以用来注入非简单类型，翻译为自动装配&lt;/p&gt;
+&lt;p&gt;单独使用注解，默认根据类型装配&lt;/p&gt;
 </content:encoded></item><item><title>Spring笔记（手写Spring）</title><link>https://thrinisty.github.io/posts/spring%E7%AC%94%E8%AE%B0%E6%89%8B%E5%86%99spring/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/spring%E7%AC%94%E8%AE%B0%E6%89%8B%E5%86%99spring/</guid><description>简单地手写一个Spring框架</description><pubDate>Fri, 30 May 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;Spring笔记&lt;/h1&gt;
 &lt;h2&gt;回顾反射&lt;/h2&gt;
 &lt;p&gt;写一个类，通过反射执行方法&lt;/p&gt;
@@ -5679,7 +5942,6 @@ protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws Se
 &lt;p&gt;​	之后又用了两天的时间完成JDBC的相关概念学习（SQL注入，连接池）学会了如何使用JDBC操作数据库，配置DBUtils，能够独立对于JDBC结合德鲁伊连接池，阿帕奇的Utils将SQL查询封装为Dao对象便于操作，用了两天的时间对于Redis有了一些初级的了解（数据结构，NoSQL，客户端），之后又花了一天半的时间完成了git版本控制工具的使用，能够结合远程代码托管平台（Github，Gitee），使用命令行或者IDEA集成开发环境，对于自己写的代码进行版本管理&lt;/p&gt;
 &lt;p&gt;​	最后的8天稍微有些懈怠，由于课程安排有些紧凑，实际上满打满算的学习只有大概5天左右，完成了JavaWeb中的一部分学习：一些前端基础（html，CSS，JavaScript，jQuery），Web服务器（Tomcat），以及依赖管理工具Maven的基本使用，我对前端这部分的理解是在实际使用中搞清楚怎么用即可，没有花太多时间去像Java基础部分一样记录较为详细的笔记。&lt;/p&gt;
 &lt;p&gt;​	五一假期打算过完生日后，抽出一天时间过一遍线代考试内容（5.10）另外两天看一下编译原理实验的作业和机器学习的大作业，假期之后再进行JavaWeb中Servlet的学习。&lt;/p&gt;
-</content:encoded></item><item><title>Spring笔记（模板）</title><link>https://thrinisty.github.io/posts/spring%E7%AC%94%E8%AE%B0%E6%A8%A1%E6%9D%BF/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/spring%E7%AC%94%E8%AE%B0%E6%A8%A1%E6%9D%BF/</guid><description>Spring</description><pubDate>Thu, 01 May 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;Spring笔记&lt;/h1&gt;
 </content:encoded></item><item><title>LeetCode刷题（）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E6%A8%A1%E6%9D%BF/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E6%A8%A1%E6%9D%BF/</guid><description>Leet</description><pubDate>Thu, 01 May 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;（题目）&lt;/h1&gt;
 &lt;h2&gt;题目描述&lt;/h2&gt;
 &lt;h2&gt;题解&lt;/h2&gt;
