@@ -9,7 +9,7 @@ category: 'Frame'
 draft: false 
 ---
 
-# Spring笔记
+# 注解式开发
 
 注解的存在是为了简化XML的配置，Spring 6倡导全注解式开发
 
@@ -382,8 +382,348 @@ MyDataSource{driver='com.mysql,cj.jdbc.Driver', url='jdbc:mysql://localhost:3306
 
 
 
-### Autowired注解
+### Autowired、Qualifier注解
 
 Autowired注解可以用来注入非简单类型，翻译为自动装配
 
-单独使用注解，默认根据类型装配
+单独使用Autowired注解，默认根据类型装配
+
+如果需要根据名字进行装配，需要联合Qualifier注解使用
+
+OrderDao接口
+
+```java
+public interface OrderDao {
+    void insert();
+}
+```
+
+OrderDaoImplForMySQL实现类
+
+```java
+@Repository("orderDaoImplForMySQL")
+public class OrderDaoImplForMySQL implements OrderDao {
+    @Override
+    public void insert() {
+        System.out.println("MySQL insert order");
+    }
+}
+```
+
+服务类，拥有实现类对象接口，使用@Autowired自动装配
+
+```java
+@Service("orderService")
+public class OrderService {
+    @Autowired
+    private OrderDao orderDao;
+    public void generate() {
+        orderDao.insert();
+    }
+}
+```
+
+测试程序
+
+```java
+@Test
+public void test() {
+    ApplicationContext context = new ClassPathXmlApplicationContext("spring.xml");
+    OrderService service = context.getBean("orderService", OrderService.class);
+    service.generate();
+}
+```
+
+```
+MySQL insert order
+```
+
+:::tip
+
+如果类只有一个构造方法，且属性和参数能对应上，可以省略@Autowired注解
+
+:::
+
+
+
+这种方式适用于一个接口对应的一个实现类，如果有两个实现类就不能完成自动装配，需要用Qualifier注解，实现按照名字装配
+
+现有另外的一个NoSQL实现类
+
+```java
+@Repository("orderDaoImplForNoSQL")
+public class OrderDaoImplForNoSQL implements OrderDao {
+    @Override
+    public void insert() {
+        System.out.println("NoSQL Insert Order");
+    }
+}
+```
+
+注入的时候利用@Qualifier("orderDaoImplForNoSQL")指定注入的Bean对象
+
+```java
+@Service("orderService")
+public class OrderService {
+    @Autowired
+    @Qualifier("orderDaoImplForNoSQL")
+    private OrderDao orderDao;
+    public void generate() {
+        orderDao.insert();
+    }
+}
+```
+
+
+
+### Resource注解
+
+Resource注解可以完成非简单类型的注入，是Java标准规范的一部分，是标准注解，而Autowired注解是Spring框架自己的
+
+Resource注解默认根据名字进行装配，未指定名字时，使用属性名作为name，找不到会自动启动类型装配
+
+使用：直接指定名字完成按照名字装配
+
+```java
+@Service("orderService")
+public class OrderService {
+    @Resource(name = "orderDaoImplForNoSQL")
+    private OrderDao orderDao;
+    public void generate() {
+        orderDao.insert();
+    }
+}
+```
+
+
+
+## 全注解开发
+
+可以通过一个类代替spring配置文件，以后不需要使用Spring配置文件
+
+```java
+package com.bean3;
+
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+
+@Configuration
+@ComponentScan("com")
+public class SpringConfig {
+}
+```
+
+测试程序
+
+```java
+@Test
+public void testNoXML() {
+    AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(SpringConfig.class);
+    OrderService service = context.getBean("orderService", OrderService.class);
+    service.generate();
+}
+```
+
+
+
+# JdbcTemplate
+
+是Spring提供的一个JDBC模板类，是对JDBC的封装，简化JDBC代码
+
+除此之外，你还可以不使用它，而是用例如MyBatis等ORM框架，我还没有学过MyBatis，先从JdbcTemplate入门使用一下
+
+## 基本使用
+
+jdbc依赖以及mysql驱动
+
+```html
+<!-- Spring JDBC (包含 spring-jdbc 和 spring-tx) -->
+<dependency>
+    <groupId>org.springframework</groupId>
+    <artifactId>spring-jdbc</artifactId>
+    <version>6.0.9</version> <!-- 使用最新稳定版 -->
+</dependency>
+<!-- MySQL Connector/J -->
+<dependency>
+    <groupId>com.mysql</groupId>
+    <artifactId>mysql-connector-j</artifactId>
+    <version>8.0.33</version> <!-- 使用最新稳定版 -->
+</dependency>
+```
+
+实现一个DataSource的实现类，重写getConnection方法，并纳入Spring管理
+
+```java
+public class MyDateSource implements DataSource {
+    private String driver;
+    private String url;
+    private String username;
+    private String password;
+    @Override
+    public Connection getConnection() throws SQLException {
+        try {
+            Class.forName(driver);
+            Connection connection = DriverManager.getConnection(url, username, password);
+            return connection;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+```
+
+Spring配置：配置了一个ds数据源Bean对象，注入各个参数，用内置的jdbcTemplate对象传入ds Bean对象到 dataSource参数
+
+```html
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+    <bean id="ds" class="bean.MyDateSource">
+        <property name="driver" value="com.mysql.cj.jdbc.Driver"/>
+        <property name="url" value="jdbc:mysql://localhost:3306/spring6"/>
+        <property name="username" value="root"/>
+        <property name="password" value="654321"/>
+    </bean>
+
+    <bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
+        <property name="dataSource" ref="ds"/>
+    </bean>
+</beans>
+```
+
+测试程序：增加数据
+
+```java
+@Test
+public void test() {
+    ApplicationContext context = new ClassPathXmlApplicationContext("spring.xml");
+    JdbcTemplate jdbcTemplate = context.getBean("jdbcTemplate", JdbcTemplate.class);
+    String sql = "insert into user (id, name, password) values (?, ?, ?)";
+    int update = jdbcTemplate.update(sql, 3, "Lory", "135788");
+    System.out.println(update);
+}
+```
+
+```
+1
+```
+
+测试程序：修改数据
+
+```java
+@Test
+public void test() {
+    ApplicationContext context = new ClassPathXmlApplicationContext("spring.xml");
+    JdbcTemplate jdbcTemplate = context.getBean("jdbcTemplate", JdbcTemplate.class);
+    String sql = "update user set name=? where id=?";
+    int update = jdbcTemplate.update(sql, "Joker", 1);
+    System.out.println(update);
+}
+```
+
+```
+1
+```
+
+测试程序：删除数据
+
+```java
+@Test
+public void test() {
+    ApplicationContext context = new ClassPathXmlApplicationContext("spring.xml");
+    JdbcTemplate jdbcTemplate = context.getBean("jdbcTemplate", JdbcTemplate.class);
+    String sql = "delete from user where id=?";
+    int update = jdbcTemplate.update(sql, 3);
+    System.out.println(update);
+}
+```
+
+```
+1
+```
+
+测试程序：查询单个数据
+
+```java
+@Test
+public void test() {
+    ApplicationContext context = new ClassPathXmlApplicationContext("spring.xml");
+    JdbcTemplate jdbcTemplate = context.getBean("jdbcTemplate", JdbcTemplate.class);
+    String sql = "select * from user where id = ? ";
+    User user = jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper<>(User.class), 1);
+    System.out.println(user);
+}
+```
+
+```
+User{id=1, name='Joker', password='123456'}
+```
+
+测试程序：多个查询结果，返回List集合
+
+```java
+@Test
+public void test() {
+    ApplicationContext context = new ClassPathXmlApplicationContext("spring.xml");
+    JdbcTemplate jdbcTemplate = context.getBean("jdbcTemplate", JdbcTemplate.class);
+    String sql = "select * from user";
+    List<User> list = jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(User.class));
+    for(User user : list){
+        System.out.println(user);
+    }
+}
+```
+
+```
+User{id=1, name='Joker', password='123456'}
+User{id=2, name='李四', password='654321'}
+```
+
+测试程序：查询单个值
+
+```java
+@Test
+public void test() {
+    ApplicationContext context = new ClassPathXmlApplicationContext("spring.xml");
+    JdbcTemplate jdbcTemplate = context.getBean("jdbcTemplate", JdbcTemplate.class);
+    String sql = "select count(1) from user";
+    Integer integer = jdbcTemplate.queryForObject(sql, int.class);
+    System.out.println(integer);
+}
+```
+
+
+
+## 整合Druid连接池
+
+引入依赖
+
+```html
+<dependency>
+    <groupId>com.alibaba</groupId>
+    <artifactId>druid</artifactId>
+    <version>1.2.18</version> <!-- 请使用最新稳定版 -->
+</dependency>
+```
+
+Spring配置
+
+```html
+<bean id="ds" class="com.alibaba.druid.pool.DruidDataSource">
+    <property name="driverClassName" value="com.mysql.cj.jdbc.Driver"/>
+    <property name="url" value="jdbc:mysql://localhost:3306/spring6"/>
+    <property name="username" value="root"/>
+    <property name="password" value="654321"/>
+</bean>
+
+<bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
+    <property name="dataSource" ref="ds"/>
+</bean>
+```
+
+使用结果：看到输出了一些日志信息
+
+```
+21:28:46.235 [main] INFO com.alibaba.druid.pool.DruidDataSource -- {dataSource-1} inited
+2
+```
+
