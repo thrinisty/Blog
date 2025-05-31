@@ -1,4 +1,138 @@
-<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Thrinisty&apos;s Blog</title><description>New Blog</description><link>https://thrinisty.github.io/</link><language>zh_CN</language><item><title>Spring笔记（手写Spring）</title><link>https://thrinisty.github.io/posts/spring%E7%AC%94%E8%AE%B0%E6%89%8B%E5%86%99spring/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/spring%E7%AC%94%E8%AE%B0%E6%89%8B%E5%86%99spring/</guid><description>简单地手写一个Spring框架</description><pubDate>Fri, 30 May 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;Spring笔记&lt;/h1&gt;
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Thrinisty&apos;s Blog</title><description>New Blog</description><link>https://thrinisty.github.io/</link><language>zh_CN</language><item><title>自学第三月份总结</title><link>https://thrinisty.github.io/posts/%E8%87%AA%E5%AD%A6%E7%AC%AC%E4%B8%89%E6%9C%88%E4%BB%BD%E6%80%BB%E7%BB%93/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/%E8%87%AA%E5%AD%A6%E7%AC%AC%E4%B8%89%E6%9C%88%E4%BB%BD%E6%80%BB%E7%BB%93/</guid><description>结束Java</description><pubDate>Sun, 01 Jun 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;自学第三月份总结&lt;/h1&gt;
+&lt;p&gt;第三个月有很多的考试内容需要复习，但是好在自己还是抽空出来完成了一些学习，虽然和预期的进度差了一部分，但好在把持续学习的习惯保持了下来，以下是这个月完成的一些内容（虽然内容部分和前两个月的量没法比）&lt;/p&gt;
+&lt;p&gt;劳动节过了个生日，和同学去外边玩了下，好好放松了几天，得劳逸结合吧，人太久都是紧绷的状态是会出问题的。&lt;/p&gt;
+&lt;h2&gt;JavaWeb收尾&lt;/h2&gt;
+&lt;p&gt;在第三个月份6号到15号的十天，完成了JavaWeb部分的学习，了解了Web项目设计用到的MVC层次结构，学会了JSP页面的设计，各种嵌入Java代码的方式，几个内置对象，但没有深入，因为貌似JSP现在的使用面不是很广，一般都是前后端分离，用不到JSP了，除此以外学了下EL表达式，和JSTL标签库，大概可以看懂怎么去用&lt;/p&gt;
+&lt;p&gt;最重要的三大件（Filter，Servlet，Listener）有好好学，当为后续的Spring MVC打基础，末尾还看了下ajax的一些技术，和i18n国际化的使用，还有json的数据格式，以及转化方式，json的部分还是很重要的，Java中也用得到&lt;/p&gt;
+&lt;h2&gt;Spring部分内容&lt;/h2&gt;
+&lt;p&gt;从15号开始就有考试陆续开始了，得去看看知识点之类，然后做做题。Spring的学习满打满算也就5天左右，在学习中了解了IoC控制反转的思想，通过运用Spring的配置文件创建对象，完成各种类型的依赖注入，学会了一下命名空间的使用，自己实现了下工厂设计模式，会通过工厂Bean创建Bean对象的方法&lt;/p&gt;
+&lt;p&gt;看了下底层源码，了解了Spring实例化Bean对象的方式，Bean对象的十步声明周期，Bean的循环依赖的解决方式（三级缓存，提前曝光），最后按照一些教程的示例自己手写了一个Spring的简单框架（使用dom4j + 反射 + map缓存），模拟了一下框架通过xml解析后通过反射创建实例，并再次赋值，最后提供getBean方法获取对象的流程，大大加深了对于Spring框架的理解&lt;/p&gt;
+&lt;h2&gt;LeetCode刷题&lt;/h2&gt;
+&lt;p&gt;在最后的十天左右，刷了刷LeetCode的Top100题目（每天2-3道左右），恢复了一下算法的手感，也补漏了一些都快要被遗忘的知识，线性规划，递归，二叉树的各式各样的遍历，链表结构，数组，位运算，一些内置函数等等。这一次我用的是Java语言刷的算法，作为高级语言确实相比于C语言来说方便了很多，各种List，Queue，Map集合对于题解来说是非常便捷的，刷题的效率也更高了，刷了十天，积累了也有31道这个样子。&lt;/p&gt;
+&lt;p&gt;总之，刷LeetCode题还是很锻炼思维的，最近感觉脑子也转得快了点，也了解了前缀树的实现，拓广了下知识面。还因为是Java语言刷题，也顺便复习了下Java的基本语法。&lt;/p&gt;
+&lt;h2&gt;总结&lt;/h2&gt;
+&lt;p&gt;这个月忙了一些，但是也算是尽自己的努力多学了一些内容，下个月17号最后一科考试结束后，准备出发去南京实习，希望能在企业中学习到更多的知识，在此之前也尽量多学习一部分通用的知识点，也好为实习做准备&lt;/p&gt;
+&lt;p&gt;而对于目前而言有以下展望：因为6月份还是有三科考试的，不可能把所有的注意力放在Spring的学习上，准备安排到20号前完成Spring 6的学习 + MyBatis的学习，剩下的Spring MVC 和 SpringBoot 2需要到公司之后再进行学习了。&lt;/p&gt;
+</content:encoded></item><item><title>LeetCode刷题（回文子串，合并有序列表）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E5%9B%9E%E6%96%87%E5%AD%90%E4%B8%B2%E5%90%88%E5%B9%B6%E6%9C%89%E5%BA%8F%E5%88%97%E8%A1%A8/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E5%9B%9E%E6%96%87%E5%AD%90%E4%B8%B2%E5%90%88%E5%B9%B6%E6%9C%89%E5%BA%8F%E5%88%97%E8%A1%A8/</guid><description>回文子串，合并两个有序列表</description><pubDate>Sat, 31 May 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;回文子串&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;给你一个字符串 &lt;code&gt;s&lt;/code&gt; ，请你统计并返回这个字符串中 &lt;strong&gt;回文子串&lt;/strong&gt; 的数目。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;回文字符串&lt;/strong&gt; 是正着读和倒过来读一样的字符串。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;子字符串&lt;/strong&gt; 是字符串中的由连续字符组成的一个序列。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：s = &quot;abc&quot;
+输出：3
+解释：三个回文子串: &quot;a&quot;, &quot;b&quot;, &quot;c&quot;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：s = &quot;aaa&quot;
+输出：6
+解释：6个回文子串: &quot;a&quot;, &quot;a&quot;, &quot;a&quot;, &quot;aa&quot;, &quot;aa&quot;, &quot;aaa&quot;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;动态规划：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;状态转移方程：当 s[i] == s[j] &amp;amp;&amp;amp; (j - i &amp;lt; 2 || dp[i + 1][j - 1]) 时，dp[i][j]=true，否则为false
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;判断两个字符间的内容是否为回文串：先看左右两个字符是否相同，不同则不为回文，相同则分为三种情况&lt;/p&gt;
+&lt;p&gt;1.字符串长为1，即 j - i == 0，单个字符也算回文&lt;/p&gt;
+&lt;p&gt;2.字符串长为2，即 j - i == 1，xx算回文串，且中间没有内容&lt;/p&gt;
+&lt;p&gt;3.其余情况，中间内容为回文串，两边字符相同，也是回文子串&lt;/p&gt;
+&lt;p&gt;我在第一次写的时候是这样写的：自认为可以完全遍历所有子串，但是遍历的方式出了点问题，顺序是 &lt;code&gt;i&lt;/code&gt; 从 &lt;code&gt;0&lt;/code&gt; 到 &lt;code&gt;n-1&lt;/code&gt;，&lt;code&gt;j&lt;/code&gt; 从 &lt;code&gt;i&lt;/code&gt; 到 &lt;code&gt;n-1&lt;/code&gt;，这意味着在计算 &lt;code&gt;dp[i][j]&lt;/code&gt; 时，&lt;code&gt;dp[i + 1][j - 1]&lt;/code&gt; 可能还没有被计算。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public int countSubstrings(String s) {
+        int n = s.length();
+        boolean[][] dp = new boolean[n][n];
+        int result = 0;
+        for(int i = 0; i &amp;lt; n; i++) {
+            for(int j = i; j &amp;lt; n; j++) {
+                if(s.charAt(i) == s.charAt(j) &amp;amp;&amp;amp; (j - i == 0 || j - i == 1 || dp[i + 1][j - 1])) {
+                    dp[i][j] = true;
+                    result++;
+                } else {
+                    dp[i][j] = false;
+                }
+            }
+        }
+        return result;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;正确解法：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public int countSubstrings(String s) {
+        int n = s.length();
+        boolean[][] dp = new boolean[n][n];
+        int result = 0;
+        for(int j = 0; j &amp;lt; n; j++) {
+            for(int i = 0; i &amp;lt;= j; i++) {
+                if(s.charAt(i) == s.charAt(j) &amp;amp;&amp;amp; (j - i == 0 || j - i == 1 || dp[i + 1][j - 1])) {
+                    dp[i][j] = true;
+                    result++;
+                } 
+            }
+        }
+        return result;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;或者我们使用更加便于理解的方式（我更倾向于这种方式）&lt;/p&gt;
+&lt;p&gt;以下的解法类似于之前做过的戳气球，按照长度递增，这样就可以保证，长度长的依赖的长度小的回文被优先判断出来。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public int countSubstrings(String s) {
+        int n = s.length();
+        boolean[][] dp = new boolean[n][n];
+        int result = 0;
+        for(int len = 1; len &amp;lt;= n; len++) {
+            for(int i = 0; i &amp;lt;= n - len; i++) {
+                int j = i + len - 1;
+                if(s.charAt(i) == s.charAt(j) &amp;amp;&amp;amp; (j - i == 0 || j - i == 1 || dp[i + 1][j - 1])) {
+                    dp[i][j] = true;
+                    result++;
+                } 
+            }
+        }
+        return result;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1&gt;合并有序列表&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;将两个升序链表合并为一个新的 &lt;strong&gt;升序&lt;/strong&gt; 链表并返回。新链表是通过拼接给定的两个链表的所有节点组成的。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/171.jpg&quot; alt=&quot;171&quot; /&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：l1 = [1,2,4], l2 = [1,3,4]
+输出：[1,1,2,3,4,4]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：l1 = [], l2 = []
+输出：[]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 3：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：l1 = [], l2 = [0]
+输出：[0]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;很久没有做链表的题了，有点乱不清楚指针，看了答案思路就清晰多了&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public ListNode mergeTwoLists(ListNode list1, ListNode list2) {
+        ListNode result = new ListNode();
+        ListNode p = result;
+        while(list1 != null &amp;amp;&amp;amp; list2 != null) {
+            if(list1.val &amp;lt;= list2.val) {
+                p.next = list1;
+                list1 = list1.next;
+                p = p.next;
+            } else{
+                p.next = list2;
+                list2 = list2.next;
+                p = p.next;
+            }
+        }
+        p.next = list1 == null ? list2 : list1; 
+        return result.next;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+</content:encoded></item><item><title>Spring笔记（手写Spring）</title><link>https://thrinisty.github.io/posts/spring%E7%AC%94%E8%AE%B0%E6%89%8B%E5%86%99spring/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/spring%E7%AC%94%E8%AE%B0%E6%89%8B%E5%86%99spring/</guid><description>简单地手写一个Spring框架</description><pubDate>Fri, 30 May 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;Spring笔记&lt;/h1&gt;
 &lt;h2&gt;回顾反射&lt;/h2&gt;
 &lt;p&gt;写一个类，通过反射执行方法&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;package com.thrinisty.bean;
