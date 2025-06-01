@@ -310,9 +310,9 @@ Controller Vip
 负责注入Bean的注解，常见的包括四个
 
 - @Value：专门用于注入简单类型（可以使用在属性和方法上）
-- @Autowired
-- @Qualifier
-- @Resource
+- @Autowired： 通过类型自动装配
+- @Qualifier：配合Autowired使用，在接口有不同实现类时候指定名字
+- @Resource： jdk拓展，也是最推荐使用的复杂类型注入的方式
 
 :::
 
