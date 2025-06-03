@@ -46,3 +46,102 @@ A对象和B对象无法直接交互的时候，可以使用代理模式解决
 3. 目标对象和代理对象的公共接口（前两者需要具有相同的行为）
 
 :::
+
+
+
+## 静态代理实现
+
+有一个接口以及接口方法的实现类
+
+```java
+public interface OrderService {
+    void generate();
+    void modify();
+    void detail();
+}
+```
+
+```java
+public class OrderServiceImpl implements OrderService {
+    @Override
+    public void generate() {
+        System.out.println("订单生成");
+    }
+
+    @Override
+    public void modify() {
+        System.out.println("订单修改");
+    }
+
+    @Override
+    public void detail() {
+        System.out.println("订单详情");
+    }
+}
+```
+
+我们现在需要增添功能：对每个业务接口中业务方法的解决耗时，可以在每个业务的前后取时间相减，但是违背了OCP原则，且没有复用代码
+
+
+
+我们使用代理模式处理，写一个OrderService的代理对象
+
+```java
+public class OrderServiceProxy implements OrderService{
+    //写入公共接口，耦合度低
+    private OrderService orderService;
+
+    public OrderServiceProxy(OrderService orderService) {
+        this.orderService = orderService;
+    }
+
+    @Override
+    public void generate() {
+        long begin = System.currentTimeMillis();
+        orderService.generate();
+        long end = System.currentTimeMillis();
+        System.out.println("Generate Order Time: " + (end - begin));
+    }
+
+    @Override
+    public void modify() {
+        long begin = System.currentTimeMillis();
+        orderService.modify();
+        long end = System.currentTimeMillis();
+        System.out.println("Modify Order Time: " + (end - begin));
+    }
+
+    @Override
+    public void detail() {
+        long begin = System.currentTimeMillis();
+        orderService.detail();
+        long end = System.currentTimeMillis();
+        System.out.println("Detail Order Time: " + (end - begin));
+    }
+}
+```
+
+在主函数中调用代理对象的方法即可完成功能的增强
+
+```java
+public class Main {
+    public static void main(String[] args) {
+        OrderService orderService = new OrderServiceImpl();
+        OrderService proxy = new OrderServiceProxy(orderService);
+        proxy.generate();
+        proxy.modify();
+        proxy.detail();
+    }
+}
+```
+
+```
+订单生成
+Generate Order Time: 0
+订单修改
+Modify Order Time: 0
+订单详情
+Detail Order Time: 0
+```
+
+虽然解决了OCP的开闭问题，但是每个接口需要实现一个代理类，会导致类的数量急剧增多，我们在实际会使用到动态代理
