@@ -13,7 +13,7 @@
 &lt;li&gt;使得开发者更加专注于业务逻辑&lt;/li&gt;
 &lt;/ol&gt;
 &lt;p&gt;:::&lt;/p&gt;
-&lt;h2&gt;AOP七大术语&lt;/h2&gt;
+&lt;h3&gt;AOP七大术语&lt;/h3&gt;
 &lt;p&gt;连接点 Joinpoint：在程序的整个执行流程中，可以织入切面的位置，方法执行前后，异常抛出之后等位置&lt;/p&gt;
 &lt;p&gt;切点 Pointcut：在程序执行流程中，真正织入切面的方法（一个切点对应多个连接点）&lt;/p&gt;
 &lt;p&gt;通知 Advice：通知又称为增强，就是具体你要织入的代码，包括了以下的五种通知：前置通知，后置通知，环绕通知，异常通知，最终通知&lt;/p&gt;
@@ -43,13 +43,13 @@
 &lt;pre&gt;&lt;code&gt;execution(* *(..))
 &lt;/code&gt;&lt;/pre&gt;
 &lt;h2&gt;Spring AOP&lt;/h2&gt;
-&lt;h4&gt;AOP的实现&lt;/h4&gt;
+&lt;h3&gt;AOP的实现&lt;/h3&gt;
 &lt;p&gt;包括三种方式：&lt;/p&gt;
 &lt;p&gt;1.Spring框架结合AspectJ框架实现的AOP，基于注解方式&lt;/p&gt;
 &lt;p&gt;2.Spring框架结合AspectJ框架实现的AOP，基于XML方式&lt;/p&gt;
 &lt;p&gt;3.Spring框架自己实现的AOP，基于XML配置方式&lt;/p&gt;
 &lt;p&gt;在实际开发中，都是通过Spring + AspectJ实现AOP，重点掌握注解方式&lt;/p&gt;
-&lt;h4&gt;使用方式&lt;/h4&gt;
+&lt;h3&gt;使用方式&lt;/h3&gt;
 &lt;p&gt;引入context依赖以及spring-aspects依赖&lt;/p&gt;
 &lt;p&gt;context默认有了，运用Maven添加spring-aspects依赖&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;&amp;lt;!-- Spring Boot Starter AOP (包含 Spring AOP 核心功能) --&amp;gt;
@@ -134,6 +134,246 @@ public void test() {
 系统登录
 &lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;在调用方法之前，调用了前置通知，完成了织入&lt;/p&gt;
+&lt;h3&gt;通知类型&lt;/h3&gt;
+&lt;p&gt;是具体你要织入的代码，包括了以下的五种通知：前置通知（Before），后置通知（AfterReturning），环绕通知（Around），异常通知（AfterThrowing），最终通知（After）&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@Component(&quot;logAspect&quot;)
+@Aspect
+public class LogAspect {
+    //切面 = 通知 + 切点
+    @Before(&quot;execution(* com.thrinisty.service.OrderService.generate(..))&quot;)
+    public void beforeAdvice() {
+        System.out.println(&quot;前置通知&quot;);
+    }
+
+    @AfterReturning(&quot;execution(* com.thrinisty.service.OrderService.generate(..))&quot;)
+    public void afterReturning() {
+        System.out.println(&quot;后置通知&quot;);
+    }
+
+    @Around(&quot;execution(* com.thrinisty.service.OrderService.generate(..))&quot;)
+    public void aroundAdvice(ProceedingJoinPoint joinPoint) throws Throwable {
+        System.out.println(&quot;前环绕&quot;);
+        joinPoint.proceed();//执行目标
+        System.out.println(&quot;后环绕&quot;);
+    }
+
+    @After(&quot;execution(* com.thrinisty.service.OrderService.generate(..))&quot;)
+    public void finalAdvice() {
+        System.out.println(&quot;最终通知&quot;);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;执行顺序&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;前环绕
+前置通知
+生成订单
+后置通知
+最终通知
+后环绕
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;我们在generate方法中抛出异常&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@Service
+public class OrderService {
+    public void generate() {
+        System.out.println(&quot;生成订单&quot;);
+        throw new RuntimeException();
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;@AfterThrowing(&quot;execution(* com.thrinisty.service.OrderService.generate(..))&quot;)
+public void afterThrowing() {
+    System.out.println(&quot;异常通知&quot;);
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;前环绕
+前置通知
+生成订单
+异常通知
+最终通知
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;后环绕和后置通知执行不到，在异常发生时异常通知，最终通知也正常&lt;/p&gt;
+&lt;p&gt;对于两个切面切入相同的的切点，可以通过@Order注解标注执行顺序，数字越小，优先级越高&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@Aspect
+@Component
+@Order(0)//原先的设置为1
+public class SecurityAspect {
+    @Before(&quot;execution(* com.thrinisty.service.OrderService.generate(..))&quot;)
+    public void beforeAdvice() {
+        System.out.println(&quot;前置通知：安全&quot;);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;前置通知：安全
+前环绕
+前置通知
+生成订单
+后置通知
+最终通知
+后环绕
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;通用切点&lt;/h3&gt;
+&lt;p&gt;使用Pointcut注解可以复用一个切点&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@Component(&quot;logAspect&quot;)
+@Aspect
+@Order(0)
+public class LogAspect {
+
+    @Pointcut(&quot;execution(* com.thrinisty.service.OrderService.generate(..))&quot;)
+    public void universe() {
+
+    }
+
+    //切面 = 通知 + 切点
+    @Before(&quot;universe()&quot;)
+    public void beforeAdvice() {
+        System.out.println(&quot;前置通知&quot;);
+    }
+......
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;跨类也可以使用&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@Aspect
+@Component
+@Order(0)
+public class SecurityAspect {
+    @Before(&quot;com.thrinisty.service.LogAspect.universe()&quot;)
+    public void beforeAdvice() {
+        System.out.println(&quot;前置通知：安全&quot;);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;连接点&lt;/h3&gt;
+&lt;p&gt;之前环绕通知使用过连接点 ProceedingJoinPoint joinPoint，作为参数传入&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@Around(&quot;execution(* com.thrinisty.service.OrderService.generate(..))&quot;)
+public void aroundAdvice(ProceedingJoinPoint joinPoint) throws Throwable {
+    System.out.println(&quot;前环绕&quot;);
+    joinPoint.proceed();//执行目标
+    System.out.println(&quot;后环绕&quot;);
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;在其他的通知也可以传入，joinPoint有很多方法可供调用&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@Before(&quot;universe()&quot;)
+public void beforeAdvice(JoinPoint joinPoint) {
+    System.out.println(&quot;前置通知&quot;);
+    Signature signature = joinPoint.getSignature();//得到目标方法签名
+    System.out.println(signature);
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;前置通知
+void com.thrinisty.service.OrderService.generate()
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;全注解开发&lt;/h3&gt;
+&lt;p&gt;流行的开发方式，全注解开发，不使用注解&lt;/p&gt;
+&lt;p&gt;创建一个Config类对象，使用@Configuration标注，指定扫描包，使用代理&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@Configuration
+@ComponentScan({&quot;com.thrinisty.service&quot;})//扫描包
+@EnableAspectJAutoProxy(proxyTargetClass = true)//启用代理，并使用CGLIB代理
+public class Spring6Config {
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;测试文件，指定Config类对象&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@Test
+public void test2() {
+    ApplicationContext context = new AnnotationConfigApplicationContext(Spring6Config.class);
+    OrderService orderService = (OrderService) context.getBean(&quot;orderService&quot;);
+    orderService.generate();
+}
+&lt;/code&gt;&lt;/pre&gt;
+</content:encoded></item><item><title>LeetCode刷题（买股票，前k个高频元素）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E4%B9%B0%E8%82%A1%E7%A5%A8%E5%89%8Dk%E4%B8%AA%E9%AB%98%E9%A2%91%E5%85%83%E7%B4%A0/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E4%B9%B0%E8%82%A1%E7%A5%A8%E5%89%8Dk%E4%B8%AA%E9%AB%98%E9%A2%91%E5%85%83%E7%B4%A0/</guid><description>买股票含冷冻期，前k个高频元素</description><pubDate>Wed, 04 Jun 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;买股票&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;给定一个整数数组&lt;code&gt;prices&lt;/code&gt;，其中第 &lt;code&gt;prices[i]&lt;/code&gt; 表示第 &lt;code&gt;*i*&lt;/code&gt; 天的股票价格 。&lt;/p&gt;
+&lt;p&gt;设计一个算法计算出最大利润。在满足以下约束条件下，你可以尽可能地完成更多的交易（多次买卖一支股票）:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;卖出股票后，你无法在第二天买入股票 (即冷冻期为 1 天)。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;**注意：**你不能同时参与多笔交易（你必须在再次购买前出售掉之前的股票）。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 1:&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入: prices = [1,2,3,0,2]
+输出: 3 
+解释: 对应的交易状态为: [买入, 卖出, 冷冻期, 买入, 卖出]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2:&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入: prices = [1]
+输出: 0
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;用两个数组存储分别存储持有股票时的最大资产，以及售出股票的最大资产，在第一天将buy设置为-prices[0]&lt;/p&gt;
+&lt;p&gt;每天迭代数组的对应元素的时候，对于持有的数组元素取前一天的（持有股票资产）和（非持有股票买入当天股票后的资产）中的最大值，而对于售出股票的数组而言取（前一天非持有股票的资产）和（以往持有股票在当天售出）的最大值&lt;/p&gt;
+&lt;p&gt;:::tip&lt;/p&gt;
+&lt;p&gt;注意在买入股票的时候要求前一天不卖出，这一步的处理是迭代持有股票的数组的时候，用i-2处的非持有元素迭代（注意数组越界的处理，在i&amp;gt;=2的时候取0）&lt;/p&gt;
+&lt;p&gt;:::&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public int maxProfit(int[] prices) {
+        int n = prices.length;
+        int[] buy = new int[n];
+        int[] sale = new int[n];
+        buy[0] = -prices[0];
+        sale[0] = 0;
+        for(int i = 1; i &amp;lt; n; i++) {
+            buy[i] = Math.max(buy[i - 1], (i &amp;gt;= 2 ? sale[i - 2] : 0) - prices[i]);
+            sale[i] = Math.max(sale[i - 1], buy[i - 1] + prices[i]);
+        }
+        return sale[n - 1];
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1&gt;前k个高频元素&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;给你一个整数数组 &lt;code&gt;nums&lt;/code&gt; 和一个整数 &lt;code&gt;k&lt;/code&gt; ，请你返回其中出现频率前 &lt;code&gt;k&lt;/code&gt; 高的元素。你可以按 &lt;strong&gt;任意顺序&lt;/strong&gt; 返回答案。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 1:&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入: nums = [1,1,1,2,2,3], k = 2
+输出: [1,2]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2:&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入: nums = [1], k = 1
+输出: [1]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;提示：&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;1 &amp;lt;= nums.length &amp;lt;= 105&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;k&lt;/code&gt; 的取值范围是 &lt;code&gt;[1, 数组中不相同的元素的个数]&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;题目数据保证答案唯一，换句话说，数组中前 &lt;code&gt;k&lt;/code&gt; 个高频元素的集合是唯一的&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;这一题我按照哈希桶的方式自己用数组的形式，将放入哈希表中的数字-出现次数，按照出现的次数作为下标放入了一个数组中&lt;/p&gt;
+&lt;p&gt;本地测评没有问题，但是后续验证有两个数字出现频率相同的情况下，只会有一个数字放入到最后的结果中，应该是相同的频率下，后放入的数字会覆盖掉之前放入的数字，更改为List集合的数组后成功通过&lt;/p&gt;
+&lt;p&gt;在处理List集合的时候从后向前处理，当List集合为空表示没有数字落在对应的频率中，continue继续，到有元素的List时迭代的将其中的元素放入结果集中&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public int[] topKFrequent(int[] nums, int k) {
+        int[] result = new int[k];
+        Map&amp;lt;Integer, Integer&amp;gt; map = new HashMap&amp;lt;&amp;gt;();
+        for(int num : nums) {
+            int i = map.getOrDefault(num, 0);
+            map.put(num, i + 1);
+        }
+
+        List&amp;lt;Integer&amp;gt;[] list = new List[nums.length + 1];
+        Set&amp;lt;Integer&amp;gt; set = map.keySet();
+        for(int num : set) {
+            int i = map.get(num);
+            if(list[i] == null) {
+                list[i] = new ArrayList&amp;lt;Integer&amp;gt;();
+            }
+            list[i].add(num);
+        }
+
+        int len = 0;
+        for(int i = list.length - 1; i &amp;gt;= 0; i--) {
+            if(list[i] == null) {
+                continue;
+            }
+            for(int num : list[i]) {
+                result[len] = num;
+                len++;
+                if(len == k) {
+                    return result;
+                }
+            }
+        }
+        return result;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
 </content:encoded></item><item><title>LeetCode刷题（消失的数字，接雨水）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E6%B6%88%E5%A4%B1%E7%9A%84%E6%95%B0%E5%AD%97%E6%8E%A5%E9%9B%A8%E6%B0%B4/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E6%B6%88%E5%A4%B1%E7%9A%84%E6%95%B0%E5%AD%97%E6%8E%A5%E9%9B%A8%E6%B0%B4/</guid><description>消失的数字，接雨水</description><pubDate>Tue, 03 Jun 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;消失的数字&lt;/h1&gt;
 &lt;h2&gt;题目描述&lt;/h2&gt;
 &lt;p&gt;给你一个含 &lt;code&gt;n&lt;/code&gt; 个整数的数组 &lt;code&gt;nums&lt;/code&gt; ，其中 &lt;code&gt;nums[i]&lt;/code&gt; 在区间 &lt;code&gt;[1, n]&lt;/code&gt; 内。请你找出所有在 &lt;code&gt;[1, n]&lt;/code&gt; 范围内但没有出现在 &lt;code&gt;nums&lt;/code&gt; 中的数字，并以数组的形式返回结果。&lt;/p&gt;

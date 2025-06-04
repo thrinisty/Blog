@@ -35,7 +35,7 @@ AOP三大优点
 
 
 
-## AOP七大术语
+### AOP七大术语
 
 连接点 Joinpoint：在程序的整个执行流程中，可以织入切面的位置，方法执行前后，异常抛出之后等位置
 
@@ -101,7 +101,7 @@ execution(* *(..))
 
 ## Spring AOP
 
-#### AOP的实现
+### AOP的实现
 
 包括三种方式：
 
@@ -115,7 +115,7 @@ execution(* *(..))
 
 
 
-#### 使用方式
+### 使用方式
 
 引入context依赖以及spring-aspects依赖
 
@@ -226,3 +226,204 @@ public void test() {
 ```
 
 在调用方法之前，调用了前置通知，完成了织入
+
+
+
+### 通知类型
+
+是具体你要织入的代码，包括了以下的五种通知：前置通知（Before），后置通知（AfterReturning），环绕通知（Around），异常通知（AfterThrowing），最终通知（After）
+
+```java
+@Component("logAspect")
+@Aspect
+public class LogAspect {
+    //切面 = 通知 + 切点
+    @Before("execution(* com.thrinisty.service.OrderService.generate(..))")
+    public void beforeAdvice() {
+        System.out.println("前置通知");
+    }
+
+    @AfterReturning("execution(* com.thrinisty.service.OrderService.generate(..))")
+    public void afterReturning() {
+        System.out.println("后置通知");
+    }
+
+    @Around("execution(* com.thrinisty.service.OrderService.generate(..))")
+    public void aroundAdvice(ProceedingJoinPoint joinPoint) throws Throwable {
+        System.out.println("前环绕");
+        joinPoint.proceed();//执行目标
+        System.out.println("后环绕");
+    }
+
+    @After("execution(* com.thrinisty.service.OrderService.generate(..))")
+    public void finalAdvice() {
+        System.out.println("最终通知");
+    }
+}
+```
+
+执行顺序
+
+```
+前环绕
+前置通知
+生成订单
+后置通知
+最终通知
+后环绕
+```
+
+
+
+我们在generate方法中抛出异常
+
+```java
+@Service
+public class OrderService {
+    public void generate() {
+        System.out.println("生成订单");
+        throw new RuntimeException();
+    }
+}
+```
+
+```java
+@AfterThrowing("execution(* com.thrinisty.service.OrderService.generate(..))")
+public void afterThrowing() {
+    System.out.println("异常通知");
+}
+```
+
+```
+前环绕
+前置通知
+生成订单
+异常通知
+最终通知
+```
+
+后环绕和后置通知执行不到，在异常发生时异常通知，最终通知也正常
+
+
+
+对于两个切面切入相同的的切点，可以通过@Order注解标注执行顺序，数字越小，优先级越高
+
+```java
+@Aspect
+@Component
+@Order(0)//原先的设置为1
+public class SecurityAspect {
+    @Before("execution(* com.thrinisty.service.OrderService.generate(..))")
+    public void beforeAdvice() {
+        System.out.println("前置通知：安全");
+    }
+}
+```
+
+```
+前置通知：安全
+前环绕
+前置通知
+生成订单
+后置通知
+最终通知
+后环绕
+```
+
+
+
+### 通用切点
+
+使用Pointcut注解可以复用一个切点
+
+```java
+@Component("logAspect")
+@Aspect
+@Order(0)
+public class LogAspect {
+
+    @Pointcut("execution(* com.thrinisty.service.OrderService.generate(..))")
+    public void universe() {
+
+    }
+
+    //切面 = 通知 + 切点
+    @Before("universe()")
+    public void beforeAdvice() {
+        System.out.println("前置通知");
+    }
+......
+}
+```
+
+跨类也可以使用
+
+```java
+@Aspect
+@Component
+@Order(0)
+public class SecurityAspect {
+    @Before("com.thrinisty.service.LogAspect.universe()")
+    public void beforeAdvice() {
+        System.out.println("前置通知：安全");
+    }
+}
+```
+
+
+
+### 连接点
+
+之前环绕通知使用过连接点 ProceedingJoinPoint joinPoint，作为参数传入
+
+```java
+@Around("execution(* com.thrinisty.service.OrderService.generate(..))")
+public void aroundAdvice(ProceedingJoinPoint joinPoint) throws Throwable {
+    System.out.println("前环绕");
+    joinPoint.proceed();//执行目标
+    System.out.println("后环绕");
+}
+```
+
+在其他的通知也可以传入，joinPoint有很多方法可供调用
+
+```java
+@Before("universe()")
+public void beforeAdvice(JoinPoint joinPoint) {
+    System.out.println("前置通知");
+    Signature signature = joinPoint.getSignature();//得到目标方法签名
+    System.out.println(signature);
+}
+```
+
+```
+前置通知
+void com.thrinisty.service.OrderService.generate()
+```
+
+
+
+### 全注解开发
+
+流行的开发方式，全注解开发，不使用注解
+
+创建一个Config类对象，使用@Configuration标注，指定扫描包，使用代理
+
+```java
+@Configuration
+@ComponentScan({"com.thrinisty.service"})//扫描包
+@EnableAspectJAutoProxy(proxyTargetClass = true)//启用代理，并使用CGLIB代理
+public class Spring6Config {
+}
+```
+
+测试文件，指定Config类对象
+
+```java
+@Test
+public void test2() {
+    ApplicationContext context = new AnnotationConfigApplicationContext(Spring6Config.class);
+    OrderService orderService = (OrderService) context.getBean("orderService");
+    orderService.generate();
+}
+```
