@@ -1,4 +1,84 @@
-<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Thrinisty&apos;s Blog</title><description>New Blog</description><link>https://thrinisty.github.io/</link><language>zh_CN</language><item><title>Spring笔记（AOP）</title><link>https://thrinisty.github.io/posts/spring%E7%AC%94%E8%AE%B0aop/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/spring%E7%AC%94%E8%AE%B0aop/</guid><description>Spring面向切面编程</description><pubDate>Wed, 04 Jun 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;Spring笔记&lt;/h1&gt;
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Thrinisty&apos;s Blog</title><description>New Blog</description><link>https://thrinisty.github.io/</link><language>zh_CN</language><item><title>英语作文模板</title><link>https://thrinisty.github.io/posts/%E8%8B%B1%E8%AF%AD%E4%BD%9C%E6%96%87%E6%A8%A1%E6%9D%BF/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/%E8%8B%B1%E8%AF%AD%E4%BD%9C%E6%96%87%E6%A8%A1%E6%9D%BF/</guid><description>英语作文模板，应付写作考试</description><pubDate>Fri, 06 Jun 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;英语作文模板&lt;/h1&gt;
+&lt;h2&gt;应用文&lt;/h2&gt;
+&lt;p&gt;40分 150字&lt;/p&gt;
+&lt;p&gt;书信，通知，告示&lt;/p&gt;
+&lt;h2&gt;议论文&lt;/h2&gt;
+&lt;p&gt;60分 180字&lt;/p&gt;
+&lt;p&gt;三段式&lt;/p&gt;
+&lt;h3&gt;引入主题&lt;/h3&gt;
+&lt;p&gt;正如...直观的看出，某人正在做某事&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;As is directly illustrated in the ... sb is doing something.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;...想要告诉我们的是，...在我们生命/城市/国家的重要性&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;That the purpose of the ... wants to tell us is the importance of ... in our life/city/country
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;展开论点&lt;/h3&gt;
+&lt;p&gt;第一句，承上启下&lt;/p&gt;
+&lt;p&gt;我相信，很容易找到几个考虑因素来解释我的观点，其中我想列举三个最重要的考虑因素如下&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;Several considerations, I believe, can be easily found to account for my point among which I would like to name three most important ones as follows.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;第一点：首先…不仅可以拓宽我们的视野，还能丰富我们的思维，这对我们来说是至关重要的…&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;First of all, ... can not only broaden our horizon but also enrich our our mind, it is imperatice for us to ...
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;第二点：此外，通过实践 ...，我们积累了宝贵的经验和必要的实践技能，这有助于我们为即将到来的任何事情做好更好的准备...&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;In addition, through doing ... , we accumulate precious experience and essential practical skills, which help us to get better prepared for any upcoming ... 
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;第三点：最后但并非最不重要的一点是，我认为......不会过时。取而代之，他们将一如既往地保持重要。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;Last but not least, it is my view that ... will not turn old-fashioned. Instead, they will remain as vital as they will ever be.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;总结收题&lt;/h3&gt;
+&lt;p&gt;我们可以安全地从前面的讨论中得出结论，即...在多个方面值得我们关注。从我个人的角度来看，更好地理解它可以帮助我们更深入地了解我们所生活的世界。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;We may safely draw from the previous discussion the conclusion that 主题 is worthy of our attention in more ways than one.From my personal perspective, a better understanding of it can help us toward a greater awareness of the world in which we live.
+&lt;/code&gt;&lt;/pre&gt;
+</content:encoded></item><item><title>LeetCode刷题（移动零）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E7%A7%BB%E5%8A%A8%E9%9B%B6/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E7%A7%BB%E5%8A%A8%E9%9B%B6/</guid><description>将数组的0移动到数组的末端</description><pubDate>Thu, 05 Jun 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;移动零&lt;/h1&gt;
+&lt;p&gt;7号早上要考英语写作，要写两篇作文，之前在课堂上写的作文评分都不是很高也就是及格边缘，今天和明天需要背一下写作模板，LeetCode刷题部分除了复习以往的题目，就做一道题目练练手保持手感了&lt;/p&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;给定一个数组 &lt;code&gt;nums&lt;/code&gt;，编写一个函数将所有 &lt;code&gt;0&lt;/code&gt; 移动到数组的末尾，同时保持非零元素的相对顺序。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;请注意&lt;/strong&gt; ，必须在不复制数组的情况下原地对数组进行操作。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 1:&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入: nums = [0,1,0,3,12]
+输出: [1,3,12,0,0]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2:&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入: nums = [0]
+输出: [0]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;解法一：忽略原地操作，在list集合中存储非0数，将集合元素复制到数组中，缺少的补0，但是不符合题目要求，其实我还想到用i j 两个下表进行元素互换实现，但是这样就把非零数的顺序打乱了&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public void moveZeroes(int[] nums) {
+        List&amp;lt;Integer&amp;gt; list = new ArrayList&amp;lt;&amp;gt;();
+        for(Integer num : nums) {
+            if(num != 0) {
+                list.add(num);
+            }
+        }
+        int n = list.size();
+        for(int i = 0; i &amp;lt; n; i++) {
+            nums[i] = list.get(i);
+        }
+        for(int i = n; i &amp;lt; nums.length; i++) {
+            nums[i] = 0;
+        }
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;解法二：原地操作，其实思路一样，确实仔细想想因为有0的存在，覆盖的元素都是被操作过的，直接用数组存储即可，没遍历到的数字不会被覆盖，思路是一样的&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public void moveZeroes(int[] nums) {
+        int flag = 0;
+        for(int i = 0; i &amp;lt; nums.length; i++) {
+            if(nums[i] != 0) {
+                nums[flag++] = nums[i]; 
+            }
+        }
+        for(int i = flag; i &amp;lt; nums.length; i++) {
+            nums[i] = 0;
+        }
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+</content:encoded></item><item><title>Spring笔记（AOP）</title><link>https://thrinisty.github.io/posts/spring%E7%AC%94%E8%AE%B0aop/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/spring%E7%AC%94%E8%AE%B0aop/</guid><description>Spring面向切面编程</description><pubDate>Wed, 04 Jun 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;Spring笔记&lt;/h1&gt;
 &lt;h2&gt;AOP面向切面编程&lt;/h2&gt;
 &lt;p&gt;AOP是一种编程技术，是对OOP的补充延申，底层采用动态代理实现，Spring AOP使用的动态代理是JDK动态代理 + CGLIB动态代理技术，Spring会在两者中切换&lt;/p&gt;
 &lt;p&gt;IoC使软件组件松耦合，AOP可以让你能够捕捉系统中经常使用的功能，把它转化为组件&lt;/p&gt;
@@ -278,6 +358,57 @@ public void test2() {
     OrderService orderService = (OrderService) context.getBean(&quot;orderService&quot;);
     orderService.generate();
 }
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;AOP实际运用&lt;/h2&gt;
+&lt;p&gt;我们用事务处理来进行举例&lt;/p&gt;
+&lt;p&gt;对于一个核心的业务逻辑，st1 st2 st3，我们会在前后开启和关闭事务，保证代码全部提交或者全部回退，我们在这个时候可以采取AOP运用aroud注解利用环绕通知进行处理&lt;/p&gt;
+&lt;p&gt;一个转账操作对象，我们通过Aspect在其前后分别添加开始事务，提交事务，与捕获异常回滚事务的逻辑&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@Service
+public class AccountService {
+    public void transfer() {
+        System.out.println(&quot;系统正在完成转账操作...&quot;);
+    }
+
+    public void withdraw() {
+        System.out.println(&quot;系统正在完成取款操作...&quot;);
+        throw new RuntimeException();//模拟运行异常
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;切面代码&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@Component
+@Aspect
+public class TransactionAspect {
+    @Around(&quot;execution(* com.service..*(..))&quot;)
+    public void aroundAdvice(ProceedingJoinPoint joinPoint) throws Throwable {
+        try{
+            System.out.println(&quot;开启事务&quot;);
+            //前环绕
+            joinPoint.proceed();
+            //后环绕
+            System.out.println(&quot;提交事务&quot;);
+        } catch (Throwable throwable) {
+            System.out.println(&quot;回滚事务&quot;);
+        }
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;测试代码&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt; @Test
+    public void test() {
+        ApplicationContext context = new AnnotationConfigApplicationContext(Config.class);
+        AccountService accountService = context.getBean(&quot;accountService&quot;, AccountService.class);
+        accountService.transfer();
+        accountService.withdraw();
+    }
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;开启事务
+系统正在完成转账操作...
+提交事务
+
+开启事务
+系统正在完成取款操作...
+回滚事务
 &lt;/code&gt;&lt;/pre&gt;
 </content:encoded></item><item><title>LeetCode刷题（买股票，前k个高频元素）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E4%B9%B0%E8%82%A1%E7%A5%A8%E5%89%8Dk%E4%B8%AA%E9%AB%98%E9%A2%91%E5%85%83%E7%B4%A0/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E4%B9%B0%E8%82%A1%E7%A5%A8%E5%89%8Dk%E4%B8%AA%E9%AB%98%E9%A2%91%E5%85%83%E7%B4%A0/</guid><description>买股票含冷冻期，前k个高频元素</description><pubDate>Wed, 04 Jun 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;买股票&lt;/h1&gt;
 &lt;h2&gt;题目描述&lt;/h2&gt;

@@ -427,3 +427,71 @@ public void test2() {
     orderService.generate();
 }
 ```
+
+
+
+## AOP实际运用
+
+我们用事务处理来进行举例
+
+对于一个核心的业务逻辑，st1 st2 st3，我们会在前后开启和关闭事务，保证代码全部提交或者全部回退，我们在这个时候可以采取AOP运用aroud注解利用环绕通知进行处理
+
+一个转账操作对象，我们通过Aspect在其前后分别添加开始事务，提交事务，与捕获异常回滚事务的逻辑
+
+```java
+@Service
+public class AccountService {
+    public void transfer() {
+        System.out.println("系统正在完成转账操作...");
+    }
+
+    public void withdraw() {
+        System.out.println("系统正在完成取款操作...");
+        throw new RuntimeException();//模拟运行异常
+    }
+}
+```
+
+切面代码
+
+```java
+@Component
+@Aspect
+public class TransactionAspect {
+    @Around("execution(* com.service..*(..))")
+    public void aroundAdvice(ProceedingJoinPoint joinPoint) throws Throwable {
+        try{
+            System.out.println("开启事务");
+            //前环绕
+            joinPoint.proceed();
+            //后环绕
+            System.out.println("提交事务");
+        } catch (Throwable throwable) {
+            System.out.println("回滚事务");
+        }
+    }
+}
+```
+
+测试代码
+
+```java
+ @Test
+    public void test() {
+        ApplicationContext context = new AnnotationConfigApplicationContext(Config.class);
+        AccountService accountService = context.getBean("accountService", AccountService.class);
+        accountService.transfer();
+        accountService.withdraw();
+    }
+```
+
+```
+开启事务
+系统正在完成转账操作...
+提交事务
+
+开启事务
+系统正在完成取款操作...
+回滚事务
+```
+
