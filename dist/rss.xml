@@ -1,4 +1,131 @@
-<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Thrinisty&apos;s Blog</title><description>New Blog</description><link>https://thrinisty.github.io/</link><language>zh_CN</language><item><title>LeetCode刷题（买股票一次买入卖出，二叉树直径）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E6%A8%A1%E6%9D%BF---%E5%89%AF%E6%9C%AC/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E6%A8%A1%E6%9D%BF---%E5%89%AF%E6%9C%AC/</guid><description>区别于之前的买股票，二叉树直径</description><pubDate>Fri, 06 Jun 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;买股票的最佳时机&lt;/h1&gt;
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Thrinisty&apos;s Blog</title><description>New Blog</description><link>https://thrinisty.github.io/</link><language>zh_CN</language><item><title>LeetCode刷题（编辑距离，岛屿数量）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E7%BC%96%E8%BE%91%E8%B7%9D%E7%A6%BB%E5%B2%9B%E5%B1%BF%E6%95%B0%E9%87%8F/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E7%BC%96%E8%BE%91%E8%B7%9D%E7%A6%BB%E5%B2%9B%E5%B1%BF%E6%95%B0%E9%87%8F/</guid><description>编辑距离，岛屿数量</description><pubDate>Sat, 07 Jun 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;编辑距离&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;给你两个单词 &lt;code&gt;word1&lt;/code&gt; 和 &lt;code&gt;word2&lt;/code&gt;， &lt;em&gt;请返回将 &lt;code&gt;word1&lt;/code&gt; 转换成 &lt;code&gt;word2&lt;/code&gt; 所使用的最少操作数&lt;/em&gt; 。&lt;/p&gt;
+&lt;p&gt;你可以对一个单词进行如下三种操作：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;插入一个字符&lt;/li&gt;
+&lt;li&gt;删除一个字符&lt;/li&gt;
+&lt;li&gt;替换一个字符&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：word1 = &quot;horse&quot;, word2 = &quot;ros&quot;
+输出：3
+解释：
+horse -&amp;gt; rorse (将 &apos;h&apos; 替换为 &apos;r&apos;)
+rorse -&amp;gt; rose (删除 &apos;r&apos;)
+rose -&amp;gt; ros (删除 &apos;e&apos;)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：word1 = &quot;intention&quot;, word2 = &quot;execution&quot;
+输出：5
+解释：
+intention -&amp;gt; inention (删除 &apos;t&apos;)
+inention -&amp;gt; enention (将 &apos;i&apos; 替换为 &apos;e&apos;)
+enention -&amp;gt; exention (将 &apos;n&apos; 替换为 &apos;x&apos;)
+exention -&amp;gt; exection (将 &apos;n&apos; 替换为 &apos;c&apos;)
+exection -&amp;gt; execution (插入 &apos;u&apos;)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;设立一个dp二维数组，存放word1与word2的前n个字符需要操作的情况，初始的情况是两个都没有字符，赋值为0，分别右下遍历二维数组，代表着从空字符串开始需要增加操作字符的数量迭代加一&lt;/p&gt;
+&lt;p&gt;二维遍历整个数组，分为两种情况：&lt;/p&gt;
+&lt;p&gt;1.即将放入的两个字符相等，直接从左上方的第一个二维数组元素取值即可，代表着不需要操作&lt;/p&gt;
+&lt;p&gt;2.当字符不同的时候，可以从两个字符的左上情况进行替换操作，或者从左或者上进行增删操作，取三种方式的最小值，将取得的结果加一代表经历了一种操作&lt;/p&gt;
+&lt;p&gt;最后对于遍历的元素赋予对应的数值&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public int minDistance(String word1, String word2) {
+        int n1 = word1.length();
+        int n2 = word2.length();
+        int[][] dp = new int[n1 + 1][n2 + 1];
+        for(int i = 1; i &amp;lt;= n1; i++) {
+            dp[i][0] = dp[i - 1][0] + 1;
+        }
+        for(int j = 1; j &amp;lt;= n2; j++) {
+            dp[0][j] = dp[0][j - 1] + 1;
+        }
+        for(int i = 1; i &amp;lt;= n1; i++) {
+            for(int j = 1; j &amp;lt;= n2; j++) {
+                if(word1.charAt(i - 1) == word2.charAt(j - 1)) {
+                    dp[i][j] = dp[i - 1][j - 1];
+                } else {
+                    int min = Math.min(dp[i - 1][j - 1], dp[i - 1][j]);
+                    min = Math.min(min, dp[i][j - 1]);
+                    dp[i][j] = min + 1;
+                }
+            }
+        }
+        return dp[n1][n2];
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1&gt;颜色分类&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;给定一个包含红色、白色和蓝色、共 &lt;code&gt;n&lt;/code&gt; 个元素的数组 &lt;code&gt;nums&lt;/code&gt; ，&lt;strong&gt;&lt;a href=&quot;https://baike.baidu.com/item/%E5%8E%9F%E5%9C%B0%E7%AE%97%E6%B3%95&quot;&gt;原地&lt;/a&gt;&lt;/strong&gt; 对它们进行排序，使得相同颜色的元素相邻，并按照红色、白色、蓝色顺序排列。&lt;/p&gt;
+&lt;p&gt;我们使用整数 &lt;code&gt;0&lt;/code&gt;、 &lt;code&gt;1&lt;/code&gt; 和 &lt;code&gt;2&lt;/code&gt; 分别表示红色、白色和蓝色。&lt;/p&gt;
+&lt;p&gt;必须在不使用库内置的 sort 函数的情况下解决这个问题。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：nums = [2,0,2,1,1,0]
+输出：[0,0,1,1,2,2]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：nums = [2,0,1]
+输出：[0,1,2]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;解法一：反骨一下用一个临时的数组存储一下，把0方法到最前面，2放到最后面，剩余的用1填充&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public void sortColors(int[] nums) {
+        int n = nums.length;
+        int[] result = new int[n];
+        int min = 0;
+        int max = n - 1;
+        for(int i = 0; i &amp;lt; n; i++) {
+            if(nums[i] == 0) {
+                result[min++] = 0;
+            } else if(nums[i] == 2) {
+                result[max--] = 2;
+            }
+        }
+        for(int i = min; i &amp;lt;= max; i++) {
+            result[i] = 1;
+        }
+        for(int i = 0; i &amp;lt; n; i++) {
+            nums[i] = result[i];
+        }
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;解法二：&lt;/p&gt;
+&lt;p&gt;用三个指针标识，flag位操作数指针，low之前的数为0，high之后的数为2&lt;/p&gt;
+&lt;p&gt;flag初始为0，当flag &amp;gt; high的时候表示处理完毕&lt;/p&gt;
+&lt;p&gt;当为0的时候需要和low指向的数字就行交换将0放入low的位置，low++，而flag因为之前的数字都处理过了所以flag++&lt;/p&gt;
+&lt;p&gt;当为1的时候，nums[flag]位置的数正确，flag++即可，无需交换放置&lt;/p&gt;
+&lt;p&gt;当为2的时候，和max处的位置进行交换，因为交换回的数字可能是2，max--，而flag不作调整，再次判断&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public void sortColors(int[] nums) {
+        int low = 0;
+        int high = nums.length - 1;
+        int flag = 0;
+        while(flag &amp;lt;= high) {
+            if(nums[flag] == 0) {
+                swap(nums, low, flag);
+                low++;
+                flag++;
+            } else if(nums[flag] == 1) {
+                flag++;
+            } else {
+                swap(nums, flag, high);
+                high--;
+            }
+        }
+    }
+    private void swap(int[] nums, int i, int j) {
+        int temp = nums[i];
+        nums[i] = nums[j];
+        nums[j] = temp;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+</content:encoded></item><item><title>LeetCode刷题（买股票一次买入卖出，二叉树直径）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E4%B9%B0%E8%82%A1%E7%A5%A8%E4%B8%80%E6%AC%A1%E4%B9%B0%E5%85%A5%E5%8D%96%E5%87%BA%E4%BA%8C%E5%8F%89%E6%A0%91%E7%9B%B4%E5%BE%84/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E4%B9%B0%E8%82%A1%E7%A5%A8%E4%B8%80%E6%AC%A1%E4%B9%B0%E5%85%A5%E5%8D%96%E5%87%BA%E4%BA%8C%E5%8F%89%E6%A0%91%E7%9B%B4%E5%BE%84/</guid><description>区别于之前的买股票，二叉树直径</description><pubDate>Fri, 06 Jun 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;买股票的最佳时机&lt;/h1&gt;
 &lt;h2&gt;题目描述&lt;/h2&gt;
 &lt;p&gt;给定一个数组 &lt;code&gt;prices&lt;/code&gt; ，它的第 &lt;code&gt;i&lt;/code&gt; 个元素 &lt;code&gt;prices[i]&lt;/code&gt; 表示一支给定股票第 &lt;code&gt;i&lt;/code&gt; 天的价格。&lt;/p&gt;
 &lt;p&gt;你只能选择 &lt;strong&gt;某一天&lt;/strong&gt; 买入这只股票，并选择在 &lt;strong&gt;未来的某一个不同的日子&lt;/strong&gt; 卖出该股票。设计一个算法来计算你所能获取的最大利润。&lt;/p&gt;
@@ -19,14 +146,12 @@
 &lt;p&gt;我们记录历史的最低价格，遍历后续元素的时候迭代刷新，并计算当前价格减去历史价格的值是否大于先前的值，迭代之，最后的max即为我们需要的结果&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;class Solution {
     public int maxProfit(int[] prices) {
-        int min = Integer.MAX_VALUE;
+        int n = prices.length;
         int max = 0;
-        for(int i = 0; i &amp;lt; prices.length; i++) {
-            if(prices[i] &amp;lt; min) {
-                min = prices[i];
-            } else if(prices[i] - min &amp;gt; max) {
-                max = prices[i] - min;
-            }
+        int min = Integer.MAX_VALUE;
+        for(int i = 0; i &amp;lt; n; i++) {
+            min = Math.min(min, prices[i]);
+            max = Math.max(max, prices[i] - min);
         }
         return max;
     }
