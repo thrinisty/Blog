@@ -1,8 +1,8 @@
 ---
-title: LeetCode刷题（编辑距离，岛屿数量）
+title: LeetCode刷题（编辑距离，颜色分类）
 published: 2025-06-07
 updated: 2025-06-07
-description: '编辑距离，岛屿数量'
+description: '编辑距离，荷兰国旗问题'
 image: ''
 tags: [LeetCode]
 category: 'LeetCode'
