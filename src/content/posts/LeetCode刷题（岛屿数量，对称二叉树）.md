@@ -2,7 +2,7 @@
 title: LeetCode刷题（岛屿数量，对称二叉树）
 published: 2025-06-08
 updated: 2025-06-08
-description: 'Leet'
+description: '岛屿数量，对称二叉树'
 image: ''
 tags: [LeetCode]
 category: 'LeetCode'

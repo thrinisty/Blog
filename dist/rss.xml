@@ -1,4 +1,121 @@
-<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Thrinisty&apos;s Blog</title><description>New Blog</description><link>https://thrinisty.github.io/</link><language>zh_CN</language><item><title>LeetCode刷题（岛屿数量，对称二叉树）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E5%B2%9B%E5%B1%BF%E6%95%B0%E9%87%8F%E5%AF%B9%E7%A7%B0%E4%BA%8C%E5%8F%89%E6%A0%91/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E5%B2%9B%E5%B1%BF%E6%95%B0%E9%87%8F%E5%AF%B9%E7%A7%B0%E4%BA%8C%E5%8F%89%E6%A0%91/</guid><description>Leet</description><pubDate>Sun, 08 Jun 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;岛屿数量&lt;/h1&gt;
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Thrinisty&apos;s Blog</title><description>New Blog</description><link>https://thrinisty.github.io/</link><language>zh_CN</language><item><title>LeetCode刷题（电话号码的字母组合，打家劫舍）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E7%94%B5%E8%AF%9D%E5%8F%B7%E7%A0%81%E7%9A%84%E5%AD%97%E6%AF%8D%E7%BB%84%E5%90%88%E6%89%93%E5%AE%B6%E5%8A%AB%E8%88%8D/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E7%94%B5%E8%AF%9D%E5%8F%B7%E7%A0%81%E7%9A%84%E5%AD%97%E6%AF%8D%E7%BB%84%E5%90%88%E6%89%93%E5%AE%B6%E5%8A%AB%E8%88%8D/</guid><description>电话号码的字母组合，打家劫舍</description><pubDate>Mon, 09 Jun 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;电话号码的字母组合&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;给定一个仅包含数字 &lt;code&gt;2-9&lt;/code&gt; 的字符串，返回所有它能表示的字母组合。答案可以按 &lt;strong&gt;任意顺序&lt;/strong&gt; 返回。&lt;/p&gt;
+&lt;p&gt;给出数字到字母的映射如下（与电话按键相同）。注意 1 不对应任何字母。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/184.png&quot; alt=&quot;184&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：digits = &quot;23&quot;
+输出：[&quot;ad&quot;,&quot;ae&quot;,&quot;af&quot;,&quot;bd&quot;,&quot;be&quot;,&quot;bf&quot;,&quot;cd&quot;,&quot;ce&quot;,&quot;cf&quot;]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：digits = &quot;&quot;
+输出：[]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 3：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：digits = &quot;2&quot;
+输出：[&quot;a&quot;,&quot;b&quot;,&quot;c&quot;]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;提示：&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;0 &amp;lt;= digits.length &amp;lt;= 4&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;digits[i]&lt;/code&gt; 是范围 &lt;code&gt;[&apos;2&apos;, &apos;9&apos;]&lt;/code&gt; 的一个数字。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;自己写的，参考了之前的有一道括号组合的方式，用temp数组映射出对应的字符串，挨个取出递归加入之前的字符串，但是执行速度惨淡，好在可以过关&lt;/p&gt;
+&lt;p&gt;想了想应该是没有用StringBuffer的缘故，重复创建字符串到缓冲池，导致的执行速度和空间存储都很差，先这样之后在解决&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    private String[] temp = {
+        &quot;&quot;,//0
+        &quot;&quot;,//1
+        &quot;abc&quot;,//2
+        &quot;def&quot;,//3
+        &quot;ghi&quot;,//4
+        &quot;jkl&quot;,//5
+        &quot;mno&quot;,//6
+        &quot;pqrs&quot;,//7
+        &quot;tuv&quot;,//8
+        &quot;wxyz&quot;//9
+    };
+    List&amp;lt;String&amp;gt; result = new ArrayList&amp;lt;&amp;gt;();
+
+    public List&amp;lt;String&amp;gt; letterCombinations(String digits) {
+        fun(&quot;&quot;, digits, 0);
+        return result;
+    }
+    public void fun(String str, String digits, int idx) {
+        if(idx == digits.length()) {
+            if(str != &quot;&quot;) {
+                result.add(str);
+            }
+            return;
+        }
+        char numc = digits.charAt(idx);
+        int num = numc - &apos;0&apos;;
+        int n = temp[num].length();
+        for(int i = 0; i &amp;lt; n; i++) {
+            char c = temp[num].charAt(i);
+            fun(str + c, digits, idx + 1);
+        }
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1&gt;打家劫舍&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;小偷又发现了一个新的可行窃的地区。这个地区只有一个入口，我们称之为 &lt;code&gt;root&lt;/code&gt; 。&lt;/p&gt;
+&lt;p&gt;除了 &lt;code&gt;root&lt;/code&gt; 之外，每栋房子有且只有一个“父“房子与之相连。一番侦察之后，聪明的小偷意识到“这个地方的所有房屋的排列类似于一棵二叉树”。 如果 &lt;strong&gt;两个直接相连的房子在同一天晚上被打劫&lt;/strong&gt; ，房屋将自动报警。&lt;/p&gt;
+&lt;p&gt;给定二叉树的 &lt;code&gt;root&lt;/code&gt; 。返回 &lt;em&gt;&lt;strong&gt;在不触动警报的情况下&lt;/strong&gt; ，小偷能够盗取的最高金额&lt;/em&gt; 。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 1:&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/185.jpg&quot; alt=&quot;185&quot; /&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入: root = [3,2,3,null,3,null,1]
+输出: 7 
+解释: 小偷一晚能够盗取的最高金额 3 + 3 + 1 = 7
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2:&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/186.jpg&quot; alt=&quot;186&quot; /&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入: root = [3,4,5,1,3,null,1]
+输出: 9
+解释: 小偷一晚能够盗取的最高金额 4 + 5 = 9
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;解法一：递归的判断是否打劫当前人家，返回最大的金钱数&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public int rob(TreeNode root) {
+        if(root == null){
+            return 0;
+        }
+        int money = root.val;
+        if(root.left != null) {
+            money += rob(root.left.left) + rob(root.left.right);
+        }
+        if(root.right != null) {
+            money += rob(root.right.left) + rob(root.right.right);
+        }
+        return Math.max(money, rob(root.left) + rob(root.right));
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;这种方法在递归的时候会产生非常多的重复情况，会出现超时&lt;/p&gt;
+&lt;p&gt;解法二：使用一个递归函数，返回一个大小为2的结果集，0表示不打劫该人家的最大金钱数，而1表示打劫该人家的最大金钱数&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public int rob(TreeNode root) {
+        int[] result = fun(root);
+        return Math.max(result[0], result[1]);
+    }
+
+    public int[] fun(TreeNode root) {
+        if(root == null) {
+            return new int[2];
+        }
+        int[] result = new int[2];
+        int[] leftMax = fun(root.left);
+        int[] rightMax = fun(root.right);
+        result[0] = Math.max(leftMax[0], leftMax[1]) + Math.max(rightMax[0], rightMax[1]);
+        result[1] = root.val + leftMax[0] + rightMax[0];
+        return result;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+</content:encoded></item><item><title>LeetCode刷题（岛屿数量，对称二叉树）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E5%B2%9B%E5%B1%BF%E6%95%B0%E9%87%8F%E5%AF%B9%E7%A7%B0%E4%BA%8C%E5%8F%89%E6%A0%91/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E5%B2%9B%E5%B1%BF%E6%95%B0%E9%87%8F%E5%AF%B9%E7%A7%B0%E4%BA%8C%E5%8F%89%E6%A0%91/</guid><description>岛屿数量，对称二叉树</description><pubDate>Sun, 08 Jun 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;岛屿数量&lt;/h1&gt;
 &lt;h2&gt;题目描述&lt;/h2&gt;
 &lt;p&gt;给你一个由 &lt;code&gt;&apos;1&apos;&lt;/code&gt;（陆地）和 &lt;code&gt;&apos;0&apos;&lt;/code&gt;（水）组成的的二维网格，请你计算网格中岛屿的数量。&lt;/p&gt;
 &lt;p&gt;岛屿总是被水包围，并且每座岛屿只能由水平方向和/或竖直方向上相邻的陆地连接形成。&lt;/p&gt;
@@ -275,7 +392,7 @@ public @interface Transactional {
     String[] noRollbackForClassName() default {};
 }
 &lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;一下我们来挨个说明&lt;/p&gt;
+&lt;p&gt;以下我们来挨个说明&lt;/p&gt;
 &lt;h3&gt;事务传播行为&lt;/h3&gt;
 &lt;pre&gt;&lt;code&gt;Propagation propagation() default Propagation.REQUIRED;
 //事务传播行为
@@ -291,6 +408,85 @@ public @interface Transactional {
 &lt;p&gt;&lt;strong&gt;实际使用&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;我们假设有一个场景，一个被事务注解修饰的方法，调用了另一个被事务注解修饰的方法，后一个注解指定为REQUIRED，那么被调用的数条执行语句就会被加入到第一个方法的事务中，若此时此刻被调用的方法抛出异常，调用方法也会受到影响从而回滚&lt;/p&gt;
 &lt;p&gt;而如果第二个方法事务传播行为注解为REQUIRES_NEW，那么就会开启一个新的事务，如果其发生异常，第二个方法的数条执行语句回滚，与此同时第一个方法中如果针对于第二个方法抛出异常予以捕获，则第一个方法不会回滚&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@Transactional(propagation = Propagation.REQUIRED)
+public void withdraw() {
+    System.out.println(&quot;该方法也有事务&quot;);   
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;事务的隔离级别&lt;/h2&gt;
+&lt;p&gt;之前的MySQL中学过，现在我们复习一下&lt;/p&gt;
+&lt;p&gt;脏读：当一个事务读取另一个事务尚未提交的修改时，产生脏读&lt;/p&gt;
+&lt;p&gt;不可重复读：同一查询在同一事物中多次进行，由于其他提交事务所做的修改或者删除，每次返回结果不同的结果集，产生不可重复读&lt;/p&gt;
+&lt;p&gt;幻读：同意查询在同一事物中多次进行，由于其他提交事务的插入操作，每次返回不同的结果集，产生了幻读&lt;/p&gt;
+&lt;h3&gt;事务隔离表格&lt;/h3&gt;
+&lt;p&gt;事务隔离级别：MySQL隔离级别定义了事物与事务之间的隔离程度&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;隔离级别&lt;/th&gt;
+&lt;th&gt;丢失修改&lt;/th&gt;
+&lt;th&gt;脏读&lt;/th&gt;
+&lt;th&gt;不可重复读&lt;/th&gt;
+&lt;th&gt;幻读&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;读未提交&lt;/td&gt;
+&lt;td&gt;不会发生&lt;/td&gt;
+&lt;td&gt;可能发生&lt;/td&gt;
+&lt;td&gt;可能发生&lt;/td&gt;
+&lt;td&gt;可能发生&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;读已提交&lt;/td&gt;
+&lt;td&gt;不会发生&lt;/td&gt;
+&lt;td&gt;不会发生&lt;/td&gt;
+&lt;td&gt;可能发生&lt;/td&gt;
+&lt;td&gt;可能发生&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;可重复读&lt;/td&gt;
+&lt;td&gt;不会发生&lt;/td&gt;
+&lt;td&gt;不会发生&lt;/td&gt;
+&lt;td&gt;不会发生&lt;/td&gt;
+&lt;td&gt;可能发生&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;可串行化&lt;/td&gt;
+&lt;td&gt;不会发生&lt;/td&gt;
+&lt;td&gt;不会发生&lt;/td&gt;
+&lt;td&gt;不会发生&lt;/td&gt;
+&lt;td&gt;不会发生&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h3&gt;Spring隔离级别&lt;/h3&gt;
+&lt;p&gt;对应着上表的四种隔离级别，默认的隔离级别是根据所选数据库决定的&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public enum Isolation {
+    DEFAULT(-1),
+    READ_UNCOMMITTED(1),
+    READ_COMMITTED(2),
+    REPEATABLE_READ(4),
+    SERIALIZABLE(8);
+
+    private final int value;
+
+    private Isolation(int value) {
+        this.value = value;
+    }
+
+    public int value() {
+        return this.value;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;使用方式：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@Transactional(isolation = Isolation.REPEATABLE_READ, propagation = Propagation.REQUIRED)
+public void withdraw() {
+    System.out.println(&quot;某一事务&quot;);
+}
+&lt;/code&gt;&lt;/pre&gt;
 </content:encoded></item><item><title>LeetCode刷题（编辑距离，颜色分类）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E7%BC%96%E8%BE%91%E8%B7%9D%E7%A6%BB%E9%A2%9C%E8%89%B2%E5%88%86%E7%B1%BB/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E7%BC%96%E8%BE%91%E8%B7%9D%E7%A6%BB%E9%A2%9C%E8%89%B2%E5%88%86%E7%B1%BB/</guid><description>编辑距离，荷兰国旗问题</description><pubDate>Sat, 07 Jun 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;编辑距离&lt;/h1&gt;
 &lt;h2&gt;题目描述&lt;/h2&gt;
 &lt;p&gt;给你两个单词 &lt;code&gt;word1&lt;/code&gt; 和 &lt;code&gt;word2&lt;/code&gt;， &lt;em&gt;请返回将 &lt;code&gt;word1&lt;/code&gt; 转换成 &lt;code&gt;word2&lt;/code&gt; 所使用的最少操作数&lt;/em&gt; 。&lt;/p&gt;
@@ -12611,7 +12807,7 @@ select * from balance;
 &lt;h2&gt;隔离级别&lt;/h2&gt;
 &lt;p&gt;脏读：当一个事务读取另一个事务尚未提交的修改时，产生脏读&lt;/p&gt;
 &lt;p&gt;不可重复读：同一查询在同一事物中多次进行，由于其他提交事务所做的修改或者删除，每次返回结果不同的结果集，产生不可重复读&lt;/p&gt;
-&lt;p&gt;幻读：同意查询在同一事物中多次进行，由于其他提交事务的插入操作，每次返回不同的结果集，产生了幻读&lt;/p&gt;
+&lt;p&gt;幻读：同一查询在同一事物中多次进行，由于其他提交事务的插入操作，每次返回不同的结果集，产生了幻读&lt;/p&gt;
 &lt;h3&gt;事务隔离表格&lt;/h3&gt;
 &lt;p&gt;事务隔离级别：MySQL隔离级别定义了事物与事务之间的隔离程度&lt;/p&gt;
 &lt;table&gt;

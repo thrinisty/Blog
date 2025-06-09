@@ -245,7 +245,7 @@ public @interface Transactional {
 }
 ```
 
-一下我们来挨个说明
+以下我们来挨个说明
 
 
 
@@ -279,3 +279,70 @@ NESTED（内嵌）:如果当前正有一个事务在进行中，则该方法应�
 我们假设有一个场景，一个被事务注解修饰的方法，调用了另一个被事务注解修饰的方法，后一个注解指定为REQUIRED，那么被调用的数条执行语句就会被加入到第一个方法的事务中，若此时此刻被调用的方法抛出异常，调用方法也会受到影响从而回滚
 
 而如果第二个方法事务传播行为注解为REQUIRES_NEW，那么就会开启一个新的事务，如果其发生异常，第二个方法的数条执行语句回滚，与此同时第一个方法中如果针对于第二个方法抛出异常予以捕获，则第一个方法不会回滚
+
+```java
+@Transactional(propagation = Propagation.REQUIRED)
+public void withdraw() {
+    System.out.println("该方法也有事务");   
+}
+```
+
+
+
+## 事务的隔离级别
+
+之前的MySQL中学过，现在我们复习一下
+
+脏读：当一个事务读取另一个事务尚未提交的修改时，产生脏读
+
+不可重复读：同一查询在同一事物中多次进行，由于其他提交事务所做的修改或者删除，每次返回结果不同的结果集，产生不可重复读
+
+幻读：同意查询在同一事物中多次进行，由于其他提交事务的插入操作，每次返回不同的结果集，产生了幻读
+
+
+
+### 事务隔离表格
+
+事务隔离级别：MySQL隔离级别定义了事物与事务之间的隔离程度
+
+| 隔离级别 | 丢失修改 | 脏读     | 不可重复读 | 幻读     |
+| :------: | -------- | -------- | ---------- | -------- |
+| 读未提交 | 不会发生 | 可能发生 | 可能发生   | 可能发生 |
+| 读已提交 | 不会发生 | 不会发生 | 可能发生   | 可能发生 |
+| 可重复读 | 不会发生 | 不会发生 | 不会发生   | 可能发生 |
+| 可串行化 | 不会发生 | 不会发生 | 不会发生   | 不会发生 |
+
+
+
+### Spring隔离级别
+
+对应着上表的四种隔离级别，默认的隔离级别是根据所选数据库决定的
+
+```java
+public enum Isolation {
+    DEFAULT(-1),
+    READ_UNCOMMITTED(1),
+    READ_COMMITTED(2),
+    REPEATABLE_READ(4),
+    SERIALIZABLE(8);
+
+    private final int value;
+
+    private Isolation(int value) {
+        this.value = value;
+    }
+
+    public int value() {
+        return this.value;
+    }
+}
+```
+
+使用方式：
+
+```java
+@Transactional(isolation = Isolation.REPEATABLE_READ, propagation = Propagation.REQUIRED)
+public void withdraw() {
+    System.out.println("某一事务");
+}
+```
