@@ -124,19 +124,19 @@ allowfullscreen=&quot;true&quot;&amp;gt;
 &lt;p&gt;解法二：使用一个递归函数，返回一个大小为2的结果集，0表示不打劫该人家的最大金钱数，而1表示打劫该人家的最大金钱数&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;class Solution {
     public int rob(TreeNode root) {
-        int[] result = fun(root);
+        int[] result = robArray(root);
         return Math.max(result[0], result[1]);
     }
 
-    public int[] fun(TreeNode root) {
-        if(root == null) {
-            return new int[2];
-        }
+    public int[] robArray(TreeNode root) {
         int[] result = new int[2];
-        int[] leftMax = fun(root.left);
-        int[] rightMax = fun(root.right);
-        result[0] = Math.max(leftMax[0], leftMax[1]) + Math.max(rightMax[0], rightMax[1]);
-        result[1] = root.val + leftMax[0] + rightMax[0];
+        if(root == null) {
+            return result;
+        }
+        int[] left = robArray(root.left);
+        int[] right = robArray(root.right);
+        result[0] = Math.max(left[0], left[1]) + Math.max(right[0], right[1]);
+        result[1] = root.val + left[0] + right[0];
         return result;
     }
 }
@@ -225,7 +225,7 @@ allowfullscreen=&quot;true&quot;&amp;gt;
     }
 }
 &lt;/code&gt;&lt;/pre&gt;
-</content:encoded></item><item><title>Spring笔记（Spring事务）</title><link>https://thrinisty.github.io/posts/spring%E7%AC%94%E8%AE%B0spring%E4%BA%8B%E5%8A%A1/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/spring%E7%AC%94%E8%AE%B0spring%E4%BA%8B%E5%8A%A1/</guid><description>Spring事务</description><pubDate>Sun, 08 Jun 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;Spring笔记&lt;/h1&gt;
+</content:encoded></item><item><title>Spring笔记（Spring事务）</title><link>https://thrinisty.github.io/posts/spring%E7%AC%94%E8%AE%B0spring%E4%BA%8B%E5%8A%A1/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/spring%E7%AC%94%E8%AE%B0spring%E4%BA%8B%E5%8A%A1/</guid><description>Spring事务，事务的数个属性，事务注解式开发</description><pubDate>Sun, 08 Jun 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;Spring笔记&lt;/h1&gt;
 &lt;h2&gt;事务&lt;/h2&gt;
 &lt;p&gt;一个业务流程中通常需要多条DML语句联合才可以完成，必须同时成功和失败，这要才能保证前后的正确性。&lt;/p&gt;
 &lt;p&gt;事务可以通过AOP插入完成（底层也是通过AOP插入的），而Spring对于事务二次封装使得开发者更加方便使用事务，提高开发效率&lt;/p&gt;
@@ -882,7 +882,7 @@ exection -&amp;gt; execution (插入 &apos;u&apos;)
     }
 }
 &lt;/code&gt;&lt;/pre&gt;
-</content:encoded></item><item><title>Spring笔记（AOP）</title><link>https://thrinisty.github.io/posts/spring%E7%AC%94%E8%AE%B0aop/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/spring%E7%AC%94%E8%AE%B0aop/</guid><description>Spring面向切面编程</description><pubDate>Wed, 04 Jun 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;Spring笔记&lt;/h1&gt;
+</content:encoded></item><item><title>Spring笔记（AOP）</title><link>https://thrinisty.github.io/posts/spring%E7%AC%94%E8%AE%B0aop/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/spring%E7%AC%94%E8%AE%B0aop/</guid><description>Spring面向切面编程，切点表达式，通知类型，全注解开发</description><pubDate>Wed, 04 Jun 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;Spring笔记&lt;/h1&gt;
 &lt;h2&gt;AOP面向切面编程&lt;/h2&gt;
 &lt;p&gt;AOP是一种编程技术，是对OOP的补充延申，底层采用动态代理实现，Spring AOP使用的动态代理是JDK动态代理 + CGLIB动态代理技术，Spring会在两者中切换&lt;/p&gt;
 &lt;p&gt;IoC使软件组件松耦合，AOP可以让你能够捕捉系统中经常使用的功能，把它转化为组件&lt;/p&gt;
@@ -1434,7 +1434,7 @@ public class TransactionAspect {
     }
 }
 &lt;/code&gt;&lt;/pre&gt;
-</content:encoded></item><item><title>Spring笔记（GoF代理模式）</title><link>https://thrinisty.github.io/posts/spring%E7%AC%94%E8%AE%B0gof%E4%BB%A3%E7%90%86%E6%A8%A1%E5%BC%8F/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/spring%E7%AC%94%E8%AE%B0gof%E4%BB%A3%E7%90%86%E6%A8%A1%E5%BC%8F/</guid><description>GoF之代理模式</description><pubDate>Mon, 02 Jun 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;Spring笔记&lt;/h1&gt;
+</content:encoded></item><item><title>Spring笔记（GoF代理模式）</title><link>https://thrinisty.github.io/posts/spring%E7%AC%94%E8%AE%B0gof%E4%BB%A3%E7%90%86%E6%A8%A1%E5%BC%8F/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/spring%E7%AC%94%E8%AE%B0gof%E4%BB%A3%E7%90%86%E6%A8%A1%E5%BC%8F/</guid><description>静态代理，动态代理</description><pubDate>Mon, 02 Jun 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;Spring笔记&lt;/h1&gt;
 &lt;h2&gt;代理模式&lt;/h2&gt;
 &lt;h3&gt;定义作用&lt;/h3&gt;
 &lt;p&gt;代理模式，是GoF的23种设计模式之一，也是AoP面向切面编程中的核心&lt;/p&gt;

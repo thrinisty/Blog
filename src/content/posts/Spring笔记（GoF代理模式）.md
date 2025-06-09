@@ -2,7 +2,7 @@
 title: Spring笔记（GoF代理模式）
 published: 2025-06-02
 updated: 2025-06-02
-description: 'GoF之代理模式'
+description: '静态代理，动态代理'
 image: ''
 tags: [Spring]
 category: 'Frame'

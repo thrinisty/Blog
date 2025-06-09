@@ -2,7 +2,7 @@
 title: Spring笔记（AOP）
 published: 2025-06-04
 updated: 2025-06-04
-description: 'Spring面向切面编程'
+description: 'Spring面向切面编程，切点表达式，通知类型，全注解开发'
 image: ''
 tags: [Spring]
 category: 'Frame'

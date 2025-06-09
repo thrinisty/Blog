@@ -2,7 +2,7 @@
 title: Spring笔记（Spring事务）
 published: 2025-06-08
 updated: 2025-06-08
-description: 'Spring事务'
+description: 'Spring事务，事务的数个属性，事务注解式开发'
 image: ''
 tags: [Spring]
 category: 'Frame'

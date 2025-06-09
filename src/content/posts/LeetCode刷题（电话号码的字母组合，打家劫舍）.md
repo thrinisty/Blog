@@ -154,19 +154,19 @@ class Solution {
 ```java
 class Solution {
     public int rob(TreeNode root) {
-        int[] result = fun(root);
+        int[] result = robArray(root);
         return Math.max(result[0], result[1]);
     }
 
-    public int[] fun(TreeNode root) {
-        if(root == null) {
-            return new int[2];
-        }
+    public int[] robArray(TreeNode root) {
         int[] result = new int[2];
-        int[] leftMax = fun(root.left);
-        int[] rightMax = fun(root.right);
-        result[0] = Math.max(leftMax[0], leftMax[1]) + Math.max(rightMax[0], rightMax[1]);
-        result[1] = root.val + leftMax[0] + rightMax[0];
+        if(root == null) {
+            return result;
+        }
+        int[] left = robArray(root.left);
+        int[] right = robArray(root.right);
+        result[0] = Math.max(left[0], left[1]) + Math.max(right[0], right[1]);
+        result[1] = root.val + left[0] + right[0];
         return result;
     }
 }
