@@ -1,13 +1,13 @@
 ---
-title: Spring笔记（模板）
+title: MyBatis笔记（模板）
 published: 2025-06-01
 updated: 2025-06-01
-description: 'Spring'
+description: 'MyBatis'
 image: ''
-tags: [Spring]
+tags: [MyBatis]
 category: 'Frame'
 draft: false 
 ---
 
-# Spring笔记
+# MyBatis笔记
 

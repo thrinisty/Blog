@@ -119,7 +119,7 @@ public class AccountServiceImpl implements AccountService {
 
 
 
-## 解决方式
+## 使用事务方式
 
 基于AOP封装，Spring提供了事务API供程序员使用，我们可以利用它解决上述问题
 
@@ -289,7 +289,7 @@ public void withdraw() {
 
 
 
-## 事务的隔离级别
+### 事务的隔离级别
 
 之前的MySQL中学过，现在我们复习一下
 
@@ -301,7 +301,7 @@ public void withdraw() {
 
 
 
-### 事务隔离表格
+#### 事务隔离表格
 
 事务隔离级别：MySQL隔离级别定义了事物与事务之间的隔离程度
 
@@ -314,7 +314,7 @@ public void withdraw() {
 
 
 
-### Spring隔离级别
+#### Spring隔离级别
 
 对应着上表的四种隔离级别，默认的隔离级别是根据所选数据库决定的
 
@@ -346,3 +346,177 @@ public void withdraw() {
     System.out.println("某一事务");
 }
 ```
+
+
+
+### 事务超时属性
+
+事务的超时指的是，如果对应秒数流逝完毕的时候，而DML没有全部执行完毕，最终结果会选择回滚，在实际使用中通过timeout属性设置秒数
+
+我们测试一下
+
+```java
+@Transactional(timeout = 10)
+public void save(Account account) {
+    try {
+        accountDao.update(account);
+        Thread.sleep(1000 * 20);
+    } catch (InterruptedException e) {
+        throw new RuntimeException(e);
+    }
+}
+```
+
+在执行DML语句后睡眠20s，而超时时间是10s
+
+但是从结果上显示，该DML语句任然被执行，这是因为在超时之前所有的DML都被执行完成
+
+交换一下顺序，这样就会出现超时
+
+```java
+@Transactional(timeout = 5)
+public void save(Account account) {
+    try {
+        Thread.sleep(1000 * 10);
+        accountDao.update(account);
+    } catch (InterruptedException e) {
+        throw new RuntimeException(e);
+    }
+}
+```
+
+这里是面试中常考的一点
+
+
+
+### 只读事务
+
+如果设置一个事务是只读事务，则该事务中不可以执行增删改语句，启用只读的时候，可以启动Spring的优化策略，提高select语句的执行效率
+
+```java
+@Transactional(readOnly = true)
+public void getByActno(String actno) {
+    Account account = accountDao.selectByActno(actno);
+    account.setUsername(actno);
+    System.out.println(account);
+}
+```
+
+在实际使用为了增加效率可以启用一下
+
+
+
+### 设置异常[不]回滚事务
+
+在Spring事务中默认发生任何异常，进行回滚
+
+我们也可以通过rollbackFor人为设置，表示发生对应异常或者其子类异常的时候才会发生回滚
+
+```java
+@Transactional(rollbackFor = Exception.class)
+public void getByActno(String actno) {
+    Account account = accountDao.selectByActno(actno);
+    account.setUsername(actno);
+    System.out.println(account);
+}
+```
+
+也可以设置遇到对应异常不回滚
+
+```java
+@Transactional(noRollbackFor = NullPointerException.class)
+public void save(Account account) {
+    accountDao.update(account);
+    throw new NullPointerException();
+}
+```
+
+在测试程序中捕获到空指针异常，但是DML语句不发生回滚
+
+
+
+## 事务全注解式开发
+
+我们以上使用事物的时候使用到了spring的xml配置文件
+
+```html
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+                           http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+                           http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
+    <context:component-scan base-package="com"/>
+    <bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource">
+        <property name="driverClassName" value="com.mysql.cj.jdbc.Driver"/>
+        <property name="url" value="jdbc:mysql://localhost:3306/spring6"/>
+        <property name="username" value="root"/>
+        <property name="password" value="654321"/>
+    </bean>
+
+    <bean id="jdbc" class="org.springframework.jdbc.core.JdbcTemplate">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+
+    <bean id="txManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+
+<!--    开启事务注解-->
+    <tx:annotation-driven transaction-manager="txManager"/>
+</beans>
+```
+
+还是非常繁多的，我们一般在实际使用的时候，通过注解来进行配置
+
+在配置类中用@Bean注解配置几个Bean对象
+
+```java
+@Configuration
+@ComponentScan("com")
+@EnableTransactionManagement//开启事务的注解
+public class SpringConfig {
+    @Bean(name = "dataSource")
+    public DruidDataSource getDataSource() {
+        DruidDataSource ds = new DruidDataSource();
+        ds.setDriverClassName("com.mysql.jdbc.Driver");
+        ds.setUrl("jdbc:mysql://localhost:3306/spring6");
+        ds.setUsername("root");
+        ds.setPassword("654321");
+        return ds;
+    }
+    @Bean(name = "jdbc")
+    public JdbcTemplate getJdbcTemplate() {
+        return new JdbcTemplate(getDataSource());
+    }
+    @Bean(name = "txManager")
+    public PlatformTransactionManager getTxManager() {
+        return new DataSourceTransactionManager(getDataSource());
+    }
+}
+```
+
+测试程序
+
+```java
+@Test
+public void test1() {
+    ApplicationContext context = new AnnotationConfigApplicationContext(SpringConfig.class);
+    IsolationService iso = context.getBean("i1", IsolationService.class);
+    try {
+        iso.getByActno("user1");
+    } catch (Exception e) {
+        System.out.println("捕获到异常");
+    }
+}
+```
+
+通过XML也可以实现，需要在Spring配置中用tx标签和aop标签指定需要配置的方法启用其事务，相比注解式开发确实有些复杂了，了解即可
+
+
+
+# Spring总结
+
+Spring的教程部分到此结束，其实还有一个用Spring配置MyBatis的部分，但是我还没有学到MyBatis，加下来的数天回进行MyBatis的学习，等到完成学习之后再会过头来Spring配置MyBatis部分的学习

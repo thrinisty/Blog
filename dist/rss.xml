@@ -1,4 +1,30 @@
-<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Thrinisty&apos;s Blog</title><description>New Blog</description><link>https://thrinisty.github.io/</link><language>zh_CN</language><item><title>LeetCode刷题（电话号码的字母组合，打家劫舍）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E7%94%B5%E8%AF%9D%E5%8F%B7%E7%A0%81%E7%9A%84%E5%AD%97%E6%AF%8D%E7%BB%84%E5%90%88%E6%89%93%E5%AE%B6%E5%8A%AB%E8%88%8D/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E7%94%B5%E8%AF%9D%E5%8F%B7%E7%A0%81%E7%9A%84%E5%AD%97%E6%AF%8D%E7%BB%84%E5%90%88%E6%89%93%E5%AE%B6%E5%8A%AB%E8%88%8D/</guid><description>电话号码的字母组合，打家劫舍</description><pubDate>Mon, 09 Jun 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;电话号码的字母组合&lt;/h1&gt;
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Thrinisty&apos;s Blog</title><description>New Blog</description><link>https://thrinisty.github.io/</link><language>zh_CN</language><item><title>MyBatis笔记（入门使用）</title><link>https://thrinisty.github.io/posts/mybatis%E7%AC%94%E8%AE%B0%E5%85%A5%E9%97%A8%E4%BD%BF%E7%94%A8/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/mybatis%E7%AC%94%E8%AE%B0%E5%85%A5%E9%97%A8%E4%BD%BF%E7%94%A8/</guid><description>MyBatis的入门使用</description><pubDate>Tue, 10 Jun 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;MyBatis笔记&lt;/h1&gt;
+&lt;p&gt;接下来的几天开始MyBatis的学习，用到的课程式动力节点杜老师的B站网课&lt;/p&gt;
+&lt;p&gt;&amp;lt;iframe
+width=&quot;100%&quot;
+height=&quot;468&quot;
+src=&quot;//player.bilibili.com/player.html?bvid=BV1JP4y1Z73S&amp;amp;p=1&amp;amp;autoplay=false&quot;
+scrolling=&quot;no&quot;
+border=&quot;0&quot;
+frameborder=&quot;no&quot;
+framespacing=&quot;0&quot;
+allowfullscreen=&quot;true&quot;&amp;gt;
+&amp;lt;/iframe&amp;gt;&lt;/p&gt;
+&lt;p&gt;本来打算用尚硅谷的课程，但是18年的视频对现在来说以及太老了，jar包之类的都是通过手动引入的，非常的不方便，而且老师的课程也算是细康，讲的挺深入的&lt;/p&gt;
+&lt;p&gt;话不多说开始今天的学习&lt;/p&gt;
+&lt;h2&gt;MyBatis入门配置&lt;/h2&gt;
+&lt;p&gt;相对于JDBC，MyBatis对于JDBC进行了封装，可以避免JDBC的一些缺陷，例如sql语句写死，违反OCP开闭原则&lt;/p&gt;
+&lt;p&gt;另外对于?的赋值非常繁琐，通过反射机制可以轻松实现对象的复制，参数的传入&lt;/p&gt;
+&lt;p&gt;在使用的时候可以通过Maven进行MyBatis的导入&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;dependencies&amp;gt;
+    &amp;lt;dependency&amp;gt;
+        &amp;lt;groupId&amp;gt;org.mybatis&amp;lt;/groupId&amp;gt;
+        &amp;lt;artifactId&amp;gt;mybatis&amp;lt;/artifactId&amp;gt;
+        &amp;lt;version&amp;gt;3.5.13&amp;lt;/version&amp;gt; &amp;lt;!-- 以最新版本为准 --&amp;gt;
+    &amp;lt;/dependency&amp;gt;
+&amp;lt;/dependencies&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+</content:encoded></item><item><title>LeetCode刷题（电话号码的字母组合，打家劫舍）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E7%94%B5%E8%AF%9D%E5%8F%B7%E7%A0%81%E7%9A%84%E5%AD%97%E6%AF%8D%E7%BB%84%E5%90%88%E6%89%93%E5%AE%B6%E5%8A%AB%E8%88%8D/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E7%94%B5%E8%AF%9D%E5%8F%B7%E7%A0%81%E7%9A%84%E5%AD%97%E6%AF%8D%E7%BB%84%E5%90%88%E6%89%93%E5%AE%B6%E5%8A%AB%E8%88%8D/</guid><description>电话号码的字母组合，打家劫舍</description><pubDate>Mon, 09 Jun 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;电话号码的字母组合&lt;/h1&gt;
 &lt;h2&gt;题目描述&lt;/h2&gt;
 &lt;p&gt;给定一个仅包含数字 &lt;code&gt;2-9&lt;/code&gt; 的字符串，返回所有它能表示的字母组合。答案可以按 &lt;strong&gt;任意顺序&lt;/strong&gt; 返回。&lt;/p&gt;
 &lt;p&gt;给出数字到字母的映射如下（与电话按键相同）。注意 1 不对应任何字母。&lt;/p&gt;
@@ -290,7 +316,7 @@ public class AccountServiceImpl implements AccountService {
         }
     }
 &lt;/code&gt;&lt;/pre&gt;
-&lt;h2&gt;解决方式&lt;/h2&gt;
+&lt;h2&gt;使用事务方式&lt;/h2&gt;
 &lt;p&gt;基于AOP封装，Spring提供了事务API供程序员使用，我们可以利用它解决上述问题&lt;/p&gt;
 &lt;p&gt;编程式事务：通过编写代码的方式实现对于事务的管理&lt;/p&gt;
 &lt;p&gt;声明式事务：基于注解方式，基于XML配置方式&lt;/p&gt;
@@ -413,12 +439,12 @@ public void withdraw() {
     System.out.println(&quot;该方法也有事务&quot;);   
 }
 &lt;/code&gt;&lt;/pre&gt;
-&lt;h2&gt;事务的隔离级别&lt;/h2&gt;
+&lt;h3&gt;事务的隔离级别&lt;/h3&gt;
 &lt;p&gt;之前的MySQL中学过，现在我们复习一下&lt;/p&gt;
 &lt;p&gt;脏读：当一个事务读取另一个事务尚未提交的修改时，产生脏读&lt;/p&gt;
 &lt;p&gt;不可重复读：同一查询在同一事物中多次进行，由于其他提交事务所做的修改或者删除，每次返回结果不同的结果集，产生不可重复读&lt;/p&gt;
 &lt;p&gt;幻读：同意查询在同一事物中多次进行，由于其他提交事务的插入操作，每次返回不同的结果集，产生了幻读&lt;/p&gt;
-&lt;h3&gt;事务隔离表格&lt;/h3&gt;
+&lt;h4&gt;事务隔离表格&lt;/h4&gt;
 &lt;p&gt;事务隔离级别：MySQL隔离级别定义了事物与事务之间的隔离程度&lt;/p&gt;
 &lt;table&gt;
 &lt;thead&gt;
@@ -461,7 +487,7 @@ public void withdraw() {
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
-&lt;h3&gt;Spring隔离级别&lt;/h3&gt;
+&lt;h4&gt;Spring隔离级别&lt;/h4&gt;
 &lt;p&gt;对应着上表的四种隔离级别，默认的隔离级别是根据所选数据库决定的&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;public enum Isolation {
     DEFAULT(-1),
@@ -487,6 +513,131 @@ public void withdraw() {
     System.out.println(&quot;某一事务&quot;);
 }
 &lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;事务超时属性&lt;/h3&gt;
+&lt;p&gt;事务的超时指的是，如果对应秒数流逝完毕的时候，而DML没有全部执行完毕，最终结果会选择回滚，在实际使用中通过timeout属性设置秒数&lt;/p&gt;
+&lt;p&gt;我们测试一下&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@Transactional(timeout = 10)
+public void save(Account account) {
+    try {
+        accountDao.update(account);
+        Thread.sleep(1000 * 20);
+    } catch (InterruptedException e) {
+        throw new RuntimeException(e);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;在执行DML语句后睡眠20s，而超时时间是10s&lt;/p&gt;
+&lt;p&gt;但是从结果上显示，该DML语句任然被执行，这是因为在超时之前所有的DML都被执行完成&lt;/p&gt;
+&lt;p&gt;交换一下顺序，这样就会出现超时&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@Transactional(timeout = 5)
+public void save(Account account) {
+    try {
+        Thread.sleep(1000 * 10);
+        accountDao.update(account);
+    } catch (InterruptedException e) {
+        throw new RuntimeException(e);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;这里是面试中常考的一点&lt;/p&gt;
+&lt;h3&gt;只读事务&lt;/h3&gt;
+&lt;p&gt;如果设置一个事务是只读事务，则该事务中不可以执行增删改语句，启用只读的时候，可以启动Spring的优化策略，提高select语句的执行效率&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@Transactional(readOnly = true)
+public void getByActno(String actno) {
+    Account account = accountDao.selectByActno(actno);
+    account.setUsername(actno);
+    System.out.println(account);
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;在实际使用为了增加效率可以启用一下&lt;/p&gt;
+&lt;h3&gt;设置异常[不]回滚事务&lt;/h3&gt;
+&lt;p&gt;在Spring事务中默认发生任何异常，进行回滚&lt;/p&gt;
+&lt;p&gt;我们也可以通过rollbackFor人为设置，表示发生对应异常或者其子类异常的时候才会发生回滚&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@Transactional(rollbackFor = Exception.class)
+public void getByActno(String actno) {
+    Account account = accountDao.selectByActno(actno);
+    account.setUsername(actno);
+    System.out.println(account);
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;也可以设置遇到对应异常不回滚&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@Transactional(noRollbackFor = NullPointerException.class)
+public void save(Account account) {
+    accountDao.update(account);
+    throw new NullPointerException();
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;在测试程序中捕获到空指针异常，但是DML语句不发生回滚&lt;/p&gt;
+&lt;h2&gt;事务全注解式开发&lt;/h2&gt;
+&lt;p&gt;我们以上使用事物的时候使用到了spring的xml配置文件&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&amp;gt;
+&amp;lt;beans xmlns=&quot;http://www.springframework.org/schema/beans&quot;
+       xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
+       xmlns:context=&quot;http://www.springframework.org/schema/context&quot;
+       xmlns:tx=&quot;http://www.springframework.org/schema/tx&quot;
+       xsi:schemaLocation=&quot;http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+                           http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+                           http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd&quot;&amp;gt;
+    &amp;lt;context:component-scan base-package=&quot;com&quot;/&amp;gt;
+    &amp;lt;bean id=&quot;dataSource&quot; class=&quot;com.alibaba.druid.pool.DruidDataSource&quot;&amp;gt;
+        &amp;lt;property name=&quot;driverClassName&quot; value=&quot;com.mysql.cj.jdbc.Driver&quot;/&amp;gt;
+        &amp;lt;property name=&quot;url&quot; value=&quot;jdbc:mysql://localhost:3306/spring6&quot;/&amp;gt;
+        &amp;lt;property name=&quot;username&quot; value=&quot;root&quot;/&amp;gt;
+        &amp;lt;property name=&quot;password&quot; value=&quot;654321&quot;/&amp;gt;
+    &amp;lt;/bean&amp;gt;
+
+    &amp;lt;bean id=&quot;jdbc&quot; class=&quot;org.springframework.jdbc.core.JdbcTemplate&quot;&amp;gt;
+        &amp;lt;property name=&quot;dataSource&quot; ref=&quot;dataSource&quot;/&amp;gt;
+    &amp;lt;/bean&amp;gt;
+
+    &amp;lt;bean id=&quot;txManager&quot; class=&quot;org.springframework.jdbc.datasource.DataSourceTransactionManager&quot;&amp;gt;
+        &amp;lt;property name=&quot;dataSource&quot; ref=&quot;dataSource&quot;/&amp;gt;
+    &amp;lt;/bean&amp;gt;
+
+&amp;lt;!--    开启事务注解--&amp;gt;
+    &amp;lt;tx:annotation-driven transaction-manager=&quot;txManager&quot;/&amp;gt;
+&amp;lt;/beans&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;还是非常繁多的，我们一般在实际使用的时候，通过注解来进行配置&lt;/p&gt;
+&lt;p&gt;在配置类中用@Bean注解配置几个Bean对象&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@Configuration
+@ComponentScan(&quot;com&quot;)
+@EnableTransactionManagement//开启事务的注解
+public class SpringConfig {
+    @Bean(name = &quot;dataSource&quot;)
+    public DruidDataSource getDataSource() {
+        DruidDataSource ds = new DruidDataSource();
+        ds.setDriverClassName(&quot;com.mysql.jdbc.Driver&quot;);
+        ds.setUrl(&quot;jdbc:mysql://localhost:3306/spring6&quot;);
+        ds.setUsername(&quot;root&quot;);
+        ds.setPassword(&quot;654321&quot;);
+        return ds;
+    }
+    @Bean(name = &quot;jdbc&quot;)
+    public JdbcTemplate getJdbcTemplate() {
+        return new JdbcTemplate(getDataSource());
+    }
+    @Bean(name = &quot;txManager&quot;)
+    public PlatformTransactionManager getTxManager() {
+        return new DataSourceTransactionManager(getDataSource());
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;测试程序&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@Test
+public void test1() {
+    ApplicationContext context = new AnnotationConfigApplicationContext(SpringConfig.class);
+    IsolationService iso = context.getBean(&quot;i1&quot;, IsolationService.class);
+    try {
+        iso.getByActno(&quot;user1&quot;);
+    } catch (Exception e) {
+        System.out.println(&quot;捕获到异常&quot;);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;通过XML也可以实现，需要在Spring配置中用tx标签和aop标签指定需要配置的方法启用其事务，相比注解式开发确实有些复杂了，了解即可&lt;/p&gt;
+&lt;h1&gt;Spring总结&lt;/h1&gt;
+&lt;p&gt;Spring的教程部分到此结束，其实还有一个用Spring配置MyBatis的部分，但是我还没有学到MyBatis，加下来的数天回进行MyBatis的学习，等到完成学习之后再会过头来Spring配置MyBatis部分的学习&lt;/p&gt;
 </content:encoded></item><item><title>LeetCode刷题（编辑距离，颜色分类）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E7%BC%96%E8%BE%91%E8%B7%9D%E7%A6%BB%E9%A2%9C%E8%89%B2%E5%88%86%E7%B1%BB/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E7%BC%96%E8%BE%91%E8%B7%9D%E7%A6%BB%E9%A2%9C%E8%89%B2%E5%88%86%E7%B1%BB/</guid><description>编辑距离，荷兰国旗问题</description><pubDate>Sat, 07 Jun 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;编辑距离&lt;/h1&gt;
 &lt;h2&gt;题目描述&lt;/h2&gt;
 &lt;p&gt;给你两个单词 &lt;code&gt;word1&lt;/code&gt; 和 &lt;code&gt;word2&lt;/code&gt;， &lt;em&gt;请返回将 &lt;code&gt;word1&lt;/code&gt; 转换成 &lt;code&gt;word2&lt;/code&gt; 所使用的最少操作数&lt;/em&gt; 。&lt;/p&gt;
@@ -1627,7 +1778,6 @@ OrderService proxy = (OrderService) proxyObj;
     }
 }
 &lt;/code&gt;&lt;/pre&gt;
-</content:encoded></item><item><title>Spring笔记（模板）</title><link>https://thrinisty.github.io/posts/spring%E7%AC%94%E8%AE%B0%E6%A8%A1%E6%9D%BF/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/spring%E7%AC%94%E8%AE%B0%E6%A8%A1%E6%9D%BF/</guid><description>Spring</description><pubDate>Sun, 01 Jun 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;Spring笔记&lt;/h1&gt;
 </content:encoded></item><item><title>LeetCode刷题（）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E6%A8%A1%E6%9D%BF/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E6%A8%A1%E6%9D%BF/</guid><description>Leet</description><pubDate>Sun, 01 Jun 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;（题目）&lt;/h1&gt;
 &lt;h2&gt;题目描述&lt;/h2&gt;
 &lt;h2&gt;题解&lt;/h2&gt;
@@ -1729,6 +1879,7 @@ OrderService proxy = (OrderService) proxyObj;
     }
 }
 &lt;/code&gt;&lt;/pre&gt;
+</content:encoded></item><item><title>MyBatis笔记（模板）</title><link>https://thrinisty.github.io/posts/mybatis%E7%AC%94%E8%AE%B0%E6%A8%A1%E6%9D%BF/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/mybatis%E7%AC%94%E8%AE%B0%E6%A8%A1%E6%9D%BF/</guid><description>MyBatis</description><pubDate>Sun, 01 Jun 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;MyBatis笔记&lt;/h1&gt;
 </content:encoded></item><item><title>LeetCode刷题（回文子串，合并有序列表）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E5%9B%9E%E6%96%87%E5%AD%90%E4%B8%B2%E5%90%88%E5%B9%B6%E6%9C%89%E5%BA%8F%E5%88%97%E8%A1%A8/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E5%9B%9E%E6%96%87%E5%AD%90%E4%B8%B2%E5%90%88%E5%B9%B6%E6%9C%89%E5%BA%8F%E5%88%97%E8%A1%A8/</guid><description>回文子串，合并两个有序列表</description><pubDate>Sat, 31 May 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;回文子串&lt;/h1&gt;
 &lt;h2&gt;题目描述&lt;/h2&gt;
 &lt;p&gt;给你一个字符串 &lt;code&gt;s&lt;/code&gt; ，请你统计并返回这个字符串中 &lt;strong&gt;回文子串&lt;/strong&gt; 的数目。&lt;/p&gt;
