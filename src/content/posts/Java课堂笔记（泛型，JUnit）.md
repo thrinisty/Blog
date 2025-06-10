@@ -1,8 +1,8 @@
 ---
 title: Java笔记
 published: 2025-04-03
-updated: 2025-04-03
-description: '泛型，JUnit'
+updated: 2025-06-10
+description: '泛型，JUnit实际使用'
 image: ''
 tags: [Java]
 category: 'Java'
@@ -840,3 +840,49 @@ public class Junit {
     }
 }
 ```
+
+
+
+实际使用
+
+```java
+package com.batis.junit;
+
+public class Calculate {
+    public int add(int a, int b) {
+        return a + b;
+    }
+    public int sub(int a, int b) {
+        return a - b;
+    }
+}
+```
+
+通过断言式进行判别
+
+```java
+public class CalculateTest {
+    @Test
+    public void testAdd() {
+        int actual = Calculate.add(1, 2);
+        int expected = 3;
+        Assert.assertEquals(expected, actual);
+    }
+
+    @Test
+    public void testSub() {
+        int actual = Calculate.sub(1, 2);
+        int expected = -1;
+        Assert.assertEquals(expected, actual);
+    }
+}
+```
+
+如果结果不一致抛出异常
+
+```
+java.lang.AssertionError: 
+预期:-2
+实际:-1
+```
+
