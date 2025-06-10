@@ -51,11 +51,11 @@ draft: false
 
 自己写的，参考了之前的有一道括号组合的方式，用temp数组映射出对应的字符串，挨个取出递归加入之前的字符串，但是执行速度惨淡，好在可以过关
 
-想了想应该是没有用StringBuffer的缘故，重复创建字符串到缓冲池，导致的执行速度和空间存储都很差，先这样之后在解决
+想了想应该是没有用StringBuffer的缘故，重复创建字符串到缓冲池，导致的执行速度和空间存储都很差，先这样吧，之后再找时间解决
 
 ```java
 class Solution {
-    private String[] temp = {
+    private String[] map = {
         "",//0
         "",//1
         "abc",//2
@@ -68,7 +68,6 @@ class Solution {
         "wxyz"//9
     };
     List<String> result = new ArrayList<>();
-
     public List<String> letterCombinations(String digits) {
         fun("", digits, 0);
         return result;
@@ -80,11 +79,10 @@ class Solution {
             }
             return;
         }
-        char numc = digits.charAt(idx);
-        int num = numc - '0';
-        int n = temp[num].length();
-        for(int i = 0; i < n; i++) {
-            char c = temp[num].charAt(i);
+        int flag = digits.charAt(idx) - '0';
+        String target = map[flag];
+        for(int i = 0; i < target.length(); i++) {
+            char c = target.charAt(i);
             fun(str + c, digits, idx + 1);
         }
     }

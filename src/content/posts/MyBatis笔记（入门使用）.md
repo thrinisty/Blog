@@ -30,7 +30,31 @@ draft: false
 
 
 
-## MyBatis入门配置
+## ORM对象关系映射
+
+O：Object，指的是JVM中的Java对象
+
+R：Relational，关系型数据库
+
+M：Mapping，映射
+
+例如现在有一张数据库表，其中有数条记录，其列字段可以对应到JavaBean类对象的属性，而每一行的记录映射到Java中就是一个类的实例，其中存在一种转换关系，其中的Class对象被称为 pojo、bean、domain
+
+![187](../images/187.png)
+
+![188](../images/188.png)
+
+MyBatis是一个半自动化的ORM，因为MyBatis框架中的SQL语句需要程序员手动编写，而Hibernate是一个全自动的ORM
+
+
+
+## MyBatis入门使用
+
+:::warning
+
+在MyBatis的配置一般通过XML文件实现，另外还有一种基于注解的开发
+
+:::
 
 相对于JDBC，MyBatis对于JDBC进行了封装，可以避免JDBC的一些缺陷，例如sql语句写死，违反OCP开闭原则
 
@@ -46,5 +70,18 @@ draft: false
         <version>3.5.13</version> <!-- 以最新版本为准 -->
     </dependency>
 </dependencies>
+```
+
+用SQL语句新建立一个数据库表
+
+```mysql
+create table t_car(
+	id int primary key auto_increment,
+	car_num varchar(100),
+	brand varchar(100),
+	guide_price decimal(20,2),
+	produce_time date,
+	car_type varchar(100)
+);
 ```
 
