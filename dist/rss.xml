@@ -102,6 +102,209 @@ public void testUtil() {
     sqlSession.close();
 }
 &lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;CRUD增删改查&lt;/h2&gt;
+&lt;p&gt;在之前的时候，我们写死了插入数据和删除数据，而在实际使用的时候，我们需要的应该是代填项，等待我们插入对应数据，如JDBC中的?&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;mapper namespace=&quot;com.example.mapper.UserMapper&quot;&amp;gt;
+    &amp;lt;insert id=&quot;insertValue&quot;&amp;gt;
+        insert into t_car values
+        (4, 301, &quot;大众&quot;, 32.00, &quot;2022-09-01&quot;, &quot;燃油车&quot;);
+    &amp;lt;/insert&amp;gt;
+&amp;lt;/mapper&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;再MyBatis中等效的写法应该是 #{} 代替JDBC中的 ?&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;mapper namespace=&quot;com.example.mapper.UserMapper&quot;&amp;gt;
+    &amp;lt;insert id=&quot;insertValue&quot;&amp;gt;
+        insert into t_car values
+        (null, #{}, #{}, #{}, #{}, #{});
+    &amp;lt;/insert&amp;gt;
+&amp;lt;/mapper&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;Insert&lt;/h3&gt;
+&lt;h4&gt;Map传入参数&lt;/h4&gt;
+&lt;p&gt;另外的insert方法可以传入一个map对象，进行上述空格的赋值，在核心配置文件中的{}中填入key值&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;insert id=&quot;insertValue&quot;&amp;gt;
+    insert into t_car values
+    (null, #{k1}, #{k2}, #{k3}, #{k4}, #{k5});
+&amp;lt;/insert&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;@Test
+public void testInsert() {
+    SqlSession sqlSession = SqlSessionUtil.getSqlSession();
+    Map&amp;lt;String, Object&amp;gt; map = new HashMap&amp;lt;String, Object&amp;gt;();
+    map.put(&quot;k1&quot;, 401);
+    map.put(&quot;k2&quot;, &quot;比亚迪&quot;);
+    map.put(&quot;k3&quot;, 42.00);
+    map.put(&quot;k4&quot;, LocalDate.of(2010, 12, 10));
+    map.put(&quot;k5&quot;, &quot;电车&quot;);
+    int i = sqlSession.insert(&quot;insertValue&quot;, map);
+    sqlSession.commit();
+    sqlSession.close();
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;Bean传入参数&lt;/h4&gt;
+&lt;p&gt;我们构造一个JavaBean对象&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class Car {
+    private Integer id;
+    private String car_num;
+    private String brand;
+    private double guide_price;
+    private LocalDate produce_time;
+    private String car_type;
+    ...
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;在配置中的{}中传入Bean对象的属性名，其实是找getXxx方法获取参数&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;insert id=&quot;insertValue&quot;&amp;gt;
+    insert into t_car values
+    (null, #{car_num}, #{brand}, #{guide_price}, #{produce_time}, #{car_type});
+&amp;lt;/insert&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;@Test
+public void testInsertBean() {
+    SqlSession sqlSession = SqlSessionUtil.getSqlSession();
+    Car car = new Car(null, &quot;501&quot;, &quot;奔驰&quot;, 21.00,
+            LocalDate.of(2010, 12, 10), &quot;新能源&quot;);
+    int i = sqlSession.insert(&quot;insertValue&quot;, car);
+    sqlSession.commit();
+    sqlSession.close();
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;Delete&lt;/h3&gt;
+&lt;p&gt;核心配置，这里的参数只有一个，#{}可以随便写一个，例如id&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;delete id=&quot;deleteValueById&quot;&amp;gt;
+    delete from t_car where id = #{id};
+&amp;lt;/delete&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;传入id即可，这里会自动封装&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@Test
+public void testDelete() {
+    SqlSession sqlSession = SqlSessionUtil.getSqlSession();
+    sqlSession.delete(&quot;deleteValueById&quot;, 1);
+    sqlSession.commit();
+    sqlSession.close();
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;Update&lt;/h3&gt;
+&lt;p&gt;和插入一致，传入car对象，通过用属性名，调用get方法获取参数&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;update id=&quot;updateValueById&quot;&amp;gt;
+    update t_car set car_num = #{car_num}, brand = #{brand}, guide_price = #{guide_price}, produce_time = #{produce_time},car_type = #{car_type} where id = #{id};
+&amp;lt;/update&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;@Test
+public void testUpdate() {
+    SqlSession sqlSession = SqlSessionUtil.getSqlSession();
+    Car car = new Car(3, &quot;100&quot;, &quot;奔驰_new&quot;, 21.00,
+            LocalDate.of(2010, 12, 10), &quot;旧能源&quot;);
+    sqlSession.delete(&quot;updateValueById&quot;, car);
+    sqlSession.commit();
+    sqlSession.close();
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;Select&lt;/h3&gt;
+&lt;h4&gt;单个记录&lt;/h4&gt;
+&lt;p&gt;在返回结果时需要用resultType指定映射的Bean对象全类名&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;select id=&quot;selectById&quot; resultType=&quot;com.bean.Car&quot;&amp;gt;
+    select * from t_car where id = #{id};
+&amp;lt;/select&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;用一个Object对象返回结果对象&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@Test
+public void testSelect() {
+    SqlSession sqlSession = SqlSessionUtil.getSqlSession();
+    Object object = sqlSession.selectOne(&quot;selectById&quot;, 3);
+    System.out.println(object);
+    sqlSession.commit();
+    sqlSession.close();
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;Car{id=3, car_num=&apos;100&apos;, brand=&apos;奔驰_new&apos;, guide_price=21.0, produce_time=2010-12-10, car_type=&apos;旧能源&apos;}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;另外这里我用的Bean对象属性值，对应着数据表的字段（名字一致），如果名称不一致，我们需要使用AS通过别名映射Bean对象属性，才可以正确对Object赋值，否则为null&lt;/p&gt;
+&lt;h4&gt;所有记录&lt;/h4&gt;
+&lt;p&gt;编写SQL语句&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;select id=&quot;selectAll&quot; resultType=&quot;com.bean.Car&quot;&amp;gt;
+    select * from t_car;
+&amp;lt;/select&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;测试程序中通过selectList返回对象结果集合&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@Test
+public void testSelectALL() {
+    SqlSession sqlSession = SqlSessionUtil.getSqlSession();
+    List&amp;lt;Object&amp;gt; list = sqlSession.selectList(&quot;selectAll&quot;);
+    for (Object object : list) {
+        System.out.println(object);
+    }
+    sqlSession.commit();
+    sqlSession.close();
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;namespace&lt;/h3&gt;
+&lt;p&gt;我们在核心配置中引入两个Mapper配置，其中有id相同的两个SQL语句，我们要区别他们，在使用的时候通过namespace进行区分&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;mapper namespace=&quot;CarMapper&quot;&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;@Test
+public void testSelectALL() {
+    SqlSession sqlSession = SqlSessionUtil.getSqlSession();
+    List&amp;lt;Object&amp;gt; list = sqlSession.selectList(&quot;CarMapper.selectAll&quot;);
+    //全写，命名空间 + SQL ID，以区分不同命名空间下的相同id
+    for (Object object : list) {
+        System.out.println(object);
+    }
+    sqlSession.commit();
+    sqlSession.close();
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;MyBatis核心配置&lt;/h2&gt;
+&lt;h3&gt;多环境配置&lt;/h3&gt;
+&lt;p&gt;在核心配置中，我们配置了两个环境，默认使用dev环境，还可以配置多个环境&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;environments default=&quot;dev&quot;&amp;gt;
+    &amp;lt;environment id=&quot;dev&quot;&amp;gt;
+        &amp;lt;transactionManager type=&quot;JDBC&quot;/&amp;gt;
+        &amp;lt;dataSource type=&quot;POOLED&quot;&amp;gt;
+            &amp;lt;property name=&quot;driver&quot; value=&quot;com.mysql.cj.jdbc.Driver&quot;/&amp;gt;
+            &amp;lt;property name=&quot;url&quot; value=&quot;jdbc:mysql://localhost:3306/mybatis?useSSL=false&amp;amp;amp;serverTimezone=UTC&quot;/&amp;gt;
+            &amp;lt;property name=&quot;username&quot; value=&quot;root&quot;/&amp;gt;
+            &amp;lt;property name=&quot;password&quot; value=&quot;654321&quot;/&amp;gt;
+        &amp;lt;/dataSource&amp;gt;
+    &amp;lt;/environment&amp;gt;
+    &amp;lt;environment id=&quot;another&quot;&amp;gt;
+        &amp;lt;transactionManager type=&quot;JDBC&quot;/&amp;gt;
+        &amp;lt;dataSource type=&quot;POOLED&quot;&amp;gt;
+            &amp;lt;property name=&quot;driver&quot; value=&quot;com.mysql.cj.jdbc.Driver&quot;/&amp;gt;
+            &amp;lt;property name=&quot;url&quot; value=&quot;jdbc:mysql://localhost:3306/spring6?useSSL=false&amp;amp;amp;serverTimezone=UTC&quot;/&amp;gt;
+            &amp;lt;property name=&quot;username&quot; value=&quot;root&quot;/&amp;gt;
+            &amp;lt;property name=&quot;password&quot; value=&quot;654321&quot;/&amp;gt;
+        &amp;lt;/dataSource&amp;gt;
+    &amp;lt;/environment&amp;gt;
+&amp;lt;/environments&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;一个environment对应一个SqlSessionFactory对象&lt;/p&gt;
+&lt;p&gt;一个数据库对应一个SqlSessionFactory对象&lt;/p&gt;
+&lt;p&gt;在使用另一个环境的时候可以在build方法指定第二个参数，指定环境id&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;sqlSessionFactory = new SqlSessionFactoryBuilder().build(Resources.getResourceAsStream(&quot;mybatis-config.xml&quot;), &quot;another&quot;);
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;这样得到的环境就是我们配置的名为another的环境，sql操作的数据库就是spring6数据库&lt;/p&gt;
+&lt;h3&gt;数据源DataSource&lt;/h3&gt;
+&lt;p&gt;通过数据源提供connection，也可以自己提供数据源，只要数据源实现数据源接口，提供connection对象&lt;/p&gt;
+&lt;p&gt;type指定的就是数据源对象，三选一：UNPOOLED、POOLED、JNDI&lt;/p&gt;
+&lt;p&gt;分别对应不使用连接池、使用连接池，使用外部第三方连接池&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;dataSource type=&quot;POOLED&quot;&amp;gt;
+    &amp;lt;property name=&quot;driver&quot; value=&quot;com.mysql.cj.jdbc.Driver&quot;/&amp;gt;
+    &amp;lt;property name=&quot;url&quot; value=&quot;jdbc:mysql://localhost:3306/mybatis?useSSL=false&amp;amp;amp;serverTimezone=UTC&quot;/&amp;gt;
+    &amp;lt;property name=&quot;username&quot; value=&quot;root&quot;/&amp;gt;
+    &amp;lt;property name=&quot;password&quot; value=&quot;654321&quot;/&amp;gt;
+&amp;lt;/dataSource&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;其中JNDI是一套规范，大部分的Web容器都实现了JNDI规范，是Java命名目录接口&lt;/p&gt;
+&lt;p&gt;使用不同的type其property一般不同，例如JNDI使用initial_context和data_source即可&lt;/p&gt;
+&lt;h3&gt;POOLED参数配置&lt;/h3&gt;
+&lt;p&gt;使用连接池的时候可以使用很多的property参数，以达到更好的使用效率&lt;/p&gt;
+&lt;p&gt;之前在Druid连接池的配置文件中我们也使用到过&lt;/p&gt;
+&lt;p&gt;例如：&lt;/p&gt;
+&lt;p&gt;poolMaximumActiveConnections指定最多的使用连接对象的数量&lt;/p&gt;
+&lt;p&gt;poolTimeToWait指定每间隔多少秒打印日志，并且尝试获取下一个连接&lt;/p&gt;
+&lt;p&gt;poolMaximumCheckoutTime设置Connection的超时时间&lt;/p&gt;
+&lt;p&gt;在课程中CRUD结束后还有一个手写MyBatis的部分，时间紧张我就先跳过了，明天在Web项目中使用以下MyBatis，顺便复习Web的html，Servlet部分的知识&lt;/p&gt;
 </content:encoded></item><item><title>LeetCode刷题（合并K个升序链表）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E5%90%88%E5%B9%B6k%E4%B8%AA%E5%8D%87%E5%BA%8F%E9%93%BE%E8%A1%A8/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E5%90%88%E5%B9%B6k%E4%B8%AA%E5%8D%87%E5%BA%8F%E9%93%BE%E8%A1%A8/</guid><description>合并K个升序链表</description><pubDate>Tue, 10 Jun 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;合并K个升序链表&lt;/h1&gt;
 &lt;h2&gt;题目描述&lt;/h2&gt;
 &lt;p&gt;给你一个链表数组，每个链表都已经按升序排列。&lt;/p&gt;
