@@ -1,4 +1,205 @@
-<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Thrinisty&apos;s Blog</title><description>New Blog</description><link>https://thrinisty.github.io/</link><language>zh_CN</language><item><title>MyBatis笔记（ORM思想，入门使用，集成日志）</title><link>https://thrinisty.github.io/posts/mybatis%E7%AC%94%E8%AE%B0%E5%85%A5%E9%97%A8%E4%BD%BF%E7%94%A8/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/mybatis%E7%AC%94%E8%AE%B0%E5%85%A5%E9%97%A8%E4%BD%BF%E7%94%A8/</guid><description>MyBatis的入门使用，MyBatis使用日志</description><pubDate>Tue, 10 Jun 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;MyBatis笔记&lt;/h1&gt;
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Thrinisty&apos;s Blog</title><description>New Blog</description><link>https://thrinisty.github.io/</link><language>zh_CN</language><item><title>LeetCode刷题（最小栈）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E6%9C%80%E5%B0%8F%E6%A0%88/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E6%9C%80%E5%B0%8F%E6%A0%88/</guid><description>最小栈实现</description><pubDate>Wed, 11 Jun 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;最小栈&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;设计一个支持 &lt;code&gt;push&lt;/code&gt; ，&lt;code&gt;pop&lt;/code&gt; ，&lt;code&gt;top&lt;/code&gt; 操作，并能在常数时间内检索到最小元素的栈。&lt;/p&gt;
+&lt;p&gt;实现 &lt;code&gt;MinStack&lt;/code&gt; 类:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;MinStack()&lt;/code&gt; 初始化堆栈对象。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;void push(int val)&lt;/code&gt; 将元素val推入堆栈。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;void pop()&lt;/code&gt; 删除堆栈顶部的元素。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;int top()&lt;/code&gt; 获取堆栈顶部的元素。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;int getMin()&lt;/code&gt; 获取堆栈中的最小元素。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;示例 1:&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：
+[&quot;MinStack&quot;,&quot;push&quot;,&quot;push&quot;,&quot;push&quot;,&quot;getMin&quot;,&quot;pop&quot;,&quot;top&quot;,&quot;getMin&quot;]
+[[],[-2],[0],[-3],[],[],[],[]]
+
+输出：
+[null,null,null,null,-3,null,0,-2]
+
+解释：
+MinStack minStack = new MinStack();
+minStack.push(-2);
+minStack.push(0);
+minStack.push(-3);
+minStack.getMin();   --&amp;gt; 返回 -3.
+minStack.pop();
+minStack.top();      --&amp;gt; 返回 0.
+minStack.getMin();   --&amp;gt; 返回 -2.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;这一道题是我同学的面试题目，他给我讲的时候我有些摸不清头脑，看了题解后清晰多了，主要的要点就是创建一个最小栈的结构辅助主栈中最小值的存储&lt;/p&gt;
+&lt;p&gt;这个最小栈在主栈元素入站的时判断元素是否为最小元素亦或者最小栈中没有元素，如果符合情况进行入最小栈&lt;/p&gt;
+&lt;p&gt;在pop弹出的时候，判断主栈弹出的元素是否等与最小栈栈顶的元素，满足的pop最小栈&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class MinStack {
+    private Stack&amp;lt;Integer&amp;gt; stack;
+    private Stack&amp;lt;Integer&amp;gt; minStack;
+    public MinStack() {
+        stack = new Stack&amp;lt;&amp;gt;();
+        minStack = new Stack&amp;lt;&amp;gt;();
+    }
+    
+    public void push(int val) {
+        stack.push(val);
+        if(minStack.isEmpty() || val &amp;lt;= minStack.peek()) {
+            minStack.push(val);
+        }
+    }
+    
+    public void pop() {
+        int num = stack.pop();
+        if(num == minStack.peek()) {
+            minStack.pop();
+        }
+    }
+    
+    public int top() {
+        return stack.peek();
+    }
+    
+    public int getMin() {
+        return minStack.peek();
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+</content:encoded></item><item><title>MyBatis笔记（CRUD）</title><link>https://thrinisty.github.io/posts/mybatis%E7%AC%94%E8%AE%B0%E5%85%B7%E4%BD%93%E4%BD%BF%E7%94%A8/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/mybatis%E7%AC%94%E8%AE%B0%E5%85%B7%E4%BD%93%E4%BD%BF%E7%94%A8/</guid><description>MyBatis增删改查</description><pubDate>Wed, 11 Jun 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;MyBatis笔记&lt;/h1&gt;
+&lt;p&gt;昨天编写了一个MyBatis的入门程序，成功的让他跑了起来，今天使用MyBatis更加深入的部分&lt;/p&gt;
+&lt;h2&gt;MyBatis工具类&lt;/h2&gt;
+&lt;p&gt;我们可以封装一个工具类，便于我们获取到Session对象&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;package com.batis.utils;
+
+import org.apache.ibatis.io.Resources;
+import org.apache.ibatis.session.SqlSession;
+import org.apache.ibatis.session.SqlSessionFactory;
+import org.apache.ibatis.session.SqlSessionFactoryBuilder;
+
+import java.io.IOException;
+
+public class SqlSessionUtil {
+    private static SqlSessionFactory sqlSessionFactory;
+    static {
+        try {
+            sqlSessionFactory = new SqlSessionFactoryBuilder()
+                    .build(Resources.getResourceAsStream(&quot;mybatis-config.xml&quot;));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    
+    private SqlSessionUtil() {}
+    public static SqlSession getSqlSession() {
+        return sqlSessionFactory.openSession();
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;测试程序，可以看到代码简洁许多&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@Test
+public void testUtil() {
+    SqlSession sqlSession = SqlSessionUtil.getSqlSession();
+    int update = sqlSession.delete(&quot;deleteValue&quot;);
+    System.out.println(update);
+    sqlSession.commit();
+    sqlSession.close();
+}
+&lt;/code&gt;&lt;/pre&gt;
+</content:encoded></item><item><title>LeetCode刷题（合并K个升序链表）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E5%90%88%E5%B9%B6k%E4%B8%AA%E5%8D%87%E5%BA%8F%E9%93%BE%E8%A1%A8/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E5%90%88%E5%B9%B6k%E4%B8%AA%E5%8D%87%E5%BA%8F%E9%93%BE%E8%A1%A8/</guid><description>合并K个升序链表</description><pubDate>Tue, 10 Jun 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;合并K个升序链表&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;给你一个链表数组，每个链表都已经按升序排列。&lt;/p&gt;
+&lt;p&gt;请你将所有链表合并到一个升序链表中，返回合并后的链表。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：lists = [[1,4,5],[1,3,4],[2,6]]
+输出：[1,1,2,3,4,4,5,6]
+解释：链表数组如下：
+[
+  1-&amp;gt;4-&amp;gt;5,
+  1-&amp;gt;3-&amp;gt;4,
+  2-&amp;gt;6
+]
+将它们合并到一个有序链表中得到。
+1-&amp;gt;1-&amp;gt;2-&amp;gt;3-&amp;gt;4-&amp;gt;4-&amp;gt;5-&amp;gt;6
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：lists = []
+输出：[]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 3：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：lists = [[]]
+输出：[]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;解法一：&lt;/p&gt;
+&lt;p&gt;之前做过一道合并两个链表的题目，尝试通过逐个取出集合中的链表进行合并&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public ListNode mergeKLists(ListNode[] lists) {
+        if(lists.length == 0 || lists == null) {
+            return null;
+        }
+        ListNode result = null;
+        for(ListNode list : lists) {
+            result = mergeList(result, list);
+        }
+        return result;
+    }
+
+    public ListNode mergeList(ListNode listA, ListNode listB) {
+        ListNode result = new ListNode();
+        ListNode p = result;
+        while(listA != null &amp;amp;&amp;amp; listB != null) {
+            if(listA.val &amp;lt;= listB.val) {
+                p.next = listA;
+                listA = listA.next;
+                p = p.next;
+            } else {
+                p.next = listB;
+                listB = listB.next;
+                p = p.next;
+            }
+        }
+        p.next = listA == null ? listB : listA;
+        return result.next;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;原本想着应该不可以通过测试用例之类的，但是竟然过了，只是执行速度非常缓慢，时间复杂度是O(N*k^2)，其中k是链表数量，N是平均链表长度&lt;/p&gt;
+&lt;p&gt;解法二：归并排序，合并两个链表的方式和第一种一致&lt;/p&gt;
+&lt;p&gt;可以用归并排序，递归地将链表两两合并，相比于第一种方式而言不用重复的合并result链表，节省了很多的时间，这一题用数组的方式给出链表应该也是鼓励使用这种方式&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public ListNode mergeKLists(ListNode[] lists) {
+        if(lists.length == 0 || lists == null) return null;
+        return merge(lists, 0, lists.length - 1);
+    }
+
+    public ListNode merge(ListNode[] lists, int left, int right) {
+        if(left == right) {
+            return lists[left];
+        }
+        int mid = left + (right - left) / 2;
+        ListNode leftList = merge(lists, left, mid);
+        ListNode rightList = merge(lists, mid + 1, right);
+        return mergeList(leftList, rightList);
+    }
+
+    public ListNode mergeList(ListNode listA, ListNode listB) {
+        ListNode result = new ListNode();
+        ListNode p = result;
+        while(listA != null &amp;amp;&amp;amp; listB != null) {
+            if(listA.val &amp;lt;= listB.val) {
+                p.next = listA;
+                listA = listA.next;
+                p = p.next;
+            } else {
+                p.next = listB;
+                listB = listB.next;
+                p = p.next;
+            }
+        }
+        p.next = listA == null ? listB : listA;
+        return result.next;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;虽然说这一题是困难，但是因为之前学习数据结构和算法的时候对于链表和分治的思想掌握比较牢靠，其实也不难理解，这道题是LeetCode100的第50道了，刷的还蛮快的嘛都一半了，继续加油！！&lt;/p&gt;
+</content:encoded></item><item><title>MyBatis笔记（ORM思想，入门使用，集成日志）</title><link>https://thrinisty.github.io/posts/mybatis%E7%AC%94%E8%AE%B0orm%E6%80%9D%E6%83%B3%E5%85%A5%E9%97%A8%E4%BD%BF%E7%94%A8%E9%9B%86%E6%88%90%E6%97%A5%E5%BF%97/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/mybatis%E7%AC%94%E8%AE%B0orm%E6%80%9D%E6%83%B3%E5%85%A5%E9%97%A8%E4%BD%BF%E7%94%A8%E9%9B%86%E6%88%90%E6%97%A5%E5%BF%97/</guid><description>MyBatis的入门使用，MyBatis使用日志</description><pubDate>Tue, 10 Jun 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;MyBatis笔记&lt;/h1&gt;
 &lt;p&gt;接下来的几天开始MyBatis的学习，用到的课程式动力节点杜老师的B站网课&lt;/p&gt;
 &lt;p&gt;&amp;lt;iframe
 width=&quot;100%&quot;
@@ -270,103 +471,6 @@ Created connection 1144068272.
 2025-06-10 22:12:02.364 [main] DEBUG o.a.i.t.jdbc.JdbcTransaction - Closing JDBC Connection [com.mysql.cj.jdbc.ConnectionImpl@102cec62]
 2025-06-10 22:12:02.365 [main] DEBUG o.a.i.d.pooled.PooledDataSource - Returned connection 271379554 to pool.
 &lt;/code&gt;&lt;/pre&gt;
-</content:encoded></item><item><title>LeetCode刷题（合并K个升序链表）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E5%90%88%E5%B9%B6k%E4%B8%AA%E5%8D%87%E5%BA%8F%E9%93%BE%E8%A1%A8/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E5%90%88%E5%B9%B6k%E4%B8%AA%E5%8D%87%E5%BA%8F%E9%93%BE%E8%A1%A8/</guid><description>合并K个升序链表</description><pubDate>Tue, 10 Jun 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;合并K个升序链表&lt;/h1&gt;
-&lt;h2&gt;题目描述&lt;/h2&gt;
-&lt;p&gt;给你一个链表数组，每个链表都已经按升序排列。&lt;/p&gt;
-&lt;p&gt;请你将所有链表合并到一个升序链表中，返回合并后的链表。&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;输入：lists = [[1,4,5],[1,3,4],[2,6]]
-输出：[1,1,2,3,4,4,5,6]
-解释：链表数组如下：
-[
-  1-&amp;gt;4-&amp;gt;5,
-  1-&amp;gt;3-&amp;gt;4,
-  2-&amp;gt;6
-]
-将它们合并到一个有序链表中得到。
-1-&amp;gt;1-&amp;gt;2-&amp;gt;3-&amp;gt;4-&amp;gt;4-&amp;gt;5-&amp;gt;6
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;输入：lists = []
-输出：[]
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;strong&gt;示例 3：&lt;/strong&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;输入：lists = [[]]
-输出：[]
-&lt;/code&gt;&lt;/pre&gt;
-&lt;h2&gt;题解&lt;/h2&gt;
-&lt;p&gt;解法一：&lt;/p&gt;
-&lt;p&gt;之前做过一道合并两个链表的题目，尝试通过逐个取出集合中的链表进行合并&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;class Solution {
-    public ListNode mergeKLists(ListNode[] lists) {
-        if(lists.length == 0 || lists == null) {
-            return null;
-        }
-        ListNode result = null;
-        for(ListNode list : lists) {
-            result = mergeList(result, list);
-        }
-        return result;
-    }
-
-    public ListNode mergeList(ListNode listA, ListNode listB) {
-        ListNode result = new ListNode();
-        ListNode p = result;
-        while(listA != null &amp;amp;&amp;amp; listB != null) {
-            if(listA.val &amp;lt;= listB.val) {
-                p.next = listA;
-                listA = listA.next;
-                p = p.next;
-            } else {
-                p.next = listB;
-                listB = listB.next;
-                p = p.next;
-            }
-        }
-        p.next = listA == null ? listB : listA;
-        return result.next;
-    }
-}
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;原本想着应该不可以通过测试用例之类的，但是竟然过了，只是执行速度非常缓慢，时间复杂度是O(N*k^2)，其中k是链表数量，N是平均链表长度&lt;/p&gt;
-&lt;p&gt;解法二：归并排序，合并两个链表的方式和第一种一致&lt;/p&gt;
-&lt;p&gt;可以用归并排序，递归地将链表两两合并，相比于第一种方式而言不用重复的合并result链表，节省了很多的时间，这一题用数组的方式给出链表应该也是鼓励使用这种方式&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;class Solution {
-    public ListNode mergeKLists(ListNode[] lists) {
-        if(lists.length == 0 || lists == null) return null;
-        return merge(lists, 0, lists.length - 1);
-    }
-
-    public ListNode merge(ListNode[] lists, int left, int right) {
-        if(left == right) {
-            return lists[left];
-        }
-        int mid = left + (right - left) / 2;
-        ListNode leftList = merge(lists, left, mid);
-        ListNode rightList = merge(lists, mid + 1, right);
-        return mergeList(leftList, rightList);
-    }
-
-    public ListNode mergeList(ListNode listA, ListNode listB) {
-        ListNode result = new ListNode();
-        ListNode p = result;
-        while(listA != null &amp;amp;&amp;amp; listB != null) {
-            if(listA.val &amp;lt;= listB.val) {
-                p.next = listA;
-                listA = listA.next;
-                p = p.next;
-            } else {
-                p.next = listB;
-                listB = listB.next;
-                p = p.next;
-            }
-        }
-        p.next = listA == null ? listB : listA;
-        return result.next;
-    }
-}
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;虽然说这一题是困难，但是因为之前学习数据结构和算法的时候对于链表和分治的思想掌握比较牢靠，其实也不难理解，这道题是LeetCode100的第50道了，刷的还蛮快的嘛都一半了，继续加油！！&lt;/p&gt;
 </content:encoded></item><item><title>LeetCode刷题（电话号码的字母组合，打家劫舍）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E7%94%B5%E8%AF%9D%E5%8F%B7%E7%A0%81%E7%9A%84%E5%AD%97%E6%AF%8D%E7%BB%84%E5%90%88%E6%89%93%E5%AE%B6%E5%8A%AB%E8%88%8D/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E7%94%B5%E8%AF%9D%E5%8F%B7%E7%A0%81%E7%9A%84%E5%AD%97%E6%AF%8D%E7%BB%84%E5%90%88%E6%89%93%E5%AE%B6%E5%8A%AB%E8%88%8D/</guid><description>电话号码的字母组合，打家劫舍</description><pubDate>Mon, 09 Jun 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;电话号码的字母组合&lt;/h1&gt;
 &lt;h2&gt;题目描述&lt;/h2&gt;
 &lt;p&gt;给定一个仅包含数字 &lt;code&gt;2-9&lt;/code&gt; 的字符串，返回所有它能表示的字母组合。答案可以按 &lt;strong&gt;任意顺序&lt;/strong&gt; 返回。&lt;/p&gt;
