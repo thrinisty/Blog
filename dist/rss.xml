@@ -1,4 +1,432 @@
-<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Thrinisty&apos;s Blog</title><description>New Blog</description><link>https://thrinisty.github.io/</link><language>zh_CN</language><item><title>LeetCode刷题（最小栈）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E6%9C%80%E5%B0%8F%E6%A0%88/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E6%9C%80%E5%B0%8F%E6%A0%88/</guid><description>最小栈实现</description><pubDate>Wed, 11 Jun 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;最小栈&lt;/h1&gt;
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Thrinisty&apos;s Blog</title><description>New Blog</description><link>https://thrinisty.github.io/</link><language>zh_CN</language><item><title>LeetCode刷题（数组第K大元素）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E6%95%B0%E7%BB%84%E7%9A%84%E7%AC%ACk%E5%A4%A7%E5%85%83%E7%B4%A0/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E6%95%B0%E7%BB%84%E7%9A%84%E7%AC%ACk%E5%A4%A7%E5%85%83%E7%B4%A0/</guid><description>数组第K大元素</description><pubDate>Fri, 13 Jun 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;数组的第K大元素&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;给定整数数组 &lt;code&gt;nums&lt;/code&gt; 和整数 &lt;code&gt;k&lt;/code&gt;，请返回数组中第 &lt;code&gt;**k**&lt;/code&gt; 个最大的元素。&lt;/p&gt;
+&lt;p&gt;请注意，你需要找的是数组排序后的第 &lt;code&gt;k&lt;/code&gt; 个最大的元素，而不是第 &lt;code&gt;k&lt;/code&gt; 个不同的元素。&lt;/p&gt;
+&lt;p&gt;你必须设计并实现时间复杂度为 &lt;code&gt;O(n)&lt;/code&gt; 的算法解决此问题。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 1:&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入: [3,2,1,5,6,4], k = 2
+输出: 5
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2:&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入: [3,2,3,1,2,4,5,5,6], k = 4
+输出: 4
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;我们先来回顾一下数组的快速排序，我们的目的是在其基础上进行修改&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public int[] sortArray(int[] nums) {
+        quickSort(nums, 0, nums.length - 1);
+        return nums;
+    }
+
+    public void quickSort(int[] nums, int left, int right) {
+        if(left &amp;gt;= right) {
+            return;
+        }
+        int mid = partition(nums, left, right); 
+        quickSort(nums, left, mid - 1);
+        quickSort(nums, mid + 1, right);
+    }
+
+    public int partition(int[] nums, int left, int right) {
+        int midNum = nums[left];
+        int i = left + 1;
+        int j = right;
+        while(i &amp;lt;= j) {
+            while(i &amp;lt;= j &amp;amp;&amp;amp; nums[i] &amp;lt; midNum) {
+                i++;
+            }
+            while(i &amp;lt;= j &amp;amp;&amp;amp; nums[j] &amp;gt; midNum) {
+                j--;
+            }
+            if(i &amp;lt;= j) {
+                swap(nums, i, j);
+                i++;
+                j--;
+            }
+        }
+        swap(nums, j, left);
+        return j;
+    }
+
+    private void swap(int[] nums, int i, int j) {
+        int temp = nums[i];
+        nums[i] = nums[j];
+        nums[j] = temp;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;我们的partition方法和swap方法都可以复用，只需要修改Quick功能函数的逻辑即可，在快速排序中我们需要对于所选择中间值的左右两侧同时进行递归排序&lt;/p&gt;
+&lt;p&gt;而在快速选择排序中我们可以先对于得到的所选值进行判断，如果是选择值的索引位置是我们需要的目标索引直接返回即可，因为左右两侧虽然没有排序完毕，但因为左边的值都是小于选取目标，右边同理，选择值的索引位置与排序过后的位置相同&lt;/p&gt;
+&lt;p&gt;索引不一致的时候，递归选择一侧重新调用partition选取值即可&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public int findKthLargest(int[] nums, int k) {
+        int target = nums.length - k;
+        return quickSelect(nums, 0, nums.length - 1, target);
+    }
+
+    public int quickSelect(int[] nums, int left, int right, int target) {
+        if(left == right) {
+            return nums[left];
+        }
+        int mid = partition(nums, left, right);
+        if(mid == target) {
+            return nums[mid];
+        } else if(mid &amp;lt; target) {
+            return quickSelect(nums, mid + 1, right, target);
+        } else {
+            return quickSelect(nums, left, mid - 1, target);
+        }
+    }
+
+    public int partition(int[] nums, int left, int right) {
+        int midNum = nums[left];
+        int i = left + 1;
+        int j = right;
+        while(i &amp;lt;= j) {
+            while(i &amp;lt;= j &amp;amp;&amp;amp; nums[i] &amp;lt; midNum) {
+                i++;
+            }
+            while(i &amp;lt;= j &amp;amp;&amp;amp; nums[j] &amp;gt; midNum) {
+                j--;
+            }
+            if(i &amp;lt;= j) {
+                swap(nums, i, j);
+                i++;
+                j--;
+            }
+        }
+        swap(nums, j, left);
+        return j;
+    }
+
+    public void swap(int[] nums, int i, int j) {
+        int temp = nums[i];
+        nums[i] = nums[j];
+        nums[j] = temp;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+</content:encoded></item><item><title>MyBatis笔记（Web项目使用MyBatis）</title><link>https://thrinisty.github.io/posts/mybatis%E7%AC%94%E8%AE%B0web%E9%A1%B9%E7%9B%AE%E4%BD%BF%E7%94%A8mybatis/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/mybatis%E7%AC%94%E8%AE%B0web%E9%A1%B9%E7%9B%AE%E4%BD%BF%E7%94%A8mybatis/</guid><description>Web项目使用MyBatis</description><pubDate>Fri, 13 Jun 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;MyBatis笔记&lt;/h1&gt;
+&lt;p&gt;今天我们用web使用以下MyBatis，顺便复习一下JavaWeb&lt;/p&gt;
+&lt;p&gt;用Maven Archetype创建一个Web工程&lt;/p&gt;
+&lt;p&gt;手动更新以下web.xml&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&amp;gt;
+&amp;lt;!--
+  Licensed to the Apache Software Foundation (ASF) under one or more
+  contributor license agreements.  See the NOTICE file distributed with
+  this work for additional information regarding copyright ownership.
+  The ASF licenses this file to You under the Apache License, Version 2.0
+  (the &quot;License&quot;); you may not use this file except in compliance with
+  the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+--&amp;gt;
+&amp;lt;web-app xmlns=&quot;http://xmlns.jcp.org/xml/ns/javaee&quot;
+         xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
+         xsi:schemaLocation=&quot;http://xmlns.jcp.org/xml/ns/javaee
+                      http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd&quot;
+         version=&quot;4.0&quot;
+         metadata-complete=&quot;false&quot;&amp;gt;
+&amp;lt;/web-app&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;:::warning&lt;/p&gt;
+&lt;p&gt;注意这里 metadata-complete=&quot;true&quot;不支持注解式Servlet，需要改为false&lt;/p&gt;
+&lt;p&gt;:::&lt;/p&gt;
+&lt;p&gt;添加一些Maven依赖&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;project xmlns=&quot;http://maven.apache.org/POM/4.0.0&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
+  xsi:schemaLocation=&quot;http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd&quot;&amp;gt;
+  &amp;lt;modelVersion&amp;gt;4.0.0&amp;lt;/modelVersion&amp;gt;
+  &amp;lt;groupId&amp;gt;com.thrinisty&amp;lt;/groupId&amp;gt;
+  &amp;lt;artifactId&amp;gt;mybatis-003&amp;lt;/artifactId&amp;gt;
+  &amp;lt;packaging&amp;gt;war&amp;lt;/packaging&amp;gt;
+  &amp;lt;version&amp;gt;1.0-SNAPSHOT&amp;lt;/version&amp;gt;
+  &amp;lt;name&amp;gt;mybatis-003 Maven Webapp&amp;lt;/name&amp;gt;
+  &amp;lt;url&amp;gt;http://maven.apache.org&amp;lt;/url&amp;gt;
+
+  &amp;lt;dependencies&amp;gt;
+    &amp;lt;dependency&amp;gt;
+      &amp;lt;groupId&amp;gt;javax.servlet&amp;lt;/groupId&amp;gt;
+      &amp;lt;artifactId&amp;gt;javax.servlet-api&amp;lt;/artifactId&amp;gt;
+      &amp;lt;version&amp;gt;4.0.1&amp;lt;/version&amp;gt;
+      &amp;lt;scope&amp;gt;provided&amp;lt;/scope&amp;gt;
+    &amp;lt;/dependency&amp;gt;
+    &amp;lt;dependency&amp;gt;
+      &amp;lt;groupId&amp;gt;mysql&amp;lt;/groupId&amp;gt;
+      &amp;lt;artifactId&amp;gt;mysql-connector-java&amp;lt;/artifactId&amp;gt;
+      &amp;lt;version&amp;gt;8.0.33&amp;lt;/version&amp;gt; &amp;lt;!-- 可替换为最新版本 --&amp;gt;
+    &amp;lt;/dependency&amp;gt;
+    &amp;lt;dependency&amp;gt;
+      &amp;lt;groupId&amp;gt;org.mybatis&amp;lt;/groupId&amp;gt;
+      &amp;lt;artifactId&amp;gt;mybatis&amp;lt;/artifactId&amp;gt;
+      &amp;lt;version&amp;gt;3.5.13&amp;lt;/version&amp;gt; &amp;lt;!-- 以最新版本为准 --&amp;gt;
+    &amp;lt;/dependency&amp;gt;
+    &amp;lt;dependency&amp;gt;
+      &amp;lt;groupId&amp;gt;ch.qos.logback&amp;lt;/groupId&amp;gt;
+      &amp;lt;artifactId&amp;gt;logback-classic&amp;lt;/artifactId&amp;gt;
+      &amp;lt;version&amp;gt;1.5.13&amp;lt;/version&amp;gt;
+    &amp;lt;/dependency&amp;gt;
+  &amp;lt;/dependencies&amp;gt;
+  &amp;lt;build&amp;gt;
+    &amp;lt;finalName&amp;gt;mybatis-003&amp;lt;/finalName&amp;gt;
+  &amp;lt;/build&amp;gt;
+&amp;lt;/project&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;bean对象&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class Account {
+    private int id;
+    private String actno;
+    private double balance;
+    ...
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;前端页面&lt;/h2&gt;
+&lt;p&gt;前端转账页面&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;!DOCTYPE html&amp;gt;
+&amp;lt;html lang=&quot;en&quot;&amp;gt;
+&amp;lt;head&amp;gt;
+    &amp;lt;meta charset=&quot;UTF-8&quot;&amp;gt;
+    &amp;lt;title&amp;gt;银行账户转账&amp;lt;/title&amp;gt;
+&amp;lt;/head&amp;gt;
+&amp;lt;body&amp;gt;
+&amp;lt;form action=&quot;/bank/transfer&quot; method=&quot;post&quot;&amp;gt;
+    转出账号：&amp;lt;input type=&quot;text&quot; name=&quot;fromActno&quot;&amp;gt;&amp;lt;br/&amp;gt;
+    转出账号：&amp;lt;input type=&quot;text&quot; name=&quot;toActno&quot;&amp;gt;&amp;lt;br/&amp;gt;
+    转出金额：&amp;lt;input type=&quot;text&quot; name=&quot;money&quot;&amp;gt;&amp;lt;br/&amp;gt;
+    &amp;lt;input type=&quot;submit&quot; value=&quot;转账&quot;&amp;gt;
+&amp;lt;/form&amp;gt;
+&amp;lt;/body&amp;gt;
+&amp;lt;/html&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;Servlet程序&lt;/h2&gt;
+&lt;p&gt;Servlet程序，运用web.xml进行配置&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;servlet&amp;gt;
+    &amp;lt;servlet-name&amp;gt;test&amp;lt;/servlet-name&amp;gt;
+    &amp;lt;servlet-class&amp;gt;com.bank.web.AccountServlet&amp;lt;/servlet-class&amp;gt;
+&amp;lt;/servlet&amp;gt;
+&amp;lt;servlet-mapping&amp;gt;
+    &amp;lt;servlet-name&amp;gt;test&amp;lt;/servlet-name&amp;gt;
+    &amp;lt;url-pattern&amp;gt;/transfer&amp;lt;/url-pattern&amp;gt;
+&amp;lt;/servlet-mapping&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;public class AccountServlet extends HttpServlet {
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String fromAccount = req.getParameter(&quot;fromActno&quot;);
+        String toAccount = req.getParameter(&quot;toActno&quot;);
+        double amount = Double.parseDouble(req.getParameter(&quot;money&quot;));
+
+        //创建服务层转账服务
+        AccountService service = new AccountServiceImpl();
+        try {
+            service.transter(fromAccount, toAccount, amount);
+            //调用视图完成展示结果
+            resp.sendRedirect(req.getContextPath() + &quot;/success.html&quot;);
+        } catch (MoneyNotEnoughException e) {
+            resp.sendRedirect(req.getContextPath() + &quot;/error1.html&quot;);
+            System.out.println(&quot;余额不足&quot;);
+        } catch (TransferException e) {
+            resp.sendRedirect(req.getContextPath() + &quot;/error2.html&quot;);
+            System.out.println(&quot;转账失败&quot;);
+        }
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;服务层&lt;/h2&gt;
+&lt;p&gt;AccountService类，其中用到了AccountDaoImpl的数据操作对象实现类&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class AccountServiceImpl implements AccountService {
+    @Override
+    public void transter(String fromActno, String toActno, double money) throws MoneyNotEnoughException {
+        AccountDao accountDao = new AccountDaoImpl();
+        //判断转出账户余额是否充足（select）
+        Account fromAccount = accountDao.selectAccount(fromActno);
+        if (fromAccount != null &amp;amp;&amp;amp; money &amp;gt; fromAccount.getBalance()) {
+            throw new MoneyNotEnoughException(&quot;余额不足&quot;);
+        }
+        //判断转出余额不足，提示用户
+        //账户余额充足，更新转出账户（update）
+        Account toAccount = accountDao.selectAccount(toActno);
+        fromAccount.setBalance(fromAccount.getBalance() - money);
+        toAccount.setBalance(toAccount.getBalance() + money);
+
+        //更新转出账户余额（update）
+        boolean flag1 = accountDao.updateAccount(fromAccount);
+        boolean flag2 = accountDao.updateAccount(toAccount);
+        if(!flag1 || !flag2){
+            throw new TransferException(&quot;转账异常&quot;);
+        }
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;Dao&lt;/h2&gt;
+&lt;h3&gt;MyBatis相关配置&lt;/h3&gt;
+&lt;p&gt;mybatis-config.xml&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&amp;gt;
+&amp;lt;!DOCTYPE configuration
+        PUBLIC &quot;-//mybatis.org//DTD Config 3.0//EN&quot;
+        &quot;http://mybatis.org/dtd/mybatis-3-config.dtd&quot;&amp;gt;
+&amp;lt;configuration&amp;gt;
+&amp;lt;!--    &amp;lt;settings&amp;gt;--&amp;gt;
+&amp;lt;!--        &amp;lt;setting name=&quot;logImpl&quot; value=&quot;STDOUT_LOGGING&quot;/&amp;gt;--&amp;gt;
+&amp;lt;!--    &amp;lt;/settings&amp;gt;--&amp;gt;
+    &amp;lt;environments default=&quot;dev&quot;&amp;gt;
+        &amp;lt;environment id=&quot;dev&quot;&amp;gt;
+            &amp;lt;transactionManager type=&quot;JDBC&quot;/&amp;gt;
+            &amp;lt;dataSource type=&quot;POOLED&quot;&amp;gt;
+                &amp;lt;property name=&quot;driver&quot; value=&quot;com.mysql.cj.jdbc.Driver&quot;/&amp;gt;
+                &amp;lt;property name=&quot;url&quot; value=&quot;jdbc:mysql://localhost:3306/mybatis?useSSL=false&amp;amp;amp;serverTimezone=UTC&quot;/&amp;gt;
+                &amp;lt;property name=&quot;username&quot; value=&quot;root&quot;/&amp;gt;
+                &amp;lt;property name=&quot;password&quot; value=&quot;654321&quot;/&amp;gt;
+            &amp;lt;/dataSource&amp;gt;
+        &amp;lt;/environment&amp;gt;
+
+    &amp;lt;/environments&amp;gt;
+    &amp;lt;mappers&amp;gt;
+&amp;lt;!--        用于编写SQL语句的文件--&amp;gt;
+        &amp;lt;mapper resource=&quot;AccountMapper.xml&quot;/&amp;gt;
+    &amp;lt;/mappers&amp;gt;
+&amp;lt;/configuration&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;AccountMapper.xml&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&amp;gt;
+&amp;lt;!DOCTYPE mapper
+        PUBLIC &quot;-//mybatis.org//DTD Mapper 3.0//EN&quot;
+        &quot;http://mybatis.org/dtd/mybatis-3-mapper.dtd&quot;&amp;gt;
+&amp;lt;mapper namespace=&quot;AccountMapper&quot;&amp;gt;
+    &amp;lt;select id=&quot;selectAccount&quot; resultType=&quot;com.bank.bean.Account&quot;&amp;gt;
+        select * from t_act where actno = #{actno};
+    &amp;lt;/select&amp;gt;
+    &amp;lt;update id=&quot;updateAccount&quot;&amp;gt;
+        update t_act set balance = #{balance} where actno = #{actno};
+    &amp;lt;/update&amp;gt;
+&amp;lt;/mapper&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;Dao使用&lt;/h3&gt;
+&lt;p&gt;Account数据操作对象&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class AccountDaoImpl implements AccountDao {
+    @Override
+    public Account selectAccount(String actno) {
+        SqlSession sqlSession = SqlSessionUtil.getSqlSession();
+        Account account = (Account) sqlSession.selectOne(&quot;AccountMapper.selectAccount&quot;, actno);
+        sqlSession.close();
+        return account;
+    }
+
+    @Override
+    public boolean updateAccount(Account act) {
+        SqlSession sqlSession = SqlSessionUtil.getSqlSession();
+        int update = sqlSession.update(&quot;AccountMapper.updateAccount&quot;, act);
+        sqlSession.commit();
+        sqlSession.close();
+        return update == 1;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;Utils工具类&lt;/h2&gt;
+&lt;p&gt;用到的工具类，目的是获取到SqlSession对象&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class SqlSessionUtil {
+    private static SqlSessionFactory sqlSessionFactory;
+    static {
+        try {
+            sqlSessionFactory = new SqlSessionFactoryBuilder()
+                    .build(Resources.getResourceAsStream(&quot;mybatis-config.xml&quot;));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private SqlSessionUtil() {}
+    public static SqlSession getSqlSession() {
+        return sqlSessionFactory.openSession();
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;事务处理&lt;/h2&gt;
+&lt;p&gt;我们在上述处理中，如果在更新两个账户信息的中间发送异常，不会发生回滚，转出账户中的钱财消失，而转入账户的金额不变&lt;/p&gt;
+&lt;p&gt;我看教程中使用TreadLocal解决的，大体思路是运用线程使得操作共享一个SqlSession对象&lt;/p&gt;
+&lt;p&gt;但我没有学过TreadLocal，我的解决方法是重写写了一个方法，在方法中更新两个账户，并记录成功与否，如果其中有一个没有成功进行rollback回滚，否则提交并返回true&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@Override
+public boolean updateTowAccount(Account act1, Account act2) {
+    SqlSession sqlSession = SqlSessionUtil.getSqlSession();
+    int update1 = sqlSession.update(&quot;AccountMapper.updateAccount&quot;, act1);
+    int update2 = sqlSession.update(&quot;AccountMapper.updateAccount&quot;, act2);
+    if (update1 == 1 &amp;amp;&amp;amp; update2 == 1) {
+        sqlSession.commit();
+        sqlSession.close();
+        return true;
+    }
+    sqlSession.rollback();
+    sqlSession.close();
+    return false;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;int update1 = sqlSession.update(&quot;AccountMapper.updateAccount&quot;, act1);
+if (true) {
+    throw new TransferException();
+}
+int update2 = sqlSession.update(&quot;AccountMapper.updateAccount&quot;, act2);
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;模拟一下异常，好像没什么问题，这样做也可以解决事务回滚，之后找机会补一下TreadLocal&lt;/p&gt;
+&lt;h2&gt;MyBatis三大对象生命周期&lt;/h2&gt;
+&lt;p&gt;SqlSessionBuilder：执行结束即可被销毁，任务只是创建SqlSessionFactory，之后没有用处，这也是为什么不用单独的遍历存储SqlSessionBuilder&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;sqlSessionFactory = new SqlSessionFactoryBuilder()
+                    .build(Resources.getResourceAsStream(&quot;mybatis-config.xml&quot;));
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;SqlSessionFactory：一旦创建就应该在应用运行期间一直存在，没有任何理由丢弃或新建另一个SqlSessionFactory实例对象，这也是为什么Util工具类封装的时候用静态代码块初始创建SqlSessionFactory对象&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;static {
+    try {
+        sqlSessionFactory = new SqlSessionFactoryBuilder()
+                .build(Resources.getResourceAsStream(&quot;mybatis-config.xml&quot;));
+    } catch (IOException e) {
+        throw new RuntimeException(e);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;SqlSession：每个线程都应该有自己的SqlSession对象，SqlSession的实例不是线程安全的，因此不可以被共享，在finally语句块中关闭&lt;/p&gt;
+&lt;p&gt;明天进入javassist生产类的学习，它可以帮助我们生成Dao对象&lt;/p&gt;
+</content:encoded></item><item><title>LeetCode刷题（盛水最多的容器，数组的第K大元素）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E7%9B%9B%E6%B0%B4%E6%9C%80%E5%A4%9A%E7%9A%84%E5%AE%B9%E5%99%A8/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E7%9B%9B%E6%B0%B4%E6%9C%80%E5%A4%9A%E7%9A%84%E5%AE%B9%E5%99%A8/</guid><description>盛水最多的容器</description><pubDate>Thu, 12 Jun 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;盛水最多的容器&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;给定一个长度为 &lt;code&gt;n&lt;/code&gt; 的整数数组 &lt;code&gt;height&lt;/code&gt; 。有 &lt;code&gt;n&lt;/code&gt; 条垂线，第 &lt;code&gt;i&lt;/code&gt; 条线的两个端点是 &lt;code&gt;(i, 0)&lt;/code&gt; 和 &lt;code&gt;(i, height[i])&lt;/code&gt; 。&lt;/p&gt;
+&lt;p&gt;找出其中的两条线，使得它们与 &lt;code&gt;x&lt;/code&gt; 轴共同构成的容器可以容纳最多的水。&lt;/p&gt;
+&lt;p&gt;返回容器可以储存的最大水量。&lt;/p&gt;
+&lt;p&gt;**说明：**你不能倾斜容器。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/189.jpg&quot; alt=&quot;189&quot; /&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：[1,8,6,2,5,4,8,3,7]
+输出：49 
+解释：图中垂直线代表输入数组 [1,8,6,2,5,4,8,3,7]。在此情况下，容器能够容纳水（表示为蓝色部分）的最大值为 49。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：height = [1,1]
+输出：1
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;和之前接雨水的题目类似，通过两个指针，比较取小的那一个计算出当前结果进行对于结果迭代，直到两个指针重合&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public int maxArea(int[] height) {
+        int left = 0;
+        int right = height.length - 1;
+        int result = 0;
+        while(left &amp;lt; right) {
+            if(height[left] &amp;lt; height[right]) {
+                result = Math.max(result, (right - left) * height[left]);
+                left++;
+            } else {
+                result = Math.max(result, (right - left) * height[right]);
+                right--;
+            }
+        }
+        return result;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+</content:encoded></item><item><title>LeetCode刷题（最小栈）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E6%9C%80%E5%B0%8F%E6%A0%88/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E6%9C%80%E5%B0%8F%E6%A0%88/</guid><description>最小栈实现</description><pubDate>Wed, 11 Jun 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;最小栈&lt;/h1&gt;
 &lt;h2&gt;题目描述&lt;/h2&gt;
 &lt;p&gt;设计一个支持 &lt;code&gt;push&lt;/code&gt; ，&lt;code&gt;pop&lt;/code&gt; ，&lt;code&gt;top&lt;/code&gt; 操作，并能在常数时间内检索到最小元素的栈。&lt;/p&gt;
 &lt;p&gt;实现 &lt;code&gt;MinStack&lt;/code&gt; 类:&lt;/p&gt;
@@ -62,7 +490,7 @@ minStack.getMin();   --&amp;gt; 返回 -2.
     }
 }
 &lt;/code&gt;&lt;/pre&gt;
-</content:encoded></item><item><title>MyBatis笔记（CRUD）</title><link>https://thrinisty.github.io/posts/mybatis%E7%AC%94%E8%AE%B0%E5%85%B7%E4%BD%93%E4%BD%BF%E7%94%A8/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/mybatis%E7%AC%94%E8%AE%B0%E5%85%B7%E4%BD%93%E4%BD%BF%E7%94%A8/</guid><description>MyBatis增删改查</description><pubDate>Wed, 11 Jun 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;MyBatis笔记&lt;/h1&gt;
+</content:encoded></item><item><title>MyBatis笔记（CRUD，核心配置）</title><link>https://thrinisty.github.io/posts/mybatis%E7%AC%94%E8%AE%B0crud%E6%A0%B8%E5%BF%83%E9%85%8D%E7%BD%AE/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/mybatis%E7%AC%94%E8%AE%B0crud%E6%A0%B8%E5%BF%83%E9%85%8D%E7%BD%AE/</guid><description>MyBatis增删改查，MyBatis核心配置</description><pubDate>Wed, 11 Jun 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;MyBatis笔记&lt;/h1&gt;
 &lt;p&gt;昨天编写了一个MyBatis的入门程序，成功的让他跑了起来，今天使用MyBatis更加深入的部分&lt;/p&gt;
 &lt;h2&gt;MyBatis工具类&lt;/h2&gt;
 &lt;p&gt;我们可以封装一个工具类，便于我们获取到Session对象&lt;/p&gt;

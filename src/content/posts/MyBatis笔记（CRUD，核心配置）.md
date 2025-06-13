@@ -1,8 +1,8 @@
 ---
-title: MyBatis笔记（CRUD）
+title: MyBatis笔记（CRUD，核心配置）
 published: 2025-06-11
 updated: 2025-06-11
-description: 'MyBatis增删改查'
+description: 'MyBatis增删改查，MyBatis核心配置'
 image: ''
 tags: [MyBatis]
 category: 'Frame'
