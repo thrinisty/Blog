@@ -1,4 +1,110 @@
-<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Thrinisty&apos;s Blog</title><description>New Blog</description><link>https://thrinisty.github.io/</link><language>zh_CN</language><item><title>LeetCode刷题（数组第K大元素）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E6%95%B0%E7%BB%84%E7%9A%84%E7%AC%ACk%E5%A4%A7%E5%85%83%E7%B4%A0/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E6%95%B0%E7%BB%84%E7%9A%84%E7%AC%ACk%E5%A4%A7%E5%85%83%E7%B4%A0/</guid><description>数组第K大元素</description><pubDate>Fri, 13 Jun 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;数组的第K大元素&lt;/h1&gt;
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Thrinisty&apos;s Blog</title><description>New Blog</description><link>https://thrinisty.github.io/</link><language>zh_CN</language><item><title>LeetCode刷题（任务调度器，字符串解码）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E4%BB%BB%E5%8A%A1%E8%B0%83%E5%BA%A6%E5%99%A8%E5%AD%97%E7%AC%A6%E4%B8%B2%E8%A7%A3%E7%A0%81/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E4%BB%BB%E5%8A%A1%E8%B0%83%E5%BA%A6%E5%99%A8%E5%AD%97%E7%AC%A6%E4%B8%B2%E8%A7%A3%E7%A0%81/</guid><description>任务调度器，字符串解码</description><pubDate>Sat, 14 Jun 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;任务调度器&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;给你一个用字符数组 &lt;code&gt;tasks&lt;/code&gt; 表示的 CPU 需要执行的任务列表，用字母 A 到 Z 表示，以及一个冷却时间 &lt;code&gt;n&lt;/code&gt;。每个周期或时间间隔允许完成一项任务。任务可以按任何顺序完成，但有一个限制：两个 &lt;strong&gt;相同种类&lt;/strong&gt; 的任务之间必须有长度为 &lt;code&gt;n&lt;/code&gt; 的冷却时间。&lt;/p&gt;
+&lt;p&gt;返回完成所有任务所需要的 &lt;strong&gt;最短时间间隔&lt;/strong&gt; 。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;**输入：**tasks = [&quot;A&quot;,&quot;A&quot;,&quot;A&quot;,&quot;B&quot;,&quot;B&quot;,&quot;B&quot;], n = 2&lt;/p&gt;
+&lt;p&gt;**输出：**8&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;解释：&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;在完成任务 A 之后，你必须等待两个间隔。对任务 B 来说也是一样。在第 3 个间隔，A 和 B 都不能完成，所以你需要待命。在第 4 个间隔，由于已经经过了 2 个间隔，你可以再次执行 A 任务。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;**输入：**tasks = [&quot;A&quot;,&quot;C&quot;,&quot;A&quot;,&quot;B&quot;,&quot;D&quot;,&quot;B&quot;], n = 1&lt;/p&gt;
+&lt;p&gt;**输出：**6&lt;/p&gt;
+&lt;p&gt;**解释：**一种可能的序列是：A -&amp;gt; B -&amp;gt; C -&amp;gt; D -&amp;gt; A -&amp;gt; B。&lt;/p&gt;
+&lt;p&gt;由于冷却间隔为 1，你可以在完成另一个任务后重复执行这个任务。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 3：&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;**输入：**tasks = [&quot;A&quot;,&quot;A&quot;,&quot;A&quot;,&quot;B&quot;,&quot;B&quot;,&quot;B&quot;], n = 3&lt;/p&gt;
+&lt;p&gt;**输出：**10&lt;/p&gt;
+&lt;p&gt;**解释：**一种可能的序列为：A -&amp;gt; B -&amp;gt; idle -&amp;gt; idle -&amp;gt; A -&amp;gt; B -&amp;gt; idle -&amp;gt; idle -&amp;gt; A -&amp;gt; B。&lt;/p&gt;
+&lt;p&gt;只有两种任务类型，A 和 B，需要被 3 个间隔分割。这导致重复执行这些任务的间隔当中有两次待命状态。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;提示：&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;1 &amp;lt;= tasks.length &amp;lt;= 104&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;tasks[i]&lt;/code&gt; 是大写英文字母&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;0 &amp;lt;= n &amp;lt;= 100&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;建立一个长度为26的数组存储各个任务出现的次数，因为人物之间等效，直接用sort进行排序，从最后一个数组元素取出最多任务出现的次数，再从后向前依次遍历得出出现次数最多的任务数量，利用下图进行求解（将任务出现次数最多的任务先进行排列，让剩余的任务进行填充）注意这里是最大任务数的空位多余可以填空的情况&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/190.png&quot; alt=&quot;190&quot; /&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public int leastInterval(char[] tasks, int n) {
+        int[] array = new int[26];
+        for(char c : tasks) {
+            array[c - &apos;A&apos;]++;
+        }
+        Arrays.sort(array);
+        int maxTimes = array[25];
+        int maxCount = 1;
+        for(int i = 24; i &amp;gt;= 0; i--) {
+            if(array[i] == array[i + 1]) {
+                maxCount++;
+            } else {
+                break;
+            }
+        }
+        int result = (maxTimes - 1) * (n + 1) + maxCount;
+        return Math.max(result, tasks.length);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;此外，如果任务种类很多，在安排时无需冷却时间，只需要在一个任务的两次出现间填充其他任务，然后从左到右从上到下依次执行即可，由于每一个任务占用一个时间单位，我们又正正好好地使用了tasks中的所有任务，而且我们只使用tasks中的任务来占用方格（没用冷却时间）。因此这种情况下，所需要的时间即为tasks的长度。&lt;/p&gt;
+&lt;p&gt;由于这种情况时再用上述公式计算会得到一个不正确且偏小的结果，因此，我们只需把公式计算的结果和tasks的长度取最大即为最终结果。&lt;/p&gt;
+&lt;h1&gt;字符串解码&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;给定一个经过编码的字符串，返回它解码后的字符串。&lt;/p&gt;
+&lt;p&gt;编码规则为: &lt;code&gt;k[encoded_string]&lt;/code&gt;，表示其中方括号内部的 &lt;code&gt;encoded_string&lt;/code&gt; 正好重复 &lt;code&gt;k&lt;/code&gt; 次。注意 &lt;code&gt;k&lt;/code&gt; 保证为正整数。&lt;/p&gt;
+&lt;p&gt;你可以认为输入字符串总是有效的；输入字符串中没有额外的空格，且输入的方括号总是符合格式要求的。&lt;/p&gt;
+&lt;p&gt;此外，你可以认为原始数据不包含数字，所有的数字只表示重复的次数 &lt;code&gt;k&lt;/code&gt; ，例如不会出现像 &lt;code&gt;3a&lt;/code&gt; 或 &lt;code&gt;2[4]&lt;/code&gt; 的输入。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：s = &quot;3[a]2[bc]&quot;
+输出：&quot;aaabcbc&quot;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：s = &quot;3[a2[c]]&quot;
+输出：&quot;accaccacc&quot;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 3：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：s = &quot;2[abc]3[cd]ef&quot;
+输出：&quot;abcabccdcdcdef&quot;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 4：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：s = &quot;abc3[cd]xyz&quot;
+输出：&quot;abccdcdcdxyz&quot;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;运用递归求解，当前字符为数字的时候 count = count * 10 + (c - &apos;0&apos;) 计算重复次数，为 [ 的时候跳过，并递归地进行解码子字符串，并在最后重复子字符串count次，为 ] 的时候返回字符串，并跳过，其余情况为普通字符串，直接拼接到结果上即可&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    private int index = 0;
+    
+    public String decodeString(String s) {
+        StringBuilder result = new StringBuilder();
+        int count = 0;
+        while(index &amp;lt; s.length()) {
+            char c = s.charAt(index);
+            if(c &amp;gt;= &apos;0&apos; &amp;amp;&amp;amp; c &amp;lt;= &apos;9&apos;) {
+                index++;
+                count = count * 10 + (c - &apos;0&apos;);
+            } else if(c == &apos;[&apos;) {
+                index++;
+                String subString = decodeString(s);
+                for(int i = 0; i &amp;lt; count; i++) {
+                    result.append(subString);
+                }
+                count = 0;
+            } else if(c == &apos;]&apos;) {
+                index++;
+                return result.toString();
+            } else {
+                index++;
+                result.append(c);
+            }
+        }
+        return result.toString();
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;这一题也是字节面试的算法题目（有所变化），虽然改了一小部分，但感觉还是字节地题目更加综合一点，[abc]{3}大概是这样的，需要得到字符串后再进行字符的重复而且需要处理{}&lt;/p&gt;
+</content:encoded></item><item><title>LeetCode刷题（数组第K大元素）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E6%95%B0%E7%BB%84%E7%9A%84%E7%AC%ACk%E5%A4%A7%E5%85%83%E7%B4%A0/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E6%95%B0%E7%BB%84%E7%9A%84%E7%AC%ACk%E5%A4%A7%E5%85%83%E7%B4%A0/</guid><description>数组第K大元素</description><pubDate>Fri, 13 Jun 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;数组的第K大元素&lt;/h1&gt;
 &lt;h2&gt;题目描述&lt;/h2&gt;
 &lt;p&gt;给定整数数组 &lt;code&gt;nums&lt;/code&gt; 和整数 &lt;code&gt;k&lt;/code&gt;，请返回数组中第 &lt;code&gt;**k**&lt;/code&gt; 个最大的元素。&lt;/p&gt;
 &lt;p&gt;请注意，你需要找的是数组排序后的第 &lt;code&gt;k&lt;/code&gt; 个最大的元素，而不是第 &lt;code&gt;k&lt;/code&gt; 个不同的元素。&lt;/p&gt;
