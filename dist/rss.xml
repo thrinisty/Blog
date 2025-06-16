@@ -1,4 +1,200 @@
-<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Thrinisty&apos;s Blog</title><description>New Blog</description><link>https://thrinisty.github.io/</link><language>zh_CN</language><item><title>LeetCode刷题（任务调度器，字符串解码）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E4%BB%BB%E5%8A%A1%E8%B0%83%E5%BA%A6%E5%99%A8%E5%AD%97%E7%AC%A6%E4%B8%B2%E8%A7%A3%E7%A0%81/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E4%BB%BB%E5%8A%A1%E8%B0%83%E5%BA%A6%E5%99%A8%E5%AD%97%E7%AC%A6%E4%B8%B2%E8%A7%A3%E7%A0%81/</guid><description>任务调度器，字符串解码</description><pubDate>Sat, 14 Jun 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;任务调度器&lt;/h1&gt;
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Thrinisty&apos;s Blog</title><description>New Blog</description><link>https://thrinisty.github.io/</link><language>zh_CN</language><item><title>LeetCode刷题（有效的括号）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E6%9C%89%E6%95%88%E7%9A%84%E6%8B%AC%E5%8F%B7/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E6%9C%89%E6%95%88%E7%9A%84%E6%8B%AC%E5%8F%B7/</guid><description>有效的括号</description><pubDate>Mon, 16 Jun 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;有效的括号&lt;/h1&gt;
+&lt;p&gt;一样的今天主要还是复习软件工程，做两道简单的题目&lt;/p&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;给定一个只包括 &lt;code&gt;&apos;(&apos;&lt;/code&gt;，&lt;code&gt;&apos;)&apos;&lt;/code&gt;，&lt;code&gt;&apos;{&apos;&lt;/code&gt;，&lt;code&gt;&apos;}&apos;&lt;/code&gt;，&lt;code&gt;&apos;[&apos;&lt;/code&gt;，&lt;code&gt;&apos;]&apos;&lt;/code&gt; 的字符串 &lt;code&gt;s&lt;/code&gt; ，判断字符串是否有效。&lt;/p&gt;
+&lt;p&gt;有效字符串需满足：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;左括号必须用相同类型的右括号闭合。&lt;/li&gt;
+&lt;li&gt;左括号必须以正确的顺序闭合。&lt;/li&gt;
+&lt;li&gt;每个右括号都有一个对应的相同类型的左括号。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;**输入：**s = &quot;()&quot;&lt;/p&gt;
+&lt;p&gt;**输出：**true&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;**输入：**s = &quot;()[]{}&quot;&lt;/p&gt;
+&lt;p&gt;**输出：**true&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 3：&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;**输入：**s = &quot;(]&quot;&lt;/p&gt;
+&lt;p&gt;**输出：**false&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 4：&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;**输入：**s = &quot;([])&quot;&lt;/p&gt;
+&lt;p&gt;**输出：**true&lt;/p&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;设立一个栈结构，依次遍历字符串的字符，为左括号入栈，如果不是左括号，先判断栈是否为空，为空返回false，之后弹栈用弹出的元素比较是否和入站的元素匹配，不匹配则返回false，否则继续遍历&lt;/p&gt;
+&lt;p&gt;当字符串遍历完成的时候，如果合法，栈应该空的&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public boolean isValid(String s) {
+        if(s.length() % 2 != 0) {
+            return false;
+        }
+        Map&amp;lt;Character, Character&amp;gt; map = new HashMap&amp;lt;&amp;gt;();
+        map.put(&apos;)&apos;, &apos;(&apos;);
+        map.put(&apos;]&apos;, &apos;[&apos;);
+        map.put(&apos;}&apos;, &apos;{&apos;);
+        Stack&amp;lt;Character&amp;gt; stack = new Stack&amp;lt;&amp;gt;();
+        for(char c : s.toCharArray()) {
+            if(c == &apos;(&apos; || c == &apos;[&apos; || c == &apos;{&apos;) {
+                stack.push(c);
+            } else if(stack.isEmpty() || stack.pop() != map.get(c)) {
+                return false;
+            } else {
+                continue;
+            }
+        }
+        return stack.isEmpty();
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1&gt;爬楼梯&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;假设你正在爬楼梯。需要 &lt;code&gt;n&lt;/code&gt; 阶你才能到达楼顶。&lt;/p&gt;
+&lt;p&gt;每次你可以爬 &lt;code&gt;1&lt;/code&gt; 或 &lt;code&gt;2&lt;/code&gt; 个台阶。你有多少种不同的方法可以爬到楼顶呢？&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：n = 2
+输出：2
+解释：有两种方法可以爬到楼顶。
+1. 1 阶 + 1 阶
+2. 2 阶
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：n = 3
+输出：3
+解释：有三种方法可以爬到楼顶。
+1. 1 阶 + 1 阶 + 1 阶
+2. 1 阶 + 2 阶
+3. 2 阶 + 1 阶
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;本质上类似斐波那契数列的求解，我们运用动态规划做题&lt;/p&gt;
+&lt;p&gt;设跳上 n 级台阶有 f(n) 种跳法。在所有跳法中，青蛙的最后一步只有两种情况： 跳上 1 级或 2 级台阶。&lt;/p&gt;
+&lt;p&gt;当为 1 级台阶： 剩 n−1 个台阶，此情况共有 f(n−1) 种跳法。
+当为 2 级台阶： 剩 n−2 个台阶，此情况共有 f(n−2) 种跳法。
+即 f(n) 为以上两种情况之和，即 f(n)=f(n−1)+f(n−2) ，以上递推性质为斐波那契数列。因此，本题可转化为 求斐波那契数列的第 n 项，区别仅在于初始值不同：&lt;/p&gt;
+&lt;p&gt;青蛙跳台阶问题： f(0)=1 , f(1)=1 , f(2)=2 。
+斐波那契数列问题： f(0)=0 , f(1)=1 , f(2)=1 。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public int climbStairs(int n) {
+        int[] result = new int[n + 1];
+        result[0] = 1;
+        result[1] = 1;
+        for(int i = 2; i &amp;lt;= n; i++) {
+            result[i] = result[i - 1] + result[i - 2];
+        }
+        return result[n];
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;因为只需要存储最后的结果，我们也可以用迭代法求解&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public int climbStairs(int n) {
+        int a = 1, b = 1, sum;
+        for(int i = 0; i &amp;lt; n - 1; i++) {
+            sum = a + b;
+            a = b;
+            b = sum;
+        }
+        return b;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+</content:encoded></item><item><title>LeetCode刷题（环形链表）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E7%8E%AF%E5%BD%A2%E9%93%BE%E8%A1%A8/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E7%8E%AF%E5%BD%A2%E9%93%BE%E8%A1%A8/</guid><description>环形链表</description><pubDate>Sun, 15 Jun 2025 00:00:00 GMT</pubDate><content:encoded>&lt;p&gt;今天要复习软件工程，做两道简单一点的题目&lt;/p&gt;
+&lt;h1&gt;环形链表&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/175.png&quot; alt=&quot;175&quot; /&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：head = [3,2,0,-4], pos = 1
+输出：返回索引为 1 的链表节点
+解释：链表中有一个环，其尾部连接到第二个节点。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/176.png&quot; alt=&quot;176&quot; /&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：head = [1,2], pos = 0
+输出：返回索引为 0 的链表节点
+解释：链表中有一个环，其尾部连接到第一个节点。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 3：&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/178.png&quot; alt=&quot;178&quot; /&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：head = [1], pos = -1
+输出：返回 null
+解释：链表中没有环。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;之前甚至做过一道要求返回环起始节点的题目，这一道直接判断是否有环即可，如果要返回环起始节点，将其中一个指针放在开头同步向后直至相遇即可&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class Solution {
+    public boolean hasCycle(ListNode head) {
+        ListNode slow = head;
+        ListNode fast = head;
+        while(true) {
+            if(fast == null || fast.next == null) {
+                return false;
+            }
+            slow = slow.next;
+            fast = fast.next.next;
+            if(slow == fast) {
+                return true;
+            }
+        }
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1&gt;两数之和&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;给定一个整数数组 &lt;code&gt;nums&lt;/code&gt; 和一个整数目标值 &lt;code&gt;target&lt;/code&gt;，请你在该数组中找出 &lt;strong&gt;和为目标值&lt;/strong&gt; &lt;em&gt;&lt;code&gt;target&lt;/code&gt;&lt;/em&gt; 的那 &lt;strong&gt;两个&lt;/strong&gt; 整数，并返回它们的数组下标。&lt;/p&gt;
+&lt;p&gt;你可以假设每种输入只会对应一个答案，并且你不能使用两次相同的元素。&lt;/p&gt;
+&lt;p&gt;你可以按任意顺序返回答案。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：nums = [2,7,11,15], target = 9
+输出：[0,1]
+解释：因为 nums[0] + nums[1] == 9 ，返回 [0, 1] 。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：nums = [3,2,4], target = 6
+输出：[1,2]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 3：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：nums = [3,3], target = 6
+输出：[0,1]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;提示：&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;2 &amp;lt;= nums.length &amp;lt;= 104&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;-109 &amp;lt;= nums[i] &amp;lt;= 109&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;-109 &amp;lt;= target &amp;lt;= 109&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;只会存在一个有效答案&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;解法一：暴力遍历数组，直到遇见两个元素相加为预期的结果，返回下表数组&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public int[] twoSum(int[] nums, int target) {
+        int n = nums.length;
+        for(int i = 0; i &amp;lt; n; i++) {
+            for(int j = i + 1; j &amp;lt; n; j++) {
+                if(nums[i] + nums[j] == target) {
+                    return new int[]{i, j};
+                }
+            }
+        }
+        return null;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;解法二：通过哈希表进行优化，再遍历数组的每个元素的时候，先判断map中有无target-nums[i]的键，如果有则用键取值，得到下表返回即可，如果没有将&amp;lt;值，下表&amp;gt;放入map供以后的元素取用&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public int[] twoSum(int[] nums, int target) {
+        Map&amp;lt;Integer, Integer&amp;gt; map = new HashMap&amp;lt;&amp;gt;();
+        for(int i = 0; i &amp;lt; nums.length; i++) {
+            Set keySet = map.keySet();
+            if(keySet.contains(target - nums[i])) {
+                return new int[]{map.get(target - nums[i]), i};
+            }
+            map.put(nums[i], i);
+        }
+        return null;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+</content:encoded></item><item><title>LeetCode刷题（任务调度器，字符串解码）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E4%BB%BB%E5%8A%A1%E8%B0%83%E5%BA%A6%E5%99%A8%E5%AD%97%E7%AC%A6%E4%B8%B2%E8%A7%A3%E7%A0%81/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E4%BB%BB%E5%8A%A1%E8%B0%83%E5%BA%A6%E5%99%A8%E5%AD%97%E7%AC%A6%E4%B8%B2%E8%A7%A3%E7%A0%81/</guid><description>任务调度器，字符串解码</description><pubDate>Sat, 14 Jun 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;任务调度器&lt;/h1&gt;
 &lt;h2&gt;题目描述&lt;/h2&gt;
 &lt;p&gt;给你一个用字符数组 &lt;code&gt;tasks&lt;/code&gt; 表示的 CPU 需要执行的任务列表，用字母 A 到 Z 表示，以及一个冷却时间 &lt;code&gt;n&lt;/code&gt;。每个周期或时间间隔允许完成一项任务。任务可以按任何顺序完成，但有一个限制：两个 &lt;strong&gt;相同种类&lt;/strong&gt; 的任务之间必须有长度为 &lt;code&gt;n&lt;/code&gt; 的冷却时间。&lt;/p&gt;
 &lt;p&gt;返回完成所有任务所需要的 &lt;strong&gt;最短时间间隔&lt;/strong&gt; 。&lt;/p&gt;
@@ -2814,7 +3010,7 @@ OrderService proxy = (OrderService) proxyObj;
 &lt;/code&gt;&lt;/pre&gt;
 &lt;h3&gt;CGLIB动态代理&lt;/h3&gt;
 &lt;p&gt;CGLIB 可以根据继承来代理，实现子类增强方法，调用父类的方法，注意不可以类不可以用final修饰父类，需要引入对应依赖，这里不再多做介绍&lt;/p&gt;
-</content:encoded></item><item><title>LeetCode刷题（多数元素，寻找重复数）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E5%A4%9A%E6%95%B0%E5%85%83%E7%B4%A0%E5%AF%BB%E6%89%BE%E9%87%8D%E5%A4%8D%E6%95%B0/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E5%A4%9A%E6%95%B0%E5%85%83%E7%B4%A0%E5%AF%BB%E6%89%BE%E9%87%8D%E5%A4%8D%E6%95%B0/</guid><description>多数元素，寻找重复数</description><pubDate>Mon, 02 Jun 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;多数元素&lt;/h1&gt;
+</content:encoded></item><item><title>LeetCode刷题（多数元素，寻找重复数）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E5%A4%9A%E6%95%B0%E5%85%83%E7%B4%A0%E5%AF%BB%E6%89%BE%E9%87%8D%E5%A4%8D%E6%95%B0%E7%8E%AF%E5%BD%A2%E9%93%BE%E8%A1%A8/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E5%A4%9A%E6%95%B0%E5%85%83%E7%B4%A0%E5%AF%BB%E6%89%BE%E9%87%8D%E5%A4%8D%E6%95%B0%E7%8E%AF%E5%BD%A2%E9%93%BE%E8%A1%A8/</guid><description>多数元素，寻找重复数</description><pubDate>Mon, 02 Jun 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;多数元素&lt;/h1&gt;
 &lt;h2&gt;题目描述&lt;/h2&gt;
 &lt;p&gt;给定一个大小为 &lt;code&gt;n&lt;/code&gt; 的数组 &lt;code&gt;nums&lt;/code&gt; ，返回其中的多数元素。多数元素是指在数组中出现次数 &lt;strong&gt;大于&lt;/strong&gt; &lt;code&gt;⌊ n/2 ⌋&lt;/code&gt; 的元素。&lt;/p&gt;
 &lt;p&gt;你可以假设数组是非空的，并且给定的数组总是存在多数元素。&lt;/p&gt;
