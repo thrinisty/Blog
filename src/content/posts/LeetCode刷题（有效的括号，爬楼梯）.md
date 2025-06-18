@@ -1,8 +1,8 @@
 ---
-title: LeetCode刷题（有效的括号）
+title: LeetCode刷题（有效的括号，爬楼梯）
 published: 2025-06-16
 updated: 2025-06-16
-description: '有效的括号'
+description: '有效的括号，爬楼梯'
 image: ''
 tags: [LeetCode]
 category: 'LeetCode'

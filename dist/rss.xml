@@ -1,4 +1,110 @@
-<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Thrinisty&apos;s Blog</title><description>New Blog</description><link>https://thrinisty.github.io/</link><language>zh_CN</language><item><title>LeetCode刷题（有效的括号）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E6%9C%89%E6%95%88%E7%9A%84%E6%8B%AC%E5%8F%B7/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E6%9C%89%E6%95%88%E7%9A%84%E6%8B%AC%E5%8F%B7/</guid><description>有效的括号</description><pubDate>Mon, 16 Jun 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;有效的括号&lt;/h1&gt;
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Thrinisty&apos;s Blog</title><description>New Blog</description><link>https://thrinisty.github.io/</link><language>zh_CN</language><item><title>LeetCode刷题（单词拆分，最长递增子序列）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E5%8D%95%E8%AF%8D%E6%8B%86%E5%88%86%E6%9C%80%E9%95%BF%E9%80%92%E5%A2%9E%E5%AD%90%E5%BA%8F%E5%88%97/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E5%8D%95%E8%AF%8D%E6%8B%86%E5%88%86%E6%9C%80%E9%95%BF%E9%80%92%E5%A2%9E%E5%AD%90%E5%BA%8F%E5%88%97/</guid><description>单词拆分，最长递增子序列</description><pubDate>Wed, 18 Jun 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;单词拆分&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;给你一个字符串 &lt;code&gt;s&lt;/code&gt; 和一个字符串列表 &lt;code&gt;wordDict&lt;/code&gt; 作为字典。如果可以利用字典中出现的一个或多个单词拼接出 &lt;code&gt;s&lt;/code&gt; 则返回 &lt;code&gt;true&lt;/code&gt;。&lt;/p&gt;
+&lt;p&gt;**注意：**不要求字典中出现的单词全部都使用，并且字典中的单词可以重复使用。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入: s = &quot;leetcode&quot;, wordDict = [&quot;leet&quot;, &quot;code&quot;]
+输出: true
+解释: 返回 true 因为 &quot;leetcode&quot; 可以由 &quot;leet&quot; 和 &quot;code&quot; 拼接成。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入: s = &quot;applepenapple&quot;, wordDict = [&quot;apple&quot;, &quot;pen&quot;]
+输出: true
+解释: 返回 true 因为 &quot;applepenapple&quot; 可以由 &quot;apple&quot; &quot;pen&quot; &quot;apple&quot; 拼接成。
+     注意，你可以重复使用字典中的单词。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 3：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入: s = &quot;catsandog&quot;, wordDict = [&quot;cats&quot;, &quot;dog&quot;, &quot;sand&quot;, &quot;and&quot;, &quot;cat&quot;]
+输出: false
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;这一道题我原本是打算用回溯法求解的，思路类似于之前做过的全排列，但是写一半发现如果是后面出现的单词（字典中）出现在结果的最前面，就没有办法求出正常的情况，看了下解析，应该使用动态规划求解，以下是求解思路&lt;/p&gt;
+&lt;p&gt;设立一个dp数组，下表表示String前n位是否可以用wordDict字典中的单词表示，初始化dp[0]为true&lt;/p&gt;
+&lt;p&gt;循环遍历字符串，位数从1增至字符串长度，在子循环中判断当前位数的字符串可否由可以组成的前半部分和后半部分包括在字典中的部分拼接形成，如果可以，将对应位数的boolean值设置为true，在循环结束后取dp[s.length()]结果返回&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public boolean wordBreak(String s, List&amp;lt;String&amp;gt; wordDict) {
+        Set&amp;lt;String&amp;gt; set = new HashSet&amp;lt;&amp;gt;(wordDict);
+        boolean[] dp = new boolean[s.length() + 1];
+        dp[0] = true;
+        for(int i = 1; i &amp;lt;= s.length(); i++) {
+            for(int j = 0; j &amp;lt; i; j++) {
+                if(dp[j] &amp;amp;&amp;amp; set.contains(s.substring(j, i))) {
+                    dp[i] = true;
+                    break;
+                }
+            }
+        }
+        return dp[s.length()];
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;这里之所以使用HashSet进行存储是得益于Set集合的contains函数时间复杂度是O(1)，不需要像List中需要将是所有的元素遍历后才可以得到最终的结果&lt;/p&gt;
+&lt;p&gt;很好的题目，巩固了HashSet部分的知识，顺便复习了一下字符串的相关函数substring&lt;/p&gt;
+&lt;h1&gt;最长的递增子序列&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;给你一个整数数组 &lt;code&gt;nums&lt;/code&gt; ，找到其中最长严格递增子序列的长度。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;子序列&lt;/strong&gt; 是由数组派生而来的序列，删除（或不删除）数组中的元素而不改变其余元素的顺序。例如，&lt;code&gt;[3,6,2,7]&lt;/code&gt; 是数组 &lt;code&gt;[0,3,1,6,2,2,7]&lt;/code&gt; 的子序列。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：nums = [10,9,2,5,3,7,101,18]
+输出：4
+解释：最长递增子序列是 [2,3,7,101]，因此长度为 4 。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：nums = [0,1,0,3,2,3]
+输出：4
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 3：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：nums = [7,7,7,7,7,7,7]
+输出：1
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;运用动态规划求解，对于结果dp而言，每单个数字，都是长度为1的递增子序列，用1将所有的dp赋值，从起始位置开始循环遍历，子循环变量j为包含j的最长子序列的结果，当其对应的数字小于外部循环对应的数字时，用dp[j] + 1迭代dp[i]的结果&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public int lengthOfLIS(int[] nums) {
+        if(nums.length == 0) {
+            return 0;
+        }
+        int n = nums.length;
+        int[] dp = new int[n];
+        Arrays.fill(dp, 1);
+        for(int i = 0; i &amp;lt; n; i++) {
+            for(int j = 0; j &amp;lt; i; j++) {
+                if(nums[j] &amp;lt; nums[i]) {
+                    dp[i] = Math.max(dp[i], dp[j] + 1);
+                }
+            }
+        }
+        int result = 0;
+        for(int num : dp) {
+            result = Math.max(result, num);
+        }
+        return result;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;或者也可以在for循环中对于结果进行迭代，速度会更快一点&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public int lengthOfLIS(int[] nums) {
+        if(nums.length == 0) {
+            return 0;
+        }
+        int n = nums.length;
+        int[] dp = new int[n];
+        Arrays.fill(dp, 1);
+        int result = 0;
+        for(int i = 0; i &amp;lt; n; i++) {
+            for(int j = 0; j &amp;lt; i; j++) {
+                if(nums[j] &amp;lt; nums[i]) {
+                    dp[i] = Math.max(dp[i], dp[j] + 1);
+                }
+            }
+            result = Math.max(result, dp[i]);
+        }
+        return result;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+</content:encoded></item><item><title>LeetCode刷题（有效的括号，爬楼梯）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E6%9C%89%E6%95%88%E7%9A%84%E6%8B%AC%E5%8F%B7%E7%88%AC%E6%A5%BC%E6%A2%AF/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E6%9C%89%E6%95%88%E7%9A%84%E6%8B%AC%E5%8F%B7%E7%88%AC%E6%A5%BC%E6%A2%AF/</guid><description>有效的括号，爬楼梯</description><pubDate>Mon, 16 Jun 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;有效的括号&lt;/h1&gt;
 &lt;p&gt;一样的今天主要还是复习软件工程，做两道简单的题目&lt;/p&gt;
 &lt;h2&gt;题目描述&lt;/h2&gt;
 &lt;p&gt;给定一个只包括 &lt;code&gt;&apos;(&apos;&lt;/code&gt;，&lt;code&gt;&apos;)&apos;&lt;/code&gt;，&lt;code&gt;&apos;{&apos;&lt;/code&gt;，&lt;code&gt;&apos;}&apos;&lt;/code&gt;，&lt;code&gt;&apos;[&apos;&lt;/code&gt;，&lt;code&gt;&apos;]&apos;&lt;/code&gt; 的字符串 &lt;code&gt;s&lt;/code&gt; ，判断字符串是否有效。&lt;/p&gt;
@@ -2164,12 +2270,11 @@ exection -&amp;gt; execution (插入 &apos;u&apos;)
 &lt;p&gt;我们记录历史的最低价格，遍历后续元素的时候迭代刷新，并计算当前价格减去历史价格的值是否大于先前的值，迭代之，最后的max即为我们需要的结果&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;class Solution {
     public int maxProfit(int[] prices) {
-        int n = prices.length;
         int max = 0;
         int min = Integer.MAX_VALUE;
-        for(int i = 0; i &amp;lt; n; i++) {
-            min = Math.min(min, prices[i]);
-            max = Math.max(max, prices[i] - min);
+        for(int price : prices) {
+            min = Math.min(min, price);
+            max = Math.max(max, price - min);
         }
         return max;
     }

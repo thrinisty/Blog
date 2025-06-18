@@ -47,12 +47,11 @@ draft: false
 ```java
 class Solution {
     public int maxProfit(int[] prices) {
-        int n = prices.length;
         int max = 0;
         int min = Integer.MAX_VALUE;
-        for(int i = 0; i < n; i++) {
-            min = Math.min(min, prices[i]);
-            max = Math.max(max, prices[i] - min);
+        for(int price : prices) {
+            min = Math.min(min, price);
+            max = Math.max(max, price - min);
         }
         return max;
     }
