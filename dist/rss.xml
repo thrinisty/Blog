@@ -1,4 +1,110 @@
-<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Thrinisty&apos;s Blog</title><description>New Blog</description><link>https://thrinisty.github.io/</link><language>zh_CN</language><item><title>LeetCode刷题（单词拆分，最长递增子序列）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E5%8D%95%E8%AF%8D%E6%8B%86%E5%88%86%E6%9C%80%E9%95%BF%E9%80%92%E5%A2%9E%E5%AD%90%E5%BA%8F%E5%88%97/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E5%8D%95%E8%AF%8D%E6%8B%86%E5%88%86%E6%9C%80%E9%95%BF%E9%80%92%E5%A2%9E%E5%AD%90%E5%BA%8F%E5%88%97/</guid><description>单词拆分，最长递增子序列</description><pubDate>Wed, 18 Jun 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;单词拆分&lt;/h1&gt;
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Thrinisty&apos;s Blog</title><description>New Blog</description><link>https://thrinisty.github.io/</link><language>zh_CN</language><item><title>LeetCode刷题（回文链表）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E5%9B%9E%E6%96%87%E9%93%BE%E8%A1%A8/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E5%9B%9E%E6%96%87%E9%93%BE%E8%A1%A8/</guid><description>回文链表，运用中间节点和链表反转求解</description><pubDate>Thu, 19 Jun 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;回文链表&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;给你一个单链表的头节点 &lt;code&gt;head&lt;/code&gt; ，请你判断该链表是否为回文链表。如果是，返回 &lt;code&gt;true&lt;/code&gt; ；否则，返回 &lt;code&gt;false&lt;/code&gt; 。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/191.jpg&quot; alt=&quot;191&quot; /&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：head = [1,2,2,1]
+输出：true
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/192.jpg&quot; alt=&quot;192&quot; /&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：head = [1,2]
+输出：false
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;解法一：运用List集合辅助判断，思路类似于判断数组是否是回文&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public boolean isPalindrome(ListNode head) {
+        List&amp;lt;Integer&amp;gt; list = new ArrayList&amp;lt;&amp;gt;();
+        ListNode p = head;
+        while(p != null) {
+            list.add(p.val);
+            p = p.next;
+        }
+        int n = list.size();
+        for(int i = 0, j = n - 1; i &amp;lt;= j; i++, j--) {
+            if(list.get(i) != list.get(j)) {
+                return false;
+            }
+        }
+        return true;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;但是题目进阶要求空间复杂度为O(1)，不可以使用额外的存储空间&lt;/p&gt;
+&lt;p&gt;解法二：运用中间节点和反转链表求解&lt;/p&gt;
+&lt;p&gt;先来回顾一下运用头插法实现链表反转的方法，我们在后续中会使用到这个函数&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public ListNode reverseList(ListNode head) {
+        ListNode result = new ListNode();
+        ListNode p = head;
+        ListNode temp;
+        while(p != null) {
+            temp = p.next;
+            p.next = result.next;
+            result.next = p;
+            p = temp;
+        }
+        return result.next;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;我们再普及一个算法，用于输入一个链表的头节点输出他的中间节点，内部由快慢指针实现&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public ListNode returnHalf(ListNode head) {
+        ListNode fast = head;
+        ListNode slow = head;
+        while (fast.next != null &amp;amp;&amp;amp; fast.next.next != null) {
+            fast = fast.next.next;
+            slow = slow.next;
+        }
+        return slow;
+    }
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;运用以上的两个函数，我们只需要将中间节点部分后的节点进行反转，在头节点和中间节点之后按照链表顺序依次判断节点内容是否相等即可&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public boolean isPalindrome(ListNode head) {
+        if(head == null) {
+            return true;
+        }
+        ListNode p1 = halfNode(head);
+        ListNode p2 = reverseList(p1.next);
+        p1 = head;
+        while(p2 != null) {
+            if(p1.val != p2.val) {
+                return false;
+            }
+            p1 = p1.next;
+            p2 = p2.next;
+        }
+        return true;
+    }
+
+    public ListNode reverseList(ListNode head) {
+        ListNode result = new ListNode();
+        ListNode p = head;
+        ListNode temp;
+        while(p != null) {
+            temp = p.next;
+            p.next = result.next;
+            result.next = p;
+            p = temp;
+        }
+        return result.next;
+    }
+
+    public ListNode halfNode(ListNode head) {
+        ListNode slow = head;
+        ListNode fast = head;
+        while(fast.next != null &amp;amp;&amp;amp; fast.next.next != null) {
+            slow = slow.next;
+            fast = fast.next.next;
+        }
+        return slow;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;今天的练习属于是老题新解，拓展了以下思路，运用先前的链表反转和取中间节点来解决链表回文的判断&lt;/p&gt;
+</content:encoded></item><item><title>LeetCode刷题（单词拆分，最长递增子序列）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E5%8D%95%E8%AF%8D%E6%8B%86%E5%88%86%E6%9C%80%E9%95%BF%E9%80%92%E5%A2%9E%E5%AD%90%E5%BA%8F%E5%88%97/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E5%8D%95%E8%AF%8D%E6%8B%86%E5%88%86%E6%9C%80%E9%95%BF%E9%80%92%E5%A2%9E%E5%AD%90%E5%BA%8F%E5%88%97/</guid><description>单词拆分，最长递增子序列</description><pubDate>Wed, 18 Jun 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;单词拆分&lt;/h1&gt;
 &lt;h2&gt;题目描述&lt;/h2&gt;
 &lt;p&gt;给你一个字符串 &lt;code&gt;s&lt;/code&gt; 和一个字符串列表 &lt;code&gt;wordDict&lt;/code&gt; 作为字典。如果可以利用字典中出现的一个或多个单词拼接出 &lt;code&gt;s&lt;/code&gt; 则返回 &lt;code&gt;true&lt;/code&gt;。&lt;/p&gt;
 &lt;p&gt;**注意：**不要求字典中出现的单词全部都使用，并且字典中的单词可以重复使用。&lt;/p&gt;
