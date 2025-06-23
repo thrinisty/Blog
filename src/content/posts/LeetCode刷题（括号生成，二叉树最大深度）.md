@@ -31,7 +31,7 @@ draft: false
 
 ## 题解
 
-思路
+解法一：用字符串存储结果
 
 利用递归解决，用left与right记录剩余的左右括号，当左括号多余右括号时才允许添加右括号（合法）
 
@@ -52,6 +52,40 @@ class Solution {
         }
         if(left < right) {
             fun(result, str + ")", left, right - 1);
+        }
+    }
+}
+```
+
+
+
+解法二：StringBuilder存储
+
+更新以下用StringBuilder存储的解法，因为不用像str一样每一次创建字符串，在内存和速度上都要由于上一种解法，这种解法需要使用到回溯
+
+```java
+class Solution {
+    List<String> result = new ArrayList<>();
+    public List<String> generateParenthesis(int n) {
+        StringBuilder str = new StringBuilder();
+        fun(str, n, n);
+        return result;
+    }
+
+    public void fun(StringBuilder str, int left, int right) {
+        if(left == 0 && right == 0) {
+            result.add(str.toString());
+            return;
+        }
+        if(left != 0) {
+            str.append('(');
+            fun(str, left - 1, right);
+            str.deleteCharAt(str.length() - 1);
+        }
+        if(left < right) {
+            str.append(')');
+            fun(str, left, right - 1);
+            str.deleteCharAt(str.length() - 1);
         }
     }
 }

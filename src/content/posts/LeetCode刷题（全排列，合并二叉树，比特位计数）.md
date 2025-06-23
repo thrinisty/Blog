@@ -44,30 +44,26 @@ draft: false
 
 ```java
 class Solution {
+    List<List<Integer>> result = new ArrayList<>();
+    List<Integer> list = new ArrayList<>();
     public List<List<Integer>> permute(int[] nums) {
-        List<List<Integer>> result = new ArrayList<>();
-        List<Integer> list = new ArrayList<>();
-        
         int n = nums.length;
-        for(int i = 0; i < n; i++) {
-            list.add(nums[i]);
+        for(int num : nums) {
+            list.add(num);
         }
-        backtrack(n, list, result, 0);
+        fun(n, 0);
         return result;
     }
 
-    public void backtrack(int n, List<Integer> list, List<List<Integer>> result, int first) {
-        if(first == n) {
-            result.add(new ArrayList<Integer>(list));
-            //当first=n时，list没有元素可供交换
+    public void fun(int n, int index) {
+        if(n == index) {
+            result.add(new ArrayList<>(list));
+            return;
         }
-        for(int i = first; i < n; i++) {
-            Collections.swap(list, first, i);
-            //交换元素
-            backtrack(n, list, result, first + 1);
-            //递归调用方法，全排列交换后的first后的内容
-            Collections.swap(list , first, i);
-            //恢复原排列
+        for(int i = index; i < n; i++) {
+            Collections.swap(list, i, index);
+            fun(n, index + 1);
+            Collections.swap(list, i, index);
         }
     }
 }
@@ -158,7 +154,11 @@ class Solution {
 5 --> 101
 ```
 
+
+
 ## 题解
+
+解法一：用之前汉明距离的函数进行循环赋值，可以很轻松的实现，但是时间复杂度较高在n的循环中需要套嵌一层log n来求解对应数字的含1数量
 
 ```java
 class Solution {
@@ -181,3 +181,26 @@ class Solution {
 }
 ```
 
+
+
+解法二：动态规划求解
+
+对于每一个数字分为两种情况，末位不为1的情况下，它所对应的结果应该和之前求解出的num >> 1相同，而对于末尾为1的时候，结果应该是上述得出结果num - 1的1的总和结果加上末尾的1
+
+```java
+class Solution {
+    public int[] countBits(int n) {
+        int[] result = new int[n + 1];
+        for(int i = 0; i <= n; i++) {
+            if((i & 1) == 0) {
+                result[i] = result[i >> 1];
+            } else {
+                result[i] = result[i - 1] + 1;
+            }
+        }
+        return result;
+    }
+}
+```
+
+可以将时间复杂度降至O(n)
