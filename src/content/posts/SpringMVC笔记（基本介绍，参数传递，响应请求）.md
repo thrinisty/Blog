@@ -222,7 +222,7 @@ public class SpringConfig {
 
 
 
-最后我们还需要将Spring纳入ServletContainersInitConfig的管理，将Sring也在TomCat启动的时候初始化
+最后我们还需要将Spring纳入ServletContainersInitConfig的管理，将Spring也在Tomcat启动的时候初始化
 
 ```java
 @Override
@@ -324,7 +324,7 @@ http://localhost:8080/MVCTest_war/user/commonParam?name=nameTest&age=10
 
 接收两个参数
 
-```
+```java
 @RequestMapping("/commonParam")
     @ResponseBody
     public String commonParam(String name, int age) {

@@ -1,4 +1,1706 @@
-<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Thrinisty&apos;s Blog</title><description>New Blog</description><link>https://thrinisty.github.io/</link><language>zh_CN</language><item><title>MCP笔记（MCP）</title><link>https://thrinisty.github.io/posts/mcp%E7%AC%94%E8%AE%B0mcp/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/mcp%E7%AC%94%E8%AE%B0mcp/</guid><description>MCP</description><pubDate>Mon, 23 Jun 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;MCP笔记&lt;/h1&gt;
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Thrinisty&apos;s Blog</title><description>New Blog</description><link>https://thrinisty.github.io/</link><language>zh_CN</language><item><title>SpringAI笔记（MCPService，上下文对话，内容封装）</title><link>https://thrinisty.github.io/posts/springai%E7%AC%94%E8%AE%B0mcpservice%E4%B8%8A%E4%B8%8B%E6%96%87%E5%AF%B9%E8%AF%9D%E5%86%85%E5%AE%B9%E5%B0%81%E8%A3%85/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/springai%E7%AC%94%E8%AE%B0mcpservice%E4%B8%8A%E4%B8%8B%E6%96%87%E5%AF%B9%E8%AF%9D%E5%86%85%E5%AE%B9%E5%B0%81%E8%A3%85/</guid><description>MCPService 上下文对话，内容封装</description><pubDate>Mon, 30 Jun 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;SpringAI笔记&lt;/h1&gt;
+&lt;h2&gt;MCP&lt;/h2&gt;
+&lt;p&gt;模型上下文协议&lt;/p&gt;
+&lt;p&gt;是一种标准化协议，使 AI 模型能以结构化方式与外部工具及资源交互。它支持多种传输机制，以适应不同环境的灵活性需求。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/215.jpg&quot; alt=&quot;215&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://modelcontextprotocol.io/sdk/java&quot;&gt;MCP Java SDK&lt;/a&gt; 提供 MCP 的 Java 实现，支持通过同步和异步通信模式与 AI 模型及工具进行标准化交互。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Spring AI MCP&lt;/strong&gt; 通过集成 Spring Boot 扩展了 MCP Java SDK，同时提供 &lt;a href=&quot;https://springdoc.cn/spring-ai/api/mcp/mcp-client-boot-starter-docs.html&quot;&gt;客户端&lt;/a&gt; 和 &lt;a href=&quot;https://springdoc.cn/spring-ai/api/mcp/mcp-server-boot-starter-docs.html&quot;&gt;服务端&lt;/a&gt; Starter。使用 &lt;a href=&quot;https://start.springboot.io/&quot;&gt;Spring Initializer&lt;/a&gt;可快速构建支持 MCP 的 AI 应用。&lt;/p&gt;
+&lt;h2&gt;MCPService&lt;/h2&gt;
+&lt;h3&gt;引入相关依赖&lt;/h3&gt;
+&lt;p&gt;引入仓库依赖&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;repositories&amp;gt;
+    &amp;lt;repository&amp;gt;
+       &amp;lt;id&amp;gt;spring-snapshots&amp;lt;/id&amp;gt;
+       &amp;lt;name&amp;gt;Spring Snapshots&amp;lt;/name&amp;gt;
+       &amp;lt;url&amp;gt;https://repo.spring.io/snapshot&amp;lt;/url&amp;gt;
+       &amp;lt;releases&amp;gt;
+          &amp;lt;enabled&amp;gt;false&amp;lt;/enabled&amp;gt;
+       &amp;lt;/releases&amp;gt;
+    &amp;lt;/repository&amp;gt;
+    &amp;lt;repository&amp;gt;
+       &amp;lt;name&amp;gt;Central Portal Snapshots&amp;lt;/name&amp;gt;
+       &amp;lt;id&amp;gt;central-portal-snapshots&amp;lt;/id&amp;gt;
+       &amp;lt;url&amp;gt;https://central.sonatype.com/repository/maven-snapshots/&amp;lt;/url&amp;gt;
+       &amp;lt;releases&amp;gt;
+          &amp;lt;enabled&amp;gt;false&amp;lt;/enabled&amp;gt;
+       &amp;lt;/releases&amp;gt;
+       &amp;lt;snapshots&amp;gt;
+          &amp;lt;enabled&amp;gt;true&amp;lt;/enabled&amp;gt;
+       &amp;lt;/snapshots&amp;gt;
+    &amp;lt;/repository&amp;gt;
+&amp;lt;/repositories&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;引入MCP Service相关依赖&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;dependency&amp;gt;
+    &amp;lt;groupId&amp;gt;org.springframework.ai&amp;lt;/groupId&amp;gt;
+    &amp;lt;artifactId&amp;gt;spring-ai-starter-mcp-server-webmvc&amp;lt;/artifactId&amp;gt;
+&amp;lt;/dependency&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;dependencyManagement&amp;gt;
+    &amp;lt;dependencies&amp;gt;
+       &amp;lt;dependency&amp;gt;
+          &amp;lt;groupId&amp;gt;org.springframework.ai&amp;lt;/groupId&amp;gt;
+          &amp;lt;artifactId&amp;gt;spring-ai-bom&amp;lt;/artifactId&amp;gt;
+          &amp;lt;version&amp;gt;1.0.0-SNAPSHOT&amp;lt;/version&amp;gt;
+          &amp;lt;type&amp;gt;pom&amp;lt;/type&amp;gt;
+          &amp;lt;scope&amp;gt;import&amp;lt;/scope&amp;gt;
+       &amp;lt;/dependency&amp;gt;
+    &amp;lt;/dependencies&amp;gt;
+&amp;lt;/dependencyManagement&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Tool注解表示MCP服务方法&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@Service
+public class WeatherService {
+    @Tool(description = &quot;根据城市名称获取天气&quot;)
+    public String getWeather(@ToolParam(description = &quot;城市名称&quot;) String cityName) {
+        if(cityName == null) {
+            return &quot;城市名称不能为空&quot;;
+        }
+        if(&quot;北京&quot;.equals(cityName)) {
+            return &quot;北京今天天气：晴，气温25°C，空气质量良&quot;;
+        }
+        if(&quot;上海&quot;.equals(cityName)) {
+            return &quot;上海今天天气：阴，气温28°C，湿度65%&quot;;
+        }
+        return &quot;暂不支持该城市查询，当前可查询：北京、上海&quot;;
+    }
+
+    @Tool(description = &quot;查询城市今天适合的运动&quot;)
+    public String action(@ToolParam(description = &quot;城市名称&quot;) String cityName) {
+        if(&quot;北京&quot;.equals(cityName)) {
+            return &quot;北京今天天气：空气质量良，适合出门运动&quot;;
+        }
+        if(&quot;上海&quot;.equals(cityName)) {
+            return &quot;上海今天天气：阴，适合室内学习&quot;;
+        }
+        return &quot;暂不支持该城市查询，当前可查询：北京、上海&quot;;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;使用Bean注解注册ToolCallbackProvider&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@Configuration
+public class MCPServiceConfig {
+    @Bean
+    public ToolCallbackProvider weatherTools(WeatherService weatherService) {
+        return MethodToolCallbackProvider.builder().toolObjects(weatherService).build();
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;注册的服务&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/214.png&quot; alt=&quot;214&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;查询结果调用注册的MCP方法&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/213.png&quot; alt=&quot;213&quot; /&gt;&lt;/p&gt;
+&lt;h2&gt;记忆对话&lt;/h2&gt;
+&lt;p&gt;上下文对话的作用就是让AI具有记忆力，在快速入门和流式对话中，我们是通过一种单一的输入输出方式进行调用的，这种调用方式无法让AI具有记忆力&lt;/p&gt;
+&lt;p&gt;ChatGPT上下文对话的实现原理较为简单，本质上其实就是将不同角色的聊天信息依次存储在一个队列中发送给ChatGPT即可，然后ChatGPT会根据整个聊天信息对回复内容进行判断。在OpenAI提供的接口中，每条信息的角色总共分为三类：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;SystemMessage：系统限制信息，这种信息在对话中的权重很大，AI会优先依据SystemMessage里的内容进行回复；&lt;/li&gt;
+&lt;li&gt;UserMessage：用户信息&lt;/li&gt;
+&lt;li&gt;AssistantMessage：AI回复信息&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;如果我们需要实现上下文对话，就只需要使用一个List存储这些Message对象，并将这些Message对象一并发送给AI，AI拿到这些Message后，会根据Message里的内容进行回复。&lt;/p&gt;
+&lt;p&gt;:::warning&lt;/p&gt;
+&lt;p&gt;不过，根据OpenAI的计费规则，&lt;strong&gt;你的消息队列越长，单次问询需要的费用就会越高&lt;/strong&gt;，因此我们需要对这个消息列表的长度进行限制。&lt;/p&gt;
+&lt;p&gt;:::&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;private final List&amp;lt;Message&amp;gt; messageHistory = new ArrayList&amp;lt;&amp;gt;(); // 历史消息列表
+private static final int MAX_HISTORY = 10; // 保留最近10条消息
+
+@GetMapping(&quot;/chat&quot;)
+public String chat(@RequestParam String prompt) {
+    // 1. 添加用户消息到历史
+    messageHistory.add(new UserMessage(prompt));
+    // 2. 修剪历史（固定窗口算法）
+    if (messageHistory.size() &amp;gt; MAX_HISTORY) {
+        messageHistory.remove(0); // 移除最旧的消息
+    }
+    // 3. 调用模型生成回复
+    AssistantMessage assistantMessage = chatModel.call(new Prompt(messageHistory))
+            .getResult()
+            .getOutput();
+    // 4. 添加AI回复到历史
+    messageHistory.add(assistantMessage);
+    return assistantMessage.getContent();
+}
+// 清空历史（可选）
+@PostMapping(&quot;/clear&quot;)
+public String clear() {
+    messageHistory.clear();
+    return &quot;对话历史已重置&quot;;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;首次提问&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;你的名字是Marry，请你记住，以后回复我的时候带上你的名字
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;好的，我记住了！以后每次回复你时，我都会带上名字的。 ——Marry
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;第二次提问&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;你的名字是什么
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;我的名字是 **Marry**！很高兴为你服务～ ——Marry
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;第三次提问&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;我对你的第一条信息的要求是什么
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;你第一条信息的要求是： **“请你记住，以后回复我的时候带上你的名字（Marry）”。** 所以我会在每次回复的结尾标注 **——Marry**，像这样哦～ （注：发现之前的拼写差异了吗？你最初写的是“Marry”，但这次提问时写成了“Marry”，我会继续统一使用 **Marry** 的拼写，除非你另有指示 😊） ——Marry
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;请求清除历史&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;对话历史已重置
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;再次提问&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;你最初的第一条信息是：**“你好！”** 不过，如果你指的是对**我**（即你作为用户）的第一条信息的要求，通常并没有严格限制。你可以自由地输入任何问题、指令或话题，比如： - 提问（如“如何学习编程？”） - 请求帮助（如“请总结这篇文章”） - 直接对话（如“嗨，今天怎么样？”） 我的设计目标是灵活适应你的需求，所以无论是简单问候、具体问题，还是测试功能，都可以直接发送。唯一需要注意的是： 1. **避免违法/有害内容**（如暴力、隐私侵犯等）。 2. **清晰表达需求**（越具体，回答越精准）。 如果有特别格式或规则，你可以随时提出，我会配合！ 😊 需要我演示如何回答某类问题吗？
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;实现了一定的上下文记忆要求&lt;/p&gt;
+&lt;h2&gt;内容封装&lt;/h2&gt;
+&lt;p&gt;将问答内容封装进入bean对象&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@GetMapping(&quot;/findBook&quot;)
+public Book findBook(@RequestParam String bookName) throws Exception {
+    String userText = &quot;&quot;&quot;
+    请严格以如下JSON格式返回《%s》的信息：
+    {
+      &quot;name&quot;: &quot;书名&quot;,
+      &quot;author&quot;: &quot;作者&quot;,
+      &quot;price&quot;: 价格数字,
+      &quot;description&quot;: &quot;简介&quot;
+    }
+    不要返回任何非JSON内容。
+    &quot;&quot;&quot;.formatted(bookName);
+    String jsonResponse = chatModel.call(new Prompt(new UserMessage(userText)))
+            .getResult()
+            .getOutput()
+            .getContent();
+    System.out.println(jsonResponse);
+    // 使用Jackson解析JSON
+    return new ObjectMapper().readValue(jsonResponse, Book.class);
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;{
+  &quot;name&quot;: &quot;1984&quot;,
+  &quot;author&quot;: &quot;乔治·奥威尔&quot;,
+  &quot;price&quot;: 35,
+  &quot;description&quot;: &quot;《1984》是英国作家乔治·奥威尔创作的一部反乌托邦小说，描绘了一个极权主义社会中个人自由被彻底剥夺的恐怖景象。小说通过主人公温斯顿·史密斯的视角，展现了思想控制、历史篡改和无处不在的监控如何彻底改变人类的本质。&quot;
+}
+&lt;/code&gt;&lt;/pre&gt;
+</content:encoded></item><item><title>SpringAI笔记（聊天模型，函数调用，RAG）</title><link>https://thrinisty.github.io/posts/springai%E7%AC%94%E8%AE%B0%E8%81%8A%E5%A4%A9%E6%A8%A1%E5%9E%8B%E5%87%BD%E6%95%B0%E8%B0%83%E7%94%A8rag/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/springai%E7%AC%94%E8%AE%B0%E8%81%8A%E5%A4%A9%E6%A8%A1%E5%9E%8B%E5%87%BD%E6%95%B0%E8%B0%83%E7%94%A8rag/</guid><description>SpringAI聊天模型，函数调用，RAG</description><pubDate>Fri, 27 Jun 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;SpringAI笔记&lt;/h1&gt;
+&lt;h2&gt;聊天模型&lt;/h2&gt;
+&lt;p&gt;ChatClient接口：定义了一个与聊天服务交互的客户端，用于创建聊天客户端对象，设置请求规范，发起聊天请求，底层使用了ChatModel&lt;/p&gt;
+&lt;p&gt;ChatModel接口：是核心，定义了与AI模型交互的基本方法，它继承自Model&amp;lt;Prompr,ChatResponse&amp;gt;，提供了两个重载的call方法&lt;/p&gt;
+&lt;h3&gt;ChatClient&lt;/h3&gt;
+&lt;h4&gt;初步使用&lt;/h4&gt;
+&lt;p&gt;通过ChatClient调用大模型&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@RestController
+public class ChatController {
+    private final ChatClient chatClient;
+
+    public ChatController(ChatClient.Builder chatClientBuilder) {
+        this.chatClient = chatClientBuilder.build();
+    }
+
+    @GetMapping(&quot;/chat&quot;)
+    public String chat(@RequestParam(value = &quot;message&quot;, defaultValue = &quot;你是谁&quot;) String message) {
+        String text = chatClient.prompt()//设置提示词
+                .user(message)//输入用户输入内容
+                .call()//调用模型
+                .content();//返回字符串结果
+        return text;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;设置提示词&lt;/h4&gt;
+&lt;p&gt;角色预设，通过设置prompt提示词完成，可以设置一个Configuration配置文件在其中将一个ChatClient放入IoC容器，并通过builder.defaultSystem()设置提示词&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@Configuration
+public class AiConfig {
+    @Bean
+    public ChatClient chatClient(ChatClient.Builder builder) {
+        return builder.defaultSystem(&quot;医生，看病&quot;).build();
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;@RestController
+public class ChatAIController {
+    @Autowired
+    private ChatClient chatClient;
+
+    @GetMapping(&quot;/chatAI&quot;)
+    public String chat(@RequestParam(value = &quot;message&quot;, defaultValue = &quot;你是谁&quot;) String message) {
+        String text = chatClient.prompt()//设置提示词
+                .user(message)//输入用户输入内容
+                .call()//调用模型
+                .content();//返回字符串结果
+        return text;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;尝试重新调用，输出有所变化&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;我是DeepSeek Chat，一个由深度求索公司开发的AI助手！😊 虽然我不是真正的医生，但我可以为你提供一些健康相关的科普信息、常见症状的可能原因，或者帮助你理解医学术语。 如果你有具体的健康问题，建议尽快咨询专业医生或前往正规医疗机构就诊，以获得准确的诊断和治疗方案。你的健康很重要，千万别耽误哦！💖 有什么我可以帮你的吗？
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;输出优化&lt;/h4&gt;
+&lt;p&gt;我们以上的回复是将所有的结果生成完毕后返回给客户端，我们在实际使用的时候往往采用流式响应stream，可以逐个字符输出&lt;/p&gt;
+&lt;p&gt;:::note&lt;/p&gt;
+&lt;p&gt;这里还需要将字符集设置为UTF-8的编码格式否则会出现乱码&lt;/p&gt;
+&lt;p&gt;:::&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@GetMapping(value = &quot;/chatAIStream&quot;, produces = &quot;text/html;charset=UTF-8&quot;)
+public Flux&amp;lt;String&amp;gt; chatStream(@RequestParam(value = &quot;message&quot;, defaultValue = &quot;你是谁&quot;) String message) {
+    Flux&amp;lt;String&amp;gt; flux = chatClient.prompt()//设置提示词
+            .user(message)//输入用户输入内容
+            .stream()//调用模型
+            .content();//返回字符串结果
+    return flux;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;ChatModel&lt;/h3&gt;
+&lt;h4&gt;初步使用&lt;/h4&gt;
+&lt;pre&gt;&lt;code&gt;@RestController
+public class ChatController {
+    @Autowired
+    private ChatModel chatModel;
+    @GetMapping(&quot;/chatModel01&quot;)
+    public String chatModel01(@RequestParam(value = &quot;message&quot;, defaultValue = &quot;你是谁&quot;) String message) {
+        return chatModel.call(message);
+    }
+
+    @GetMapping(&quot;/chatModel02&quot;)
+    public String chatModel02(@RequestParam(value = &quot;message&quot;, defaultValue = &quot;你是谁&quot;) String message) {
+        ChatResponse chatResponse = chatModel.call(
+                new Prompt(
+                        message,
+                        ChatOptions.builder()
+                                .model(&quot;deepseek-chat&quot;)
+                                .temperature(0.9)
+                                .build()
+                )
+        );
+        return chatResponse.getResult().getOutput().getContent();
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;设置提示词&lt;/h4&gt;
+&lt;p&gt;综合使用一下&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@GetMapping(&quot;/prompt&quot;)
+public String prompt(@RequestParam(&quot;name&quot;)
+                         String name,
+                     @RequestParam(&quot;voice&quot;)
+                         String voice) {
+    //设置用于输入信息
+    String userText = &quot;推荐南京的至少三种美食&quot;;
+    UserMessage userMessage = new UserMessage(userText);
+    //设置系统提示信息
+    String systemText = &quot;你是美食资讯助手，帮助查询美食，你的名字是{name}，&quot; +
+            &quot;你应该用你的名字和{voice}的饮食习惯回复用户&quot;;
+    SystemPromptTemplate systemPromptTemplate = new SystemPromptTemplate(systemText);
+    //替换占位符
+    Message systemMessage = systemPromptTemplate.createMessage(Map.of(&quot;name&quot;, name, &quot;voice&quot;, voice));
+    //使用Prompt Template设置信息
+    Prompt prompt = new Prompt(List.of(userMessage, systemMessage));
+    //调用ChatModel方法
+    ChatResponse chatResponse = chatModel.call(prompt);
+    List&amp;lt;Generation&amp;gt; results = chatResponse.getResults();
+    return results.stream().map(x-&amp;gt;x.getOutput().getContent()).collect(Collectors.joining(&quot;&quot;));
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;通过封装用户传入的提示词我们可以实现个性化的回复&lt;/p&gt;
+&lt;p&gt;http://localhost:8080/prompt?name=%E5%BC%A0%E4%B8%89&amp;amp;voice=%E5%A5%A2%E5%8D%8E&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;亲爱的美食爱好者，我是张三，很高兴为您推荐南京的奢华美食。作为一个对美食有着极高要求的鉴赏家，我为您精心挑选了以下三种最具代表性的南京美味： 1. 金陵盐水鸭 这道南京最负盛名的美食，选用优质瘦型鸭，经过24小时秘制卤水浸泡，肉质细嫩多汁，咸香适中。我特别推荐德基广场的&quot;金陵饭店&quot;，他们选用的是有机养殖的鸭子，配以30年陈酿的花雕酒腌制。 2. 鸭血粉丝汤 这道平民美食也能吃出奢华感。我常去老门东的&quot;回味鸭血粉丝&quot;，他们使用现杀现取的鸭血，配以熬制8小时的老鸭汤底，粉丝选用的是日本进口的葛粉，口感Q弹爽滑。 3. 蟹黄汤包 南京的汤包以蟹黄馅最为名贵。我最爱&quot;南京大牌档&quot;的蟹黄汤包，每只包子都包含一整只阳澄湖大闸蟹的蟹黄，皮薄如纸，汤汁鲜美。建议搭配30年的陈醋食用。 作为美食达人，我建议您可以选择在德基广场的&quot;江南灶&quot;一次性品尝这三道美食，他们家的摆盘和服务都达到了米其林水准。记得提前一周预约哦！ 您对这些美食感兴趣吗？我可以为您推荐更多南京的隐藏美食地图。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;函数调用&lt;/h2&gt;
+&lt;p&gt;SpringAI函数调用（Function Calling）功能允许大模型在生成回答时触发预定义的外部函数，从而实现动态数据获取或业务逻辑操作（如查询数据库，调用API等）&lt;/p&gt;
+&lt;p&gt;SpringAI帮我们规范了函数定义注册等过程，并在发起模型请求之前自动将函数注入到Prompt中，当模型决策再合适的时候去调用某个函数时，SpringAI完成函数调用动作，最终将函数执行结果与原始问题再一并发送给模型，模型根据新的输入决策下一步动作&lt;/p&gt;
+&lt;p&gt;其中涉及到与大模型多次交互过程，一次函数调用就是一次完成的交互过程&lt;/p&gt;
+&lt;h3&gt;使用步骤&lt;/h3&gt;
+&lt;p&gt;1.定义函数：声明可供模型调用的函数（名称、描述、参数结构）&lt;/p&gt;
+&lt;p&gt;2.模型交互：将函数信息和用户输入一起发送给模型，模型决定是否需要调用函数&lt;/p&gt;
+&lt;p&gt;3.执行函数：解析模型的函数调用请求，执行对应的业务逻辑&lt;/p&gt;
+&lt;p&gt;4.返回结果：将函数执行结果返回给模型，生成最终回答&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@Configuration
+public class CalculatorService {
+    public record AddOperation(int a, int b) {
+
+    }
+
+    public record MulOperation(int a, int b) {
+
+    }
+
+    public record SuperOperation(int a, int b) {}
+
+    @Bean
+    @Description(&quot;加法运算&quot;)
+    public Function&amp;lt;AddOperation,Integer&amp;gt; addOperation() {
+        return request -&amp;gt; {
+            return request.a + request.b;
+        };
+    }
+
+    @Bean
+    @Description(&quot;乘法运算&quot;)
+    public Function&amp;lt;MulOperation,Integer&amp;gt; mulOperation() {
+        return request -&amp;gt; {
+            return request.a * request.b;
+        };
+    }
+
+    @Bean
+    @Description(&quot;特殊的运算&quot;)
+    public Function&amp;lt;SuperOperation,Integer&amp;gt; superOperation() {
+        return request -&amp;gt; {
+            return request.a - request.b + 10;
+        };
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;编写Controller调用&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@RestController
+public class FunController {
+    @Autowired
+    private ChatClient chatClient;
+
+    @Autowired
+    private ChatModel chatModel;
+
+    @GetMapping(value = &quot;/function&quot;)
+    public String function01(@RequestParam(&quot;userMessage&quot;) String userMessage) {
+        return ChatClient.builder(chatModel)
+                .build().prompt()
+                .system(&quot;你是计算器代理，支持了加法乘法操作，在提供加法运算和乘法运算之前获取两个数字，运算类型，请调用自定义函数执行加法运算乘法运算还有一个特殊运算，说中文&quot;)
+                .user(userMessage)
+                .functions(&quot;addOperation&quot;,&quot;mulOperation&quot;,&quot;superOperation&quot;)
+                .call()
+                .content();
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;?userMessage=请为我计算数字8和数字70的特殊运算结果&lt;/p&gt;
+&lt;p&gt;请求返回结果&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;数字8和数字70的特殊运算结果是：-52
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;RAG&lt;/h2&gt;
+&lt;p&gt;检索增强生成，是一种结合了检索系统和生成模型的新型技术框架主要的目的如下&lt;/p&gt;
+&lt;p&gt;1.利用外部知识库&lt;/p&gt;
+&lt;p&gt;2.帮助大模型生成更加、准确、有依据、最新的回答&lt;/p&gt;
+&lt;h3&gt;工作流程&lt;/h3&gt;
+&lt;p&gt;1.用户输入问题&lt;/p&gt;
+&lt;p&gt;2.问题向量化&lt;/p&gt;
+&lt;p&gt;3.向量数据库检索&lt;/p&gt;
+&lt;p&gt;4.构建上下文（含系统提示词）&lt;/p&gt;
+&lt;p&gt;5.携带检索内容，调用大模型进行回答&lt;/p&gt;
+&lt;p&gt;6.返回最终答案给用户&lt;/p&gt;
+&lt;p&gt;这里DeepSeek似乎不支持Embedding，项目暂时没有跑起来&lt;/p&gt;
+&lt;p&gt;先说一下大致思路&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;package com.learn.ragtest.config;
+
+import org.springframework.ai.chat.client.ChatClient;
+import org.springframework.ai.document.Document;
+import org.springframework.ai.embedding.EmbeddingModel;
+import org.springframework.ai.vectorstore.SimpleVectorStore;
+import org.springframework.ai.vectorstore.VectorStore;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+import java.util.List;
+import java.util.Vector;
+
+@Configuration
+public class RagConfig {
+    @Bean
+    ChatClient chatClient(ChatClient.Builder builder) {
+        return builder.defaultSystem(&quot;你是Java开发专家，解决用户需求&quot;).build();
+    }
+
+    @Bean
+    VectorStore vectorStore(EmbeddingModel embeddingModel) {
+        SimpleVectorStore simpleVectorStore = SimpleVectorStore
+                .builder(embeddingModel)
+                .build();
+        //生成说明文档
+        List&amp;lt;Document&amp;gt; documents = List.of(
+                new Document(&quot;产品说明：名称：Java开发语言&quot; +
+                        &quot;相关描述：一种面向对象的开发语言&quot; +
+                        &quot;特性：1.继承\n 2.封装\n 3.多态\n&quot;)
+        );
+        //向量化存储
+        simpleVectorStore.add(documents);
+        return simpleVectorStore;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;携带上下文检索内容提问大模型&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@Autowired
+private ChatClient chatClient;
+
+@Autowired
+private VectorStore vectorStore;
+
+@GetMapping(&quot;/rag&quot;)
+public String rag(@RequestParam(&quot;message&quot;) String message) {
+    String content = chatClient.prompt()
+            .user(message)
+            .advisors(new QuestionAnswerAdvisor(vectorStore))
+            .call()
+            .content();
+    return content;
+}
+&lt;/code&gt;&lt;/pre&gt;
+</content:encoded></item><item><title>SpringAI笔记（基本概念，入门使用）</title><link>https://thrinisty.github.io/posts/springai%E7%AC%94%E8%AE%B0%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5%E5%85%A5%E9%97%A8%E4%BD%BF%E7%94%A8/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/springai%E7%AC%94%E8%AE%B0%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5%E5%85%A5%E9%97%A8%E4%BD%BF%E7%94%A8/</guid><description>Spring AI的基本概念，入门使用</description><pubDate>Thu, 26 Jun 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;Spring AI笔记&lt;/h1&gt;
+&lt;p&gt;Spring AI是一个AI工程领域的应用程序框架，提供了一个友好的API和开发AI应用的抽象，旨在简化AI大模型应用的开发工作&lt;/p&gt;
+&lt;p&gt;对主流的AI大模型供应商提供了支持如OpenAI、DeepSeek、Ollama、Amazon&lt;/p&gt;
+&lt;p&gt;还可以把AI大模型的输出映射到JavaBean中&lt;/p&gt;
+&lt;h2&gt;基本概念&lt;/h2&gt;
+&lt;h3&gt;Prompt&lt;/h3&gt;
+&lt;p&gt;提示（Prompt）是引导人工智能模型产生特定输出的语言输入的基础&lt;/p&gt;
+&lt;p&gt;对于熟悉 ChatGPT 的人来说，提示可能只是在对话框中输入并发送到 API 的文本。然而，它包含的内容远不止这些。在许多人工智能模型中，提示文本不仅仅是一个简单的字符串。&lt;/p&gt;
+&lt;p&gt;ChatGPT 的 API 在一个提示中包含多个文本输入，每个文本输入都被分配了一个角色。例如，&lt;code&gt;system&lt;/code&gt; 角色会告诉模型如何操作，并为交互设置上下文。还有 &lt;code&gt;user&lt;/code&gt; 角色，通常是来自用户的输入。&lt;/p&gt;
+&lt;h3&gt;提示模板&lt;/h3&gt;
+&lt;p&gt;设计优质提示词的关键在于构建请求的上下文框架，并将部分通用描述替换为用户输入的具体参数值。&lt;/p&gt;
+&lt;p&gt;该流程采用基于文本的传统模板引擎来实现提示词的创建与管理。为此，Spring AI 使用了开源库 &lt;a href=&quot;https://www.stringtemplate.org/&quot;&gt;StringTemplate&lt;/a&gt; 作为技术实现方案。&lt;/p&gt;
+&lt;p&gt;例如，一个简单的提示词模板如下：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;Tell me a {adjective} joke about {content}.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;在 Spring AI 中，提示词模板可类比 Spring MVC 架构中的 “View” 层。系统会提供一个模型对象（通常是 &lt;code&gt;java.util.Map&lt;/code&gt;）来填充模板中的占位符，最终 “渲染” 生成的字符串将作为传递给 AI 模型的提示内容。&lt;/p&gt;
+&lt;h3&gt;结构化输出&lt;/h3&gt;
+&lt;p&gt;AI 模型的输出传统上以 &lt;code&gt;java.lang.String&lt;/code&gt; 形式返回 — 即便要求生成 JSON 格式的答复。它可能是格式正确的 JSON，但本质仍是字符串而非 JSON 数据结构。要注意，在提示词中简单要求 “输出 JSON” 并不能百分百保证结果准确性。&lt;/p&gt;
+&lt;p&gt;这一复杂性催生了一个专门领域：既要设计能生成预期输出的提示词，又需将返回的原始字符串转换为可供应用程序集成的数据结构。&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://springdoc.cn/spring-ai/api/structured-output-converter.html#_structuredoutputconverter&quot;&gt;结构化输出&lt;/a&gt; 转换采用精心制作的提示，通常需要与模型进行多次交互才能实现所需的格式。&lt;/p&gt;
+&lt;h3&gt;整合数据&lt;/h3&gt;
+&lt;p&gt;现有三种技术可定制 AI 模型以整合你的数据：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;微调（Fine-Tuning）&lt;/strong&gt;：这项传统机器学习技术通过调整模型内部权重实现定制，但对 GPT 等大模型而言存在双重挑战 — 不仅需要专业机器学习知识，还因模型规模导致计算资源消耗极大。值得注意的是，部分模型可能根本不开放此功能。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;提示词填充（Prompt Stuffing）&lt;/strong&gt;：一种更实用的替代方案是将数据直接嵌入到提供给模型的提示词中。鉴于模型的 Token 限制，需要特定技术确保相关数据能适配上下文窗口。这种方法俗称 “提示词填充”。Spring AI 库能帮助你基于该技术（现多称为检索增强生成/RAG）实现解决方案。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;&lt;a href=&quot;https://springdoc.cn/spring-ai/concepts.html#concept-fc&quot;&gt;工具调用（Tool Calling）&lt;/a&gt;&lt;/strong&gt;：该技术支持注册工具（用户自定义服务），将大语言模型与外部系统 API 连接。Spring AI 大幅简化了实现 &lt;a href=&quot;https://springdoc.cn/spring-ai/api/tools.html&quot;&gt;工具调用&lt;/a&gt; 所需的代码量。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;工具调用&lt;/h3&gt;
+&lt;p&gt;大语言模型（LLM）在训练完成后即固化，导致知识陈旧，且无法直接访问或修改外部数据。&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://springdoc.cn/spring-ai/api/tools.html&quot;&gt;工具调用机制（Tool Calling）&lt;/a&gt; 有效解决了这些局限。该功能允许你将自定义服务注册为工具，将大语言模型与外部系统 API 连接，使 LLM 能获取实时数据并委托这些系统执行数据处理操作。&lt;/p&gt;
+&lt;p&gt;Spring AI 极大简化了支持工具调用所需的编码工作，自动处理工具调用的对话交互。你只需将工具定义为带有 &lt;code&gt;@Tool&lt;/code&gt; 注解的方法，并通过提示选项提供给模型即可调用。此外，单个提示中可定义和引用多个工具。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/211.jpg&quot; alt=&quot;211&quot; /&gt;&lt;/p&gt;
+&lt;h2&gt;入门使用&lt;/h2&gt;
+&lt;p&gt;SpringAI整合DeepSeek作为示例，文档详见如下链接&lt;/p&gt;
+&lt;p&gt;https://api-docs.deepseek.com/zh-cn/&lt;/p&gt;
+&lt;p&gt;导入相关的pom依赖&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&amp;gt;
+&amp;lt;project xmlns=&quot;http://maven.apache.org/POM/4.0.0&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
+         xsi:schemaLocation=&quot;http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd&quot;&amp;gt;
+    &amp;lt;modelVersion&amp;gt;4.0.0&amp;lt;/modelVersion&amp;gt;
+    &amp;lt;parent&amp;gt;
+        &amp;lt;groupId&amp;gt;org.springframework.boot&amp;lt;/groupId&amp;gt;
+        &amp;lt;artifactId&amp;gt;spring-boot-starter-parent&amp;lt;/artifactId&amp;gt;
+        &amp;lt;version&amp;gt;3.5.3&amp;lt;/version&amp;gt;
+        &amp;lt;relativePath/&amp;gt; &amp;lt;!-- lookup parent from repository --&amp;gt;
+    &amp;lt;/parent&amp;gt;
+    &amp;lt;groupId&amp;gt;com.learn&amp;lt;/groupId&amp;gt;
+    &amp;lt;artifactId&amp;gt;DeepSeek&amp;lt;/artifactId&amp;gt;
+    &amp;lt;version&amp;gt;0.0.1-SNAPSHOT&amp;lt;/version&amp;gt;
+    &amp;lt;name&amp;gt;DeepSeek&amp;lt;/name&amp;gt;
+    &amp;lt;description&amp;gt;DeepSeek&amp;lt;/description&amp;gt;
+    &amp;lt;url/&amp;gt;
+    &amp;lt;licenses&amp;gt;
+        &amp;lt;license/&amp;gt;
+    &amp;lt;/licenses&amp;gt;
+    &amp;lt;developers&amp;gt;
+        &amp;lt;developer/&amp;gt;
+    &amp;lt;/developers&amp;gt;
+    &amp;lt;scm&amp;gt;
+        &amp;lt;connection/&amp;gt;
+        &amp;lt;developerConnection/&amp;gt;
+        &amp;lt;tag/&amp;gt;
+        &amp;lt;url/&amp;gt;
+    &amp;lt;/scm&amp;gt;
+    &amp;lt;properties&amp;gt;
+        &amp;lt;java.version&amp;gt;17&amp;lt;/java.version&amp;gt;
+    &amp;lt;/properties&amp;gt;
+
+    &amp;lt;repositories&amp;gt;
+        &amp;lt;repository&amp;gt;
+            &amp;lt;id&amp;gt;spring-milestones&amp;lt;/id&amp;gt;
+            &amp;lt;name&amp;gt;Spring Milestones&amp;lt;/name&amp;gt;
+            &amp;lt;url&amp;gt;https://repo.spring.io/milestone&amp;lt;/url&amp;gt;
+            &amp;lt;snapshots&amp;gt;
+                &amp;lt;enabled&amp;gt;true&amp;lt;/enabled&amp;gt;
+            &amp;lt;/snapshots&amp;gt;
+        &amp;lt;/repository&amp;gt;
+        &amp;lt;repository&amp;gt;
+            &amp;lt;id&amp;gt;spring-snapshots&amp;lt;/id&amp;gt;
+            &amp;lt;name&amp;gt;Spring Snapshots&amp;lt;/name&amp;gt;
+            &amp;lt;url&amp;gt;https://repo.spring.io/snapshot&amp;lt;/url&amp;gt;
+            &amp;lt;releases&amp;gt;
+                &amp;lt;enabled&amp;gt;true&amp;lt;/enabled&amp;gt;
+            &amp;lt;/releases&amp;gt;
+        &amp;lt;/repository&amp;gt;
+    &amp;lt;/repositories&amp;gt;
+
+
+    &amp;lt;dependencies&amp;gt;
+        &amp;lt;dependency&amp;gt;
+            &amp;lt;groupId&amp;gt;org.springframework.ai&amp;lt;/groupId&amp;gt;
+            &amp;lt;artifactId&amp;gt;spring-ai-openai-spring-boot-starter&amp;lt;/artifactId&amp;gt;
+        &amp;lt;/dependency&amp;gt;
+
+        &amp;lt;dependency&amp;gt;
+            &amp;lt;groupId&amp;gt;org.springframework.boot&amp;lt;/groupId&amp;gt;
+            &amp;lt;artifactId&amp;gt;spring-boot-starter-web&amp;lt;/artifactId&amp;gt;
+        &amp;lt;/dependency&amp;gt;
+
+        &amp;lt;dependency&amp;gt;
+            &amp;lt;groupId&amp;gt;org.springframework.boot&amp;lt;/groupId&amp;gt;
+            &amp;lt;artifactId&amp;gt;spring-boot-starter-test&amp;lt;/artifactId&amp;gt;
+            &amp;lt;scope&amp;gt;test&amp;lt;/scope&amp;gt;
+        &amp;lt;/dependency&amp;gt;
+    &amp;lt;/dependencies&amp;gt;
+
+    &amp;lt;dependencyManagement&amp;gt;
+        &amp;lt;dependencies&amp;gt;
+            &amp;lt;dependency&amp;gt;
+                &amp;lt;groupId&amp;gt;org.springframework.ai&amp;lt;/groupId&amp;gt;
+                &amp;lt;artifactId&amp;gt;spring-ai-bom&amp;lt;/artifactId&amp;gt;
+                &amp;lt;version&amp;gt;1.0.0-M5&amp;lt;/version&amp;gt;
+                &amp;lt;type&amp;gt;pom&amp;lt;/type&amp;gt;
+                &amp;lt;scope&amp;gt;import&amp;lt;/scope&amp;gt;
+            &amp;lt;/dependency&amp;gt;
+        &amp;lt;/dependencies&amp;gt;
+    &amp;lt;/dependencyManagement&amp;gt;
+
+    &amp;lt;build&amp;gt;
+        &amp;lt;plugins&amp;gt;
+            &amp;lt;plugin&amp;gt;
+                &amp;lt;groupId&amp;gt;org.springframework.boot&amp;lt;/groupId&amp;gt;
+                &amp;lt;artifactId&amp;gt;spring-boot-maven-plugin&amp;lt;/artifactId&amp;gt;
+            &amp;lt;/plugin&amp;gt;
+        &amp;lt;/plugins&amp;gt;
+    &amp;lt;/build&amp;gt;
+
+&amp;lt;/project&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;properties相关配置&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;spring.application.name=DeepSeek
+server.port=8080
+spring.ai.openai.api-key=sk-xxxxx
+spring.ai.openai.base-url=https://api.deepseek.com
+spring.ai.openai.chat.options.model=deepseek-chat
+spring.ai.openai.chat.options.temperature=0.5
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;建立一个Controller调用DeepSeek模型&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@RestController
+public class DeepSeekConroller {
+    @Autowired
+    private ChatModel chatModel;
+
+    @GetMapping(&quot;/hello&quot;)
+    public String generate(@RequestParam(value = &quot;message&quot;, defaultValue = &quot;hello&quot;)String message) {
+        String result = chatModel.call(message);
+        System.out.println(result);
+        return result;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;通过ChatModel对象的call方法传入输入大模型的信息，将生成的字符串返回给用户&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;Hello! 😊 How can I assist you today?
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&quot;../images/212.png&quot; alt=&quot;212&quot; /&gt;&lt;/p&gt;
+</content:encoded></item><item><title>SpringBoot笔记（原理分析，监控，项目部署）</title><link>https://thrinisty.github.io/posts/springboot%E7%AC%94%E8%AE%B0%E5%8E%9F%E7%90%86%E5%88%86%E6%9E%90%E7%9B%91%E6%8E%A7%E9%A1%B9%E7%9B%AE%E9%83%A8%E7%BD%B2/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/springboot%E7%AC%94%E8%AE%B0%E5%8E%9F%E7%90%86%E5%88%86%E6%9E%90%E7%9B%91%E6%8E%A7%E9%A1%B9%E7%9B%AE%E9%83%A8%E7%BD%B2/</guid><pubDate>Thu, 26 Jun 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;SpringBoot笔记&lt;/h1&gt;
+&lt;p&gt;Spring高级部分包括以下三个部分&lt;/p&gt;
+&lt;p&gt;SpringBoot原理分析  SpringBoot监控  SpringBoot项目部署&lt;/p&gt;
+&lt;h2&gt;对象创建原理&lt;/h2&gt;
+&lt;p&gt;导入pom创建IoC对象&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;dependency&amp;gt;
+    &amp;lt;groupId&amp;gt;org.springframework.boot&amp;lt;/groupId&amp;gt;
+    &amp;lt;artifactId&amp;gt;spring-boot-starter-data-redis&amp;lt;/artifactId&amp;gt;
+&amp;lt;/dependency&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;在SpringBoot的引导类中，调用的run方法其实会返回一个context的实例对象，通过这个实例对象，我们可以用key从IoC容器中取出对应的Bean对象，我们导入了redis的pom坐标，context中就会存在这样的一个redisTemplate Bean对象&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@SpringBootApplication
+public class Springboot008Application {
+    public static void main(String[] args) {
+       ConfigurableApplicationContext context = SpringApplication.run(Springboot008Application.class, args);
+       Object redisTemplate = context.getBean(&quot;redisTemplate&quot;);
+       System.out.println(redisTemplate);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;org.springframework.data.redis.core.RedisTemplate@27ffd9f8
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;Condition&lt;/h3&gt;
+&lt;p&gt;Condition是在Spring4.0增加条件判断功能，通过这个Condition功能可以实现选择性的创建Bean的操作&lt;/p&gt;
+&lt;p&gt;使用步骤&lt;/p&gt;
+&lt;p&gt;1.自定义类实现Condition接口&lt;/p&gt;
+&lt;p&gt;2.重写matches方法，在其中进行逻辑判断&lt;/p&gt;
+&lt;p&gt;3.在@Bean注解纳入管理的类上添加 @Conditional(自定义实现类.class)&lt;/p&gt;
+&lt;p&gt;在config软件包下的UserConfig类中用@Bean将User纳入Bean容器的管理&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@Configuration
+public class UserConfig {
+    @Bean
+    public User user() {
+        return new User();
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;通过context对象getBean一样可以获取到user对象&lt;/p&gt;
+&lt;p&gt;接下来我们通过@Conditional(ClassCondition.class)指定一个实现Condition的ClassCondition类&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@Configuration
+public class UserConfig {
+    @Bean(name = &quot;user&quot;)
+    @Conditional(ClassCondition.class)
+    public User user() {
+        return new User();
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;在这个类中我们在matches方法返回false，这代表不进行user对象加入IoC容器进行管理&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class ClassCondition implements Condition {
+    @Override
+    public boolean matches(ConditionContext context, AnnotatedTypeMetadata metadata) {
+        return false;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;我们再次尝试获取user对象的时候就会发生报错，没有获取到user的bean对象，我们可以通过这个方法实现是否创建对应bean对象的逻辑&lt;/p&gt;
+&lt;p&gt;例如：&lt;/p&gt;
+&lt;p&gt;我们现在有一个要求，导入Jedis坐标后创建User的Bean对象，否则不纳入IoC管理，在没有获取到Jedis类的时候返回false，从而实现对应Bean的创建与否&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class ClassCondition implements Condition {
+    @Override
+    public boolean matches(ConditionContext context, AnnotatedTypeMetadata metadata) {
+        boolean flag = true;
+        try {
+            Class.forName(&quot;redis.clients.jedis.Jedis&quot;);
+        } catch (ClassNotFoundException e) {
+            flag = false;
+        }
+        return flag;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;将类对象用@Conditional注解配置到Bean的创建上&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@Configuration
+public class UserConfig {
+    @Bean(name = &quot;user&quot;)
+    @Conditional(ClassCondition.class)
+    public User user() {
+        return new User();
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;这个时候只有导入了jedis坐标的时候才会创建user的Bean对象放入到IoC容器中&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;dependency&amp;gt;
+    &amp;lt;groupId&amp;gt;redis.clients&amp;lt;/groupId&amp;gt;
+    &amp;lt;artifactId&amp;gt;jedis&amp;lt;/artifactId&amp;gt;
+&amp;lt;/dependency&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;matches(ConditionContext context, AnnotatedTypeMetadata metadata)方法&lt;/p&gt;
+&lt;p&gt;通过context.getEnviroment可以获取environment对象从而获取配置值&lt;/p&gt;
+&lt;p&gt;metadata是注解元对象，可以获取注解定义的属性值&lt;/p&gt;
+&lt;p&gt;SpringBoot是通过类似这样的方式根据有无对应字节码，选择性创建Bean对象&lt;/p&gt;
+&lt;p&gt;而SpringBoot提供的常用条件注解如下：&lt;/p&gt;
+&lt;p&gt;ConditionalOnProperty：判断配置文件中有对应属性和值&lt;/p&gt;
+&lt;p&gt;ConditionalOnClass：判断环境中有对应字节码文件&lt;/p&gt;
+&lt;p&gt;ConditionalOnMissingBean：判断环境中没有对应Bean&lt;/p&gt;
+&lt;h2&gt;切换内置Web服务器&lt;/h2&gt;
+&lt;p&gt;SpringBoot的Web环境中默认使用Tomcat作为内置服务器，总共SpringBoot有4种内置服务器供选择，可以方便的进行环境下切换&lt;/p&gt;
+&lt;p&gt;通过两步完成&lt;/p&gt;
+&lt;p&gt;1.排除Tomcat依赖&lt;/p&gt;
+&lt;p&gt;2.引入jetty依赖&lt;/p&gt;
+&lt;h2&gt;Enable注解&lt;/h2&gt;
+&lt;p&gt;Spring不可以直接获取其他工程中的Bean对象&lt;/p&gt;
+&lt;p&gt;@ComponentScan的扫描范围是当前引导类所在的包以及其子包，所以无法加载到其他工程下的Bean对象，我们对于这种情况有两种解决方法&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;package com.learn.springboot008.config;
+
+@Configuration
+public class UserConfig {
+    @Bean(name = &quot;user&quot;)
+    @Conditional(ClassCondition.class)
+    public User user() {
+        return new User();
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;第一种：用@ComponentScan注解扫描其他工程的对应配置软件包&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;package com.learn.springboot009;
+@SpringBootApplication
+@ComponentScan(&quot;com.learn.springboot008.config&quot;)//扫描其他包
+public class Springboot009Application {
+    public static void main(String[] args) {
+        ConfigurableApplicationContext context = SpringApplication.run(Springboot009Application.class, args);
+        User user = context.getBean(&quot;user&quot;, User.class);
+        System.out.println(user);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;将其的Bean加入到IoC容器中即可，但是这种方案需要记住第三方包的软件包路径，不是非常方便&lt;/p&gt;
+&lt;p&gt;第二种：使用@Import注解，被Import注解导入的类，都会被IoC容器创建并纳入管理&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@SpringBootApplication
+//@ComponentScan(&quot;com.learn.springboot008.config&quot;)
+@Import(UserConfig.class)
+public class Springboot009Application {
+    public static void main(String[] args) {
+        ConfigurableApplicationContext context = SpringApplication.run(Springboot009Application.class, args);
+        User user = context.getBean(&quot;user&quot;, User.class);
+        System.out.println(user);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;第三种：在第三方对Import注解进行封装为EnableUser，在开发工程直接使用EnableUser注解&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;package com.learn.springboot008.config;
+
+import org.springframework.context.annotation.Import;
+
+import java.lang.annotation.*;
+
+@Target({ElementType.TYPE})
+@Retention(RetentionPolicy.RUNTIME)
+@Documented
+@Import(UserConfig.class)
+public @interface EnableUser {
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;@SpringBootApplication
+//@ComponentScan(&quot;com.learn.springboot008.config&quot;)
+//@Import(UserConfig.class)
+@EnableUser
+public class Springboot009Application {
+    public static void main(String[] args) {
+        ConfigurableApplicationContext context = SpringApplication.run(Springboot009Application.class, args);
+        User user = context.getBean(&quot;user&quot;, User.class);
+        System.out.println(user);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;Import注解&lt;/h2&gt;
+&lt;p&gt;@Enable底层依赖于@Import注解导入一些类，使用@Import导入的类会被Spring加载到IoC容器中，而@Import提供四种用法&lt;/p&gt;
+&lt;p&gt;1.导入Bean&lt;/p&gt;
+&lt;p&gt;:::warning&lt;/p&gt;
+&lt;p&gt;Spring 默认会使用类的简单名称（首字母小写）作为 Bean 的名称，但在直接 &lt;code&gt;@Import&lt;/code&gt; 类的情况下，Bean 的名称实际上是全限定类名（fully qualified class name），而不是简单的 &quot;user&quot;&lt;/p&gt;
+&lt;p&gt;:::&lt;/p&gt;
+&lt;p&gt;或者也可以直接通过类获取User user = context.getBean(User.class);&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@SpringBootApplication
+//@ComponentScan(&quot;com.learn.springboot008.config&quot;)
+//@Import(UserConfig.class)
+//@EnableUser
+@Import(User.class)
+public class Springboot009Application {
+    public static void main(String[] args) {
+        ConfigurableApplicationContext context = SpringApplication.run(Springboot009Application.class, args);
+        User user = context.getBean(&quot;com.learn.springboot008.bean.User&quot; ,User.class);
+        //User user = context.getBean(User.class);
+        System.out.println(user);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;2.导入配置类&lt;/p&gt;
+&lt;p&gt;UserConfig&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@Configuration//这个注解也可以不加
+public class UserConfig {
+    @Bean(name = &quot;user&quot;)
+    public User user() {
+        return new User();
+    }
+
+    @Bean(name = &quot;student&quot;)
+    public Student student() {
+        return new Student();
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;在主工程种获取对象&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@SpringBootApplication
+@Import(UserConfig.class)
+public class Springboot009Application {
+    public static void main(String[] args) {
+        ConfigurableApplicationContext context = SpringApplication.run(Springboot009Application.class, args);
+        User user = context.getBean(User.class);
+        System.out.println(user);
+        Student student = context.getBean(&quot;student&quot;, Student.class);
+        System.out.println(student);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;3.导入ImportSelector实现类，一般用一加载配置文件中的类&lt;/p&gt;
+&lt;p&gt;MyImportSelector，实现一个继承于ImportSelector的类，在selectImports方法中返回类的全限定类名的字符串&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class MyImportSelector implements ImportSelector {
+    @Override
+    public String[] selectImports(AnnotationMetadata importingClassMetadata) {
+        return new String[]{&quot;com.learn.springboot008.bean.User&quot;, &quot;com.learn.springboot008.bean.Student&quot;};
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;在主工程中的引导类用如下注解导入&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@Import(MyImportSelector.class)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;4.导入ImportBeanDefinitionRegistrar实现类&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class MyImportBeanDefinitionRegistrar implements ImportBeanDefinitionRegistrar {
+    @Override
+    public void registerBeanDefinitions(AnnotationMetadata importingClassMetadata, BeanDefinitionRegistry registry) {
+        BeanDefinition beanDefinition = BeanDefinitionBuilder.rootBeanDefinition(User.class).getBeanDefinition();
+        registry.registerBeanDefinition(&quot;user&quot;, beanDefinition);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;@Import(MyImportSelector.class)
+public class Springboot009Application {
+    public static void main(String[] args) {
+        ConfigurableApplicationContext context = SpringApplication.run(Springboot009Application.class, args);
+        User user = context.getBean(User.class);
+        System.out.println(user);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;SpringBoot监听&lt;/h2&gt;
+&lt;p&gt;SpringBoot的监听机制，其实就是对于java提供的监听机制的封装&lt;/p&gt;
+&lt;p&gt;Java中的事件监听机制定义了以下几个角色：&lt;/p&gt;
+&lt;p&gt;Event事件：继承于EvenObject类的对象&lt;/p&gt;
+&lt;p&gt;Source事件源：任意对象Object&lt;/p&gt;
+&lt;p&gt;Listener监听器：实现EventListener接口的对象&lt;/p&gt;
+&lt;p&gt;SpringBoot在项目启动的时候，会对几个监听器进行回调，我们可以实现这些监听器接口，在项目启动时完成一些操作&lt;/p&gt;
+&lt;p&gt;ApplicationContextInitializer、SpringApplicationRunListener、CommandLineRunner、ApplicationRunner&lt;/p&gt;
+&lt;p&gt;后两种只需要实现接口注册到Spring容器中即可被使用&lt;/p&gt;
+&lt;p&gt;CommandLineRunner、ApplicationRunner当项目启动后被执行，例如使用Redis的时候，将缓存进行预热&lt;/p&gt;
+&lt;p&gt;其中的args是我们传递的参数，两个用一个即可&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@Component
+public class MyCommandLineRunner implements CommandLineRunner {
+    @Override
+    public void run(String... args) throws Exception {
+        System.out.println(&quot;MyCommandLineRunner&quot;);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;@Component
+public class MyApplicationRunner implements ApplicationRunner {
+    @Override
+    public void run(ApplicationArguments args) throws Exception {
+        System.out.println(&quot;MyApplicationRunner&quot;);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;MyCommandLineRunner
+MyApplicationRunner
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;而前两种需要进行配置&lt;/p&gt;
+&lt;p&gt;在META-INF/spring.factories配置&lt;/p&gt;
+&lt;p&gt;ApplicationContextInitializer设置键为全限定类名，值为我们的实现类名&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;org.springframework.context.ApplicationContextInitializer=com.learn.springboot010.listener.MyApplicationContextInitializer
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;MyApplicationContextInitializer
+2025-06-26T11:38:42.231+08:00  INFO 24284 --- [springboot-010] [           main] c.l.s.Springboot010Application           : Starting Springboot010Application using Java 17.0.15 with PID 24284 ...
+MyApplicationRunner
+MyCommandLineRunner
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;用于没有准备IoC容器的时候进行一些资源的检查&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;org.springframework.context.ApplicationContextInitializer=com.learn.springboot010.listener.MyApplicationContextInitializer
+org.springframework.boot.SpringApplicationRunListener=com.learn.springboot010.listener.MySpringApplicationRunListener
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;starting 项目启动中...
+environmentPrepared 环境对象开始准备...
+
+  .   ____          _            __ _ _
+ /\\ / ___&apos;_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | &apos;_ | &apos;_| | &apos;_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  &apos;  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v3.5.3)
+
+MyApplicationContextInitializer
+contextPrepared 上下文对象开始准备...
+2025-06-26T11:42:28.123+08:00  INFO 21740 --- [springboot-010] [           main] c.l.s.Springboot010Application           : Starting Springboot010Application using Java 17.0.15 with PID 21740 (C:\Users\71460\Desktop\Java\Spring\SpringBootLearn\springboot-010\target\classes started by 71460 in C:\Users\71460\Desktop\Java\Spring\SpringBootLearn)
+2025-06-26T11:42:28.127+08:00  INFO 21740 --- [springboot-010] [           main] c.l.s.Springboot010Application           : No active profile set, falling back to 1 default profile: &quot;default&quot;
+contextLoaded 上下文对象准备完毕
+2025-06-26T11:42:28.877+08:00  INFO 21740 --- [springboot-010] [           main] c.l.s.Springboot010Application           : Started Springboot010Application in 1.434 seconds (process running for 2.271)
+started 项目启动完毕
+MyApplicationRunner
+MyCommandLineRunner
+ready 准备完成
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;SpringBoot监控&lt;/h2&gt;
+&lt;p&gt;SpringBoot自带监控功能Actuator，导入pom坐标即可使用&lt;/p&gt;
+&lt;p&gt;可以检查SpringBoot运行状态，或者一些第三方的数据库的运行状态&lt;/p&gt;
+&lt;p&gt;一般有info 和 health属性，还可以将监控的所有endpoint暴露出来&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;management.endpoint.health.show-details=always
+management.endpoints.web.exposure.include=*
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;有Spring Boot Admin开源项目用于管理监控SpringBoot应用程序&lt;/p&gt;
+&lt;p&gt;其中涉及到了admin-server和admin-client&lt;/p&gt;
+&lt;p&gt;admin-server&lt;/p&gt;
+&lt;p&gt;1.创建admin-server模块&lt;/p&gt;
+&lt;p&gt;2.导入admin-starter-server&lt;/p&gt;
+&lt;p&gt;3在引导类上启动监控共功能@EnableAdminServer&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@EnableAdminServer
+@SpringBootApplication
+public class AdminServerApplication {
+
+    public static void main(String[] args) {
+       SpringApplication.run(AdminServerApplication.class, args);
+    }
+
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;在配置中配置下端口9000&lt;/p&gt;
+&lt;p&gt;admin-client&lt;/p&gt;
+&lt;p&gt;1.创建admin-client模块&lt;/p&gt;
+&lt;p&gt;2.导入admin-starter-client&lt;/p&gt;
+&lt;p&gt;3.配置相关信息：server地址等&lt;/p&gt;
+&lt;p&gt;4.启动server和client服务，访问server&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;spring.application.name=admin-client
+
+spring.boot.admin.client.url=http://localhost:9000
+management.endpoints.web.exposure.include=*
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;之后通过http://localhost:9000/ 访问server即可在网页中显示可视化信息&lt;/p&gt;
+&lt;h2&gt;SpringBoot部署&lt;/h2&gt;
+&lt;p&gt;SpringBoot项目开发完毕后支持两种方式部署到服务器中，jar包，或者war包&lt;/p&gt;
+&lt;p&gt;之前我们尝试过打包为jar包，通过java指令启动，我们现在尝试打成war包&lt;/p&gt;
+&lt;p&gt;在pom文件中引入war包的依赖&lt;/p&gt;
+&lt;p&gt;在引导类中继承SpringBootServletInitializer，重写方法将引导类的类放入builder.sources()返回&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@SpringBootApplication
+public class Springboot004Application extends SpringBootServletInitializer {
+
+    public static void main(String[] args) {
+        SpringApplication.run(Springboot004Application.class, args);
+    }
+
+    @Override
+    protected SpringApplicationBuilder configure(SpringApplicationBuilder builder) {
+        return builder.sources(Springboot004Application.class);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;将war包放入web-app启动Tomcat即可访问&lt;/p&gt;
+</content:encoded></item><item><title>SpringBoot笔记（入门使用，配置，框架整合）</title><link>https://thrinisty.github.io/posts/springboot%E7%AC%94%E8%AE%B0%E5%85%A5%E9%97%A8%E4%BD%BF%E7%94%A8%E9%85%8D%E7%BD%AE%E6%A1%86%E6%9E%B6%E6%95%B4%E5%90%88/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/springboot%E7%AC%94%E8%AE%B0%E5%85%A5%E9%97%A8%E4%BD%BF%E7%94%A8%E9%85%8D%E7%BD%AE%E6%A1%86%E6%9E%B6%E6%95%B4%E5%90%88/</guid><description>SpringBoot入门使用，SpringBoot配置，Profile配置选择，JUnit、Redis、MyBatis整合</description><pubDate>Wed, 25 Jun 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;SpringBoot笔记&lt;/h1&gt;
+&lt;p&gt;SpringBoot是快速构建Spring项目的框架，不是对Spring功能的增强&lt;/p&gt;
+&lt;p&gt;Spring存在缺点：需要写很多的配置类，依赖繁琐（版本兼容，依赖管理）&lt;/p&gt;
+&lt;p&gt;SpringBoot自动配置，在项目启动的时候将项目的配置自动完成&lt;/p&gt;
+&lt;p&gt;SpringBoot起步依赖：简单而言起步依赖就是将具体的某种功能的坐标打包到一起，并提供一些默认功能&lt;/p&gt;
+&lt;p&gt;辅助功能：提供了一些大型项目中常见的非功能性特性，如嵌入式服务器，安全，指标健康检测，外部配置等&lt;/p&gt;
+&lt;h2&gt;快速入门&lt;/h2&gt;
+&lt;p&gt;搭建SpringBoot工程，定义HelloController.hello方法，返回Hello SpringBoot!&lt;/p&gt;
+&lt;p&gt;实现步骤：&lt;/p&gt;
+&lt;p&gt;1.创建Maven项目&lt;/p&gt;
+&lt;p&gt;2.导入SpringBoot起步依赖&lt;/p&gt;
+&lt;p&gt;3.定义Controller&lt;/p&gt;
+&lt;p&gt;4.编写引导类&lt;/p&gt;
+&lt;p&gt;5.启动测试&lt;/p&gt;
+&lt;p&gt;导入Maven依赖&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;dependency&amp;gt;
+    &amp;lt;groupId&amp;gt;org.springframework.boot&amp;lt;/groupId&amp;gt;
+    &amp;lt;artifactId&amp;gt;spring-boot-starter-web&amp;lt;/artifactId&amp;gt;
+&amp;lt;/dependency&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Controller编写&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@RestController
+public class HelloController {
+    @RequestMapping(&quot;/hello&quot;)
+    public String hello() {
+        return &quot;Hello Spring Boot&quot;;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;编写引导类，这里还默认在请求映射的时候返回Hello World字符串作为响应体返回&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@RestController
+@SpringBootApplication
+public class Springboot001Application {
+	@RequestMapping(&quot;/&quot;)
+	public String home() {
+		return &quot;Hello World&quot;;
+	}
+
+	public static void main(String[] args) {
+		SpringApplication.run(Springboot001Application.class, args);
+	}
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;SpringBoot在打包的时候通过jar包进行打包&lt;/p&gt;
+&lt;p&gt;我们通过IDEA的SpringBoot也可以快速创建SpringBoot工程，可以很便捷的创建引导类，引入起步依赖&lt;/p&gt;
+&lt;p&gt;我们在起步依赖中定义的spring-boot-starter-parent定义了各种技术的版本信息，组合了一台最优搭配的技术版本&lt;/p&gt;
+&lt;p&gt;在starter中，定义了完成该功能需要的坐标集合，其中大部分信息来自于父工程&lt;/p&gt;
+&lt;h2&gt;SpringBoot配置&lt;/h2&gt;
+&lt;p&gt;由propertis和yaml两种配置&lt;/p&gt;
+&lt;p&gt;application.properties&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;server.port=8080
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;spring.application.name=springboot-002
+server.port=8080
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;application.yml&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;server:
+  port: 8080
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;server:
+  port: 8082
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;在同一级目录下，同样的配置，优先级priperties&amp;gt;yml&amp;gt;yaml&lt;/p&gt;
+&lt;h2&gt;YAML&lt;/h2&gt;
+&lt;p&gt;YAML Ain&apos;t Markup Language&lt;/p&gt;
+&lt;p&gt;是一种直观的被电脑识别的数据序列化格式，同时容易被人类阅读，容易和脚本语言交互，文件拓展名是yml或yaml&lt;/p&gt;
+&lt;h3&gt;基本语法&lt;/h3&gt;
+&lt;p&gt;大小写敏感&lt;/p&gt;
+&lt;p&gt;数据值前边必须要有空格作为分隔符，最少一个空格&lt;/p&gt;
+&lt;p&gt;使用缩进表示层级关系&lt;/p&gt;
+&lt;p&gt;缩进的空格数不重要，只需要相同层级的元素左侧对齐即可&lt;/p&gt;
+&lt;p&gt;#表示注释，作用到行尾&lt;/p&gt;
+&lt;h3&gt;数据格式&lt;/h3&gt;
+&lt;p&gt;对象：键值对的集合&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;#换行写法
+person: 
+  name: &apos;zhangsan&apos;
+  age: 20
+  
+#行内写法
+person: {name: &apos;zhangsan&apos;,age: 20}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;行内写法不多，了解即可&lt;/p&gt;
+&lt;p&gt;数组：一组按次序排列的值&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;address: 
+  - &apos;beijing&apos;
+  - &apos;shanghai&apos;
+address: [&apos;beijing&apos;,&apos;shanghai&apos;]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;纯量：单个的，不可再分的值&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;msg1: &apos;hello \n world&apos; #单引号忽略转义字符
+msg2: &quot;hello \n world&quot; #双引号识别转义字符
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;参数引用&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;name: abc
+person:
+  name: ${name}
+  age: 20
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;获取配置数据&lt;/h2&gt;
+&lt;p&gt;SpringBoot通过了以下的方式获取配置内容&lt;/p&gt;
+&lt;h3&gt;@Value&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;@Value(&quot;${name}&quot;)
+private String name;
+
+@RequestMapping(&quot;/name&quot;)
+public String getNameController() {
+    return name;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;@Value(&quot;${human.name}&quot;)
+private String name;
+
+@Value(&quot;${human.age}&quot;)
+private int age;
+
+@RequestMapping(&quot;/name&quot;)
+public String getNameController() {
+    return name + &quot; &quot; + age;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;zhangsan 20
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;数组获取&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@Value(&quot;${hobbies[0]}&quot;)
+private String hobbies;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;Environment&lt;/h3&gt;
+&lt;p&gt;相比于Value注入的对象少一点，只需要注入环境对象即可&lt;/p&gt;
+&lt;p&gt;注入Environment对象&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@Autowired
+private Environment env;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;再通过env对象传入键获取值&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@RequestMapping(&quot;/name&quot;)
+public String getNameController() {
+    System.out.println(env.getProperty(&quot;name&quot;));
+    System.out.println(env.getProperty(&quot;human.age&quot;));
+    return &quot;hobbies&quot;;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;@ConfigurationProperties&lt;/h3&gt;
+&lt;p&gt;添加bean对象，用@Component @ConfigurationProperties两个对象标注&lt;/p&gt;
+&lt;p&gt;通过perfix属性传入对应标签&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@Component
+@ConfigurationProperties(prefix = &quot;person&quot;)
+public class Person {
+    private String name;
+    private int age;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;数组的获取类似，关键就是bean对象上的两个注解&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;person:
+  name: ${name}
+  age: 20
+  address: [shanghai,beijing]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;@Autowired
+private Person person;
+
+@RequestMapping(&quot;/name&quot;)
+public String getNameController() {
+    System.out.println(env.getProperty(&quot;name&quot;));
+    System.out.println(env.getProperty(&quot;human.age&quot;));
+    System.out.println(person);
+    String[] address = person.getAddress();
+    for (String s : address) {
+        System.out.println(s);
+    }
+    return &quot;hobbies&quot;;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;Profile&lt;/h2&gt;
+&lt;p&gt;在开发SpringBoot应用的时候，通常同一套程序会被安装到不同的环境中，例如开发 测试 生产，其中的配置必然是不同的，为了避免每次打包时都需要修改配置文件非常麻烦，profile提供了进行动态配置切换的功能&lt;/p&gt;
+&lt;h3&gt;多文件方式&lt;/h3&gt;
+&lt;p&gt;第一种方式：通过配置多个配置文件文件，格式为application-xxx.properties，在application.properties中进行配置文件的选择&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/210.png&quot; alt=&quot;210&quot; /&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;spring.application.name=springboot-003-test
+spring.profiles.active=dev
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;多文档方式&lt;/h3&gt;
+&lt;p&gt;第二种方式：多文档配置&lt;/p&gt;
+&lt;p&gt;:::warning&lt;/p&gt;
+&lt;p&gt;在 &lt;strong&gt;Spring Boot 2.4+&lt;/strong&gt; 版本之后，&lt;code&gt;spring.profiles&lt;/code&gt; 的写法已经被弃用，并替换为 &lt;code&gt;spring.config.activate.on-profile&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;:::&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;---
+server:
+  port: 8081
+spring:
+  config:
+    activate:
+      on-profile: dev
+---
+server:
+  port: 8082
+spring:
+  config:
+    activate:
+      on-profile: test
+---
+server:
+  port: 8083
+spring:
+  config:
+    activate:
+      on-profile: pro
+---
+spring:
+  profiles:
+    active: pro
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;在spring-profiles-active中设置激活配置文件&lt;/p&gt;
+&lt;h3&gt;虚拟机选项配置&lt;/h3&gt;
+&lt;p&gt;还可以在SpringBoot配置的虚拟机选项中添加如下的部分选择对应的配置文件&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;-Dspring.profiles.active=test
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;Jar包运行参数设置&lt;/h3&gt;
+&lt;p&gt;打包后通过如下指令在命令行中运行springboot程序jar包&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;java -jar .\springboot-003-test-0.0.1-SNAPSHOT.jar
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;java -jar .\springboot-003-test-0.0.1-SNAPSHOT.jar --spring.profiles.active=dev
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;通过--spring.profiles.active=dev指定对应的配置文件&lt;/p&gt;
+&lt;h2&gt;项目配置加载顺序&lt;/h2&gt;
+&lt;p&gt;内部配置和外部配置互补，算是一种优势，可以在打包后也可以修改配置参数&lt;/p&gt;
+&lt;h3&gt;内部配置加载&lt;/h3&gt;
+&lt;p&gt;SpringBoot程序启动的时候，会从一下的位置加载配置文件&lt;/p&gt;
+&lt;p&gt;1.file../config/ : 当前项目下的/config目录下&lt;/p&gt;
+&lt;p&gt;2.file../ : 当前项目的根目录下&lt;/p&gt;
+&lt;p&gt;3.classpath:/config : classpath的/config目录下&lt;/p&gt;
+&lt;p&gt;4.classpath:/ : classpath的根目录&lt;/p&gt;
+&lt;p&gt;:::note&lt;/p&gt;
+&lt;p&gt;加载顺序为上文的排列顺序，高优先级配置的属性会生效，这些配置都会被SpringBoot读取，但是高优先级存在的内容不会被低优先级的更改&lt;/p&gt;
+&lt;p&gt;而低优先级存在高优先级不存在的配置也会被正确配置&lt;/p&gt;
+&lt;p&gt;:::&lt;/p&gt;
+&lt;h3&gt;外部配置加载&lt;/h3&gt;
+&lt;p&gt;通过命令行参数指定运行端口&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;java -jar springboot-004-0.0.1-SNAPSHOT.jar --server.port=8090
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;通过命令行指定外部的配置文件路径 e://application.yaml&lt;/p&gt;
+&lt;p&gt;spring.config.location&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;java -jar springboot-004-0.0.1-SNAPSHOT.jar --spring.config.location=e://application.yaml
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;还可以将配置文件放置在jar包的同级目录，或者同级下的config目录下，不指定参数也可以使配置生效&lt;/p&gt;
+&lt;h2&gt;整合框架&lt;/h2&gt;
+&lt;h3&gt;JUnit测试框架&lt;/h3&gt;
+&lt;p&gt;1.搭建SpringBoot工程&lt;/p&gt;
+&lt;p&gt;2.引入starter-test起步依赖&lt;/p&gt;
+&lt;p&gt;3.编写测试类，这里在service层编写一个方法做示范&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@Service
+public class UserService {
+    public void add() {
+        System.out.println(&quot;add...&quot;);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;4.添加测试相关注解：&lt;/p&gt;
+&lt;p&gt;@RunWith(SpringRunner.class) 这个注解好像是新版本用不上，可以不加&lt;/p&gt;
+&lt;p&gt;@SpringBootTest(classes = 启动类.class)&lt;/p&gt;
+&lt;p&gt;如果是测试类在启动类的同一个包下就不需要添加指定classes&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@SpringBootTest(classes = Springboot004Application.class)
+public class UserServiceTest {
+    @Autowired
+    private UserService userService;
+
+    @Test
+    public void testAdd() {
+        userService.add();
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;5.编写测试方法&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@Test
+public void testAdd() {
+    userService.add();
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;Redis整合&lt;/h3&gt;
+&lt;p&gt;SpringBoot整合Redis非常方便&lt;/p&gt;
+&lt;p&gt;实现步骤：&lt;/p&gt;
+&lt;p&gt;1.搭建SpringBoot工程&lt;/p&gt;
+&lt;p&gt;2.引入redis起步依赖&lt;/p&gt;
+&lt;p&gt;3.配置redis相关属性&lt;/p&gt;
+&lt;p&gt;4.注入RedisTemplate模板&lt;/p&gt;
+&lt;p&gt;5.编写测试方法，测试&lt;/p&gt;
+&lt;p&gt;先启动Redis服务，执行set get测试方法&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@SpringBootTest
+class Springboot006ApplicationTests {
+
+    @Autowired
+    private RedisTemplate redisTemplate;
+
+    @Test
+    void testSet() {
+        //存入数据
+        redisTemplate.boundValueOps(&quot;name&quot;).set(&quot;zhangsan&quot;);
+    }
+
+    @Test
+    void testGet() {
+        Object name = redisTemplate.boundValueOps(&quot;name&quot;).get();
+        System.out.println(name);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;还可以在yaml配置文件中通过修改配置更改redis的地址与端口&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;spring:
+  data:
+    redis:
+      host: 127.0.0.1
+      port: 6379
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;MyBatis整合&lt;/h3&gt;
+&lt;p&gt;SpringBoot整合MyBatis&lt;/p&gt;
+&lt;p&gt;1.搭建SpringBoot工程&lt;/p&gt;
+&lt;p&gt;2.引入mybatis起步依赖，添加MySQL驱动&lt;/p&gt;
+&lt;p&gt;3.编写DataSource和myBatis相关配置&lt;/p&gt;
+&lt;p&gt;4.定义表和实体类&lt;/p&gt;
+&lt;p&gt;5.编写dao和mapper文件/纯注解开发&lt;/p&gt;
+&lt;p&gt;6.测试&lt;/p&gt;
+&lt;p&gt;这里引入mybatis起步依赖的时候似乎3.5.3版本SpringBoot不支持MyBatis Framework，所以用的是3.4.8版本的SpringBoot&lt;/p&gt;
+&lt;p&gt;通过yml配置jdbc数据源配置&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;spring:
+  datasource:
+    url: jdbc:mysql:///ssm
+    username: root
+    password: 654321
+    driver-class-name: com.mysql.jdbc.Driver
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;userBean&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class User {
+    private int id;
+    private String password;
+    private double balance;
+
+    public User() {
+    }
+    ...
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;注解实现&lt;/h4&gt;
+&lt;p&gt;通过注解实现UserMapper的实现类&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@Mapper
+public interface UserMapper {
+    @Select(&quot;select * from user;&quot;)
+    public List&amp;lt;User&amp;gt; findAll();
+
+    @Select(&quot;select * from user where `id`= #{id}&quot;)
+    public User findById(Integer id);
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;编写测试程序&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@SpringBootTest
+class Springboot007ApplicationTests {
+	@Autowired
+	UserMapper userMapper;
+	@Test
+	void testSelectAll() {
+		List&amp;lt;User&amp;gt; users = userMapper.findAll();
+		for (User user : users) {
+			System.out.println(user);
+		}
+	}
+
+	@Test
+	void testSelectById() {
+		User user = userMapper.findById(1);
+		System.out.println(user);
+	}
+}
+&lt;/code&gt;&lt;/pre&gt;
+</content:encoded></item><item><title>SpringMVC笔记（REST风格，SSM整合，异常处理器，拦截器）</title><link>https://thrinisty.github.io/posts/springmvc%E7%AC%94%E8%AE%B0rest%E9%A3%8E%E6%A0%BCssm%E6%95%B4%E5%90%88%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86%E5%99%A8%E6%8B%A6%E6%88%AA%E5%99%A8/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/springmvc%E7%AC%94%E8%AE%B0rest%E9%A3%8E%E6%A0%BCssm%E6%95%B4%E5%90%88%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86%E5%99%A8%E6%8B%A6%E6%88%AA%E5%99%A8/</guid><description>REST风格，SSM整合，异常处理器，拦截器</description><pubDate>Tue, 24 Jun 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;SpringMVC笔记&lt;/h1&gt;
+&lt;h2&gt;REST风格&lt;/h2&gt;
+&lt;p&gt;Representational State Transfer 表现形式状态转换&lt;img src=&quot;../images/204.png&quot; alt=&quot;204&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;通过访问的路径和访问的类别区分操作，一般资源后缀要加上s&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/205.png&quot; alt=&quot;205&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;使用这种风格访问资源称之为RESTful&lt;/p&gt;
+&lt;p&gt;http://localhost:8080/MVCTest_war/rests/17&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@RequestMapping(value = &quot;/rests/{age}&quot;, method = RequestMethod.DELETE)
+@ResponseBody
+public String deleteRest(@PathVariable Integer age) {
+    System.out.println(&quot;delete &quot; + age);//delete 17
+    return &quot;success&quot;;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;通过{age}建立映射，以及设置@PathVariable注解我们可以从路径上获取到参数，用method设置相应请求的类型&lt;/p&gt;
+&lt;p&gt;以下是查询的格式&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@Controller
+public class RestTestController {
+    @RequestMapping(value = &quot;/rests&quot;, method = RequestMethod.GET)
+    @ResponseBody
+    public String getAllRests() {
+        System.out.println(&quot;Get all rests&quot;);
+        return &quot;success&quot;;
+    }
+
+    @RequestMapping(value = &quot;/rests/{age}&quot;, method = RequestMethod.GET)
+    @ResponseBody
+    public String getByAge(@PathVariable Integer age) {
+        System.out.println(&quot;Get rest by age:&quot; + age);
+        return &quot;success&quot;;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Rest简化开发，我们将Mapping映射的rests提出放在类上，方法就可以只写路径参数或者不写了&lt;/p&gt;
+&lt;p&gt;我们方法上的所有方法都被@ResponseBody标注，可以将注解外提到类上，对所有的方法设置请求响应体&lt;/p&gt;
+&lt;p&gt;还可以将@Controller @ResponseBody两个注解合二为一为@RestController&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;//@Controller
+//@ResponseBody
+@RestController//将上述合二为一
+@RequestMapping(&quot;/rests&quot;)
+public class RestsTestController {
+    @RequestMapping(method = RequestMethod.GET)
+    public String getAllRests() {
+        System.out.println(&quot;Get all rests&quot;);
+        return &quot;success&quot;;
+    }
+
+    @RequestMapping(value = &quot;{age}&quot;, method = RequestMethod.GET)
+    public String getByAge(@PathVariable Integer age) {
+        System.out.println(&quot;Get rest by age:&quot; + age);
+        return &quot;success&quot;;
+    }
+
+    @RequestMapping(value = &quot;{age}&quot;, method = RequestMethod.DELETE)
+    public String deleteRest(@PathVariable Integer age) {
+        System.out.println(&quot;delete &quot; + age);
+        return &quot;success&quot;;
+    }
+
+    @RequestMapping(method = RequestMethod.PUT)
+    @ResponseBody
+    public String updateRest(@RequestParam String name, @RequestParam int age) {
+        System.out.println(&quot;update &quot; + name + &quot; &quot; + age);
+        return &quot;success&quot;;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;再次用XxxMapping简化&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;//@Controller
+//@ResponseBody
+@RestController//将上述合二为一
+@RequestMapping(&quot;/rests&quot;)
+public class RestsTestController {
+//    @RequestMapping(method = RequestMethod.GET)
+    @GetMapping
+    public String getAllRests() {
+        System.out.println(&quot;Get all rests&quot;);
+        return &quot;get all success&quot;;
+    }
+
+//    @RequestMapping(value = &quot;{age}&quot;, method = RequestMethod.GET)
+    @GetMapping(&quot;{age}&quot;)
+    public String getByAge(@PathVariable Integer age) {
+        System.out.println(&quot;Get rest by age:&quot; + age);
+        return &quot;get one success&quot;;
+    }
+
+//    @RequestMapping(value = &quot;{age}&quot;, method = RequestMethod.DELETE)
+    @DeleteMapping(&quot;{age}&quot;)
+    public String deleteRest(@PathVariable Integer age) {
+        System.out.println(&quot;delete &quot; + age);
+        return &quot;delete success&quot;;
+    }
+//    @RequestMapping(value = &quot;{age}&quot;, method = RequestMethod.Put)
+    @PutMapping(&quot;{age}&quot;)
+    public String updateRest(@PathVariable Integer age) {
+        System.out.println(&quot;update &quot; + age);
+        return &quot;update success&quot;;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;我们在前面ServletContainersInitConfig配置中拦截了所有的请求，所以当访问html页面的时候会被SpringMVC拦截，我们需要新建一个SpringMvcSupport类来对相应的资源放行&lt;/p&gt;
+&lt;p&gt;SpringMvcConfig配置也要扫瞄config包中的SpringMvcSupport类才可以正常使用&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@Configuration
+@ComponentScan({&quot;com.learn.controller&quot;, &quot;com.learn.config&quot;})
+@EnableWebMvc
+public class SpringMvcConfig {
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;package com.learn.config;
+
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
+
+
+@Configuration
+public class SpringMvcSupport extends WebMvcConfigurationSupport {
+    @Override
+    protected void addResourceHandlers(ResourceHandlerRegistry registry) {
+        registry.addResourceHandler(&quot;/pages/**&quot;).addResourceLocations(&quot;/pages/&quot;);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;SSM开发整合&lt;/h2&gt;
+&lt;h3&gt;MyBatis&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&amp;gt;
+&amp;lt;!DOCTYPE configuration
+        PUBLIC &quot;-//mybatis.org//DTD Config 3.0//EN&quot;
+        &quot;http://mybatis.org/dtd/mybatis-3-config.dtd&quot;&amp;gt;
+&amp;lt;configuration&amp;gt;
+    &amp;lt;!--    &amp;lt;settings&amp;gt;--&amp;gt;
+    &amp;lt;!--        &amp;lt;setting name=&quot;logImpl&quot; value=&quot;STDOUT_LOGGING&quot;/&amp;gt;--&amp;gt;
+    &amp;lt;!--    &amp;lt;/settings&amp;gt;--&amp;gt;
+    &amp;lt;environments default=&quot;dev&quot;&amp;gt;
+        &amp;lt;environment id=&quot;dev&quot;&amp;gt;
+            &amp;lt;transactionManager type=&quot;JDBC&quot;/&amp;gt;
+            &amp;lt;dataSource type=&quot;POOLED&quot;&amp;gt;
+                &amp;lt;property name=&quot;driver&quot; value=&quot;com.mysql.cj.jdbc.Driver&quot;/&amp;gt;
+                &amp;lt;property name=&quot;url&quot; value=&quot;jdbc:mysql://localhost:3306/ssm?useSSL=false&amp;amp;amp;serverTimezone=UTC&quot;/&amp;gt;
+                &amp;lt;property name=&quot;username&quot; value=&quot;root&quot;/&amp;gt;
+                &amp;lt;property name=&quot;password&quot; value=&quot;654321&quot;/&amp;gt;
+            &amp;lt;/dataSource&amp;gt;
+        &amp;lt;/environment&amp;gt;
+
+    &amp;lt;/environments&amp;gt;
+    &amp;lt;mappers&amp;gt;
+        &amp;lt;!--        用于编写SQL语句的文件--&amp;gt;
+        &amp;lt;mapper resource=&quot;UserMapper.xml&quot;/&amp;gt;
+    &amp;lt;/mappers&amp;gt;
+&amp;lt;/configuration&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&amp;gt;
+&amp;lt;!DOCTYPE mapper
+        PUBLIC &quot;-//mybatis.org//DTD Mapper 3.0//EN&quot;
+        &quot;http://mybatis.org/dtd/mybatis-3-mapper.dtd&quot;&amp;gt;
+&amp;lt;mapper namespace=&quot;userMapper&quot;&amp;gt;
+    &amp;lt;select id=&quot;selectById&quot; resultType=&quot;com.bean.User&quot;&amp;gt;
+        select * from user where `id` = #{id};
+    &amp;lt;/select&amp;gt;
+    &amp;lt;insert id=&quot;insertUser&quot;&amp;gt;
+        insert into user values (#{id}, #{password}, #{balance});
+    &amp;lt;/insert&amp;gt;
+&amp;lt;/mapper&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;Dao&lt;/h3&gt;
+&lt;p&gt;写的很简陋，将异常处理之类的都暂时省略&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@Repository(&quot;userDaoImpl&quot;)
+public class UserDaoImpl implements UserDao {
+    @Override
+    public User getUserById(Integer id) {
+        SqlSession sqlSession = SqlSessionUtil.getSqlSession();
+        Object object = sqlSession.selectOne(&quot;selectById&quot;, id);
+        return (User) object;
+    }
+
+    @Override
+    public int insertUser(User user) {
+        SqlSession sqlSession = SqlSessionUtil.getSqlSession();
+        int i = sqlSession.insert(&quot;insertUser&quot;, user);
+        if (i &amp;gt; 0) {
+            sqlSession.commit();
+        } else {
+            sqlSession.rollback();
+        }
+        return i;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;Utils&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;package com.utils;
+
+import org.apache.ibatis.io.Resources;
+import org.apache.ibatis.session.SqlSession;
+import org.apache.ibatis.session.SqlSessionFactory;
+import org.apache.ibatis.session.SqlSessionFactoryBuilder;
+
+import java.io.IOException;
+
+public class SqlSessionUtil {
+    private static SqlSessionFactory sqlSessionFactory;
+    static {
+        try {
+            sqlSessionFactory = new SqlSessionFactoryBuilder()
+                    .build(Resources.getResourceAsStream(&quot;mybatis-config.xml&quot;));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private SqlSessionUtil() {}
+    public static SqlSession getSqlSession() {
+        return sqlSessionFactory.openSession();
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;Cotroller&lt;/h3&gt;
+&lt;p&gt;在整合使用的时候，Spring的使用需要jdk17版本，而且@PathVariable(&quot;id&quot;)需要显式的指定参数名称&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@RestController
+@RequestMapping(&quot;/users&quot;)
+public class UserController {
+    @Autowired
+    private UserDao userDao;
+
+    @GetMapping(&quot;{id}&quot;)
+    public User getUserById(@PathVariable(&quot;id&quot;) Integer id) {
+        return userDao.getUserById(id);
+    }
+
+    @PostMapping
+    public String insertUser(@RequestBody User user) {
+        int update = userDao.insertUser(user);
+        return &quot;success update line:&quot; + update;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;异常处理器&lt;/h2&gt;
+&lt;p&gt;我们很容易想到通过AOP包围处理的代码&lt;/p&gt;
+&lt;p&gt;而SpringMVC中有注解可以有效处理异常&lt;/p&gt;
+&lt;p&gt;@RestControllerAdvice注解是控制的通知，而@ExceptionHandler(XxException.class)可以在发生相应异常的时候做对应处理&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@RestControllerAdvice
+public class ProjectExceptionAdvice {
+    @ExceptionHandler(NullPointerException.class)
+    public void doException(Exception ex) {
+        System.out.println(&quot;空指针异常被捕获&quot;);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&quot;../images/206.png&quot; alt=&quot;206&quot; /&gt;&lt;/p&gt;
+&lt;h2&gt;拦截器&lt;/h2&gt;
+&lt;p&gt;是一种动态拦截方法调用的机制，在SpringMVC中动态拦截控制器方法的执行&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/207.png&quot; alt=&quot;207&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;作用：在指定的方法调用前后执行预先设定的代码，或者阻止原始方法的执行&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/208.png&quot; alt=&quot;208&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;根据preHandle中的返回boolean判定是继续执行还是直接跳过后续执行&lt;/p&gt;
+&lt;p&gt;拦截器和过滤器的区别&lt;/p&gt;
+&lt;p&gt;Filter属于Servlet技术，Interceptor属于SpringMVC技术&lt;/p&gt;
+&lt;p&gt;Filter对所有访问进行增强，而Interceptor仅针对SpringMVC的访问进行增强&lt;/p&gt;
+&lt;h3&gt;入门使用&lt;/h3&gt;
+&lt;p&gt;在表现层新建一个ProjectInterceptor类实现HandlerInterceptor接口&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;package com.controller;
+
+import org.springframework.stereotype.Component;
+import org.springframework.web.servlet.HandlerInterceptor;
+import org.springframework.web.servlet.ModelAndView;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+@Component
+public class ProjectInterceptor implements HandlerInterceptor {
+    @Override
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+        System.out.println(&quot;preHandle&quot;);
+        return true;
+        //这里返回false代表终止原始操作，之后的postHandleafter  Completion也不会执行
+    }
+
+    @Override
+    public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
+        System.out.println(&quot;postHandle&quot;);
+    }
+
+    @Override
+    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
+        System.out.println(&quot;afterCompletion&quot;);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;配置SpringMvcSupport，添加重写方法，注入刚才编写的ProjectInterceptor，将类传入addInterceptor方法中，在调用addPathPatterns设置拦截路径&lt;/p&gt;
+&lt;p&gt;/**为所有的子路径&lt;/p&gt;
+&lt;p&gt;/*为一级子路径&lt;/p&gt;
+&lt;p&gt;没有通配符只匹配精确路径&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@Configuration
+public class SpringMvcSupport extends WebMvcConfigurationSupport {
+    @Autowired
+    private ProjectInterceptor projectInterceptor;
+    
+    @Override
+    protected void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(projectInterceptor).addPathPatterns(&quot;/users/**&quot;);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;输出结果&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;preHandle //原始操作之前的代码
+postHandle//原始操作之后的代码
+afterCompletion//post之后的代码
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;简化配置&lt;/h3&gt;
+&lt;p&gt;通过SpringMvcConfig配置类继承于WebMvcConfigurer接口，重写addInterceptors方法，即可简化实现，再扫描的时候不需要扫描config软件包下SpringMvcSupport&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@Configuration
+@ComponentScan({&quot;com.controller&quot;})
+@EnableWebMvc
+public class SpringMvcConfig implements WebMvcConfigurer {
+    @Autowired
+    private ProjectInterceptor projectInterceptor;
+
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(projectInterceptor).addPathPatterns(&quot;/users/**&quot;);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;这种方式相较而言简便但是有缺陷，会和Spring强制绑定&lt;/p&gt;
+&lt;h3&gt;拦截器参数&lt;/h3&gt;
+&lt;p&gt;HttpServletRequest request, HttpServletResponse response,&lt;/p&gt;
+&lt;p&gt;Object handler通过方法传入的参数可以从其中取出数据，其中handler是方法的对象&lt;/p&gt;
+&lt;p&gt;ModelAndView modelAndView 其中封装了页面跳转的一些方法供以处理&lt;/p&gt;
+&lt;p&gt;Exception ex 是异常信息，而我们在使用的时候一般使用异常处理器完成，而不用这个&lt;/p&gt;
+&lt;p&gt;其中最常用的是preHandle，通过参数做校验，判断是否继续执行后续方法&lt;/p&gt;
+&lt;h3&gt;拦截链配置&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;@Configuration
+@ComponentScan({&quot;com.controller&quot;})
+@EnableWebMvc
+public class SpringMvcConfig implements WebMvcConfigurer {
+    @Autowired
+    private ProjectInterceptor projectInterceptor;
+    @Autowired
+    private AnotherInterceptor anotherInterceptor;
+
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(projectInterceptor).addPathPatterns(&quot;/users/**&quot;);
+        registry.addInterceptor(anotherInterceptor).addPathPatterns(&quot;/users/**&quot;);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;preHandle
+another preHandle
+another postHandle
+postHandle
+another afterCompletion
+afterCompletion
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;顺序和添加的拦截器顺序有关&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;registry.addInterceptor(projectInterceptor).addPathPatterns(&quot;/users/**&quot;);
+        registry.addInterceptor(anotherInterceptor).addPathPatterns(&quot;/users/**&quot;);
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;前处理器按配置先后执行，而后处理器反向执行&lt;/p&gt;
+&lt;p&gt;以下是当preHandle返回false的时候的处理顺序，总的来说就是先返回true后的afterCompletion无论如何后续拦截器preHandle返回false与否都要执行先前afterCompletion方法&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/209.png&quot; alt=&quot;209&quot; /&gt;&lt;/p&gt;
+</content:encoded></item><item><title>MCP笔记（MCP）</title><link>https://thrinisty.github.io/posts/mcp%E7%AC%94%E8%AE%B0mcp/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/mcp%E7%AC%94%E8%AE%B0mcp/</guid><description>MCP</description><pubDate>Mon, 23 Jun 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;MCP笔记&lt;/h1&gt;
 &lt;h2&gt;AI Agent——AI&lt;/h2&gt;
 &lt;h3&gt;System Prompt&lt;/h3&gt;
 &lt;p&gt;System Prompt：预先设计的一段文本或指令，用于定义AI Agent的角色、能力和行为边界&lt;/p&gt;
@@ -224,7 +1926,7 @@ public class SpringConfig {
         testPrint.print();
     }
 &lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;最后我们还需要将Spring纳入ServletContainersInitConfig的管理，将Sring也在TomCat启动的时候初始化&lt;/p&gt;
+&lt;p&gt;最后我们还需要将Spring纳入ServletContainersInitConfig的管理，将Spring也在Tomcat启动的时候初始化&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;@Override
 protected WebApplicationContext createRootApplicationContext() {
     AnnotationConfigWebApplicationContext context = new AnnotationConfigWebApplicationContext();
@@ -4009,7 +5711,7 @@ OrderService proxy = (OrderService) proxyObj;
 }
 &lt;/code&gt;&lt;/pre&gt;
 </content:encoded></item><item><title>MyBatis笔记（模板）</title><link>https://thrinisty.github.io/posts/mybatis%E7%AC%94%E8%AE%B0%E6%A8%A1%E6%9D%BF/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/mybatis%E7%AC%94%E8%AE%B0%E6%A8%A1%E6%9D%BF/</guid><description>MyBatis</description><pubDate>Sun, 01 Jun 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;MyBatis笔记&lt;/h1&gt;
-</content:encoded></item><item><title>SpringMVC笔记（模板）</title><link>https://thrinisty.github.io/posts/springmvc%E7%AC%94%E8%AE%B0%E6%A8%A1%E6%9D%BF/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/springmvc%E7%AC%94%E8%AE%B0%E6%A8%A1%E6%9D%BF/</guid><description>SpringMVC入门</description><pubDate>Sun, 01 Jun 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;SpringMVC笔记&lt;/h1&gt;
+</content:encoded></item><item><title>SpringAI笔记（模板）</title><link>https://thrinisty.github.io/posts/springai%E7%AC%94%E8%AE%B0%E6%A8%A1%E6%9D%BF/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/springai%E7%AC%94%E8%AE%B0%E6%A8%A1%E6%9D%BF/</guid><pubDate>Sun, 01 Jun 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;SpringAI笔记&lt;/h1&gt;
 </content:encoded></item><item><title>LeetCode刷题（回文子串，合并有序列表）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E5%9B%9E%E6%96%87%E5%AD%90%E4%B8%B2%E5%90%88%E5%B9%B6%E6%9C%89%E5%BA%8F%E5%88%97%E8%A1%A8/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E5%9B%9E%E6%96%87%E5%AD%90%E4%B8%B2%E5%90%88%E5%B9%B6%E6%9C%89%E5%BA%8F%E5%88%97%E8%A1%A8/</guid><description>回文子串，合并两个有序列表</description><pubDate>Sat, 31 May 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;回文子串&lt;/h1&gt;
 &lt;h2&gt;题目描述&lt;/h2&gt;
 &lt;p&gt;给你一个字符串 &lt;code&gt;s&lt;/code&gt; ，请你统计并返回这个字符串中 &lt;strong&gt;回文子串&lt;/strong&gt; 的数目。&lt;/p&gt;
