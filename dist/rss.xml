@@ -1,4 +1,648 @@
-<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Thrinisty&apos;s Blog</title><description>New Blog</description><link>https://thrinisty.github.io/</link><language>zh_CN</language><item><title>SpringAI笔记（MCPService，上下文对话，内容封装）</title><link>https://thrinisty.github.io/posts/springai%E7%AC%94%E8%AE%B0mcpservice%E4%B8%8A%E4%B8%8B%E6%96%87%E5%AF%B9%E8%AF%9D%E5%86%85%E5%AE%B9%E5%B0%81%E8%A3%85/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/springai%E7%AC%94%E8%AE%B0mcpservice%E4%B8%8A%E4%B8%8B%E6%96%87%E5%AF%B9%E8%AF%9D%E5%86%85%E5%AE%B9%E5%B0%81%E8%A3%85/</guid><description>MCPService 上下文对话，内容封装</description><pubDate>Mon, 30 Jun 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;SpringAI笔记&lt;/h1&gt;
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Thrinisty&apos;s Blog</title><description>New Blog</description><link>https://thrinisty.github.io/</link><language>zh_CN</language><item><title>用户中心项目笔记（用户管理）</title><link>https://thrinisty.github.io/posts/%E7%94%A8%E6%88%B7%E4%B8%AD%E5%BF%83%E9%A1%B9%E7%9B%AE%E7%AC%94%E8%AE%B0%E7%94%A8%E6%88%B7%E7%AE%A1%E7%90%86/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/%E7%94%A8%E6%88%B7%E4%B8%AD%E5%BF%83%E9%A1%B9%E7%9B%AE%E7%AC%94%E8%AE%B0%E7%94%A8%E6%88%B7%E7%AE%A1%E7%90%86/</guid><description>用户中心</description><pubDate>Sat, 05 Jul 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;用户中心笔记&lt;/h1&gt;
+&lt;h2&gt;查找删除&lt;/h2&gt;
+&lt;p&gt;Controller&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@GetMapping(&quot;/search&quot;)
+public List&amp;lt;User&amp;gt; searchUser(String username) {
+    return userService.searchUser(username);
+}
+
+@PostMapping(&quot;/delete&quot;)
+public boolean deleteUser(long id) {
+    return userService.deleteUser(id);
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Service&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;private static final String USER_LOGIN_STATE = &quot;userLoginState&quot;;
+
+@Override
+public boolean deleteUser(long id) {
+    if(id &amp;lt; 0) {
+        return false;
+    }
+    return this.removeById(id);
+    //这里的removeById会自动转换为逻辑删除将isDelete设置为1
+}
+
+@Override
+public List&amp;lt;User&amp;gt; searchUser(String username) {
+    QueryWrapper&amp;lt;User&amp;gt; queryWrapper = new QueryWrapper&amp;lt;&amp;gt;();
+    queryWrapper.eq(&quot;username&quot;, username);
+    List&amp;lt;User&amp;gt; users = this.list(queryWrapper);
+    if (users.isEmpty()) {
+        log.info(&quot;查询不到指定用户名&quot;);
+    }
+    for (User user : users) {
+        user.setUserPassword(null);
+    }
+    return users;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;再增加一个权限字段role判断是否为管理员&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@Override
+public boolean deleteUser(long id, HttpServletRequest request) {
+    if(id &amp;lt; 0) {
+        return false;
+    }
+    User user = (User) request.getSession().getAttribute(USER_LOGIN_STATE);
+    if(user == null || user.getRole() != 1) {
+        log.info(&quot;权限不足用户尝试删除数据&quot;);
+        return false;
+    }
+    return this.removeById(id);
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;用户注销&lt;/h2&gt;
+&lt;p&gt;service&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@Override
+public boolean userLogout(HttpServletRequest request) {
+    if(request == null){
+        log.info(&quot;注销失败&quot;);
+        return false;
+    }
+    HttpSession session = request.getSession();
+    session.removeAttribute(USER_LOGIN_STATE);
+    return true;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;controller&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@PostMapping(&quot;/logout&quot;)
+public boolean logout(HttpServletRequest request) {
+    if(request == null){
+        return false;
+    }
+    return userService.userLogout(request);
+}
+&lt;/code&gt;&lt;/pre&gt;
+</content:encoded></item><item><title>用户中心项目笔记（Vue）</title><link>https://thrinisty.github.io/posts/%E7%94%A8%E6%88%B7%E4%B8%AD%E5%BF%83%E9%A1%B9%E7%9B%AE%E7%AC%94%E8%AE%B0vue%E5%89%8D%E7%AB%AF/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/%E7%94%A8%E6%88%B7%E4%B8%AD%E5%BF%83%E9%A1%B9%E7%9B%AE%E7%AC%94%E8%AE%B0vue%E5%89%8D%E7%AB%AF/</guid><description>用户中心Vue前端</description><pubDate>Fri, 04 Jul 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;用户中心笔记&lt;/h1&gt;
+&lt;h2&gt;相关软件安装&lt;/h2&gt;
+&lt;p&gt;node JS下载&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;PS C:\Users\71460\Desktop&amp;gt; node -v
+v22.11.0
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Vue CLI&lt;/p&gt;
+&lt;p&gt;使用以下任一指令安装脚手架&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;npm install -g @vue/cli
+# OR
+yarn global add @vue/cli
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;验证安装成功&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;PS C:\Users\71460\Desktop&amp;gt; vue --version
+@vue/cli 5.0.8
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;在对应文件cmd窗口&lt;/p&gt;
+&lt;p&gt;使用如下指令创建对应的vue工程&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;vue create user-center-frontend-vue
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;Ant Design Vue&lt;/h2&gt;
+&lt;p&gt;使用npm安装组件&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;npm i --save ant-design-vue@4.x
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;全局引入&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;import { createApp } from &apos;vue&apos;;
+import Antd from &apos;ant-design-vue&apos;;
+import App from &apos;./App&apos;;
+import &apos;ant-design-vue/dist/reset.css&apos;;
+
+const app = createApp(App);
+
+app.use(Antd).mount(&apos;#app&apos;);
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;在main.ts中融合一下&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;import { createApp } from &quot;vue&quot;;
+import App from &quot;./App.vue&quot;;
+import router from &quot;./router&quot;;
+import Antd from &quot;ant-design-vue&quot;;
+import &quot;ant-design-vue/dist/reset.css&quot;;
+
+createApp(App).use(Antd).use(router).mount(&quot;#app&quot;);
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;代码风格&lt;/h2&gt;
+&lt;p&gt;组合式API&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;script setup&amp;gt;
+import { ref, onMounted } from &apos;vue&apos;
+
+// 响应式状态
+const count = ref(0)
+
+// 用来修改状态、触发更新的函数
+function increment() {
+  count.value++
+}
+
+// 生命周期钩子
+onMounted(() =&amp;gt; {
+  console.log(`The initial count is ${count.value}.`)
+})
+&amp;lt;/script&amp;gt;
+
+&amp;lt;template&amp;gt;
+  &amp;lt;button @click=&quot;increment&quot;&amp;gt;Count is: {{ count }}&amp;lt;/button&amp;gt;
+&amp;lt;/template&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;页面布局&lt;/h2&gt;
+&lt;p&gt;通过一个BasicLayout页面，使其他的页面引用其实现各个网页模板不发送改变&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;template&amp;gt;
+  &amp;lt;div id=&quot;BasicLayout&quot;&amp;gt;
+    &amp;lt;a-layout&amp;gt;
+      &amp;lt;a-layout-header :style=&quot;headerStyle&quot;&amp;gt;Header&amp;lt;/a-layout-header&amp;gt;
+      &amp;lt;a-layout-content class=&quot;content&quot; :style=&quot;contentStyle&quot;&amp;gt;
+        &amp;lt;router-view /&amp;gt;
+      &amp;lt;/a-layout-content&amp;gt;
+      &amp;lt;a-layout-footer class=&quot;footer&quot; :style=&quot;footerStyle&quot;&amp;gt;
+        &amp;lt;a href=&quot;https://thrinisty.github.io/Blog/&quot; target=&quot;_blank&quot;&amp;gt;
+          thrinisty博客网址
+        &amp;lt;/a&amp;gt;
+      &amp;lt;/a-layout-footer&amp;gt;
+    &amp;lt;/a-layout&amp;gt;
+  &amp;lt;/div&amp;gt;
+&amp;lt;/template&amp;gt;
+
+&amp;lt;script setup lang=&quot;ts&quot;&amp;gt;&amp;lt;/script&amp;gt;
+
+&amp;lt;style scoped&amp;gt;
+#BasicLayout .footer {
+  background-color: #96ebf4;
+  text-align: center;
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 16px;
+}
+
+#BasicLayout .content {
+  padding: 20px;
+  margin-bottom: 20px;
+  background: linear-gradient(to right, #cae8ec 0%, #70d9ea 80%);
+}
+&amp;lt;/style&amp;gt;
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;在其他的页面中引入这个BasicLayout基础布局&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;template&amp;gt;
+  &amp;lt;div id=&quot;app&quot;&amp;gt;
+    &amp;lt;BasicLayout&amp;gt;&amp;lt;/BasicLayout&amp;gt;
+  &amp;lt;/div&amp;gt;
+&amp;lt;/template&amp;gt;
+
+&amp;lt;style&amp;gt;&amp;lt;/style&amp;gt;
+&amp;lt;script setup lang=&quot;ts&quot;&amp;gt;
+import BasicLayout from &quot;@/loayouts/BasicLayout.vue&quot;;
+&amp;lt;/script&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;全局导航菜单&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;template&amp;gt;
+  &amp;lt;div id=&quot;GlobalHeader&quot;&amp;gt;
+    &amp;lt;a-row :wrap=&quot;false&quot;&amp;gt;
+      &amp;lt;a-col flex=&quot;200px&quot;&amp;gt;
+        &amp;lt;div class=&quot;header-container&quot;&amp;gt;
+          &amp;lt;div class=&quot;title&quot;&amp;gt;用户论坛&amp;lt;/div&amp;gt;
+        &amp;lt;/div&amp;gt;&amp;lt;/a-col
+      &amp;gt;
+      &amp;lt;a-col flex=&quot;auto&quot;
+        &amp;gt;&amp;lt;a-menu
+          v-model:selectedKeys=&quot;current&quot;
+          mode=&quot;horizontal&quot;
+          :items=&quot;items&quot;
+      /&amp;gt;&amp;lt;/a-col&amp;gt;
+      &amp;lt;a-col flex=&quot;80px&quot;
+        &amp;gt;&amp;lt;div class=&quot;user-login-status&quot;&amp;gt;
+          &amp;lt;a-button type=&quot;primary&quot; href=&quot;/user/login&quot;&amp;gt;Login&amp;lt;/a-button&amp;gt;
+        &amp;lt;/div&amp;gt;&amp;lt;/a-col
+      &amp;gt;
+    &amp;lt;/a-row&amp;gt;
+  &amp;lt;/div&amp;gt;
+&amp;lt;/template&amp;gt;
+&amp;lt;script lang=&quot;ts&quot; setup&amp;gt;
+import { h, ref } from &quot;vue&quot;;
+import {
+  MailOutlined,
+  AppstoreOutlined,
+  SettingOutlined,
+} from &quot;@ant-design/icons-vue&quot;;
+import { MenuProps } from &quot;ant-design-vue&quot;;
+const current = ref&amp;lt;string[]&amp;gt;([&quot;mail&quot;]);
+const items = ref&amp;lt;MenuProps[&quot;items&quot;]&amp;gt;([
+  {
+    key: &quot;mail&quot;,
+    icon: () =&amp;gt; h(MailOutlined),
+    label: &quot;论坛&quot;,
+    title: &quot;论坛&quot;,
+  },
+  {
+    key: &quot;app&quot;,
+    icon: () =&amp;gt; h(AppstoreOutlined),
+    label: &quot;推文&quot;,
+    title: &quot;推文&quot;,
+  },
+  {
+    key: &quot;sub1&quot;,
+    icon: () =&amp;gt; h(SettingOutlined),
+    label: &quot;关注博主&quot;,
+    title: &quot;关注博主&quot;,
+    children: [
+      {
+        type: &quot;group&quot;,
+        label: &quot;Item 1&quot;,
+        children: [
+          {
+            label: &quot;Option 1&quot;,
+            key: &quot;setting:1&quot;,
+          },
+          {
+            label: &quot;Option 2&quot;,
+            key: &quot;setting:2&quot;,
+          },
+        ],
+      },
+      {
+        type: &quot;group&quot;,
+        label: &quot;Item 2&quot;,
+        children: [
+          {
+            label: &quot;Option 3&quot;,
+            key: &quot;setting:3&quot;,
+          },
+          {
+            label: &quot;Option 4&quot;,
+            key: &quot;setting:4&quot;,
+          },
+        ],
+      },
+    ],
+  },
+  {
+    key: &quot;alipay&quot;,
+    icon: () =&amp;gt; h(SettingOutlined),
+    label: h(
+      &quot;a&quot;,
+      { href: &quot;https://thrinisty.github.io/Blog/&quot;, target: &quot;_blank&quot; },
+      &quot;主页链接&quot;
+    ),
+    title: &quot;返回主页&quot;,
+  },
+]);
+&amp;lt;/script&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;在BasicLayout的header里引入全局导航的设置&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;a-layout-header class=&quot;header&quot; :style=&quot;headerStyle&quot;&amp;gt;
+  &amp;lt;GlobalHeader /&amp;gt;
+&amp;lt;/a-layout-header&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;在a-col标签中通过@click=&quot;doMenuClick&quot;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;a-col flex=&quot;auto&quot;
+  &amp;gt;&amp;lt;a-menu
+    v-model:selectedKeys=&quot;current&quot;
+    mode=&quot;horizontal&quot;
+    :items=&quot;items&quot;
+    @click=&quot;doMenuClick&quot;
+/&amp;gt;&amp;lt;/a-col&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;const router = useRouter();
+const doMenuClick = ({ key }: { key: string }) =&amp;gt; {
+  router.push(key);
+};
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;这样我们选取水平菜单的时候就会请求对应key的路径，在全局路由进行配置即可轻松实现页面的切换&lt;/p&gt;
+</content:encoded></item><item><title>用户中心项目笔记（MyBatisPlus，注册，登录，记录状态）</title><link>https://thrinisty.github.io/posts/%E7%94%A8%E6%88%B7%E4%B8%AD%E5%BF%83%E9%A1%B9%E7%9B%AE%E7%AC%94%E8%AE%B0mybatisplus%E6%B3%A8%E5%86%8C%E7%99%BB%E5%BD%95%E8%AE%B0%E5%BD%95%E7%8A%B6%E6%80%81/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/%E7%94%A8%E6%88%B7%E4%B8%AD%E5%BF%83%E9%A1%B9%E7%9B%AE%E7%AC%94%E8%AE%B0mybatisplus%E6%B3%A8%E5%86%8C%E7%99%BB%E5%BD%95%E8%AE%B0%E5%BD%95%E7%8A%B6%E6%80%81/</guid><description>用户中心项目后端开发，SpringBoot整合</description><pubDate>Thu, 03 Jul 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;用户中心开发笔记&lt;/h1&gt;
+&lt;h2&gt;MyBatisPlus&lt;/h2&gt;
+&lt;p&gt;引入相关依赖&lt;/p&gt;
+&lt;p&gt;mybatisPlus依赖&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;dependency&amp;gt;
+    &amp;lt;groupId&amp;gt;com.baomidou&amp;lt;/groupId&amp;gt;
+    &amp;lt;artifactId&amp;gt;mybatis-plus-boot-starter&amp;lt;/artifactId&amp;gt;
+    &amp;lt;version&amp;gt;3.5.12&amp;lt;/version&amp;gt;
+&amp;lt;/dependency&amp;gt;
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;lombok依赖，用于自动生成get set toString方法&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;dependency&amp;gt;
+    &amp;lt;groupId&amp;gt;org.projectlombok&amp;lt;/groupId&amp;gt;
+    &amp;lt;artifactId&amp;gt;lombok&amp;lt;/artifactId&amp;gt;
+    &amp;lt;scope&amp;gt;provided&amp;lt;/scope&amp;gt;
+&amp;lt;/dependency&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;配置文件&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;spring:
+  application:
+    name: user-center
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/usermanager
+    username: root
+    password: 654321
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Bean对象的设置&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@Data
+@TableName(&quot;`user`&quot;)
+public class User {
+    private Long id;
+    private String name;
+    private Integer age;
+    private String email;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;创建UserMapper的接口，继承于BaseMapper&amp;lt;User&amp;gt;，这个父类接口中存在很多现成的SQL操作方法供以使用，使得我们不需要手动写SQL语句&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public interface UserMapper extends BaseMapper&amp;lt;User&amp;gt; {
+
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;在引导类中使用MapperScan扫描UserMapper&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@SpringBootApplication
+@MapperScan(&quot;com.nwpu.backend.mapper&quot;)
+public class BackendApplication {
+    public static void main(String[] args) {
+       SpringApplication.run(BackendApplication.class, args);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;测试程序&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;DROP TABLE IF EXISTS `user`;
+
+CREATE TABLE `user`
+(
+    id BIGINT NOT NULL COMMENT &apos;主键ID&apos;,
+    name VARCHAR(30) NULL DEFAULT NULL COMMENT &apos;姓名&apos;,
+    age INT NULL DEFAULT NULL COMMENT &apos;年龄&apos;,
+    email VARCHAR(50) NULL DEFAULT NULL COMMENT &apos;邮箱&apos;,
+    PRIMARY KEY (id)
+);
+
+DELETE FROM `user`;
+
+INSERT INTO `user` (id, name, age, email) VALUES
+(1, &apos;Jone&apos;, 18, &apos;test1@baomidou.com&apos;),
+(2, &apos;Jack&apos;, 20, &apos;test2@baomidou.com&apos;),
+(3, &apos;Tom&apos;, 28, &apos;test3@baomidou.com&apos;),
+(4, &apos;Sandy&apos;, 21, &apos;test4@baomidou.com&apos;),
+(5, &apos;Billie&apos;, 24, &apos;test5@baomidou.com&apos;);
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;@Test
+void testUserMapper() {
+    List&amp;lt;User&amp;gt; users = userMapper.selectList(null);
+    for (User user : users) {
+       System.out.println(user);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;User(id=1, name=Jone, age=18, email=test1@baomidou.com)
+User(id=1, name=Jone, age=18, email=test1@baomidou.com)
+User(id=2, name=Jack, age=20, email=test2@baomidou.com)
+User(id=3, name=Tom, age=28, email=test3@baomidou.com)
+User(id=4, name=Sandy, age=21, email=test4@baomidou.com)
+User(id=5, name=Billie, age=24, email=test5@baomidou.com)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;数据库表格设计&lt;/h2&gt;
+&lt;pre&gt;&lt;code&gt;CREATE TABLE `usermanager`.`user`  (
+  `id` bigint NOT NULL AUTO_INCREMENT COMMENT &apos;用户ID&apos;,
+  `username` varchar(100) NULL COMMENT &apos;用户名称&apos;,
+  `user_account` varchar(255) NULL COMMENT &apos;用户账号&apos;,
+  `avatar_url` varchar(255) NULL COMMENT &apos;用户头像地址&apos;,
+  `gender` tinyint NULL COMMENT &apos;用户性别&apos;,
+  `user_password` varchar(255) NOT NULL COMMENT &apos;用户密码&apos;,
+  `phone` varchar(255) NULL COMMENT &apos;用户电话&apos;,
+  `email` varchar(255) NULL COMMENT &apos;用户邮箱&apos;,
+  `user_status` tinyint ZEROFILL NULL COMMENT &apos;用户状态&apos;,
+  `createtime` datetime DEFAULT CURRENT_TIMESTAMP	NULL COMMENT &apos;创建时间&apos;,
+  `updatetime` datetime DEFAULT CURRENT_TIMESTAMP NULL on update CURRENT_TIMESTAMP COMMENT &apos;更新时间&apos;,
+  `is_delete` tinyint ZEROFILL NULL COMMENT &apos;是否删除&apos;,
+  PRIMARY KEY (`id`)
+);
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;User对象创建&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@Data
+public class User implements Serializable {
+    private Long id;
+    private String username;
+    private String userAccount;
+    private String avatarUrl;
+    private Integer gender;
+    private String userPassword;
+    private String phone;
+    private String email;
+    private Integer userStatus;
+    private Date createtime;
+    private Date updatetime;
+    private Integer isDelete;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;注册逻辑实现&lt;/h2&gt;
+&lt;p&gt;1.用户在前端输入账户密码，以及校验码&lt;/p&gt;
+&lt;p&gt;2.校验账户密码：&lt;/p&gt;
+&lt;p&gt;​	账户不少于4位&lt;/p&gt;
+&lt;p&gt;​	密码不小于8位&lt;/p&gt;
+&lt;p&gt;​	账户不能重复&lt;/p&gt;
+&lt;p&gt;3.对密码进行加密（密码不能直接存入到数据库）&lt;/p&gt;
+&lt;p&gt;4.向用户数据库插入数据&lt;/p&gt;
+&lt;p&gt;设置User业务层的接口，extends IService&amp;lt;User&amp;gt;是预设了一些常用的方法&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public interface UserService extends IService&amp;lt;User&amp;gt; {
+
+    /**
+     * 用户注册
+     * @param userAccount 用户账号
+     * @param userPassword 用户密码
+     * @param checkPassword 确认密码
+     * @return 新用户ID
+     */
+    long userRegister(String userAccount, String userPassword, String checkPassword);
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;实现上，继承于ServiceImpl&amp;lt;UserMapper, User&amp;gt; 可以默认实现预设的逻辑&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;&lt;code&gt;M&lt;/code&gt;（Mapper 类型）&lt;/strong&gt;：指定操作数据库的 Mapper 接口（这里是 &lt;code&gt;UserMapper&lt;/code&gt;）。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;&lt;code&gt;T&lt;/code&gt;（实体类型）&lt;/strong&gt;：指定数据库对应的实体类（这里是 &lt;code&gt;User&lt;/code&gt;）。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre&gt;&lt;code&gt;@Service
+public class UserServiceImpl extends ServiceImpl&amp;lt;UserMapper, User&amp;gt; implements UserService {
+    @Override
+    public long userRegister(String userAccount, String userPassword, String checkPassword) {
+        return 0;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;这里我们为了方便引入一个commons-lang3依赖&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;dependency&amp;gt;
+    &amp;lt;groupId&amp;gt;org.apache.commons&amp;lt;/groupId&amp;gt;
+    &amp;lt;artifactId&amp;gt;commons-lang3&amp;lt;/artifactId&amp;gt;
+    &amp;lt;version&amp;gt;3.17.0&amp;lt;/version&amp;gt;
+&amp;lt;/dependency&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;密码加密，这里引入一个加密相关的依赖&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;dependency&amp;gt;
+    &amp;lt;groupId&amp;gt;org.springframework.security&amp;lt;/groupId&amp;gt;
+    &amp;lt;artifactId&amp;gt;spring-security-crypto&amp;lt;/artifactId&amp;gt;
+&amp;lt;/dependency&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;工具类的封装&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class PasswordUtils {
+    private static final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+    // 加密密码
+    public static String encrypt(String rawPassword) {
+        return encoder.encode(rawPassword);
+    }
+    // 校验密码
+    public static boolean matches(String rawPassword, String encodedPassword) {
+        return encoder.matches(rawPassword, encodedPassword);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;测试一下&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@Test
+public void testEncode() {
+    String password = &quot;feierling&quot;;
+    String encodePwd = PasswordUtils.encrypt(password);
+    System.out.println(encodePwd);
+    System.out.println(PasswordUtils.matches(&quot;feierling&quot;, encodePwd));
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;$2a$10$c31FHZvkQNmUb5K3qByys.aw8igBVHC7nRkg1Rb2dmK9//PIa9QIi
+true
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;:::warning&lt;/p&gt;
+&lt;p&gt;在 &lt;strong&gt;BCrypt&lt;/strong&gt; 加密算法中，&lt;strong&gt;即使相同的密码，每次加密后的哈希值也会不同&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;:::&lt;/p&gt;
+&lt;p&gt;注册代码实现&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@Override
+public long userRegister(String userAccount, String userPassword, String checkPassword) {
+    //使用工具类传入参数列表，都不为空
+    if (StringUtils.isAnyBlank(userAccount, userPassword, checkPassword)) {
+        return -1;//不能为空
+    }
+    if (userAccount.length() &amp;lt; 4) {
+        return -2;//账户不能小于4
+    }
+    if (userPassword.length() &amp;lt; 8 || checkPassword.length() &amp;lt; 8) {
+        return -3;//密码不能小于8
+    }
+    QueryWrapper&amp;lt;User&amp;gt; queryWrapper = new QueryWrapper&amp;lt;&amp;gt;();
+    queryWrapper.eq(&quot;user_account&quot;, userAccount);
+    long count = this.count(queryWrapper);
+    if (count &amp;gt; 0) {
+        return -4;//不能用相同的账户
+    }
+    Pattern pattern = Pattern.compile(&quot;[^a-zA-Z0-9\\u4e00-\\u9fa5]&quot;);
+    if (pattern.matcher(userAccount).find()) {
+        return -5;//账户名不能为特殊字符
+    }
+    if (!userPassword.equals(checkPassword)){
+        return -6;//密码不相同
+    }
+
+    //加密
+    String encodePwd = PasswordUtils.encrypt(userPassword);
+    User user = new User();
+    user.setUserAccount(userAccount);
+    user.setUserPassword(encodePwd);
+
+    //向数据库中插入数据
+    boolean saveResult = this.save(user);
+    if (!saveResult) {
+        return -7;//插入失败
+    }
+    return user.getId();
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;登录逻辑实现&lt;/h2&gt;
+&lt;p&gt;接收参数：用户账户名称，密码&lt;/p&gt;
+&lt;p&gt;请求类型：POST&lt;/p&gt;
+&lt;p&gt;请求体：JSON格式&lt;/p&gt;
+&lt;p&gt;返回值：用户信息（脱敏）&lt;/p&gt;
+&lt;h3&gt;逻辑&lt;/h3&gt;
+&lt;p&gt;校验账户密码是否合法&lt;/p&gt;
+&lt;p&gt;账户是否在数据库中存在&lt;/p&gt;
+&lt;p&gt;将用户态记录，将其存到服务器上（Session、Cookie）&lt;/p&gt;
+&lt;p&gt;返回用户信息&lt;/p&gt;
+&lt;h3&gt;代码实现&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;@Override
+public User userLogin(String userAccount, String userPassword) {
+    //使用工具类传入参数列表，都不为空
+    if (StringUtils.isAnyBlank(userAccount, userPassword)) {
+        return null;//账户密码不能为空
+    }
+    if (userAccount.length() &amp;lt; 4) {
+        return null;//账户不能小于4
+    }
+    if (userPassword.length() &amp;lt; 8) {
+        return null;//密码不能小于8
+    }
+
+    Pattern pattern = Pattern.compile(&quot;[^a-zA-Z0-9\\u4e00-\\u9fa5]&quot;);
+    if (pattern.matcher(userAccount).find()) {
+        return null;//账户名不能为特殊字符
+    }
+
+    QueryWrapper&amp;lt;User&amp;gt; queryWrapper = new QueryWrapper&amp;lt;&amp;gt;();
+    queryWrapper.eq(&quot;user_account&quot;, userAccount);
+    User user = this.getOne(queryWrapper);
+    if (user == null) {
+        return null;//用户不存在
+    }
+    Boolean isPasswordValid = PasswordUtils.matches(userPassword, user.getUserPassword());
+    if (!isPasswordValid) {
+        return null;//密码不正确
+    }
+
+    user.setUserPassword(null);//信息脱敏
+    return user;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;记录用户登录状态&lt;/h2&gt;
+&lt;p&gt;连接服务器后，得到一个session状态，返回给前端&lt;/p&gt;
+&lt;p&gt;登陆成功后，得到了登陆成功的session，并且给该session设置一些值，返回给前端一个设置cookie的“命令”&lt;/p&gt;
+&lt;p&gt;前端接收到后端的命令后，设置cookie，保存到浏览器内&lt;/p&gt;
+&lt;p&gt;前端再次请求后端的时候，在请求头中带上cookie去请求&lt;/p&gt;
+&lt;p&gt;后端拿到前端传过来的cookie，找到对应的session&lt;/p&gt;
+&lt;p&gt;后端从session中可以取出基于该session存储的变量（用户的登录信息，登录名称）&lt;/p&gt;
+&lt;h2&gt;Controller&lt;/h2&gt;
+&lt;pre&gt;&lt;code&gt;@RestController
+@RequestMapping(&quot;/user&quot;)
+public class UserController {
+
+    @Autowired
+    private UserService userService;
+
+    @PostMapping(&quot;/register&quot;)
+    public Long userRegister(@RequestBody UserRegisterRequest userRegisterRequest) {
+        if(userRegisterRequest == null) {
+            return null;
+        }
+        String userAccount = userRegisterRequest.getUserAccount();
+        String userPassword = userRegisterRequest.getUserPassword();
+        String checkPassword = userRegisterRequest.getCheckPassword();
+        return userService.userRegister(userAccount, userPassword, checkPassword);
+    }
+
+    @PostMapping(&quot;/login&quot;)
+    public User userLogin(@RequestBody UserLoginRequest userLoginRequest, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+        if(userLoginRequest == null) {
+            return null;
+        }
+        String userAccount = userLoginRequest.getUserAccount();
+        String userPassword = userLoginRequest.getUserPassword();
+        return userService.userLogin(userAccount, userPassword, httpServletRequest);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+</content:encoded></item><item><title>用户中心项目笔记（）</title><link>https://thrinisty.github.io/posts/%E7%94%A8%E6%88%B7%E4%B8%AD%E5%BF%83%E9%A1%B9%E7%9B%AE%E7%AC%94%E8%AE%B0%E6%A8%A1%E6%9D%BF/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/%E7%94%A8%E6%88%B7%E4%B8%AD%E5%BF%83%E9%A1%B9%E7%9B%AE%E7%AC%94%E8%AE%B0%E6%A8%A1%E6%9D%BF/</guid><description>用户中心</description><pubDate>Tue, 01 Jul 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;用户中心笔记&lt;/h1&gt;
+</content:encoded></item><item><title>自学第三月份总结</title><link>https://thrinisty.github.io/posts/%E8%87%AA%E5%AD%A6%E7%AC%AC%E5%9B%9B%E6%9C%88%E4%BB%BD%E6%80%BB%E7%BB%93/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/%E8%87%AA%E5%AD%A6%E7%AC%AC%E5%9B%9B%E6%9C%88%E4%BB%BD%E6%80%BB%E7%BB%93/</guid><description>LeetCode继续刷题，Spring学习完成，Spring MVC、Spring Boot、Spring AI初步上手</description><pubDate>Tue, 01 Jul 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;自学第四月份总结&lt;/h1&gt;
+&lt;h2&gt;关于LeetCode刷题&lt;/h2&gt;
+&lt;p&gt;在六月份的上旬和中旬还是有在继续刷题，加上之前的积累总计有63道了，但是到公司之后每天需要学习新的知识点就没有把刷题的习惯继续保留下去了，我觉得基本的底子搭起来了，之后准备每天抽时间回顾一下，使得自己不至于忘了，等实习完毕后把剩余的37道也给完成&lt;/p&gt;
+&lt;h2&gt;Spring框架学习&lt;/h2&gt;
+&lt;h3&gt;Spring&lt;/h3&gt;
+&lt;p&gt;了解了代理模式以及其代码实现，能够自己手写出代理类，也可以自动生成代理类。学习了AOP相关知识，明白了面向切面在实际中的运用，而对于Spring事务而言，学会怎样使用。&lt;/p&gt;
+&lt;h3&gt;MyBatis&lt;/h3&gt;
+&lt;p&gt;学了一半，还没有学完，目前能够使用Spring Boot整合基本CRUD使用&lt;/p&gt;
+&lt;h3&gt;Spring MVC&lt;/h3&gt;
+&lt;p&gt;学习了通过注解的方式代替传统Web xml的配置，也不用使用Servlet进行路径的映射，了解通过json的格式进行前后端数据的交互，学习了REST风格的编程响应，RestController的使用，尝试整合了一下SSM的使用，拦截器的使用&lt;/p&gt;
+&lt;h3&gt;SpringBoot&lt;/h3&gt;
+&lt;p&gt;很方便啊，相比较于SSM的直接使用，SpringBoot自动整合了一些相关的依赖，不易出现版本问题，能够快速的搭建出一个简易的项目框架出来，通过application配置文件进行相关参数的设置，了解了yaml格式的使用。&lt;/p&gt;
+&lt;p&gt;通过SpringBoot整合其他框架非常的好用，得益于Spring Boot的对象创建机制，可以轻松通过pom依赖的引用，和Autowired注解实现相关功能，也了解了一些项目部署和监控的机制&lt;/p&gt;
+&lt;h3&gt;Spring AI&lt;/h3&gt;
+&lt;p&gt;了解了一些入门的使用，通过外界大模型进行数据的交互，Spring AI将大模型的交互封装的非常好用，调用就完了，了解了提示词的相关运用，Function Calling的运用场景，MCP服务器的编写，了解了记忆对话的实现方式，模型对话内容返回为Bean对象的方式&lt;/p&gt;
+&lt;h2&gt;总结&lt;/h2&gt;
+&lt;p&gt;总的来说这个月学到的东西还是很多来着，Spring部分结束了，LeetCode也是继续再刷，MyBatis、SpringMVC、SpringBoot学会了常见的使用（速成），之后等忙完了也许会再次回顾补补基础之类的？Spring AI的初步使用，现在官方的文档还不是很全不太好学习。南京很热啊，每天实习上下班通勤难受死了，回到公寓基本也是啥也不想干，周末放空大脑好好娱乐，不过好在确实能够接触到工作的环境，和前辈们交流交流了解一下工作的相关知识&lt;/p&gt;
+&lt;p&gt;负责的老师也派活下来了，拓展一个论坛的功能，要求前后端完成，所以Vue的学习也要提上日程了，算是个绝佳的练手机会吧&lt;/p&gt;
+</content:encoded></item><item><title>SpringAI笔记（MCPService，上下文对话，内容封装）</title><link>https://thrinisty.github.io/posts/springai%E7%AC%94%E8%AE%B0mcpservice%E4%B8%8A%E4%B8%8B%E6%96%87%E5%AF%B9%E8%AF%9D%E5%86%85%E5%AE%B9%E5%B0%81%E8%A3%85/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/springai%E7%AC%94%E8%AE%B0mcpservice%E4%B8%8A%E4%B8%8B%E6%96%87%E5%AF%B9%E8%AF%9D%E5%86%85%E5%AE%B9%E5%B0%81%E8%A3%85/</guid><description>MCPService 上下文对话，内容封装</description><pubDate>Mon, 30 Jun 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;SpringAI笔记&lt;/h1&gt;
 &lt;h2&gt;MCP&lt;/h2&gt;
 &lt;p&gt;模型上下文协议&lt;/p&gt;
 &lt;p&gt;是一种标准化协议，使 AI 模型能以结构化方式与外部工具及资源交互。它支持多种传输机制，以适应不同环境的灵活性需求。&lt;/p&gt;
