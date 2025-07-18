@@ -23,7 +23,6 @@ mybatisPlus依赖
     <artifactId>mybatis-plus-boot-starter</artifactId>
     <version>3.5.12</version>
 </dependency>
-
 ```
 
 lombok依赖，用于自动生成get set toString方法

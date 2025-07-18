@@ -303,10 +303,62 @@ const items = ref<MenuProps["items"]>([
 ```
 
 ```javascript
-const router = useRouter();
 const doMenuClick = ({ key }: { key: string }) => {
-  router.push(key);
+  router.push({
+    path: "/" + key,
+  });
 };
 ```
 
 这样我们选取水平菜单的时候就会请求对应key的路径，在全局路由进行配置即可轻松实现页面的切换
+
+
+
+## 与后端交互数据
+
+### 全局自定义请求
+
+编写请求配置文件request.ts  包括全局接口请求地址，超时时间，自定义请求响应拦截器等
+
+运用场景：需要对接口的通用响应进行统一处理，例如从response中取出data；或者根据code去集中处理错误，这样不用在每个接口请求中都去写相同的逻辑
+
+也可以在全局响应拦截器中读取结果中的data，并校验code是否合法，如果是未登录状态，则自动登录
+
+```rst
+const myAxios = axios.create({
+  baseURL: "https://localhost:8080",
+  timeout: 10000,
+  withCredentials: true,
+});
+
+// 添加请求拦截器
+myAxios.interceptors.request.use(
+  function (config) {
+    // 在发送请求之前做些什么
+    console.log(config);
+    const { data } = config;
+    console.log(data);
+    return config;
+  },
+  function (error) {
+    // 对请求错误做些什么
+    return Promise.reject(error);
+  }
+);
+
+// 添加响应拦截器
+myAxios.interceptors.response.use(
+  function (response) {
+    // 2xx 范围内的状态码都会触发该函数。
+    // 对响应数据做点什么
+    return response;
+  },
+  function (error) {
+    // 超出 2xx 范围的状态码都会触发该函数。
+    // 对响应错误做点什么
+    return Promise.reject(error);
+  }
+);
+
+export default myAxios;
+```

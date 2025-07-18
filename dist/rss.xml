@@ -1,4 +1,1406 @@
-<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Thrinisty&apos;s Blog</title><description>New Blog</description><link>https://thrinisty.github.io/</link><language>zh_CN</language><item><title>用户中心项目笔记（用户管理）</title><link>https://thrinisty.github.io/posts/%E7%94%A8%E6%88%B7%E4%B8%AD%E5%BF%83%E9%A1%B9%E7%9B%AE%E7%AC%94%E8%AE%B0%E7%94%A8%E6%88%B7%E7%AE%A1%E7%90%86/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/%E7%94%A8%E6%88%B7%E4%B8%AD%E5%BF%83%E9%A1%B9%E7%9B%AE%E7%AC%94%E8%AE%B0%E7%94%A8%E6%88%B7%E7%AE%A1%E7%90%86/</guid><description>用户中心</description><pubDate>Sat, 05 Jul 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;用户中心笔记&lt;/h1&gt;
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Thrinisty&apos;s Blog</title><description>New Blog</description><link>https://thrinisty.github.io/</link><language>zh_CN</language><item><title>SpringAI笔记（MCPClient）</title><link>https://thrinisty.github.io/posts/springai%E7%AC%94%E8%AE%B0%E6%A8%A1%E6%9D%BF---%E5%89%AF%E6%9C%AC/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/springai%E7%AC%94%E8%AE%B0%E6%A8%A1%E6%9D%BF---%E5%89%AF%E6%9C%AC/</guid><pubDate>Fri, 11 Jul 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;SpringAI笔记&lt;/h1&gt;
+&lt;h2&gt;MCP Client&lt;/h2&gt;
+</content:encoded></item><item><title>Vue3笔记（Pinia，组件通信）</title><link>https://thrinisty.github.io/posts/vue3%E7%AC%94%E8%AE%B0pinia/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/vue3%E7%AC%94%E8%AE%B0pinia/</guid><description>Vue Pinia，组件通信</description><pubDate>Wed, 09 Jul 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;Vue3笔记&lt;/h1&gt;
+&lt;p&gt;今天应该可以把Vue结束&lt;/p&gt;
+&lt;h2&gt;Pinia&lt;/h2&gt;
+&lt;h3&gt;环境准备&lt;/h3&gt;
+&lt;p&gt;集中式状态（数据）管理&lt;/p&gt;
+&lt;p&gt;把所有需要集中管理的数据放在同一个位置&lt;/p&gt;
+&lt;p&gt;通过以下指令安装pinia&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;npm i pinia
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;在main.js中引入Pinia&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;import &apos;./assets/main.css&apos;
+
+import { createApp } from &apos;vue&apos;
+import App from &apos;./App.vue&apos;
+//引入Pinia
+import {createPinia} from &quot;pinia&quot;;
+//创建Pinia
+const app = createApp(App);
+const pinia = createPinia()
+app.use(createPinia())
+app.mount(&apos;#app&apos;)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;我们先准备两个组件&lt;/p&gt;
+&lt;p&gt;其中sum的值会在其他组件中使用到，我们从count.ts中获取数据&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;script setup lang=&quot;ts&quot;&amp;gt;
+import {reactive, ref} from &quot;vue&quot;;
+  import axios from &quot;axios&quot;
+  const count = ref(4)
+  const talkList = reactive([
+    {id:1, title:&apos;:我没什么事儿，就想听听你的声音&apos;},
+    {id:2, title:&apos;您好，您有新的恋爱订单，请及时收取我&apos;},
+    {id:3, title:&apos;我们，是我遇见的最美好的字眼&apos;},
+  ])
+  async function addTalk(){
+    const response = await axios.post(&apos;https://api.uomg.com/api/rand.qinghua?format=json&apos;);
+    const obj = {id:count.value, title:response.data.content};
+    count.value++
+    talkList.push(obj);
+  }
+&amp;lt;/script&amp;gt;
+
+&amp;lt;template&amp;gt;
+  &amp;lt;div&amp;gt;
+    &amp;lt;button @click=&quot;addTalk&quot;&amp;gt;获取语句&amp;lt;/button&amp;gt;
+    &amp;lt;ul&amp;gt;
+      &amp;lt;li v-for=&quot;talk in talkList&quot; :key=&quot;talk.id&quot;&amp;gt;{{talk.id}}:{{talk.title}}&amp;lt;/li&amp;gt;
+    &amp;lt;/ul&amp;gt;
+  &amp;lt;/div&amp;gt;
+&amp;lt;/template&amp;gt;
+
+&amp;lt;style scoped&amp;gt;
+
+&amp;lt;/style&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;script setup lang=&quot;ts&quot;&amp;gt;
+import {ref} from &quot;vue&quot;;
+const sum = ref(10)
+const n = ref(1)
+function addSum(){
+  sum.value += n.value
+}
+function subSum(){
+  sum.value -= n.value
+}
+&amp;lt;/script&amp;gt;
+
+&amp;lt;template&amp;gt;
+  &amp;lt;div&amp;gt;当前sum为：{{sum}}&amp;lt;/div&amp;gt;&amp;lt;br/&amp;gt;
+  &amp;lt;select v-model.number=&quot;n&quot;&amp;gt;
+    &amp;lt;option value=&quot;1&quot;&amp;gt;1&amp;lt;/option&amp;gt;
+    &amp;lt;option value=&quot;2&quot;&amp;gt;2&amp;lt;/option&amp;gt;
+    &amp;lt;option value=&quot;3&quot;&amp;gt;3&amp;lt;/option&amp;gt;
+  &amp;lt;/select&amp;gt;&amp;lt;br/&amp;gt;
+  &amp;lt;button @click=&quot;addSum&quot;&amp;gt;加n&amp;lt;/button&amp;gt;
+  &amp;lt;button @click=&quot;subSum&quot;&amp;gt;减n&amp;lt;/button&amp;gt;
+&amp;lt;/template&amp;gt;
+
+&amp;lt;style scoped&amp;gt;
+
+&amp;lt;/style&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;更改数据&lt;/h3&gt;
+&lt;p&gt;第一种更改数据的方式&lt;/p&gt;
+&lt;p&gt;更改为从全局的/store/count中获取sum值&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;import {defineStore} from &quot;pinia&quot;;
+export const useSumStore = defineStore(&apos;sum&apos;,{
+    state(){
+        return {
+            sum:60
+        }
+    }
+})
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;注意在解构的时候保持响应式，通过toRefs实现（其实storeToRefs会更好一点）&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;script setup lang=&quot;ts&quot;&amp;gt;
+import {ref, toRefs} from &quot;vue&quot;;
+import {useSumStore} from &apos;@/store/count&apos;
+
+const sumStore = useSumStore();
+const {sum} = toRefs(sumStore);
+const n = ref(1)
+function addSum(){
+  sum.value += n.value
+}
+function subSum(){
+  sum.value -= n.value
+}
+&amp;lt;/script&amp;gt;
+
+&amp;lt;template&amp;gt;
+  &amp;lt;div&amp;gt;当前sum为：{{sumStore.sum}}&amp;lt;/div&amp;gt;&amp;lt;br/&amp;gt;
+  &amp;lt;select v-model.number=&quot;n&quot;&amp;gt;
+    &amp;lt;option value=&quot;1&quot;&amp;gt;1&amp;lt;/option&amp;gt;
+    &amp;lt;option value=&quot;2&quot;&amp;gt;2&amp;lt;/option&amp;gt;
+    &amp;lt;option value=&quot;3&quot;&amp;gt;3&amp;lt;/option&amp;gt;
+  &amp;lt;/select&amp;gt;&amp;lt;br/&amp;gt;
+  &amp;lt;button @click=&quot;addSum&quot;&amp;gt;加n&amp;lt;/button&amp;gt;
+  &amp;lt;button @click=&quot;subSum&quot;&amp;gt;减n&amp;lt;/button&amp;gt;
+&amp;lt;/template&amp;gt;
+
+&amp;lt;style scoped&amp;gt;
+
+&amp;lt;/style&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;talk&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;import {defineStore} from &quot;pinia&quot;;
+import {reactive} from &quot;vue&quot;;
+export const useTalkStore = defineStore(&apos;talks&apos;,{
+    state(){
+        return {
+            talkList:[
+                {id:1, title:&apos;:我没什么事儿，就想听听你的声音&apos;},
+                {id:2, title:&apos;您好，您有新的恋爱订单，请及时收取我&apos;},
+                {id:3, title:&apos;我们，是我遇见的最美好的字眼&apos;},
+            ]
+        }
+    }
+})
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;import {useTalkStore} from &quot;@/store/loveTalk&quot;;
+const talkStore = useTalkStore();
+const {talkList} = toRefs(talkStore);
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;第二种更改数据的方式&lt;/p&gt;
+&lt;p&gt;在ts中添加acions，并在页面组件中调用&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;import {defineStore} from &quot;pinia&quot;;
+export const useSumStore = defineStore(&apos;sum&apos;,{
+    actions: {
+      increment(value) {
+          this.sum += value;
+      }
+    },
+    state(){
+        return {
+            sum:60
+        }
+    }
+})
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;const sumStore = useSumStore();
+const n = ref(1)
+//通过action进行修改
+function addSum(){
+  sumStore.increment(n.value)
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;第三种方式&lt;/p&gt;
+&lt;p&gt;通过sumStore修改数据&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;function subSum(){
+  sumStore.sum -= n.value
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;土味情话改造&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;使得将请求的方法数据在全局中存储，页面更加聚焦于前端展示的实现&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;import {defineStore} from &quot;pinia&quot;;
+import {reactive} from &quot;vue&quot;;
+import axios from &quot;axios&quot;;
+export const useTalkStore = defineStore(&apos;talks&apos;,{
+    actions: {
+        async loadTalks() {
+            const response = await axios.get(&apos;https://api.uomg.com/api/rand.qinghua?format=json&apos;);
+            const obj = {id:this.count, title:response.data.content};
+            this.count++
+            console.log(obj)
+            this.talkList.push(obj);
+        }
+    },
+    state(){
+        return {
+            talkList:[
+                {id:1, title:&apos;:我没什么事儿，就想听听你的声音&apos;},
+                {id:2, title:&apos;您好，您有新的恋爱订单，请及时收取我&apos;},
+                {id:3, title:&apos;我们，是我遇见的最美好的字眼&apos;},
+            ],
+            count: 4
+        }
+    }
+})
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;script setup lang=&quot;ts&quot;&amp;gt;
+  import {useTalkStore} from &quot;@/store/loveTalk&quot;;
+  const talkStore = useTalkStore();
+
+  function addTalk(){
+    talkStore.loadTalks()
+  }
+&amp;lt;/script&amp;gt;
+
+&amp;lt;template&amp;gt;
+  &amp;lt;div&amp;gt;
+    &amp;lt;button @click=&quot;addTalk&quot;&amp;gt;获取语句&amp;lt;/button&amp;gt;
+    &amp;lt;ul&amp;gt;
+      &amp;lt;li v-for=&quot;talk in talkStore.talkList&quot; :key=&quot;talk.id&quot;&amp;gt;{{talk.id}}:{{talk.title}}&amp;lt;/li&amp;gt;
+    &amp;lt;/ul&amp;gt;
+  &amp;lt;/div&amp;gt;
+&amp;lt;/template&amp;gt;
+
+&amp;lt;style scoped&amp;gt;
+
+&amp;lt;/style&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;组合式写法&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;import { defineStore } from &quot;pinia&quot;;
+import { ref } from &quot;vue&quot;;
+
+export const useSumStore = defineStore(&apos;sum&apos;, () =&amp;gt; {
+    // 使用 ref/reactive 定义状态
+    const sum = ref(60);
+
+    // 定义 actions（普通函数）
+    function increment(value: number) {
+        sum.value += value;
+    }
+
+    // 返回 state 和 actions
+    return {
+        sum,
+        increment,
+    };
+});
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;和Hooks有些相似，但是使用场景不同&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;特性&lt;/th&gt;
+&lt;th&gt;&lt;strong&gt;Pinia Setup Store&lt;/strong&gt;&lt;/th&gt;
+&lt;th&gt;&lt;strong&gt;Vue Composables (Hooks)&lt;/strong&gt;&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;设计目的&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;管理全局状态（State Management）&lt;/td&gt;
+&lt;td&gt;逻辑复用（Logic Reusability）&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;作用域&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;全局共享状态（所有组件共用同一个Store实例）&lt;/td&gt;
+&lt;td&gt;可局部使用（每个组件实例有自己的状态）&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;响应式机制&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;自动与 Pinia 响应式系统集成&lt;/td&gt;
+&lt;td&gt;依赖 Vue 的 &lt;code&gt;ref&lt;/code&gt;/&lt;code&gt;reactive&lt;/code&gt;/&lt;code&gt;computed&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;生命周期&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;长期存在（除非手动清理）&lt;/td&gt;
+&lt;td&gt;随组件销毁自动清理&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;典型用途&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;存储登录状态、主题配置、全局业务数据&lt;/td&gt;
+&lt;td&gt;封装可复用的逻辑（如表单校验、API请求）&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h2&gt;组件通信&lt;/h2&gt;
+&lt;p&gt;有很多的方式，这里用mitt实现&lt;/p&gt;
+&lt;p&gt;在emitter.ts创建mitt&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;import mitt from &apos;mitt&apos;
+const emitter = mitt()
+export default emitter
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;在main.ts中引用&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;import {createApp} from &apos;vue&apos;
+import App from &apos;./App.vue&apos;
+import router from &apos;./router&apos;
+import emitter from &apos;@/utils/emitter.ts&apos;
+createApp(App).use(router).mount(&apos;#app&apos;)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;发送消息方&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;import emitter from &apos;@/utils/emitter.ts&apos;
+const message = ref(&quot;来自父亲的消息&quot;)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;button @click=&quot;emitter.emit(&apos;Message&apos;, message)&quot;&amp;gt;发送消息&amp;lt;/button&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;接收消息方&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;import emitter from &apos;@/utils/emitter.ts&apos;
+const message = ref(&quot;&quot;)
+emitter.on(&apos;Message&apos;, (value:string)=&amp;gt;{
+  message.value = value
+})
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;h2&amp;gt;父组件消息:{{message}}&amp;lt;/h2&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+</content:encoded></item><item><title>Vue3笔记（监视，自定义钩子，路由）</title><link>https://thrinisty.github.io/posts/vue3%E7%AC%94%E8%AE%B0%E7%9B%91%E8%A7%86%E8%87%AA%E5%AE%9A%E4%B9%89%E9%92%A9%E5%AD%90%E8%B7%AF%E7%94%B1/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/vue3%E7%AC%94%E8%AE%B0%E7%9B%91%E8%A7%86%E8%87%AA%E5%AE%9A%E4%B9%89%E9%92%A9%E5%AD%90%E8%B7%AF%E7%94%B1/</guid><description>监视，ref属性，接口，props，自定义钩子，路由配置</description><pubDate>Tue, 08 Jul 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;Vue3笔记&lt;/h1&gt;
+&lt;h2&gt;watch&lt;/h2&gt;
+&lt;p&gt;用于监视数据，在特定条件下执行逻辑&lt;/p&gt;
+&lt;p&gt;可以监视四种情况&lt;/p&gt;
+&lt;p&gt;:::note&lt;/p&gt;
+&lt;p&gt;1.ref定义的数据&lt;/p&gt;
+&lt;p&gt;2.reactive定义的数据&lt;/p&gt;
+&lt;p&gt;3.函数返回一个值（getter函数）&lt;/p&gt;
+&lt;p&gt;4.一个包含上述内容的数组&lt;/p&gt;
+&lt;p&gt;:::&lt;/p&gt;
+&lt;h3&gt;情况一&lt;/h3&gt;
+&lt;p&gt;watch监视ref定义的基本类型数据&lt;/p&gt;
+&lt;p&gt;定义变量存储watch再次调用可以终止监听&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;script setup lang=&quot;ts&quot;&amp;gt;
+import { ref, watch } from &apos;vue&apos;
+const sum = ref(0)
+function culSum() {
+  sum.value += 1
+}
+const myWatch = watch(sum, (newVal, oldVal) =&amp;gt; {
+  console.log(newVal, oldVal)
+  if (newVal &amp;gt;= 8) {
+    myWatch()
+  }
+})
+&amp;lt;/script&amp;gt;
+
+&amp;lt;template&amp;gt;
+  &amp;lt;div&amp;gt;
+    &amp;lt;h2&amp;gt;当前sum值：{{ sum }}&amp;lt;/h2&amp;gt;
+    &amp;lt;button @click=&quot;culSum&quot;&amp;gt;加一&amp;lt;/button&amp;gt;
+  &amp;lt;/div&amp;gt;
+&amp;lt;/template&amp;gt;
+
+&amp;lt;style scoped&amp;gt;&amp;lt;/style&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;情况二&lt;/h3&gt;
+&lt;p&gt;监视ref定义的对象类型数据&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;script setup lang=&quot;ts&quot;&amp;gt;
+import { ref, watch } from &apos;vue&apos;
+const person = ref({
+  name: &apos;张三&apos;,
+  age: 25,
+})
+function addAge() {
+  person.value.age += 1
+}
+function changeName() {
+  person.value.name += &quot;~&quot;
+}
+function change() {
+  person.value = {
+    name: &apos;李四&apos;,
+    age: 20,
+  }
+}
+//监视的是person对象，属性变化不会被监视，地址变化才会触发
+watch(person, (newVal, oldVal) =&amp;gt; {
+  console.log(&quot;监视对象变化&quot;,newVal, oldVal)
+})
+
+&amp;lt;/script&amp;gt;
+
+&amp;lt;template&amp;gt;
+  &amp;lt;div&amp;gt;
+    &amp;lt;h2&amp;gt;姓名：{{ person.name }}&amp;lt;/h2&amp;gt;
+    &amp;lt;h2&amp;gt;姓名：{{ person.age }}&amp;lt;/h2&amp;gt;
+    &amp;lt;button @click=&quot;addAge&quot;&amp;gt;年龄加一&amp;lt;/button&amp;gt;
+    &amp;lt;button @click=&quot;changeName&quot;&amp;gt;更改名字&amp;lt;/button&amp;gt;
+    &amp;lt;button @click=&quot;change&quot;&amp;gt;换人&amp;lt;/button&amp;gt;
+
+  &amp;lt;/div&amp;gt;
+&amp;lt;/template&amp;gt;
+
+&amp;lt;style scoped&amp;gt;&amp;lt;/style&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;如果需要监视内部属性的变化可以加一个参数&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;//监视的是person对象，以及属性的变化
+watch(person, (newVal, oldVal) =&amp;gt; {
+  console.log(&quot;监视对象变化&quot;,newVal, oldVal)
+},{deep:true})
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;情况三&lt;/h3&gt;
+&lt;p&gt;watch reactive定义的对象数据&lt;/p&gt;
+&lt;p&gt;默认开启deep:true深度监视，而且关不掉&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;script setup lang=&quot;ts&quot;&amp;gt;
+import { reactive, watch } from &apos;vue&apos;
+const person = reactive({
+  name: &apos;张三&apos;,
+  age: 25,
+})
+function addAge() {
+  person.age += 1
+}
+function changeName() {
+  person.name += &quot;~&quot;
+}
+function change() {
+  Object.assign(person,{
+    name: &apos;李四&apos;,
+    age: 20,
+  })
+}
+//监视的是person对象，属性变化不会被监视，地址变化才会触发
+watch(person, (newVal, oldVal) =&amp;gt; {
+  console.log(&quot;监视对象变化&quot;,newVal, oldVal)
+})
+
+&amp;lt;/script&amp;gt;
+
+&amp;lt;template&amp;gt;
+  &amp;lt;div&amp;gt;
+    &amp;lt;h2&amp;gt;姓名：{{ person.name }}&amp;lt;/h2&amp;gt;
+    &amp;lt;h2&amp;gt;姓名：{{ person.age }}&amp;lt;/h2&amp;gt;
+    &amp;lt;button @click=&quot;addAge&quot;&amp;gt;年龄加一&amp;lt;/button&amp;gt;
+    &amp;lt;button @click=&quot;changeName&quot;&amp;gt;更改名字&amp;lt;/button&amp;gt;
+    &amp;lt;button @click=&quot;change&quot;&amp;gt;换人&amp;lt;/button&amp;gt;
+
+  &amp;lt;/div&amp;gt;
+&amp;lt;/template&amp;gt;
+
+&amp;lt;style scoped&amp;gt;&amp;lt;/style&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;情况四&lt;/h3&gt;
+&lt;p&gt;监视对象中的单个对象&lt;/p&gt;
+&lt;p&gt;传入getter函数即可&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;const person = reactive({
+  name: &apos;张三&apos;,
+  age: 25,
+})
+function addAge() {
+  person.age += 1
+}
+function changeName() {
+  person.name += &quot;~&quot;
+}
+function change() {
+  Object.assign(person,{
+    name: &apos;李四&apos;,
+    age: 20,
+  })
+}
+
+
+//监视对象中的单个属性变化
+function getPersonName() {
+  return person.name
+}
+
+watch(getPersonName, (newName) =&amp;gt; {
+  console.log(&quot;监视对象发生改变&quot;,newName)
+})
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;也可以写为箭头函数&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;watch(()=&amp;gt;{return person.name}, (newName) =&amp;gt; {
+  console.log(&quot;监视对象发生改变&quot;,newName)
+})
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;情况五&lt;/h3&gt;
+&lt;p&gt;监视上述多个数据&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;//监视对象中的多个属性变化，返回一个getter方法数组
+watch([()=&amp;gt;person.name,()=&amp;gt;person.age], (newName) =&amp;gt; {
+  console.log(&quot;监视对象发生改变&quot;,newName)
+})
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;watchEffect&lt;/h3&gt;
+&lt;p&gt;他会立即运行一个函数，同时响应式的追踪其依赖，并在依赖更改的时候重新执行该函数&lt;/p&gt;
+&lt;p&gt;一个实际使用场景&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;script setup lang=&quot;ts&quot;&amp;gt;
+import { ref, watch } from &apos;vue&apos;
+const temp = ref(10)
+const height = ref(0)
+function addTemp() {
+  temp.value += 10
+}
+function addHeight(){
+  height.value += 10
+}
+const warnWatch = watch([temp,height], (value) =&amp;gt; {
+  console.log(value)
+  const [newTemp, newHeight] = value
+  if(newTemp &amp;gt;= 60 || newHeight &amp;gt;= 80) {
+    console.log(&quot;发送请求&quot;)
+    warnWatch();
+  }
+})
+&amp;lt;/script&amp;gt;
+
+&amp;lt;template&amp;gt;
+  &amp;lt;div&amp;gt;
+    &amp;lt;h2&amp;gt;当前水温{{temp}} 水位{{height}}&amp;lt;/h2&amp;gt;
+    &amp;lt;button @click=&quot;addTemp&quot;&amp;gt;点我温度加一&amp;lt;/button&amp;gt;
+    &amp;lt;button @click=&quot;addHeight&quot;&amp;gt;点我高度加一&amp;lt;/button&amp;gt;
+  &amp;lt;/div&amp;gt;
+&amp;lt;/template&amp;gt;
+
+&amp;lt;style scoped&amp;gt;&amp;lt;/style&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;用watchEffect优化&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;watchEffect(()=&amp;gt;{
+  if(temp.value &amp;gt;= 60 || height.value &amp;gt;= 80){
+    console.log(temp.value, height.value)
+  }
+})
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;标签的ref属性&lt;/h2&gt;
+&lt;p&gt;作用是用于注册模板引用&lt;/p&gt;
+&lt;p&gt;用在普通的标签上获取到的是dom节点&lt;/p&gt;
+&lt;p&gt;用在组件标签上，获取的是组建的实例对象&lt;/p&gt;
+&lt;p&gt;使用场景&lt;/p&gt;
+&lt;p&gt;通过ref的容器可以区分不同页面中的同名容器&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;script setup lang=&quot;ts&quot;&amp;gt;
+import { ref } from &apos;vue&apos;
+function showLog(){
+  console.log(h2.value);
+}
+//创建一个h2，用于存储ref标记的内容
+const h2 = ref()
+&amp;lt;/script&amp;gt;
+
+&amp;lt;template&amp;gt;
+  &amp;lt;div&amp;gt;
+    &amp;lt;h1&amp;gt;中国&amp;lt;/h1&amp;gt;
+    &amp;lt;h2 ref=&quot;h2&quot;&amp;gt;北京&amp;lt;/h2&amp;gt;
+    &amp;lt;h3&amp;gt;海淀区&amp;lt;/h3&amp;gt;
+    &amp;lt;button @click=&quot;showLog&quot;&amp;gt;点我输出h2元素&amp;lt;/button&amp;gt;
+  &amp;lt;/div&amp;gt;
+&amp;lt;/template&amp;gt;
+
+&amp;lt;style scoped&amp;gt;&amp;lt;/style&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;接口&lt;/h2&gt;
+&lt;p&gt;在和后端通信的时候需要使用到&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;export interface PersonInter {
+  id: string;
+  name: string;
+  age: number;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;import { type PersonInter } from &apos;@/types&apos;
+
+const person: PersonInter = {
+  id: &apos;ast_sdf&apos;,
+  name: &apos;李四&apos;,
+  age: 10,
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;泛型对数组中的每一个元素进行接口约束&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;const personList: Array&amp;lt;PersonInter&amp;gt; = [
+  {
+    id: &apos;ast_sdf&apos;,
+    name: &apos;李四&apos;,
+    age: 10,
+  },
+  {
+    id: &apos;ast_sdf&apos;,
+    name: &apos;李四&apos;,
+    age: 10,
+  },
+  {
+    id: &apos;ast_sdf&apos;,
+    name: &apos;李四&apos;,
+    age: 10,
+  },
+]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;通过自定义类型也可以实现数组的约束&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;export type Persons = Array&amp;lt;PersonInter&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;这样也行&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;import { type Persons } from &apos;@/types&apos;
+
+const personList: Persons = [
+  {
+    id: &apos;ast_sdf&apos;,
+    name: &apos;李四&apos;,
+    age: 10,
+  },
+  {
+    id: &apos;ast_sdf&apos;,
+    name: &apos;李四&apos;,
+    age: 10,
+  },
+  {
+    id: &apos;ast_sdf&apos;,
+    name: &apos;李四&apos;,
+    age: 10,
+  },
+]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;props&lt;/h2&gt;
+&lt;p&gt;通过props可以进行组件之间参数的传递&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;script setup lang=&quot;ts&quot;&amp;gt;
+import TestComponent from &apos;@/components/TestComponent.vue&apos;
+import { reactive } from &apos;vue&apos;
+import { type Persons } from &apos;@/types&apos;
+const personList = reactive&amp;lt;Persons&amp;gt;([
+  { id: &apos;asd&apos;, name: &apos;李四&apos;, age: 19 },
+  { id: &apos;as&apos;, name: &apos;张三&apos;, age: 19 },
+  { id: &apos;a&apos;, name: &apos;王五&apos;, age: 19 },
+])
+&amp;lt;/script&amp;gt;
+
+&amp;lt;template&amp;gt;
+  &amp;lt;div&amp;gt;
+    &amp;lt;TestComponent a=&quot;App参数&quot; :list=&quot;personList&quot; /&amp;gt;
+  &amp;lt;/div&amp;gt;
+&amp;lt;/template&amp;gt;
+
+&amp;lt;style scoped&amp;gt;
+.person {
+  width: 100px;
+  height: 100px;
+  background-color: #2e5aae;
+}
+&amp;lt;/style&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;被使用的模块可以使用传递的参数&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;script setup lang=&quot;ts&quot;&amp;gt;
+import { defineProps } from &apos;vue&apos;
+
+const props = defineProps([&apos;a&apos;, &apos;list&apos;])
+&amp;lt;/script&amp;gt;
+
+&amp;lt;template&amp;gt;
+  &amp;lt;div&amp;gt;
+    &amp;lt;h2&amp;gt;{{ props.a }}&amp;lt;/h2&amp;gt;
+    &amp;lt;ul&amp;gt;
+      &amp;lt;li v-for=&quot;person in list&quot; :key=&quot;person.id&quot;&amp;gt;{{ person.name }}&amp;lt;/li&amp;gt;
+    &amp;lt;/ul&amp;gt;
+  &amp;lt;/div&amp;gt;
+&amp;lt;/template&amp;gt;
+
+&amp;lt;style scoped&amp;gt;&amp;lt;/style&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;自定义Hooks&lt;/h2&gt;
+&lt;p&gt;以下组件完成了一个按钮实现sum自增，另一个访问网站提供图片打印&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;script setup lang=&quot;ts&quot;&amp;gt;
+import axios from &apos;axios&apos;
+import { reactive, ref } from &apos;vue&apos;
+const sum = ref(0)
+const url = &apos;https://picsum.photos/200/300&apos;
+const photos = reactive([url])
+
+
+function add() {
+  sum.value += 1
+}
+async function getPhoto(){
+  try {
+    const result = await axios.get(url)
+    photos.push(url)
+  } catch (error) {
+    alert(error)
+  }
+}
+&amp;lt;/script&amp;gt;
+
+&amp;lt;template&amp;gt;
+  &amp;lt;div&amp;gt;
+    &amp;lt;h2&amp;gt;{{ sum }}&amp;lt;/h2&amp;gt;
+    &amp;lt;button @click=&quot;add&quot;&amp;gt;点我加一&amp;lt;/button&amp;gt;
+    &amp;lt;hr /&amp;gt;
+    &amp;lt;img v-for=&quot;(photo, index) in photos&quot; :src=&quot;photo&quot; :key=&quot;index&quot; /&amp;gt;
+    &amp;lt;button @click=&quot;getPhoto&quot;&amp;gt;再来一张&amp;lt;/button&amp;gt;
+  &amp;lt;/div&amp;gt;
+&amp;lt;/template&amp;gt;
+
+&amp;lt;style scoped&amp;gt;
+img {
+  height: 150px;
+  margin-right: 10px;
+}
+&amp;lt;/style&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;缺点是变量和方法没有按照功能区分，可以通过自定义Hooks增加可读性&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;import { ref } from &apos;vue&apos;
+
+export default function(){
+  const sum = ref(0)
+  function add() {
+    sum.value += 1
+  }
+  return {sum,add}
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;import axios from &apos;axios&apos;
+import { reactive } from &apos;vue&apos;
+const url = &apos;https://picsum.photos/200/300&apos;
+const photos = reactive([url])
+
+export default function() {
+  async function getPhoto(){
+    try {
+      const result = await axios.get(url)
+      photos.push(url)
+    } catch (error) {
+      alert(error)
+    }
+  }
+  //向外提供对象
+  return{photos,getPhoto}
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;在需要用到钩子的组件中解构取出钩子返回对象以及方法即可使用&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;script setup lang=&quot;ts&quot;&amp;gt;
+import useSum from &apos;@/hooks/useSum.ts&apos;
+import usePhotos from &apos;@/hooks/usePhotos.ts&apos;
+const {sum, add} = useSum()
+const {photos, getPhoto} = usePhotos()
+&amp;lt;/script&amp;gt;
+
+&amp;lt;template&amp;gt;
+  &amp;lt;div&amp;gt;
+    &amp;lt;h2&amp;gt;{{ sum }}&amp;lt;/h2&amp;gt;
+    &amp;lt;button @click=&quot;add&quot;&amp;gt;点我加一&amp;lt;/button&amp;gt;
+    &amp;lt;hr /&amp;gt;
+    &amp;lt;img v-for=&quot;(photo, index) in photos&quot; :src=&quot;photo&quot; :key=&quot;index&quot; /&amp;gt;
+    &amp;lt;button @click=&quot;getPhoto&quot;&amp;gt;再来一张&amp;lt;/button&amp;gt;
+  &amp;lt;/div&amp;gt;
+&amp;lt;/template&amp;gt;
+
+&amp;lt;style scoped&amp;gt;
+img {
+  height: 150px;
+  margin-right: 10px;
+}
+&amp;lt;/style&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;路由&lt;/h2&gt;
+&lt;p&gt;router&lt;/p&gt;
+&lt;h3&gt;基本使用&lt;/h3&gt;
+&lt;p&gt;1.确认导航区，展示区&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;script setup lang=&quot;ts&quot;&amp;gt;
+
+&amp;lt;/script&amp;gt;
+
+&amp;lt;template&amp;gt;
+  &amp;lt;div class=&quot;app&quot;&amp;gt;
+    &amp;lt;h2&amp;gt;Vue路由测试&amp;lt;/h2&amp;gt;
+    &amp;lt;div class=&quot;navigate&quot;&amp;gt;
+      &amp;lt;a href=&quot;/&quot;&amp;gt;首页&amp;lt;/a&amp;gt;
+      &amp;lt;a href=&quot;/&quot;&amp;gt;新闻&amp;lt;/a&amp;gt;
+      &amp;lt;a href=&quot;/&quot;&amp;gt;关于&amp;lt;/a&amp;gt;
+    &amp;lt;/div&amp;gt;
+    &amp;lt;div class=&quot;main-context&quot;&amp;gt;
+      展示区域
+    &amp;lt;/div&amp;gt;
+  &amp;lt;/div&amp;gt;
+&amp;lt;/template&amp;gt;
+
+&amp;lt;style scoped&amp;gt;
+    &amp;lt;!--省略css样式--&amp;gt;
+&amp;lt;/style&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;2.安装路由器&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;npm i vue-router
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;3.指定路由规则&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;//创建路由器，并暴露其
+//引入createRouter
+import { createRouter, createWebHistory } from &apos;vue-router&apos;
+import Home from &apos;@/components/Home.vue&apos;
+import About from &apos;@/components/About.vue&apos;
+import News from &apos;@/components/News.vue&apos;
+//创建路由器
+const router = createRouter({
+  history: createWebHistory(),
+  routes:[
+    {
+      path:&apos;/home&apos;,
+      component:Home
+    },
+    {
+      path:&apos;/about&apos;,
+      component:About
+    },
+    {
+      path:&apos;/news&apos;,
+      component:News
+    },
+  ]
+})
+//暴露路由
+export default router
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;4.形成对应的组件&lt;/p&gt;
+&lt;p&gt;省略组件&lt;/p&gt;
+&lt;p&gt;在App.vue中引入RouterView，在展示区域通过RouterView进行组建的替换&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;RouterView /&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;script setup lang=&quot;ts&quot;&amp;gt;
+  import {RouterView} from &apos;vue-router&apos;
+&amp;lt;/script&amp;gt;
+
+&amp;lt;template&amp;gt;
+  &amp;lt;div class=&quot;app&quot;&amp;gt;
+    &amp;lt;h2&amp;gt;Vue路由测试&amp;lt;/h2&amp;gt;
+    &amp;lt;div class=&quot;navigate&quot;&amp;gt;
+&amp;lt;!--      &amp;lt;a href=&quot;/home&quot;&amp;gt;首页&amp;lt;/a&amp;gt;--&amp;gt;
+&amp;lt;!--      &amp;lt;a href=&quot;/news&quot;&amp;gt;新闻&amp;lt;/a&amp;gt;--&amp;gt;
+&amp;lt;!--      &amp;lt;a href=&quot;/about&quot;&amp;gt;关于&amp;lt;/a&amp;gt;--&amp;gt;
+      &amp;lt;RouterLink to=&quot;/home&quot;&amp;gt;首页&amp;lt;/RouterLink&amp;gt;
+      &amp;lt;RouterLink to=&quot;/news&quot;&amp;gt;新闻&amp;lt;/RouterLink&amp;gt;
+      &amp;lt;RouterLink to=&quot;/about&quot;&amp;gt;关于&amp;lt;/RouterLink&amp;gt;
+    &amp;lt;/div&amp;gt;
+    &amp;lt;div class=&quot;main-context&quot;&amp;gt;
+      &amp;lt;RouterView /&amp;gt;
+    &amp;lt;/div&amp;gt;
+  &amp;lt;/div&amp;gt;
+&amp;lt;/template&amp;gt;
+
+&amp;lt;style scoped&amp;gt;
+&amp;lt;/style&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;嵌套路由&lt;/h3&gt;
+&lt;p&gt;有的时候我们需要在一个组件的展示区中嵌套一个展示区，这个时候我们就会需要使用到嵌套路由&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;{
+  path:&apos;/news&apos;,
+  component:News,
+  children:[
+    {
+      path:&apos;detail&apos;,
+      component:Detail
+    },
+  ]
+},
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;注意在使用RouterLink的时候to指定news下的detail&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;template&amp;gt;
+  &amp;lt;div&amp;gt;
+    &amp;lt;div&amp;gt;News&amp;lt;/div&amp;gt;
+    &amp;lt;ul&amp;gt;
+      &amp;lt;li v-for=&quot;news in newsList&quot; :key=&quot;news.id&quot;&amp;gt;
+        &amp;lt;RouterLink to=&quot;/news/detail&quot;&amp;gt;{{news.title}}&amp;lt;/RouterLink&amp;gt;
+      &amp;lt;/li&amp;gt;
+    &amp;lt;/ul&amp;gt;
+    &amp;lt;div class=&quot;news-content&quot;&amp;gt;
+      &amp;lt;RouterView&amp;gt;&amp;lt;/RouterView&amp;gt;
+    &amp;lt;/div&amp;gt;
+  &amp;lt;/div&amp;gt;
+&amp;lt;/template&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;这个时候，我们没有传入新闻的id，还不能把具体的内容加载到页面中，需要从News页面点击传入的的参数加载不同的内容&lt;/p&gt;
+&lt;h3&gt;Query参数传递&lt;/h3&gt;
+&lt;p&gt;通过query进行参数传递，方式类似于get请求&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;template&amp;gt;
+  &amp;lt;div&amp;gt;
+    &amp;lt;div&amp;gt;News&amp;lt;/div&amp;gt;
+    &amp;lt;ul&amp;gt;
+      &amp;lt;li v-for=&quot;news in newsList&quot; :key=&quot;news.id&quot;&amp;gt;
+        &amp;lt;RouterLink :to=&quot;`/news/detail?id=${news.id}&amp;amp;title=${news.title}&amp;amp;content=${news.content}`&quot;&amp;gt;{{news.title}}&amp;lt;/RouterLink&amp;gt;
+      &amp;lt;/li&amp;gt;
+    &amp;lt;/ul&amp;gt;
+    &amp;lt;div class=&quot;news-content&quot;&amp;gt;
+      &amp;lt;RouterView&amp;gt;&amp;lt;/RouterView&amp;gt;
+    &amp;lt;/div&amp;gt;
+  &amp;lt;/div&amp;gt;
+&amp;lt;/template&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;以下这样的写法也是可以的&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;template&amp;gt;
+  &amp;lt;div&amp;gt;
+    &amp;lt;div&amp;gt;News&amp;lt;/div&amp;gt;
+    &amp;lt;ul&amp;gt;
+      &amp;lt;li v-for=&quot;news in newsList&quot; :key=&quot;news.id&quot;&amp;gt;
+&amp;lt;!--        &amp;lt;RouterLink :to=&quot;`/news/detail?id=${news.id}&amp;amp;title=${news.title}&amp;amp;content=${news.content}`&quot;&amp;gt;{{news.title}}&amp;lt;/RouterLink&amp;gt;--&amp;gt;
+        &amp;lt;RouterLink
+          :to=&quot;{
+          path:&apos;/news/detail&apos;,
+          query:{
+            id:news.id,
+            title:news.title,
+            content:news.content
+          }
+          }&quot;
+        &amp;gt;
+          {{news.title}}
+        &amp;lt;/RouterLink&amp;gt;
+      &amp;lt;/li&amp;gt;
+    &amp;lt;/ul&amp;gt;
+    &amp;lt;div class=&quot;news-content&quot;&amp;gt;
+      &amp;lt;RouterView&amp;gt;&amp;lt;/RouterView&amp;gt;
+    &amp;lt;/div&amp;gt;
+  &amp;lt;/div&amp;gt;
+&amp;lt;/template&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Detai页面通过引入useRoute进行参数的接收&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;script setup lang=&quot;ts&quot;&amp;gt;
+import { useRoute } from &apos;vue-router&apos;
+const route = useRoute();
+console.log(route)
+&amp;lt;/script&amp;gt;
+
+&amp;lt;template&amp;gt;
+  &amp;lt;ul class=&quot;news-context&quot;&amp;gt;
+    &amp;lt;li&amp;gt;编号：{{route.query.id}}&amp;lt;/li&amp;gt;
+    &amp;lt;li&amp;gt;标题：{{route.query.title}}&amp;lt;/li&amp;gt;
+    &amp;lt;li&amp;gt;内容：{{route.query.content}}&amp;lt;/li&amp;gt;
+  &amp;lt;/ul&amp;gt;
+&amp;lt;/template&amp;gt;
+
+&amp;lt;style scoped&amp;gt;
+
+&amp;lt;/style&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;params参数&lt;/h3&gt;
+&lt;p&gt;在路由中参数提前占位&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;{
+  path:&apos;/news&apos;,
+  component:News,
+  children:[
+    {
+      path:&apos;detail/:id/:title/:content&apos;,
+      component:Detail
+    },
+  ]
+},
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;news页面传递参数写为&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;template&amp;gt;
+  &amp;lt;div&amp;gt;
+    &amp;lt;div&amp;gt;News&amp;lt;/div&amp;gt;
+    &amp;lt;ul&amp;gt;
+      &amp;lt;li v-for=&quot;news in newsList&quot; :key=&quot;news.id&quot;&amp;gt;
+        &amp;lt;RouterLink :to=&apos;`/news/detail/${news.id}/${news.title}/${news.content}`&apos;&amp;gt;
+          {{ news.title }}
+        &amp;lt;/RouterLink&amp;gt;
+      &amp;lt;/li&amp;gt;
+    &amp;lt;/ul&amp;gt;
+    &amp;lt;div class=&quot;news-content&quot;&amp;gt;
+      &amp;lt;RouterView&amp;gt;&amp;lt;/RouterView&amp;gt;
+    &amp;lt;/div&amp;gt;
+  &amp;lt;/div&amp;gt;
+&amp;lt;/template&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;detail页面route对象取params对象，获取params参数&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;script setup lang=&quot;ts&quot;&amp;gt;
+import { useRoute } from &quot;vue-router&quot;;
+const route = useRoute();
+console.log(route);
+&amp;lt;/script&amp;gt;
+
+&amp;lt;template&amp;gt;
+  &amp;lt;ul class=&quot;news-context&quot;&amp;gt;
+    &amp;lt;li&amp;gt;编号：{{route.params.id}}&amp;lt;/li&amp;gt;
+    &amp;lt;li&amp;gt;标题：{{route.params.title}}&amp;lt;/li&amp;gt;
+    &amp;lt;li&amp;gt;内容：{{route.params.content}}&amp;lt;/li&amp;gt;
+  &amp;lt;/ul&amp;gt;
+&amp;lt;/template&amp;gt;
+
+&amp;lt;style scoped&amp;gt;
+
+&amp;lt;/style&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;props配置&lt;/h3&gt;
+&lt;p&gt;路由规则的props配置&lt;/p&gt;
+&lt;p&gt;在路由下打开props配置，当在News页面中使用到Detail组建的时候，就会在组建标签中附带上对应的占位参数（params）&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;children:[
+  {
+    path:&apos;detail/:id/:title/:content&apos;,
+    component:Detail,
+    props:true
+  },
+]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Detail中通过defineProps直接用即可，非常方便&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;script setup lang=&quot;ts&quot;&amp;gt;
+defineProps([&apos;id&apos;, &apos;title&apos;, &apos;content&apos;])
+&amp;lt;/script&amp;gt;
+
+&amp;lt;template&amp;gt;
+  &amp;lt;ul class=&quot;news-context&quot;&amp;gt;
+    &amp;lt;li&amp;gt;编号：{{id}}&amp;lt;/li&amp;gt;
+    &amp;lt;li&amp;gt;标题：{{title}}&amp;lt;/li&amp;gt;
+    &amp;lt;li&amp;gt;内容：{{content}}&amp;lt;/li&amp;gt;
+  &amp;lt;/ul&amp;gt;
+&amp;lt;/template&amp;gt;
+
+&amp;lt;style scoped&amp;gt;
+
+&amp;lt;/style&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;replace属性&lt;/h3&gt;
+&lt;p&gt;浏览器跳转页面有push和replace两种模式&lt;/p&gt;
+&lt;p&gt;默认的是push模式，这种模式回形成历史记录，方便回顾历史跳回&lt;/p&gt;
+&lt;p&gt;如果需要修改为replace模式，在对应的路由跳转标签上加入replace即可&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;RouterLink replace to=&quot;/home&quot;&amp;gt;首页&amp;lt;/RouterLink&amp;gt;
+&amp;lt;RouterLink replace to=&quot;/news&quot;&amp;gt;新闻&amp;lt;/RouterLink&amp;gt;
+&amp;lt;RouterLink replace to=&quot;/about&quot;&amp;gt;关于&amp;lt;/RouterLink&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;编程式导航&lt;/h3&gt;
+&lt;p&gt;脱离RouterLink实现路由跳转，在实际编程中编程式导航使用多余路由&lt;/p&gt;
+&lt;p&gt;如下是一个挂载三秒主页后完成页面跳转的示例&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;script setup lang=&quot;ts&quot;&amp;gt;
+import {onMounted} from &apos;vue&apos;
+import {useRouter} from &apos;vue-router&apos;
+const router = useRouter()
+onMounted(() =&amp;gt; {
+  setTimeout(() =&amp;gt; {
+    //编写代码实现跳转
+    router.push(&apos;/news&apos;)
+  },3000)
+})
+&amp;lt;/script&amp;gt;
+
+&amp;lt;template&amp;gt;
+  &amp;lt;div&amp;gt;
+    Home
+  &amp;lt;/div&amp;gt;
+&amp;lt;/template&amp;gt;
+
+&amp;lt;style scoped&amp;gt;
+
+&amp;lt;/style&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;重定向&lt;/h3&gt;
+&lt;p&gt;访问/路径时重定向至/home路径&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;routes:[
+  {
+    path:&apos;/&apos;,
+    redirect:&apos;/home&apos;
+  },
+&lt;/code&gt;&lt;/pre&gt;
+</content:encoded></item><item><title>Vue3笔记（入门使用，setup，响应式数据，计算属性）</title><link>https://thrinisty.github.io/posts/vue3%E7%AC%94%E8%AE%B0%E5%85%A5%E9%97%A8%E4%BD%BF%E7%94%A8setup%E5%93%8D%E5%BA%94%E5%BC%8F%E6%95%B0%E6%8D%AE%E8%AE%A1%E7%AE%97%E5%B1%9E%E6%80%A7/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/vue3%E7%AC%94%E8%AE%B0%E5%85%A5%E9%97%A8%E4%BD%BF%E7%94%A8setup%E5%93%8D%E5%BA%94%E5%BC%8F%E6%95%B0%E6%8D%AE%E8%AE%A1%E7%AE%97%E5%B1%9E%E6%80%A7/</guid><description>Vue的入门使用，setup，响应式数据（ref、reactive），计算属性</description><pubDate>Mon, 07 Jul 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;Vue3笔记&lt;/h1&gt;
+&lt;h2&gt;快速入门&lt;/h2&gt;
+&lt;p&gt;通过如下指令快速创建vite项目&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;npm create vue@latest
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;通过如下指令安装npm指定的相关依赖&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;npm install
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;main.ts&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;import &apos;./assets/main.css&apos;
+
+import { createApp } from &apos;vue&apos;
+import App from &apos;./App.vue&apos;
+
+createApp(App).mount(&apos;#app&apos;)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;createApp是创建应用&lt;/p&gt;
+&lt;p&gt;App是组件（根），写的后续vue组件都是安装到App上&lt;/p&gt;
+&lt;p&gt;mount在对应的id挂在，这个app在index.html中&lt;/p&gt;
+&lt;p&gt;以下是选项式编写的vue&lt;/p&gt;
+&lt;p&gt;App.vue&lt;/p&gt;
+&lt;p&gt;在App中导入并注册Person组件&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;script lang=&quot;ts&quot;&amp;gt;
+import Person from &apos;./components/Person.vue&apos;
+export default {
+  name: &apos;App&apos;,
+  components: { Person },
+}
+&amp;lt;/script&amp;gt;
+
+&amp;lt;template&amp;gt;
+  &amp;lt;div class=&quot;app&quot;&amp;gt;
+    &amp;lt;h1&amp;gt;Hello World&amp;lt;/h1&amp;gt;
+    &amp;lt;Person /&amp;gt;
+  &amp;lt;/div&amp;gt;
+&amp;lt;/template&amp;gt;
+
+&amp;lt;style scoped&amp;gt;
+.person {
+  width: 100px;
+  height: 100px;
+  background-color: #2e5aae;
+}
+&amp;lt;/style&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Person组件&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;script lang=&quot;ts&quot;&amp;gt;
+export default {
+  data() {
+    return {
+      name: &apos;张三&apos;,
+      age: 18,
+      gender: &apos;男&apos;,
+    }
+  },
+  methods: {
+    showSex() {
+      alert(this.gender)
+    },
+    changeName() {
+      this.name = &apos;李四&apos;
+    },
+    changeAge() {
+      this.age = this.age + 1;
+    },
+  },
+}
+&amp;lt;/script&amp;gt;
+
+&amp;lt;template&amp;gt;
+  &amp;lt;div class=&quot;person&quot;&amp;gt;
+    &amp;lt;h2&amp;gt;姓名:{{ name }}&amp;lt;/h2&amp;gt;
+    &amp;lt;h2&amp;gt;年龄:{{ age }}&amp;lt;/h2&amp;gt;
+    &amp;lt;button @click=&quot;showSex&quot;&amp;gt;查看性别&amp;lt;/button&amp;gt;
+    &amp;lt;button @click=&quot;changeName&quot;&amp;gt;修改名字&amp;lt;/button&amp;gt;
+    &amp;lt;button @click=&quot;changeAge&quot;&amp;gt;修改年龄&amp;lt;/button&amp;gt;
+  &amp;lt;/div&amp;gt;
+&amp;lt;/template&amp;gt;
+
+&amp;lt;style scoped&amp;gt;
+.person {
+  width: 300px;
+  height: 100px;
+  background-color: #265bc3;
+}
+&amp;lt;/style&amp;gt;
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;setup&lt;/h2&gt;
+&lt;p&gt;以下是组件式的vue编程&lt;/p&gt;
+&lt;p&gt;setup是Vue3中的一个新的配置项，值是一个函数，组件中用到的所有的数据、方法、计算属性、监视等等均配置在setup中&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;script lang=&quot;ts&quot;&amp;gt;
+export default {
+  setup(){
+    let name = &apos;张三&apos;
+    let age = 18
+    const sex = &apos;男&apos;
+    //方法
+    const showSex = () =&amp;gt; {
+      alert(sex)
+    }
+    const changeName = () =&amp;gt; {
+      console.log(&apos;修改姓名&apos;)
+      name = &apos;李四&apos;
+    }
+    const changeAge = () =&amp;gt; {
+      age = 20
+    }
+    return {name,age,sex,showSex,changeName,changeAge}
+  }
+}
+&amp;lt;/script&amp;gt;
+
+&amp;lt;template&amp;gt;
+  &amp;lt;div class=&quot;person&quot;&amp;gt;
+    &amp;lt;h2&amp;gt;姓名:{{ name }}&amp;lt;/h2&amp;gt;
+    &amp;lt;h2&amp;gt;年龄:{{ age }}&amp;lt;/h2&amp;gt;
+    &amp;lt;button @click=&quot;showSex&quot;&amp;gt;查看性别&amp;lt;/button&amp;gt;
+    &amp;lt;button @click=&quot;changeName&quot;&amp;gt;修改名字&amp;lt;/button&amp;gt;
+    &amp;lt;button @click=&quot;changeAge&quot;&amp;gt;修改年龄&amp;lt;/button&amp;gt;
+  &amp;lt;/div&amp;gt;
+&amp;lt;/template&amp;gt;
+
+&amp;lt;style scoped&amp;gt;
+.person {
+  width: 300px;
+  height: 100px;
+  background-color: #265bc3;
+}
+&amp;lt;/style&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;这里的变量不是响应式的，通过按钮更新的数据不会更改回页面的数据&lt;/p&gt;
+&lt;p&gt;setup的返回值就是将数据交出去，或者可以使用箭头函数将结果返回给页面，可以直接返回函数渲染&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;return ()=&amp;gt;&apos;可以&apos;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;通过setup语法糖简化写法&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;script setup lang=&quot;ts&quot;&amp;gt;
+let name = &apos;张三&apos;
+let age = 18
+const sex = &apos;男&apos;
+//方法
+const showSex = () =&amp;gt; {
+  alert(sex)
+}
+const changeName = () =&amp;gt; {
+  console.log(&apos;修改姓名&apos;)
+  name = &apos;李四&apos;
+}
+const changeAge = () =&amp;gt; {
+  age = 20
+}
+&amp;lt;/script&amp;gt;
+
+&amp;lt;template&amp;gt;
+  &amp;lt;div&amp;gt;
+    &amp;lt;h2&amp;gt;姓名:{{ name }}&amp;lt;/h2&amp;gt;
+    &amp;lt;h2&amp;gt;年龄:{{ age }}&amp;lt;/h2&amp;gt;
+    &amp;lt;button @click=&quot;showSex&quot;&amp;gt;查看性别&amp;lt;/button&amp;gt;
+    &amp;lt;button @click=&quot;changeName&quot;&amp;gt;修改名字&amp;lt;/button&amp;gt;
+    &amp;lt;button @click=&quot;changeAge&quot;&amp;gt;修改年龄&amp;lt;/button&amp;gt;
+  &amp;lt;/div&amp;gt;
+&amp;lt;/template&amp;gt;
+
+&amp;lt;style scoped&amp;gt;&amp;lt;/style&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;响应式数据&lt;/h2&gt;
+&lt;h3&gt;基本类型&lt;/h3&gt;
+&lt;p&gt;使用ref&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;script setup lang=&quot;ts&quot;&amp;gt;
+import { ref } from &apos;vue&apos;
+
+const name = ref(&apos;张三&apos;)
+const age = ref(18)
+const sex = &apos;男&apos;
+//方法
+const showSex = () =&amp;gt; {
+  alert(sex)
+}
+const changeName = () =&amp;gt; {
+  console.log(&apos;修改姓名&apos;)
+  name.value = &apos;李四&apos;
+}
+const changeAge = () =&amp;gt; {
+  age.value = 20
+}
+&amp;lt;/script&amp;gt;
+
+&amp;lt;template&amp;gt;
+  &amp;lt;div&amp;gt;
+    &amp;lt;h2&amp;gt;姓名:{{ name }}&amp;lt;/h2&amp;gt;
+    &amp;lt;h2&amp;gt;年龄:{{ age }}&amp;lt;/h2&amp;gt;
+    &amp;lt;button @click=&quot;showSex&quot;&amp;gt;查看性别&amp;lt;/button&amp;gt;
+    &amp;lt;button @click=&quot;changeName&quot;&amp;gt;修改名字&amp;lt;/button&amp;gt;
+    &amp;lt;button @click=&quot;changeAge&quot;&amp;gt;修改年龄&amp;lt;/button&amp;gt;
+  &amp;lt;/div&amp;gt;
+&amp;lt;/template&amp;gt;
+
+&amp;lt;style scoped&amp;gt;&amp;lt;/style&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;对象类型&lt;/h3&gt;
+&lt;p&gt;使用reactive&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;script setup lang=&quot;ts&quot;&amp;gt;
+import { reactive } from &apos;vue&apos;
+const car = reactive({
+  brand: &apos;奔驰&apos;,
+  price: 1000000,
+})
+const games = reactive([
+  { id: 1, name: &apos;英雄联盟&apos; },
+  { id: 2, name: &apos;绝地求生&apos; },
+])
+function changePrice() {
+  car.price += 100000
+}
+function changeName() {
+  games[0].name = &apos;王者荣耀&apos;
+}
+&amp;lt;/script&amp;gt;
+
+&amp;lt;template&amp;gt;
+  &amp;lt;div&amp;gt;
+    &amp;lt;h1&amp;gt;汽车品牌：{{ car.brand }}&amp;lt;/h1&amp;gt;
+    &amp;lt;h1&amp;gt;汽车价格：{{ car.price }}&amp;lt;/h1&amp;gt;
+  &amp;lt;/div&amp;gt;
+  &amp;lt;button @click=&quot;changePrice&quot;&amp;gt;修改汽车价格&amp;lt;/button&amp;gt;
+  &amp;lt;ul&amp;gt;
+    &amp;lt;li v-for=&quot;game in games&quot; :key=&quot;game.name&quot;&amp;gt;{{ game.name }}&amp;lt;/li&amp;gt;
+  &amp;lt;/ul&amp;gt;
+  &amp;lt;button @click=&quot;changeName&quot;&amp;gt;修改名字&amp;lt;/button&amp;gt;
+&amp;lt;/template&amp;gt;
+
+&amp;lt;style scoped&amp;gt;&amp;lt;/style&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;事实上ref也可以定义响应式对象数据&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;script setup lang=&quot;ts&quot;&amp;gt;
+import { reactive, ref } from &apos;vue&apos;
+const car = reactive({
+  brand: &apos;奔驰&apos;,
+  price: 1000000,
+})
+const games = ref([
+  { id: 1, name: &apos;英雄联盟&apos; },
+  { id: 2, name: &apos;绝地求生&apos; },
+])
+function changePrice() {
+  car.price += 100000
+}
+function changeName() {
+  games.value[0].name = &apos;王者荣耀&apos;
+}
+&amp;lt;/script&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;方法实现上games取出value使用即可&lt;/p&gt;
+&lt;p&gt;如果需要通过json格式的数据修改对象内容完成响应式&lt;/p&gt;
+&lt;p&gt;需要使用到Object.assign脚本&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;const car = reactive({
+  brand: &apos;奔驰&apos;,
+  price: 1000000,
+})
+function changeCar() {
+  // car.brand = &apos;宝马&apos;
+  // car.price = 2000000
+  Object.assign(car, { brand: &apos;宝马&apos;, price: 2000000 })
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;如果是ref响应，可以使用value直接替换&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;function changeCar() {
+  // car.brand = &apos;宝马&apos;
+  // car.price = 2000000
+  //
+  car.value = {
+    brand: &apos;宝马&apos;,
+    price: 2000000,
+  }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;toRefs使用&lt;/h3&gt;
+&lt;p&gt;通过toRefs使得新建的变量为ref响应式&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;const car = reactive({
+  brand: &apos;奔驰&apos;,
+  price: 1000000,
+})
+const {brand, price} = toRefs(car)
+
+function changeCar() {
+  brand.value = &apos;宝马&apos;
+  price.value = 2000000
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;toRef&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;const name = toRef(car, &apos;brand&apos;)
+
+function changeName() {
+  name.value += &quot;~&quot;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;计算属性&lt;/h2&gt;
+&lt;p&gt;相比较于方法调用而言，计算属性存在缓存，效率更高&lt;/p&gt;
+&lt;p&gt;这里的计算属性fullName只读，不可以修改&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;script setup lang=&quot;ts&quot;&amp;gt;
+import { ref, computed} from &apos;vue&apos;
+const firstName = ref(&apos;张&apos;)
+const lastName = ref(&apos;三&apos;)
+
+const fullName = computed(()=&amp;gt;{
+  return firstName.value + lastName.value
+  //在这里可以写具体的逻辑代码
+  //计算属性中属性发生变化就重新计算
+})
+
+&amp;lt;/script&amp;gt;
+
+&amp;lt;template&amp;gt;
+  &amp;lt;div&amp;gt;
+    姓：&amp;lt;input type=&quot;text&quot; v-model=&quot;firstName&quot; /&amp;gt;&amp;lt;br /&amp;gt;
+    名：&amp;lt;input type=&quot;text&quot; v-model=&quot;lastName&quot; /&amp;gt;&amp;lt;br /&amp;gt;
+    全名：&amp;lt;span&amp;gt;{{fullName}}&amp;lt;/span&amp;gt;
+  &amp;lt;/div&amp;gt;
+&amp;lt;/template&amp;gt;
+
+&amp;lt;style scoped&amp;gt;&amp;lt;/style&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;要修改为可写可以使用如下写法&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;const fullName = computed({
+  get(){
+    return firstName.value + lastName.value
+  },
+  set(val){
+    console.log(&quot;set&quot;,val)
+  }
+})
+
+function changeFullName() {
+  fullName.value = &quot;testName&quot;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;要是想要让全名更新两个前名后名可以使用set中val接收修改的参数&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;script setup lang=&quot;ts&quot;&amp;gt;
+import { ref, computed} from &apos;vue&apos;
+const firstName = ref(&apos;张&apos;)
+const lastName = ref(&apos;三&apos;)
+const fullName = computed({
+  get(){
+    return firstName.value + &quot;-&quot; + lastName.value
+  },
+  set(val){
+    const nameArr = val.split(&quot;-&quot;)
+    firstName.value = nameArr[0]
+    lastName.value = nameArr[1]
+  }
+})
+
+function changeFullName() {
+  fullName.value = &quot;li-si&quot;
+}
+
+&amp;lt;/script&amp;gt;
+
+&amp;lt;template&amp;gt;
+  &amp;lt;div&amp;gt;
+    姓：&amp;lt;input type=&quot;text&quot; v-model=&quot;firstName&quot; /&amp;gt;&amp;lt;br /&amp;gt;
+    名：&amp;lt;input type=&quot;text&quot; v-model=&quot;lastName&quot; /&amp;gt;&amp;lt;br /&amp;gt;
+    全名：&amp;lt;span&amp;gt;{{fullName}}&amp;lt;/span&amp;gt;
+    &amp;lt;button @click=&quot;changeFullName&quot;&amp;gt;修改全名为li-si&amp;lt;/button&amp;gt;
+  &amp;lt;/div&amp;gt;
+&amp;lt;/template&amp;gt;
+
+&amp;lt;style scoped&amp;gt;&amp;lt;/style&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+</content:encoded></item><item><title>用户中心项目笔记（用户管理）</title><link>https://thrinisty.github.io/posts/%E7%94%A8%E6%88%B7%E4%B8%AD%E5%BF%83%E9%A1%B9%E7%9B%AE%E7%AC%94%E8%AE%B0%E7%94%A8%E6%88%B7%E7%AE%A1%E7%90%86/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/%E7%94%A8%E6%88%B7%E4%B8%AD%E5%BF%83%E9%A1%B9%E7%9B%AE%E7%AC%94%E8%AE%B0%E7%94%A8%E6%88%B7%E7%AE%A1%E7%90%86/</guid><description>用户中心</description><pubDate>Sat, 05 Jul 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;用户中心笔记&lt;/h1&gt;
 &lt;h2&gt;查找删除&lt;/h2&gt;
 &lt;p&gt;Controller&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;@GetMapping(&quot;/search&quot;)
@@ -298,12 +1700,55 @@ const items = ref&amp;lt;MenuProps[&quot;items&quot;]&amp;gt;([
     @click=&quot;doMenuClick&quot;
 /&amp;gt;&amp;lt;/a-col&amp;gt;
 &lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;const router = useRouter();
-const doMenuClick = ({ key }: { key: string }) =&amp;gt; {
-  router.push(key);
+&lt;pre&gt;&lt;code&gt;const doMenuClick = ({ key }: { key: string }) =&amp;gt; {
+  router.push({
+    path: &quot;/&quot; + key,
+  });
 };
 &lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;这样我们选取水平菜单的时候就会请求对应key的路径，在全局路由进行配置即可轻松实现页面的切换&lt;/p&gt;
+&lt;h2&gt;与后端交互数据&lt;/h2&gt;
+&lt;h3&gt;全局自定义请求&lt;/h3&gt;
+&lt;p&gt;编写请求配置文件request.ts  包括全局接口请求地址，超时时间，自定义请求响应拦截器等&lt;/p&gt;
+&lt;p&gt;运用场景：需要对接口的通用响应进行统一处理，例如从response中取出data；或者根据code去集中处理错误，这样不用在每个接口请求中都去写相同的逻辑&lt;/p&gt;
+&lt;p&gt;也可以在全局响应拦截器中读取结果中的data，并校验code是否合法，如果是未登录状态，则自动登录&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;const myAxios = axios.create({
+  baseURL: &quot;https://localhost:8080&quot;,
+  timeout: 10000,
+  withCredentials: true,
+});
+
+// 添加请求拦截器
+myAxios.interceptors.request.use(
+  function (config) {
+    // 在发送请求之前做些什么
+    console.log(config);
+    const { data } = config;
+    console.log(data);
+    return config;
+  },
+  function (error) {
+    // 对请求错误做些什么
+    return Promise.reject(error);
+  }
+);
+
+// 添加响应拦截器
+myAxios.interceptors.response.use(
+  function (response) {
+    // 2xx 范围内的状态码都会触发该函数。
+    // 对响应数据做点什么
+    return response;
+  },
+  function (error) {
+    // 超出 2xx 范围的状态码都会触发该函数。
+    // 对响应错误做点什么
+    return Promise.reject(error);
+  }
+);
+
+export default myAxios;
+&lt;/code&gt;&lt;/pre&gt;
 </content:encoded></item><item><title>用户中心项目笔记（MyBatisPlus，注册，登录，记录状态）</title><link>https://thrinisty.github.io/posts/%E7%94%A8%E6%88%B7%E4%B8%AD%E5%BF%83%E9%A1%B9%E7%9B%AE%E7%AC%94%E8%AE%B0mybatisplus%E6%B3%A8%E5%86%8C%E7%99%BB%E5%BD%95%E8%AE%B0%E5%BD%95%E7%8A%B6%E6%80%81/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/%E7%94%A8%E6%88%B7%E4%B8%AD%E5%BF%83%E9%A1%B9%E7%9B%AE%E7%AC%94%E8%AE%B0mybatisplus%E6%B3%A8%E5%86%8C%E7%99%BB%E5%BD%95%E8%AE%B0%E5%BD%95%E7%8A%B6%E6%80%81/</guid><description>用户中心项目后端开发，SpringBoot整合</description><pubDate>Thu, 03 Jul 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;用户中心开发笔记&lt;/h1&gt;
 &lt;h2&gt;MyBatisPlus&lt;/h2&gt;
 &lt;p&gt;引入相关依赖&lt;/p&gt;
@@ -313,7 +1758,6 @@ const doMenuClick = ({ key }: { key: string }) =&amp;gt; {
     &amp;lt;artifactId&amp;gt;mybatis-plus-boot-starter&amp;lt;/artifactId&amp;gt;
     &amp;lt;version&amp;gt;3.5.12&amp;lt;/version&amp;gt;
 &amp;lt;/dependency&amp;gt;
-
 &lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;lombok依赖，用于自动生成get set toString方法&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;&amp;lt;dependency&amp;gt;
