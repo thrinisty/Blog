@@ -1,4 +1,91 @@
-<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Thrinisty&apos;s Blog</title><description>New Blog</description><link>https://thrinisty.github.io/</link><language>zh_CN</language><item><title>Linux笔记（实用指令）</title><link>https://thrinisty.github.io/posts/linux%E7%AC%94%E8%AE%B0%E5%AE%9E%E7%94%A8%E6%8C%87%E4%BB%A4/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/linux%E7%AC%94%E8%AE%B0%E5%AE%9E%E7%94%A8%E6%8C%87%E4%BB%A4/</guid><description>Linux中的实用指令</description><pubDate>Thu, 18 Sep 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;Linux笔记&lt;/h1&gt;
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Thrinisty&apos;s Blog</title><description>New Blog</description><link>https://thrinisty.github.io/</link><language>zh_CN</language><item><title>Linux笔记（组管理）</title><link>https://thrinisty.github.io/posts/linux%E7%AC%94%E8%AE%B0%E7%BB%84%E7%AE%A1%E7%90%86/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/linux%E7%AC%94%E8%AE%B0%E7%BB%84%E7%AE%A1%E7%90%86/</guid><description>组管理和权限管理</description><pubDate>Tue, 23 Sep 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;Linux笔记&lt;/h1&gt;
+&lt;h2&gt;组管理&lt;/h2&gt;
+&lt;p&gt;在linux中每个用户必须属于一个组，不能独立于组外&lt;/p&gt;
+&lt;p&gt;在linux中文件有所有者、所在组、其他组的概念&lt;/p&gt;
+&lt;h3&gt;所有者&lt;/h3&gt;
+&lt;p&gt;一般为文件的创建者，谁创建了该文件，就自然的成为了该文件的所有者&lt;/p&gt;
+&lt;p&gt;可以通过指令	ls -ahl 	查看文件的所有者&lt;/p&gt;
+&lt;p&gt;也可以通过指令修改文件的所有者	chown 用户名 文件名&lt;/p&gt;
+&lt;h3&gt;所在组&lt;/h3&gt;
+&lt;p&gt;当一个用户创建了一个文件，这个文件所在组就是该用户所在的组&lt;/p&gt;
+&lt;p&gt;可以通过指令	chgrp 组名 文件名	来修改文件的所在组&lt;/p&gt;
+&lt;h3&gt;其他组&lt;/h3&gt;
+&lt;p&gt;除了文件的所有者和所在组的用户外，系统的其他用户都是文件的其他组&lt;/p&gt;
+&lt;p&gt;有关于组的实用指令&lt;/p&gt;
+&lt;p&gt;通过 usermod -g  组名  用户名可以改变用户所在组&lt;/p&gt;
+&lt;p&gt;还可以通过usermod -d  目录名称  用户名 	来改变用户登陆到的初始目录（要求该用户有权限进入目标的目录）&lt;/p&gt;
+&lt;h2&gt;权限管理&lt;/h2&gt;
+&lt;h3&gt;文件类型&lt;/h3&gt;
+&lt;p&gt;第0为指的是文件的类型（d、-、l、c、b）&lt;/p&gt;
+&lt;p&gt;d为目录	l是链接	c是字符设备	b是块设备	-是普通文件&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;fox@lavm-5q4wdiilrx:~$ ls -al
+total 24
+drwxr-xr-x  6 root      root      4096 Sep 23 16:53 .
+drwxr-xr-x 19 root      root      4096 Sep 19 15:50 ..
+drwxr-x---  3 fox       sudo      4096 Sep 23 17:07 fox
+drwxr-x---  2 lory      lory      4096 Sep 19 15:12 lory
+drwxr-x---  3 test      admin     4096 Sep 19 16:59 test
+drwxr-x---  3 thrinisty thrinisty 4096 Sep 19 17:01 thrinisty
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;文件权限&lt;/h3&gt;
+&lt;p&gt;1-9为是文件的权限，分别对应着所有者、所在组、其他组对该文件的权限&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;修改文件权限&lt;/strong&gt; 	chmod （change mode）&lt;/p&gt;
+&lt;p&gt;可以通过chmod 744 文件名 对文件所有者赋予读写权限（110）	对所在组用户赋予读权限（100）	对其他组赋予读权限（100）&lt;/p&gt;
+&lt;p&gt;另外一种赋（夺）权方式&lt;/p&gt;
+&lt;p&gt;chmod u+x 文件	对所有者附加x（执行）权限&lt;/p&gt;
+&lt;p&gt;chmod g-r  文件	对所有组的用户删除r（读）权限&lt;/p&gt;
+&lt;p&gt;chmod o+w 文件	对其他组增加w（写）权限&lt;/p&gt;
+&lt;p&gt;chmod a-x   文件	全部用户删除可执行权限&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/34.png&quot; alt=&quot;34&quot; /&gt;&lt;/p&gt;
+</content:encoded></item><item><title>Linux笔记（实用指令、运行级别、文件、日期、查找）</title><link>https://thrinisty.github.io/posts/linux%E7%AC%94%E8%AE%B0%E5%AE%9E%E7%94%A8%E6%8C%87%E4%BB%A4%E8%BF%90%E8%A1%8C%E7%BA%A7%E5%88%AB%E6%96%87%E4%BB%B6%E6%97%A5%E6%9C%9F%E6%9F%A5%E6%89%BE/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/linux%E7%AC%94%E8%AE%B0%E5%AE%9E%E7%94%A8%E6%8C%87%E4%BB%A4%E8%BF%90%E8%A1%8C%E7%BA%A7%E5%88%AB%E6%96%87%E4%BB%B6%E6%97%A5%E6%9C%9F%E6%9F%A5%E6%89%BE/</guid><description>Linux中的实用指令、文件目录、日期、查找指令</description><pubDate>Thu, 18 Sep 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;Linux笔记&lt;/h1&gt;
+&lt;h2&gt;运行级别&lt;/h2&gt;
+&lt;p&gt;0：关机
+1：单用户
+2：多用户状态没有网络服务
+3：多用户状态有网络服务
+4：系统未使用保留给用户
+5：图形界面
+6：系统重启&lt;/p&gt;
+&lt;p&gt;其中常用的是3和5，也可以指定默认的运行级别
+init [0123456] 通过init来切换不同的运行级别&lt;/p&gt;
+&lt;h2&gt;文件目录类&lt;/h2&gt;
+&lt;p&gt;这个部分之前基础打得还是很牢的，就不详细记笔记了&lt;/p&gt;
+&lt;p&gt;pwd	用于显示当前工作目录的绝对路径&lt;/p&gt;
+&lt;p&gt;ls   -l 单列显示  -a 显示全部文件包括隐藏 可进行复用 -la&lt;/p&gt;
+&lt;p&gt;cd 	切换目录&lt;/p&gt;
+&lt;p&gt;mkdir	创建目录  	可以使用 -p 参数用于创建多级目录&lt;/p&gt;
+&lt;p&gt;touch 	创建空文件	例如touch Hello.java&lt;/p&gt;
+&lt;p&gt;cp	拷贝文件到指定目录 -r 递归的复制整个文件夹 \cp可以实现强制覆盖不提示&lt;/p&gt;
+&lt;p&gt;mv	移动文件目录或重命名&lt;/p&gt;
+&lt;p&gt;cat 	查看文件内容	-n显示行号 	后面还可以使用 | more 管道进行结果的处理&lt;/p&gt;
+&lt;p&gt;echo	输出内容到控制台	可以输出环境变量 例如 $PATH&lt;/p&gt;
+&lt;p&gt;head	用于显示文件的开头部分内容，默认显示前10行 使用head -n 5 /etc/passwd&lt;/p&gt;
+&lt;p&gt;tail	用于显示文件的尾部内容，用法类似head，另一个用法是tail -f 文件名 意思是监控该文件的修改&lt;/p&gt;
+&lt;p&gt;&quot;&amp;gt;&quot;和&quot;&amp;gt;&amp;gt;&quot;	&amp;gt;是将内容重导到一个文件覆盖， &amp;gt;&amp;gt;是将内容添加到文件末尾&lt;/p&gt;
+&lt;p&gt;ln	软链接，主要存放链接其他文件的路径 	ln -s  原文件/目录  软连接名&lt;/p&gt;
+&lt;p&gt;history 10	查看10条历史指令	!5 执行曾经执行的第5条指令&lt;/p&gt;
+&lt;h2&gt;日期相关指令&lt;/h2&gt;
+&lt;p&gt;基本指令 	date	显示当前时间&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;Fri Sep 19 05:08:08 PM CST 2025
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;date +%Y	显示年份&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;2025
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;date +%Y/%m/%d	可以用特定格式输出 	%~是占位符&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;2025/09/19
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;date +%H:%M:%S	显示时分秒&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;17:10:22
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;搜索查找&lt;/h2&gt;
+&lt;p&gt;find	将指定的目录向下递归地遍历其各个子目录，将满足条件的目录显示在终端&lt;/p&gt;
+&lt;p&gt;find [搜索范围] [选项]	-name 文件名	-user 用户名	-size 文件大小	（+200M表示大于200M ，-200M表示小于）&lt;/p&gt;
+&lt;p&gt;locate	用于快速定位文件路径	需要安装并且 updatedb 创建locate数据库&lt;/p&gt;
+&lt;p&gt;which 指令名称  可以查看某个指令在哪一个目录下&lt;/p&gt;
+&lt;p&gt;grep指令 过滤查找 通常和管道 | 一起使用	-n显示匹配行及行号	-i忽略大小写
+例如在hello.txt中查找&quot;yes&quot;所在行，并且显示行号&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;cat	hello.txt | grep -n &quot;yes&quot; |
+&lt;/code&gt;&lt;/pre&gt;
 </content:encoded></item><item><title>Linux笔记（目录结构、vim、用户管理）</title><link>https://thrinisty.github.io/posts/linux%E7%AC%94%E8%AE%B0%E7%9B%AE%E5%BD%95%E7%BB%93%E6%9E%84vim%E7%94%A8%E6%88%B7%E7%AE%A1%E7%90%86/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/linux%E7%AC%94%E8%AE%B0%E7%9B%AE%E5%BD%95%E7%BB%93%E6%9E%84vim%E7%94%A8%E6%88%B7%E7%AE%A1%E7%90%86/</guid><description>Linux目录结构、vim文本编辑器、用户管理</description><pubDate>Mon, 15 Sep 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;Linux笔记&lt;/h1&gt;
 &lt;p&gt;这是回到学校的第一天，开始备战秋招，目前是这么打算的：&lt;/p&gt;
 &lt;p&gt;补一下Linux基础知识，顺带玩玩云服务器，为之后的Web工程独立部署做上一些准备工作，之前的linux虽然也用过但是一来没有系统性的学习，而来一直是在本地的虚拟机使用的和以后的企业开发存在很大差别，所以这个部分还是得学，预计一周之内给他搞定&lt;/p&gt;
@@ -107,8 +194,6 @@ sync						将内存中的数据同步到磁盘&lt;/p&gt;
 &lt;p&gt;经过公司的项目开发，我SpringBoot的使用已经上手，快要丢掉的知识也逐渐被取回，看着项目随着时间一点一点壮大，git提交数量慢慢增多。看着提交的一个接着一个的版本，还是蛮有成就感的。&lt;/p&gt;
 &lt;p&gt;项目在单点登录前在邢老师的帮助下，已经上线，但是服务器上的单点认证还暂时用不了，推测是公司内网访问单点登录服务平台（阿里云服务器）进行ticket消费的时候会出现DNS域名解析失败的问题，最近公司的网络也不太好，邢老师后面打算让我把后端单独部署到一台公网服务器上（目前部署还是前后端部署在同一个服务器上），来解决上述问题。&lt;/p&gt;
 &lt;p&gt;第五个月的学习，评价为最有收获的一集！！&lt;/p&gt;
-</content:encoded></item><item><title>SpringAI笔记（MCPClient）</title><link>https://thrinisty.github.io/posts/springai%E7%AC%94%E8%AE%B0%E6%A8%A1%E6%9D%BF---%E5%89%AF%E6%9C%AC/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/springai%E7%AC%94%E8%AE%B0%E6%A8%A1%E6%9D%BF---%E5%89%AF%E6%9C%AC/</guid><pubDate>Fri, 11 Jul 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;SpringAI笔记&lt;/h1&gt;
-&lt;h2&gt;MCP Client&lt;/h2&gt;
 </content:encoded></item><item><title>Vue3笔记（Pinia，组件通信）</title><link>https://thrinisty.github.io/posts/vue3%E7%AC%94%E8%AE%B0pinia/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/vue3%E7%AC%94%E8%AE%B0pinia/</guid><description>Vue Pinia，组件通信</description><pubDate>Wed, 09 Jul 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;Vue3笔记&lt;/h1&gt;
 &lt;p&gt;今天应该可以把Vue结束&lt;/p&gt;
 &lt;h2&gt;Pinia&lt;/h2&gt;
@@ -35748,42 +35833,6 @@ public class Test{
 &lt;p&gt;echo 输入内容到文件&lt;/p&gt;
 &lt;p&gt;move 移动文件&lt;/p&gt;
 &lt;p&gt;exit 退出命令行&lt;/p&gt;
-</content:encoded></item><item><title>Linux</title><link>https://thrinisty.github.io/posts/linux%E4%B8%AD%E9%87%8D%E8%A6%81%E7%9A%84%E6%8C%87%E4%BB%A4/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/linux%E4%B8%AD%E9%87%8D%E8%A6%81%E7%9A%84%E6%8C%87%E4%BB%A4/</guid><description>linux常见指令，这个部分较为简易，后续或许回补充</description><pubDate>Wed, 19 Feb 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h3&gt;linux中的一些常用指令&lt;/h3&gt;
-&lt;h4&gt;cd（change directory）更改目录&lt;/h4&gt;
-&lt;p&gt;其中 / 是linux中的根目录， . 代表的是当前的目录， .. 表示上一层目录
-大部分的情况下 ./ 可以省略 直接cd + 目录下的文件路径&lt;/p&gt;
-&lt;p&gt;cd ||  cd ~进入家目录&lt;/p&gt;
-&lt;p&gt;cd - 进入上一次的目录&lt;/p&gt;
-&lt;h4&gt;ls（list）显示当前目录的文件&lt;/h4&gt;
-&lt;p&gt;-l参数会显示各个类型属性&lt;/p&gt;
-&lt;p&gt;-a还会显示额外的文件&lt;/p&gt;
-&lt;p&gt;-al综合前两个&lt;/p&gt;
-&lt;h4&gt;cp（copy）拷贝文件&lt;/h4&gt;
-&lt;p&gt;cp + 拷贝源路径 + 目标路径&lt;/p&gt;
-&lt;p&gt;-r 参数 递归地拷贝&lt;/p&gt;
-&lt;h4&gt;mv（move to）剪切&lt;/h4&gt;
-&lt;p&gt;用法与复制类似&lt;/p&gt;
-&lt;p&gt;特殊用法（更改名字）&lt;/p&gt;
-&lt;p&gt;mv + 目标原来的文件名 + 现在的文件名&lt;/p&gt;
-&lt;h4&gt;chmod （change mode）修改文件权限&lt;/h4&gt;
-&lt;p&gt;可以通过chmod 744 文件名 修改&lt;/p&gt;
-&lt;p&gt;chmod u+x 文件&lt;/p&gt;
-&lt;p&gt;chmod g-r  文件&lt;/p&gt;
-&lt;p&gt;chmod o+r 文件&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;../images/34.png&quot; alt=&quot;34&quot; /&gt;&lt;/p&gt;
-&lt;h4&gt;rm（remove）删除文件&lt;/h4&gt;
-&lt;p&gt;-rf 强制删除参数&lt;/p&gt;
-&lt;h4&gt;touch 创建文件&lt;/h4&gt;
-&lt;p&gt;touch a b c&lt;/p&gt;
-&lt;h4&gt;mkdir 创建文件夹&lt;/h4&gt;
-&lt;h4&gt;tar 压缩&lt;/h4&gt;
-&lt;p&gt;tar -zcf 压缩名字 需要压缩的文件文件&lt;/p&gt;
-&lt;p&gt;tar -xzf 解压文件&lt;/p&gt;
-&lt;p&gt;tar -zcf x.tar.gz a b c&lt;/p&gt;
-&lt;h4&gt;find 查找文件&lt;/h4&gt;
-&lt;p&gt;find 路径 -name &quot;文件名&quot;&lt;/p&gt;
-&lt;h4&gt;grep 查找关键字&lt;/h4&gt;
-&lt;p&gt;grep &quot;搜索关键字&quot; 路径 -r (递归)&lt;/p&gt;
 </content:encoded></item><item><title>关于 Git</title><link>https://thrinisty.github.io/posts/%E5%85%B3%E4%BA%8Egit/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/%E5%85%B3%E4%BA%8Egit/</guid><description>这一份比较古老了，可以4月份那一篇，稍微详细点</description><pubDate>Wed, 15 Jan 2025 00:00:00 GMT</pubDate><content:encoded>&lt;p&gt;git的功能相当于一个游戏的存档功能，可用以代码的管理，正确使用git即可提高编码的效率以及存储安全，&lt;/p&gt;
 &lt;p&gt;&lt;img src=&quot;../images/30.png&quot; alt=&quot;30&quot; /&gt;&lt;/p&gt;
 &lt;p&gt;在VScode之中可以通过GUI进行快速的配置与github的git链接，首先用默认的浏览器注册一个GitHub账号，保持账号的登陆状态，按照网络上的教程安装git（详细可参照各大博客上的相关教程）&lt;/p&gt;
