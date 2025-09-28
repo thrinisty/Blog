@@ -1,4 +1,367 @@
-<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Thrinisty&apos;s Blog</title><description>New Blog</description><link>https://thrinisty.github.io/</link><language>zh_CN</language><item><title>Linux笔记（组管理）</title><link>https://thrinisty.github.io/posts/linux%E7%AC%94%E8%AE%B0%E7%BB%84%E7%AE%A1%E7%90%86/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/linux%E7%AC%94%E8%AE%B0%E7%BB%84%E7%AE%A1%E7%90%86/</guid><description>组管理和权限管理</description><pubDate>Tue, 23 Sep 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;Linux笔记&lt;/h1&gt;
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Thrinisty&apos;s Blog</title><description>New Blog</description><link>https://thrinisty.github.io/</link><language>zh_CN</language><item><title>LeetCode刷题（删除链表的倒数第N个节点、启云方笔试、零钱兑换）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E5%88%A0%E9%99%A4%E9%93%BE%E8%A1%A8%E7%9A%84%E5%80%92%E6%95%B0%E7%AC%ACn%E4%B8%AA%E8%8A%82%E7%82%B9%E4%BA%8C%E5%8F%89%E6%A0%91%E9%9D%A2%E8%AF%95%E9%A2%98/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E5%88%A0%E9%99%A4%E9%93%BE%E8%A1%A8%E7%9A%84%E5%80%92%E6%95%B0%E7%AC%ACn%E4%B8%AA%E8%8A%82%E7%82%B9%E4%BA%8C%E5%8F%89%E6%A0%91%E9%9D%A2%E8%AF%95%E9%A2%98/</guid><description>删除链表的倒数第N个节点、二叉树面试题（层序，构造）</description><pubDate>Sun, 28 Sep 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;删除链表的倒数第N个节点&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;给你一个链表，删除链表的倒数第 &lt;code&gt;n&lt;/code&gt; 个结点，并且返回链表的头结点。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/221.jpg&quot; alt=&quot;221&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：head = [1,2,3,4,5], n = 2
+输出：[1,2,3,5]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：head = [1], n = 1
+输出：[]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 3：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：head = [1,2], n = 1
+输出：[1]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;我的思路是遍历一遍链表，找出节点偏移，用一个方法结合偏移删除目标节点&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public ListNode removeNthFromEnd(ListNode head, int n) {
+        ListNode p = head;
+        int count = 0;
+        while(p != null) {
+            count++;
+            p = p.next;
+        }
+        if(count == 1) {
+            return null;
+        }
+        int index = count - n;
+        return removeNode(head, index);
+    }
+
+    public ListNode removeNode(ListNode head, int n) {
+        ListNode result = new ListNode();
+        result.next = head;
+        ListNode p = result;
+        for(int i = 0; i &amp;lt; n; i++) {
+            p = p.next;
+        }
+        p.next = p.next.next;
+        return result.next;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1&gt;启云方笔试&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;根据后序遍历的结果和中序数组求增序遍历的结果&lt;/p&gt;
+&lt;p&gt;给定两个整数数组 &lt;code&gt;postorder&lt;/code&gt; 和 &lt;code&gt;inorder&lt;/code&gt;，其中 &lt;code&gt;postorder&lt;/code&gt; 是二叉搜索树（BST）的&lt;strong&gt;后序遍历&lt;/strong&gt;结果，&lt;code&gt;inorder&lt;/code&gt; 是同一棵树的&lt;strong&gt;中序遍历&lt;/strong&gt;结果，请你构造并返回这棵二叉搜索树的&lt;strong&gt;层序遍历&lt;/strong&gt;结果（即广度优先遍历，按层输出节点值）。&lt;/p&gt;
+&lt;p&gt;二叉搜索树的定义为：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;左子树的所有节点值均小于根节点的值。&lt;/li&gt;
+&lt;li&gt;右子树的所有节点值均大于根节点的值。&lt;/li&gt;
+&lt;li&gt;左右子树也必须是二叉搜索树。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4&gt;&lt;strong&gt;示例 1&lt;/strong&gt;:&lt;/h4&gt;
+&lt;ul&gt;
+&lt;li&gt;输入
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;postorder = [9, 15, 7, 20, 3]&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;inorder = [9, 3, 15, 20, 7]&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;输出&lt;/strong&gt;: &lt;code&gt;[ [3], [9, 20], [15, 7] ]&lt;/code&gt;
+（层序遍历结果，同层节点从左到右排列）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4&gt;&lt;strong&gt;示例 2&lt;/strong&gt;:&lt;/h4&gt;
+&lt;ul&gt;
+&lt;li&gt;输入
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;postorder = [2,1]&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;inorder = [2,1]&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;输出&lt;/strong&gt;: &lt;code&gt;[ [1], [2] ]&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;其实就是之前先序遍历+中序遍历构造二叉树和层序遍历的综合题目，改成了后序遍历，只需要取数组最后一个节点作为根即可，思路大致一致，注意一下下标&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;package com.nwpu;
+
+import java.util.*;
+
+class TreeNode {
+    char val;
+    TreeNode left;
+    TreeNode right;
+    TreeNode() {}
+    TreeNode(char x) {
+        val = x;
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        String back = scanner.next();
+        String mid = scanner.next();
+        char[] backArray = back.toCharArray();
+        char[] midArray = mid.toCharArray();
+        TreeNode root = build(backArray, midArray);
+//        func(root);
+        printTree(root);
+    }
+
+    public static TreeNode build(char[] backArray, char[] midArray) {
+        if(backArray.length == 0 || midArray.length == 0) {
+            return null;
+        }
+        char val = backArray[backArray.length - 1];
+        TreeNode root = new TreeNode(val);
+        for(int i = 0; i &amp;lt; midArray.length; i++) {
+            if(midArray[i] == val) {
+                char[] leftBackArray = Arrays.copyOfRange(backArray, 0, i);
+                char[] leftMidArray = Arrays.copyOfRange(midArray, 0, i);
+                char[] rightBackArray = Arrays.copyOfRange(backArray, i, backArray.length - 1);
+                char[] rightMidArray = Arrays.copyOfRange(midArray, i + 1, midArray.length);
+                root.left = build(leftBackArray, leftMidArray);
+                root.right = build(rightBackArray, rightMidArray);
+                break;
+            }
+        }
+        return root;
+    }
+
+    public static void printTree(TreeNode root) {
+        if(root == null) {
+            return;
+        }
+        Queue&amp;lt;TreeNode&amp;gt; queue = new LinkedList&amp;lt;&amp;gt;();
+        queue.offer(root);
+        while(!queue.isEmpty()) {
+            TreeNode node = queue.poll();
+            System.out.print(node.val);
+            if(node.left != null) {
+                queue.offer(node.left);
+            }
+            if(node.right != null) {
+                queue.offer(node.right);
+            }
+        }
+    }
+
+    public static void func(TreeNode root) {
+        if(root == null) {
+            return;
+        }
+        func(root.left);
+        System.out.println(root.val);
+        func(root.right);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1&gt;零钱兑换&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;给你一个整数数组 &lt;code&gt;coins&lt;/code&gt; ，表示不同面额的硬币；以及一个整数 &lt;code&gt;amount&lt;/code&gt; ，表示总金额。&lt;/p&gt;
+&lt;p&gt;计算并返回可以凑成总金额所需的 &lt;strong&gt;最少的硬币个数&lt;/strong&gt; 。如果没有任何一种硬币组合能组成总金额，返回 &lt;code&gt;-1&lt;/code&gt; 。&lt;/p&gt;
+&lt;p&gt;你可以认为每种硬币的数量是无限的。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：coins = [1, 2, 5], amount = 11
+输出：3 
+解释：11 = 5 + 5 + 1
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：coins = [2], amount = 3
+输出：-1
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 3：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：coins = [1], amount = 0
+输出：0
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;解法一 回溯法（超时）&lt;/p&gt;
+&lt;p&gt;我一看到这一题，我就想这不是做过嘛，回溯法直接秒，遍历一下之前的结果即可，果不其然时间效率惨淡（39/189）&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    List&amp;lt;List&amp;lt;Integer&amp;gt;&amp;gt; result = new ArrayList&amp;lt;&amp;gt;();
+    List&amp;lt;Integer&amp;gt; list = new ArrayList&amp;lt;&amp;gt;();
+    public int coinChange(int[] coins, int amount) {
+        dfs(coins, amount, 0);
+        if(result.size() == 0) {
+            return -1;
+        }
+        int target = Integer.MAX_VALUE;
+        for(int i = 0; i &amp;lt; result.size(); i++) {
+            List&amp;lt;Integer&amp;gt; currentList = result.get(i);
+            target = Math.min(target, currentList.size());
+        }
+        return target;
+    }
+
+    public void dfs(int[] coins, int amount, int index) {
+        if(index == coins.length) {
+            return;
+        }
+        if(amount == 0) {
+            result.add(new ArrayList&amp;lt;&amp;gt;(list));
+            return;
+        }
+        dfs(coins, amount, index + 1);
+        int newNum = coins[index];
+        int newTarget = amount - newNum;
+        if(newNum &amp;lt;= amount) {
+            list.add(newNum);
+            dfs(coins, newTarget, index);
+            list.remove(list.size() - 1);
+        }
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;看了下题解应该使用动态规划完成，不然在不限制硬币数量的时候，复杂度随amount指数增长，就太夸张了&lt;/p&gt;
+&lt;p&gt;解法二：动态规划&lt;/p&gt;
+&lt;p&gt;建立一个amount + 1大小的int数组其中存放到这个下表的最小硬币数量，逐个遍历，对每个目标i循环中遍历coins数组，当不超过i时，更新min最小硬币数量（用dp[i - coins[i]] + 1进行迭代min）&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public int coinChange(int[] coins, int amount) {
+        if(coins.length == 0) {
+            return -1;
+        }
+        int[] dp = new int[amount + 1];
+        Arrays.fill(dp, Integer.MAX_VALUE);
+        dp[0] = 0;
+        for(int i = 1; i &amp;lt;= amount; i++) {
+            int min = Integer.MAX_VALUE;
+            for(int coin : coins) {
+                if(i &amp;gt;= coin &amp;amp;&amp;amp; dp[i - coin] != Integer.MAX_VALUE) {
+                    min = Math.min(min, dp[i - coin] + 1);
+                }
+            }
+            dp[i] = min;
+        }
+        return dp[amount] == Integer.MAX_VALUE ? -1 : dp[amount];
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+</content:encoded></item><item><title>Linux笔记（磁盘分区、进程管理）</title><link>https://thrinisty.github.io/posts/linux%E7%AC%94%E8%AE%B0%E7%A3%81%E7%9B%98%E5%88%86%E5%8C%BA/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/linux%E7%AC%94%E8%AE%B0%E7%A3%81%E7%9B%98%E5%88%86%E5%8C%BA/</guid><description>Linux磁盘分区挂载、Linux进程管理</description><pubDate>Sat, 27 Sep 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;Linux笔记&lt;/h1&gt;
+&lt;h2&gt;Linux分区&lt;/h2&gt;
+&lt;p&gt;Linux无论有多少个分区，分给哪一个目录使用，就只有一个根目录，一个独立且唯一的文件结构，Linux中每个分区都是用来组成整个文件系统的一部分&lt;/p&gt;
+&lt;p&gt;Linux中采用了一种叫做“载入”的处理方法，它的整个文件系统中包含了一整套的文件和目录，且将一个分区和一个目录联系起来，这时要载入的一个分区将使它的存储空间在下一个目录获得&lt;/p&gt;
+&lt;p&gt;lsblk （list block）&lt;/p&gt;
+&lt;p&gt;用于&lt;strong&gt;列出块设备&lt;/strong&gt;（如磁盘、分区、RAID、LVM 等）信息的实用命令&lt;/p&gt;
+&lt;p&gt;通过这条指令可以查看挂载分区和文件的关联&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;root@lavm-5q4wdiilrx:/home/wukong# lsblk
+NAME   MAJ:MIN RM  SIZE RO TYPE MOUNTPOINTS
+vda    252:0    0  180G  0 disk 
+└─vda1 252:1    0  180G  0 part /
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;Linux挂载硬盘&lt;/h2&gt;
+&lt;p&gt;&lt;strong&gt;分区命令&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;fdisk /dev/sdb（硬盘名称）	可以将硬盘分区，之前也提到了挂载的硬盘会被映射到/dev/目录下&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;格式化磁盘&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;mkfs -t ext4(分区类型) /dev/sdb1&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;挂载分区&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;mount /dev/sdb1（分区名称） /home/newdisk/ 将分区挂载到指定的目录&lt;/p&gt;
+&lt;p&gt;umount  /dev/sdb1 卸载挂载的分区&lt;/p&gt;
+&lt;p&gt;:::warning
+挂载的关系是临时的，当系统重启的时候挂在关系失效，可以通过一些方式实现永久挂载，要修改/etc/fstab文件，再使用mount -a进行挂载启用
+:::&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;其他实用指令&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;df -h 显示磁盘的使用情况&lt;/p&gt;
+&lt;p&gt;du -h /目录 显示指定目录的磁盘使用情况，还可以-a列出文件所占的大小&lt;/p&gt;
+&lt;h2&gt;进程管理&lt;/h2&gt;
+&lt;h3&gt;基本介绍&lt;/h3&gt;
+&lt;p&gt;在Linux中，每个执行程序都称为一个进程，每一个进程都分配一个pid&lt;/p&gt;
+&lt;p&gt;每个进程都可能以两种方式存在，前台和后台。前台是在用户屏幕上可供操作的，后台进程则是实际上在操作，但是屏幕上无法看到的进程，通常使用后台方式执行&lt;/p&gt;
+&lt;h3&gt;ps指令&lt;/h3&gt;
+&lt;p&gt;用于查看目前系统中，有哪些正在执行，以及他们执行的情况。&lt;/p&gt;
+&lt;p&gt;ps -a	显示当前终端所有的进程信息&lt;/p&gt;
+&lt;p&gt;ps -u	以用户格式显示进程信息&lt;/p&gt;
+&lt;p&gt;ps -x	显示后台进程运行的参数&lt;/p&gt;
+&lt;p&gt;ps -ef 或 ps -aux 显示所有进程&lt;/p&gt;
+</content:encoded></item><item><title>LeetCode刷题（跳跃游戏）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E8%B7%B3%E8%B7%83%E6%B8%B8%E6%88%8F/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E8%B7%B3%E8%B7%83%E6%B8%B8%E6%88%8F/</guid><description>跳跃游戏、阿里巴巴招聘变体</description><pubDate>Fri, 26 Sep 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;跳跃游戏&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;给你一个非负整数数组 &lt;code&gt;nums&lt;/code&gt; ，你最初位于数组的 &lt;strong&gt;第一个下标&lt;/strong&gt; 。数组中的每个元素代表你在该位置可以跳跃的最大长度。&lt;/p&gt;
+&lt;p&gt;判断你是否能够到达最后一个下标，如果可以，返回 &lt;code&gt;true&lt;/code&gt; ；否则，返回 &lt;code&gt;false&lt;/code&gt; 。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：nums = [2,3,1,1,4]
+输出：true
+解释：可以先跳 1 步，从下标 0 到达下标 1, 然后再从下标 1 跳 3 步到达最后一个下标。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：nums = [3,2,1,0,4]
+输出：false
+解释：无论怎样，总会到达下标为 3 的位置。但该下标的最大跳跃长度是 0 ， 所以永远不可能到达最后一个下标。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;贪心算法解决：依次遍历数组的每一项，在当前数组项可达的前提下，用nums[i] + i更行可达的数组项索引，当可达索引超过最后一项的时候可以判断最后一个下表可达。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class Solution {
+    public boolean canJump(int[] nums) {
+        int n = nums.length;
+        if(n == 1) {
+            return true;
+        }
+        int rightmost = 0;
+        for (int i = 0; i &amp;lt; n - 1; ++i) {
+            if (i &amp;lt;= rightmost) {
+                rightmost = Math.max(rightmost, i + nums[i]);
+                if (rightmost &amp;gt;= n - 1) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;这一道题目是阿里巴巴笔试的题目的初级版本，在阿里巴巴的变种题目中题目要求改为了求在可达的前提下求最少的跳跃次数，如果不可达返回-1；&lt;/p&gt;
+&lt;p&gt;当数组始终可以到达最后一格的时候&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public int jump(int[] nums) {
+        int n = nums.length;
+        int step = 0;
+        int end = 0;
+        int maxPosition = 0;
+        for(int i = 0; i &amp;lt; n - 1; i++) {
+            maxPosition = Math.max(maxPosition, nums[i] + i);
+            if(i == end) {
+                end = maxPosition;
+                step++;
+            }
+        }
+        return step;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;如果数组有可能跳不到最后一格，我们还需要改造算法&lt;/p&gt;
+&lt;h3&gt;修改策略&lt;/h3&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;新增条件判断：&lt;/strong&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;在遍历时检查 &lt;code&gt;i &amp;gt; rightmost&lt;/code&gt;&lt;/strong&gt;
+→ 如果当前 &lt;code&gt;i&lt;/code&gt; 已经超过 &lt;code&gt;rightmost&lt;/code&gt;，说明无法继续前进，直接返回 &lt;code&gt;-1&lt;/code&gt;。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;在循环结束后检查 &lt;code&gt;end&lt;/code&gt; 是否足够大&lt;/strong&gt;
+→ 如果最终的 &lt;code&gt;end&lt;/code&gt; 无法到达终点，也返回 &lt;code&gt;-1&lt;/code&gt;。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;优化边界：&lt;/strong&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;初始情况（&lt;code&gt;n == 1&lt;/code&gt;）&lt;/strong&gt;：已经在终点，返回 &lt;code&gt;0&lt;/code&gt;。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public int jump(int[] nums) {
+        int n = nums.length;
+        if (n == 1) return 0; 
+        int step = 0;
+        int rightmost = 0;
+        int end = 0;
+        for(int i = 0; i &amp;lt; n - 1; i++) {
+            if(rightmost &amp;lt; i) {
+                return -1;
+            }
+            rightmost = Math.max(rightmost, i + nums[i]);
+            if(end == i) {
+                end = rightmost;
+                step++;
+            }
+            if(end &amp;gt;= n - 1) {
+                return step;
+            }
+        }
+        return -1;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+</content:encoded></item><item><title>Linux笔记（组管理、权限、任务调度）</title><link>https://thrinisty.github.io/posts/linux%E7%AC%94%E8%AE%B0%E7%BB%84%E7%AE%A1%E7%90%86%E6%9D%83%E9%99%90%E4%BB%BB%E5%8A%A1%E8%B0%83%E5%BA%A6/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/linux%E7%AC%94%E8%AE%B0%E7%BB%84%E7%AE%A1%E7%90%86%E6%9D%83%E9%99%90%E4%BB%BB%E5%8A%A1%E8%B0%83%E5%BA%A6/</guid><description>组管理、权限管理、crond任务调度</description><pubDate>Tue, 23 Sep 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;Linux笔记&lt;/h1&gt;
 &lt;h2&gt;组管理&lt;/h2&gt;
 &lt;p&gt;在linux中每个用户必须属于一个组，不能独立于组外&lt;/p&gt;
 &lt;p&gt;在linux中文件有所有者、所在组、其他组的概念&lt;/p&gt;
@@ -6,6 +369,7 @@
 &lt;p&gt;一般为文件的创建者，谁创建了该文件，就自然的成为了该文件的所有者&lt;/p&gt;
 &lt;p&gt;可以通过指令	ls -ahl 	查看文件的所有者&lt;/p&gt;
 &lt;p&gt;也可以通过指令修改文件的所有者	chown 用户名 文件名&lt;/p&gt;
+&lt;p&gt;(可以通过带上-R参数实现递归权限修改)&lt;/p&gt;
 &lt;h3&gt;所在组&lt;/h3&gt;
 &lt;p&gt;当一个用户创建了一个文件，这个文件所在组就是该用户所在的组&lt;/p&gt;
 &lt;p&gt;可以通过指令	chgrp 组名 文件名	来修改文件的所在组&lt;/p&gt;
@@ -37,6 +401,31 @@ drwxr-x---  3 thrinisty thrinisty 4096 Sep 19 17:01 thrinisty
 &lt;p&gt;chmod o+w 文件	对其他组增加w（写）权限&lt;/p&gt;
 &lt;p&gt;chmod a-x   文件	全部用户删除可执行权限&lt;/p&gt;
 &lt;p&gt;&lt;img src=&quot;../images/34.png&quot; alt=&quot;34&quot; /&gt;&lt;/p&gt;
+&lt;h2&gt;任务调度&lt;/h2&gt;
+&lt;p&gt;crond：可以通过任务调度定时执行指令或者运行脚本&lt;/p&gt;
+&lt;p&gt;任务调度：是指系统在某个时间执行的特定命令或程序
+任务调度分为系统工作和个别用户工作&lt;/p&gt;
+&lt;h3&gt;crontab指令&lt;/h3&gt;
+&lt;p&gt;进行定时周期任务的设置&lt;/p&gt;
+&lt;p&gt;基本语法	crontab [参数]&lt;/p&gt;
+&lt;p&gt;-e 编辑定时crontab任务	-l 查询任务	-r 删除当前用户的所有crontab任务&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/216.png&quot; alt=&quot;216&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;例如我们想要每分钟执行ls -l /home &amp;gt;&amp;gt; /home/wukong/console.txt&lt;/p&gt;
+&lt;p&gt;在文件中编辑添加：*/1 * * * * ls -l /home &amp;gt;&amp;gt; /home/wukong/console.txt&lt;img src=&quot;../images/217.png&quot; alt=&quot;217&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;常见案例：
+&lt;img src=&quot;../images/218.png&quot; alt=&quot;218&quot; /&gt;&lt;/p&gt;
+&lt;h3&gt;at指令&lt;/h3&gt;
+&lt;p&gt;at [选项] [时间]		Ctrl + D 结束at命令输入&lt;/p&gt;
+&lt;p&gt;at命令是一次性定时计划任务，at的守护进程atd会以后台模式运行，检查作业队列来运行，在使用at命令的时候，一定要保证atd进程的启动&lt;/p&gt;
+&lt;p&gt;atd每隔60s就会检查job队列中是否有符合匹配的条件的指令或者shell脚本，有则执行并从队列中删除对应的作业&lt;/p&gt;
+&lt;p&gt;可选参数&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/219.png&quot; alt=&quot;219&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;时间定义&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/220.png&quot; alt=&quot;220&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;可以通过atq查看job队列中的任务&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;1	Sat Sep 27 17:25:00 2025 a root
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;通过atrm [编号] 删除队列中指定的任务&lt;/p&gt;
 </content:encoded></item><item><title>Linux笔记（实用指令、运行级别、文件、日期、查找）</title><link>https://thrinisty.github.io/posts/linux%E7%AC%94%E8%AE%B0%E5%AE%9E%E7%94%A8%E6%8C%87%E4%BB%A4%E8%BF%90%E8%A1%8C%E7%BA%A7%E5%88%AB%E6%96%87%E4%BB%B6%E6%97%A5%E6%9C%9F%E6%9F%A5%E6%89%BE/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/linux%E7%AC%94%E8%AE%B0%E5%AE%9E%E7%94%A8%E6%8C%87%E4%BB%A4%E8%BF%90%E8%A1%8C%E7%BA%A7%E5%88%AB%E6%96%87%E4%BB%B6%E6%97%A5%E6%9C%9F%E6%9F%A5%E6%89%BE/</guid><description>Linux中的实用指令、文件目录、日期、查找指令</description><pubDate>Thu, 18 Sep 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;Linux笔记&lt;/h1&gt;
 &lt;h2&gt;运行级别&lt;/h2&gt;
 &lt;p&gt;0：关机
@@ -113,6 +502,7 @@ init [0123456] 通过init来切换不同的运行级别&lt;/p&gt;
 &lt;p&gt;x删除一个字符&lt;/p&gt;
 &lt;p&gt;shift g跳到最后一行&lt;/p&gt;
 &lt;p&gt;gg回到第一行&lt;/p&gt;
+&lt;p&gt;dd删除一整行	10dd删除10行&lt;/p&gt;
 &lt;h3&gt;插入模式&lt;/h3&gt;
 &lt;p&gt;通过i进入编辑模式&lt;/p&gt;
 &lt;h3&gt;命令行模式&lt;/h3&gt;
