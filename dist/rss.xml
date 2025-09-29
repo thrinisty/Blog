@@ -1,4 +1,123 @@
-<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Thrinisty&apos;s Blog</title><description>New Blog</description><link>https://thrinisty.github.io/</link><language>zh_CN</language><item><title>LeetCode刷题（删除链表的倒数第N个节点、启云方笔试、零钱兑换）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E5%88%A0%E9%99%A4%E9%93%BE%E8%A1%A8%E7%9A%84%E5%80%92%E6%95%B0%E7%AC%ACn%E4%B8%AA%E8%8A%82%E7%82%B9%E4%BA%8C%E5%8F%89%E6%A0%91%E9%9D%A2%E8%AF%95%E9%A2%98/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E5%88%A0%E9%99%A4%E9%93%BE%E8%A1%A8%E7%9A%84%E5%80%92%E6%95%B0%E7%AC%ACn%E4%B8%AA%E8%8A%82%E7%82%B9%E4%BA%8C%E5%8F%89%E6%A0%91%E9%9D%A2%E8%AF%95%E9%A2%98/</guid><description>删除链表的倒数第N个节点、二叉树面试题（层序，构造）</description><pubDate>Sun, 28 Sep 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;删除链表的倒数第N个节点&lt;/h1&gt;
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Thrinisty&apos;s Blog</title><description>New Blog</description><link>https://thrinisty.github.io/</link><language>zh_CN</language><item><title>LeetCode刷题（两数相加、搜索二维矩阵）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E9%93%BE%E8%A1%A8%E4%B8%A4%E6%95%B0%E7%9B%B8%E5%8A%A0%E6%90%9C%E7%B4%A2%E4%BA%8C%E7%BB%B4%E7%9F%A9%E9%98%B5/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E9%93%BE%E8%A1%A8%E4%B8%A4%E6%95%B0%E7%9B%B8%E5%8A%A0%E6%90%9C%E7%B4%A2%E4%BA%8C%E7%BB%B4%E7%9F%A9%E9%98%B5/</guid><description>链表两数相加、搜索二维矩阵</description><pubDate>Mon, 29 Sep 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;两数相加&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;给你两个 &lt;strong&gt;非空&lt;/strong&gt; 的链表，表示两个非负的整数。它们每位数字都是按照 &lt;strong&gt;逆序&lt;/strong&gt; 的方式存储的，并且每个节点只能存储 &lt;strong&gt;一位&lt;/strong&gt; 数字。&lt;/p&gt;
+&lt;p&gt;请你将两个数相加，并以相同形式返回一个表示和的链表。&lt;/p&gt;
+&lt;p&gt;你可以假设除了数字 0 之外，这两个数都不会以 0 开头。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/222.jpg&quot; alt=&quot;222&quot; /&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：l1 = [2,4,3], l2 = [5,6,4]
+输出：[7,0,8]
+解释：342 + 465 = 807.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：l1 = [0], l2 = [0]
+输出：[0]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 3：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：l1 = [9,9,9,9,9,9,9], l2 = [9,9,9,9]
+输出：[8,9,9,9,0,0,0,1]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;解法一：先通过直接将两个链表进行合并，不进行进位的处理，再对合并的链表作进位处理&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public ListNode addTwoNumbers(ListNode l1, ListNode l2) {
+        ListNode result = new ListNode();
+        ListNode p = result;
+        while(l1 != null || l2 != null) {
+            int num1 = l1 == null ? 0 : l1.val;
+            int num2 = l2 == null ? 0 : l2.val;
+            p.next = new ListNode(num1 + num2);
+            if(l1 != null) {
+                l1 = l1.next;
+            }
+            if(l2 != null) {
+                l2 = l2.next;
+            }
+            p = p.next;
+        }
+        int carry = 0;
+        p = result;
+        while(p.next != null) {
+            int countNum = carry + p.next.val;
+            carry = 0;
+            if(countNum &amp;lt;= 9) {
+                p.next.val = countNum;
+            } else {
+                carry = countNum / 10;
+                p.next.val = countNum - 10 * carry;
+            }
+            p = p.next;
+        }
+        if(carry != 0) {
+            p.next = new ListNode(carry);
+        }
+        return result.next;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;解法二：其实可以在合并的时候直接顺便进行进位的处理，就只需要遍历一遍链表即可&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public ListNode addTwoNumbers(ListNode l1, ListNode l2) {
+        ListNode result = new ListNode();  
+        ListNode p = result;        
+        int carry = 0;                  
+
+        while (l1 != null || l2 != null || carry != 0) {
+            int num1 = (l1 != null) ? l1.val : 0;
+            int num2 = (l2 != null) ? l2.val : 0;
+            
+            int sum = num1 + num2 + carry;
+            carry = sum / 10;             
+            p.next = new ListNode(sum % 10);  
+            p = p.next;       
+            if (l1 != null) l1 = l1.next;
+            if (l2 != null) l2 = l2.next;
+        }
+        return result.next;  
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1&gt;搜索二维矩阵&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;编写一个高效的算法来搜索 &lt;code&gt;*m* x *n*&lt;/code&gt; 矩阵 &lt;code&gt;matrix&lt;/code&gt; 中的一个目标值 &lt;code&gt;target&lt;/code&gt; 。该矩阵具有以下特性：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;每行的元素从左到右升序排列。&lt;/li&gt;
+&lt;li&gt;每列的元素从上到下升序排列。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/223.jpg&quot; alt=&quot;223&quot; /&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：matrix = [[1,4,7,11,15],[2,5,8,12,19],[3,6,9,16,22],[10,13,14,17,24],[18,21,23,26,30]], target = 5
+输出：true
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/224.jpg&quot; alt=&quot;224&quot; /&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：matrix = [[1,4,7,11,15],[2,5,8,12,19],[3,6,9,16,22],[10,13,14,17,24],[18,21,23,26,30]], target = 20
+输出：false
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;我除了暴力拆解没什么其他思路，看了网上的一种解法直接给跪了，纯妙来的&lt;/p&gt;
+&lt;p&gt;如下图所示，我们将矩阵逆时针旋转 45° ，并将其转化为图形式，发现其类似于 二叉搜索树 ，即对于每个元素，其左分支元素更小、右分支元素更大。因此，通过从 “根节点” 开始搜索，遇到比 target 大的元素就向左，反之向右，即可找到目标值 target 。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/225.png&quot; alt=&quot;225&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;这样我们就可以类似于二叉搜索树的方式去进行依次搜索，当遍历完成还没有找到判断没有该数字&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;代码实现&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public boolean searchMatrix(int[][] matrix, int target) {
+        int i = 0;
+        int j = matrix[0].length - 1;
+        while(i &amp;lt; matrix.length &amp;amp;&amp;amp; j &amp;gt;= 0) {
+            if(matrix[i][j] == target) {
+                return true;
+            } else if(target &amp;lt; matrix[i][j]) {
+                j--;
+            } else {
+                i++;
+            }
+        }
+        return false;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+</content:encoded></item><item><title>LeetCode刷题（删除链表的倒数第N个节点、启云方笔试、零钱兑换）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E5%88%A0%E9%99%A4%E9%93%BE%E8%A1%A8%E7%9A%84%E5%80%92%E6%95%B0%E7%AC%ACn%E4%B8%AA%E8%8A%82%E7%82%B9%E4%BA%8C%E5%8F%89%E6%A0%91%E9%9D%A2%E8%AF%95%E9%A2%98/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E5%88%A0%E9%99%A4%E9%93%BE%E8%A1%A8%E7%9A%84%E5%80%92%E6%95%B0%E7%AC%ACn%E4%B8%AA%E8%8A%82%E7%82%B9%E4%BA%8C%E5%8F%89%E6%A0%91%E9%9D%A2%E8%AF%95%E9%A2%98/</guid><description>删除链表的倒数第N个节点、二叉树面试题（层序，构造）</description><pubDate>Sun, 28 Sep 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;删除链表的倒数第N个节点&lt;/h1&gt;
 &lt;h2&gt;题目描述&lt;/h2&gt;
 &lt;p&gt;给你一个链表，删除链表的倒数第 &lt;code&gt;n&lt;/code&gt; 个结点，并且返回链表的头结点。&lt;/p&gt;
 &lt;p&gt;&lt;img src=&quot;../images/221.jpg&quot; alt=&quot;221&quot; /&gt;&lt;/p&gt;
@@ -230,7 +349,7 @@ public class Main {
     }
 }
 &lt;/code&gt;&lt;/pre&gt;
-</content:encoded></item><item><title>Linux笔记（磁盘分区、进程管理）</title><link>https://thrinisty.github.io/posts/linux%E7%AC%94%E8%AE%B0%E7%A3%81%E7%9B%98%E5%88%86%E5%8C%BA/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/linux%E7%AC%94%E8%AE%B0%E7%A3%81%E7%9B%98%E5%88%86%E5%8C%BA/</guid><description>Linux磁盘分区挂载、Linux进程管理</description><pubDate>Sat, 27 Sep 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;Linux笔记&lt;/h1&gt;
+</content:encoded></item><item><title>Linux笔记（磁盘分区、进程管理、服务管理）</title><link>https://thrinisty.github.io/posts/linux%E7%AC%94%E8%AE%B0%E7%A3%81%E7%9B%98%E5%88%86%E5%8C%BA%E8%BF%9B%E7%A8%8B%E7%AE%A1%E7%90%86%E6%9C%8D%E5%8A%A1%E7%AE%A1%E7%90%86/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/linux%E7%AC%94%E8%AE%B0%E7%A3%81%E7%9B%98%E5%88%86%E5%8C%BA%E8%BF%9B%E7%A8%8B%E7%AE%A1%E7%90%86%E6%9C%8D%E5%8A%A1%E7%AE%A1%E7%90%86/</guid><description>Linux磁盘分区挂载、Linux进程管理、服务管理</description><pubDate>Sat, 27 Sep 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;Linux笔记&lt;/h1&gt;
 &lt;h2&gt;Linux分区&lt;/h2&gt;
 &lt;p&gt;Linux无论有多少个分区，分给哪一个目录使用，就只有一个根目录，一个独立且唯一的文件结构，Linux中每个分区都是用来组成整个文件系统的一部分&lt;/p&gt;
 &lt;p&gt;Linux中采用了一种叫做“载入”的处理方法，它的整个文件系统中包含了一整套的文件和目录，且将一个分区和一个目录联系起来，这时要载入的一个分区将使它的存储空间在下一个目录获得&lt;/p&gt;
@@ -266,6 +385,94 @@ vda    252:0    0  180G  0 disk
 &lt;p&gt;ps -u	以用户格式显示进程信息&lt;/p&gt;
 &lt;p&gt;ps -x	显示后台进程运行的参数&lt;/p&gt;
 &lt;p&gt;ps -ef 或 ps -aux 显示所有进程&lt;/p&gt;
+&lt;h3&gt;终止进程&lt;/h3&gt;
+&lt;p&gt;kill [选项] 进程号	通过该条指令可以终止进程&lt;/p&gt;
+&lt;p&gt;killall 进程名称		通过该指令可以终止指定名称的进程&lt;/p&gt;
+&lt;p&gt;-9：表示强迫进程立即停止&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;常见案例&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;踢掉某个非法登陆的用户：ps -ef | grep sshd查询到用户进程，再通过kill 进程号杀死对应进程&lt;/p&gt;
+&lt;p&gt;kill终端：ps -ef | grep bash		kill -9 2825 2839（这里需要带上-9强制删除）&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;lory        2438    2431  0 19:35 pts/0    00:00:00 -bash
+root        2590    2589  0 19:38 pts/1    00:00:00 bash
+test        2825    2799  0 19:43 pts/2    00:00:00 bash
+test        2839    2799  0 19:44 pts/3    00:00:00 bash
+root        2851    2590  0 19:44 pts/1    00:00:00 grep --color=auto bash
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;查看进程树&lt;/h3&gt;
+&lt;p&gt;pstree [选项] 可以更加直观的查看进程信息&lt;/p&gt;
+&lt;p&gt;-p	显示进程的PID&lt;/p&gt;
+&lt;p&gt;-u	显示进程的所属用户&lt;/p&gt;
+&lt;h2&gt;服务管理&lt;/h2&gt;
+&lt;p&gt;服务本质上就是进程，但是是运行在后台的，通常会监听某个端口，等待其他程序的请求，例如mysqlld，sshd，防火墙，因此又称为守护进程&lt;/p&gt;
+&lt;h3&gt;service管理指令&lt;/h3&gt;
+&lt;p&gt;service 服务名称 [start | stop | restart | reload | status]&lt;/p&gt;
+&lt;p&gt;在CentOS7.0后很多服务改用systemctl管理&lt;/p&gt;
+&lt;p&gt;service 指令管理服务在/etc/init.d查看&lt;/p&gt;
+&lt;p&gt;ls -l /etc/init.d 这个指令可以查看服务&lt;/p&gt;
+&lt;h3&gt;服务的运行级别&lt;/h3&gt;
+&lt;p&gt;0：关机
+1：单用户
+2：多用户状态没有网络服务
+3：多用户状态有网络服务
+4：系统未使用保留给用户
+5：图形界面
+6：系统重启&lt;/p&gt;
+&lt;p&gt;其中常用的是3和5，也可以指定默认的运行级别&lt;/p&gt;
+&lt;p&gt;可以通过systemctl set-default 进行设置&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;sudo systemctl set-default TARGET_NAME.target
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;其中 &lt;code&gt;TARGET_NAME.target&lt;/code&gt; 是你要设为默认的运行目标。&lt;/p&gt;
+&lt;hr /&gt;
+&lt;p&gt;&lt;strong&gt;📌 常用 Target 选项&lt;/strong&gt;&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;&lt;strong&gt;Target&lt;/strong&gt;&lt;/th&gt;
+&lt;th&gt;&lt;strong&gt;用途&lt;/strong&gt;&lt;/th&gt;
+&lt;th&gt;&lt;strong&gt;对应传统运行级别&lt;/strong&gt;&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;multi-user.target&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;命令行模式（无图形界面）&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;runlevel 3&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;graphical.target&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;图形界面模式&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;runlevel 5&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;rescue.target&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;单用户救援模式（类似 &lt;code&gt;runlevel 1&lt;/code&gt;）&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;runlevel 1&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;emergency.target&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;紧急模式（最基础的 shell）&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;runlevel 1&lt;/code&gt; 变种&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h3&gt;systemctl管理指令&lt;/h3&gt;
+&lt;p&gt;systemctl  [start | stop | restart | status]  服务名称（这里和service相反）&lt;/p&gt;
+&lt;p&gt;管理的服务在/usr/lib/systemd/system 查看&lt;/p&gt;
+&lt;p&gt;systemctl list-unit-files	查看哪一些服务开机自启动&lt;/p&gt;
+&lt;p&gt;systemctl enable 服务名	给服务设置开机自启动&lt;/p&gt;
+&lt;p&gt;systemctl disable 服务名   关闭服务设置开机自启动&lt;/p&gt;
+&lt;p&gt;systemctl is-enabled 服务名 查看服务是否开机自启动&lt;/p&gt;
+&lt;h3&gt;动态监控进程&lt;/h3&gt;
+&lt;p&gt;top指令：和ps命令类似，都是用于显示正在执行的进程，不同之处在于top再执行一段时间可以更新正在运行的进程&lt;/p&gt;
+&lt;p&gt;top [选项]&lt;/p&gt;
+&lt;p&gt;-d 秒数	指定top每隔几秒更新，默认为3s&lt;/p&gt;
+&lt;p&gt;-i	使得top不显示闲置或僵死进程&lt;/p&gt;
+&lt;p&gt;-p	通过指定监控id，来监视某个进程的状态&lt;/p&gt;
+&lt;p&gt;在运行其中我们可以使用P按照CPU进行排序、M按照内存排序、N以PID排序、q退出&lt;/p&gt;
+&lt;h3&gt;监控网络状态&lt;/h3&gt;
+&lt;p&gt;netstat [选项]&lt;/p&gt;
+&lt;p&gt;-an 按一定顺序排列输出&lt;/p&gt;
+&lt;p&gt;-p   显示哪个进行调用&lt;/p&gt;
 </content:encoded></item><item><title>LeetCode刷题（跳跃游戏）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E8%B7%B3%E8%B7%83%E6%B8%B8%E6%88%8F/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E8%B7%B3%E8%B7%83%E6%B8%B8%E6%88%8F/</guid><description>跳跃游戏、阿里巴巴招聘变体</description><pubDate>Fri, 26 Sep 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;跳跃游戏&lt;/h1&gt;
 &lt;h2&gt;题目描述&lt;/h2&gt;
 &lt;p&gt;给你一个非负整数数组 &lt;code&gt;nums&lt;/code&gt; ，你最初位于数组的 &lt;strong&gt;第一个下标&lt;/strong&gt; 。数组中的每个元素代表你在该位置可以跳跃的最大长度。&lt;/p&gt;
