@@ -1,4 +1,491 @@
-<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Thrinisty&apos;s Blog</title><description>New Blog</description><link>https://thrinisty.github.io/</link><language>zh_CN</language><item><title>LeetCode刷题（两数相加、搜索二维矩阵）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E9%93%BE%E8%A1%A8%E4%B8%A4%E6%95%B0%E7%9B%B8%E5%8A%A0%E6%90%9C%E7%B4%A2%E4%BA%8C%E7%BB%B4%E7%9F%A9%E9%98%B5/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E9%93%BE%E8%A1%A8%E4%B8%A4%E6%95%B0%E7%9B%B8%E5%8A%A0%E6%90%9C%E7%B4%A2%E4%BA%8C%E7%BB%B4%E7%9F%A9%E9%98%B5/</guid><description>链表两数相加、搜索二维矩阵</description><pubDate>Mon, 29 Sep 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;两数相加&lt;/h1&gt;
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Thrinisty&apos;s Blog</title><description>New Blog</description><link>https://thrinisty.github.io/</link><language>zh_CN</language><item><title>LeetCode刷题（和为K的子数组、二叉树中最大路径和）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E5%92%8C%E4%B8%BAk%E7%9A%84%E5%AD%90%E6%95%B0%E7%BB%84%E4%BA%8C%E5%8F%89%E6%A0%91%E4%B8%AD%E6%9C%80%E5%A4%A7%E8%B7%AF%E5%BE%84%E5%92%8C/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E5%92%8C%E4%B8%BAk%E7%9A%84%E5%AD%90%E6%95%B0%E7%BB%84%E4%BA%8C%E5%8F%89%E6%A0%91%E4%B8%AD%E6%9C%80%E5%A4%A7%E8%B7%AF%E5%BE%84%E5%92%8C/</guid><description>和为K的子数组、二叉树中最大路径和</description><pubDate>Wed, 01 Oct 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;和为K的子数组&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;给你一个整数数组 &lt;code&gt;nums&lt;/code&gt; 和一个整数 &lt;code&gt;k&lt;/code&gt; ，请你统计并返回 &lt;em&gt;该数组中和为 &lt;code&gt;k&lt;/code&gt; 的子数组的个数&lt;/em&gt; 。&lt;/p&gt;
+&lt;p&gt;子数组是数组中元素的连续非空序列。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：nums = [1,1,1], k = 2
+输出：2
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：nums = [1,2,3], k = 3
+输出：2
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;解法一：暴力拆解，这里不break作剪枝是因为有负数和0的测例，同一种开头的i可能有大于1的情况&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public int subarraySum(int[] nums, int k) {
+        int result = 0;
+        for(int i = 0; i &amp;lt; nums.length; i++) {
+            int sum = 0;
+            for(int j = i; j &amp;lt; nums.length; j++) {
+                sum += nums[j];
+                if(sum == k) {
+                    result++;
+                }
+            }
+        }
+        return result;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;解法二：前缀和+哈希表&lt;/p&gt;
+&lt;p&gt;设立一个哈希表依次存储数组的各项前缀和，值为其存在的次数&lt;/p&gt;
+&lt;p&gt;遍历途中哈希表key如果存在target，代表存在value种情况符合和为k，将value取出加到结果上，最后将当前的前缀和存到map中，如果存在则对应的value++&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public int subarraySum(int[] nums, int k) {
+        int sum = 0;
+        int result = 0;
+        Map&amp;lt;Integer, Integer&amp;gt; map = new HashMap&amp;lt;&amp;gt;();
+        map.put(0, 1);
+        for(int i = 0; i &amp;lt; nums.length; i++) {
+            sum += nums[i];
+            int target = sum - k;
+            if(map.containsKey(target)) {
+                result += map.get(target);
+            }
+            map.put(sum, map.getOrDefault(sum, 0) + 1);
+        } 
+        return result;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1&gt;二叉树中最大路径和&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;二叉树中的 &lt;strong&gt;路径&lt;/strong&gt; 被定义为一条节点序列，序列中每对相邻节点之间都存在一条边。同一个节点在一条路径序列中 &lt;strong&gt;至多出现一次&lt;/strong&gt; 。该路径 &lt;strong&gt;至少包含一个&lt;/strong&gt; 节点，且不一定经过根节点。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;路径和&lt;/strong&gt; 是路径中各节点值的总和。&lt;/p&gt;
+&lt;p&gt;给你一个二叉树的根节点 &lt;code&gt;root&lt;/code&gt; ，返回其 &lt;strong&gt;最大路径和&lt;/strong&gt; 。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/226.jpg&quot; alt=&quot;226&quot; /&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：root = [1,2,3]
+输出：6
+解释：最优路径是 2 -&amp;gt; 1 -&amp;gt; 3 ，路径和为 2 + 1 + 3 = 6
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/227.jpg&quot; alt=&quot;227&quot; /&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：root = [-10,9,20,null,null,15,7]
+输出：42
+解释：最优路径是 15 -&amp;gt; 20 -&amp;gt; 7 ，路径和为 15 + 20 + 7 = 42
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;求二叉树直径算法&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    int result = 0;
+    public int diameterOfBinaryTree(TreeNode root) {
+        int height = deep(root);
+        return result;
+    }
+
+    public int deep(TreeNode root) {
+        if(root == null) {
+            return 0;
+        }
+        int leftHeight = deep(root.left);
+        int rightHeight = deep(root.right);
+        result = Math.max(result, leftHeight + rightHeight);
+        return Math.max(leftHeight, rightHeight) + 1;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;思路和求最长路径类似，在dfs算法中迭代result结果，只不过返回的结果是最长的一个边，因为有负数的存在还需判断是否不取该root节点的边和（返回0）&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    int result = Integer.MIN_VALUE;
+    public int maxPathSum(TreeNode root) {
+        dfs(root);
+        return result;
+    }
+    public int dfs(TreeNode root) {
+        if(root == null) {
+            return 0;
+        }
+        int left = dfs(root.left);
+        int right = dfs(root.right);
+        result = Math.max(result, left + root.val + right);
+        return Math.max(Math.max(left, right) + root.val, 0);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+</content:encoded></item><item><title>Linux笔记（日志管理）</title><link>https://thrinisty.github.io/posts/linux%E7%AC%94%E8%AE%B0%E6%97%A5%E5%BF%97%E7%AE%A1%E7%90%86/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/linux%E7%AC%94%E8%AE%B0%E6%97%A5%E5%BF%97%E7%AE%A1%E7%90%86/</guid><description>Linux日志管理</description><pubDate>Wed, 01 Oct 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;Linux笔记&lt;/h1&gt;
+&lt;h2&gt;日志管理&lt;/h2&gt;
+&lt;h3&gt;基本介绍&lt;/h3&gt;
+&lt;p&gt;日志记录很多重要的系统事件，包括用户的登录信息、系统的启动信息、系统的安全信息、邮件的相关信息、各种服务的相关信息&lt;/p&gt;
+&lt;p&gt;系统的相关日志一般被保存在 /var/log/ 目录下，以CentOS为例&lt;img src=&quot;../images/228.png&quot; alt=&quot;228&quot; /&gt;&lt;/p&gt;
+&lt;h3&gt;日志管理服务&lt;/h3&gt;
+&lt;p&gt;CentOS7.6的日志服务是rsyslogd相比于国王的syslogd更为强大，在运行的时候rsyslogd程序帮助我们记录日志&lt;/p&gt;
+&lt;p&gt;查看rsyslogd服务是否启用&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;ps -ef | grep &quot;rsyslog&quot; | grep -v &quot;grep&quot; 
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;查询服务的自启动状态&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;systemctl list-unit-files | grep rsyslog
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;日志配置文件&lt;/h3&gt;
+&lt;p&gt;/etc/rsyslog.conf 文件是该程序的配置文件，在这里配置日志记录的位置&lt;img src=&quot;../images/229.png&quot; alt=&quot;229&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;日志级别&lt;img src=&quot;../images/230.png&quot; alt=&quot;230&quot; /&gt;&lt;/p&gt;
+&lt;h3&gt;日志轮替&lt;/h3&gt;
+&lt;p&gt;我们记录日志不可能一直保留记录的日志，我们需要按照一定策略管理超时的日志，防止日志过大，或者将日志放到别处&lt;/p&gt;
+&lt;p&gt;通过修改 /etc/logrotate.conf 配置文件来进行全局日志轮替策略的修改&lt;/p&gt;
+&lt;p&gt;weekly 	保存四份日志文件，当新的日志文件建立的时候，旧的将会被删除&lt;/p&gt;
+&lt;p&gt;rotate 4	在日志轮替后，创建新的空日志文件&lt;/p&gt;
+&lt;p&gt;create		使用日期作为日志轮替后的后缀&lt;/p&gt;
+&lt;p&gt;dateext		日志文件是否压缩，如果取消注释，则日志在转储的同时进行压缩&lt;/p&gt;
+&lt;p&gt;也可以单独指定一个日志的配置，用大括号进行配置，或者把轮替规则写到/etc/logrotate.d目录下&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/231.png&quot; alt=&quot;231&quot; /&gt;&lt;/p&gt;
+&lt;h3&gt;内存日志&lt;/h3&gt;
+&lt;p&gt;journalctl	可以查看内存日志，默认查看全部&lt;/p&gt;
+&lt;p&gt;-n 3	查看最新三条内存日志&lt;/p&gt;
+&lt;p&gt;--since 19:00 --until 19:10:10	查看起始时间到结束时间的日志，可追加日期&lt;/p&gt;
+&lt;p&gt;-p err	查看报错日志&lt;/p&gt;
+&lt;p&gt;-o verbose	日志详细内容&lt;/p&gt;
+&lt;p&gt;_PID=1245 _COMD=sshd	查看特定程序的日志&lt;/p&gt;
+</content:encoded></item><item><title>自学第七月份总结</title><link>https://thrinisty.github.io/posts/%E8%87%AA%E5%AD%A6%E7%AC%AC%E4%B8%83%E6%9C%88%E4%BB%BD%E6%80%BB%E7%BB%93/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/%E8%87%AA%E5%AD%A6%E7%AC%AC%E4%B8%83%E6%9C%88%E4%BB%BD%E6%80%BB%E7%BB%93/</guid><description>强度稍微偏低</description><pubDate>Wed, 01 Oct 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;自学第七月份总结&lt;/h1&gt;
+&lt;h2&gt;公司项目&lt;/h2&gt;
+&lt;p&gt;9月份上旬，完善了一下固件系统，情报过滤器，维护了一下注释，给导师交接工作，顺便帮导师搞了一下前端，把项目跑通了&lt;/p&gt;
+&lt;p&gt;9.12号离职，回西安上学去喽&lt;/p&gt;
+&lt;h2&gt;秋招投递&lt;/h2&gt;
+&lt;p&gt;这段时间一直在投递简历，笔试，可能是稍微有点晚了点，暂时只约到了国庆后的面试，还在顺便复习Hot100的机考题目，目前复习完了，新题目也做到73题了，准备暂时做满80题就暂时收手，开始学习新的开发框架&lt;/p&gt;
+&lt;h2&gt;自学进度&lt;/h2&gt;
+&lt;p&gt;估计再有个2-3天完成linux系统学习，10月份会开始进行Redis的查缺补漏，以及会开发新的项目。&lt;/p&gt;
+&lt;h2&gt;总结&lt;/h2&gt;
+&lt;p&gt;秋招有好的机会，合适的岗位就上吧，没有的话耐心沉淀一下，积累技术等来年春招发力了，学习总是没有错的。&lt;/p&gt;
+</content:encoded></item><item><title>LeetCode刷题（二分查找改编、搜索旋转排序数组）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E4%BA%8C%E5%88%86%E6%9F%A5%E6%89%BE%E6%94%B9%E7%BC%96/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E4%BA%8C%E5%88%86%E6%9F%A5%E6%89%BE%E6%94%B9%E7%BC%96/</guid><description>在排序数组中查找元素第一个位置和最后一个位置、搜索旋转排序数组</description><pubDate>Tue, 30 Sep 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;查找元素第一个和最后一个位置&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;给你一个按照非递减顺序排列的整数数组 &lt;code&gt;nums&lt;/code&gt;，和一个目标值 &lt;code&gt;target&lt;/code&gt;。请你找出给定目标值在数组中的开始位置和结束位置。&lt;/p&gt;
+&lt;p&gt;如果数组中不存在目标值 &lt;code&gt;target&lt;/code&gt;，返回 &lt;code&gt;[-1, -1]&lt;/code&gt;。&lt;/p&gt;
+&lt;p&gt;你必须设计并实现时间复杂度为 &lt;code&gt;O(log n)&lt;/code&gt; 的算法解决此问题。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：nums = [5,7,7,8,8,10], target = 8
+输出：[3,4]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：nums = [5,7,7,8,8,10], target = 6
+输出：[-1,-1]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 3：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：nums = [], target = 0
+输出：[-1,-1]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;基础的二分查找&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public int search(int[] nums, int left, int right, int target) {
+        if(left &amp;gt; right) {
+            return -1;
+        }
+        if(left == right) {
+            return nums[left] == target ? left : -1;
+        }
+        int mid = (left + right) / 2;
+        if(nums[mid] == target) {
+            return mid;
+        } else if(target &amp;lt; nums[mid]) {
+            return search(nums, left, mid - 1, target);
+        } else {
+            return search(nums, mid + 1, right, target);
+        }
+    }
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;在基础的二分查找法上修改，找到结果后再次排除该结果，对于最小下表，再查其左边的数组看是否有更小的，右侧反之。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public int[] searchRange(int[] nums, int target) {
+        int left = searchLeft(nums, 0, nums.length - 1, target);
+        if(left == -1) {return new int[]{-1, -1};}
+        int right = searchRight(nums, 0, nums.length - 1, target);
+        return new int[]{left, right};
+    }
+
+    public int searchLeft(int[] nums, int left, int right, int target) {
+        if(left &amp;gt; right) {
+            return -1;
+        }
+        int mid = (left + right) / 2;
+        if(nums[mid] == target) {
+            int leftResult = searchLeft(nums, left, mid - 1, target);
+            return leftResult == -1 ? mid : leftResult;
+        } else if(target &amp;lt; nums[mid]) {
+            return searchLeft(nums, left, mid - 1, target);
+        } else {
+            return searchLeft(nums, mid + 1, right, target);
+        }
+    }
+
+    public int searchRight(int[] nums, int left, int right, int target) {
+        if(left &amp;gt; right) {
+            return -1;
+        }
+        int mid = (left + right) / 2;
+        if(nums[mid] == target) {
+            int rightResult = searchRight(nums, mid + 1, right, target);
+            return rightResult == -1 ? mid : rightResult;
+        } else if(target &amp;lt; nums[mid]) {
+            return searchRight(nums, left, mid - 1, target);
+        } else {
+            return searchRight(nums, mid + 1, right, target);
+        }
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1&gt;搜索旋转排序数组&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;整数数组 &lt;code&gt;nums&lt;/code&gt; 按升序排列，数组中的值 &lt;strong&gt;互不相同&lt;/strong&gt; 。&lt;/p&gt;
+&lt;p&gt;在传递给函数之前，&lt;code&gt;nums&lt;/code&gt; 在预先未知的某个下标 &lt;code&gt;k&lt;/code&gt;（&lt;code&gt;0 &amp;lt;= k &amp;lt; nums.length&lt;/code&gt;）上进行了 &lt;strong&gt;向左旋转&lt;/strong&gt;，使数组变为 &lt;code&gt;[nums[k], nums[k+1], ..., nums[n-1], nums[0], nums[1], ..., nums[k-1]]&lt;/code&gt;（下标 &lt;strong&gt;从 0 开始&lt;/strong&gt; 计数）。例如， &lt;code&gt;[0,1,2,4,5,6,7]&lt;/code&gt; 下标 &lt;code&gt;3&lt;/code&gt; 上向左旋转后可能变为 &lt;code&gt;[4,5,6,7,0,1,2]&lt;/code&gt; 。&lt;/p&gt;
+&lt;p&gt;给你 &lt;strong&gt;旋转后&lt;/strong&gt; 的数组 &lt;code&gt;nums&lt;/code&gt; 和一个整数 &lt;code&gt;target&lt;/code&gt; ，如果 &lt;code&gt;nums&lt;/code&gt; 中存在这个目标值 &lt;code&gt;target&lt;/code&gt; ，则返回它的下标，否则返回 &lt;code&gt;-1&lt;/code&gt; 。&lt;/p&gt;
+&lt;p&gt;你必须设计一个时间复杂度为 &lt;code&gt;O(log n)&lt;/code&gt; 的算法解决此问题。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：nums = [4,5,6,7,0,1,2], target = 0
+输出：4
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：nums = [4,5,6,7,0,1,2], target = 3
+输出：-1
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 3：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：nums = [1], target = 0
+输出：-1
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;二分数组，总有一个子数组是单调的，先判断出哪个部分单调，&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public int search(int[] nums, int target) {
+        return searchFunc(nums, 0, nums.length - 1, target);
+    }
+
+    public int searchFunc(int[] nums, int left, int right, int target) {
+        if(left &amp;gt; right) {
+            return -1;
+        }
+        int mid = left + (right - left) / 2;
+        if(nums[mid] == target) {
+            return mid;
+        }
+        if(nums[left] &amp;lt;= nums[mid]) {
+            if(target &amp;gt;= nums[left] &amp;amp;&amp;amp; target &amp;lt; nums[mid]) {
+                return searchFunc(nums, left, mid - 1, target);
+            } else {
+                return searchFunc(nums, mid + 1, right, target);
+            }
+        } else {
+            if(target &amp;gt; nums[mid] &amp;amp;&amp;amp; target &amp;lt;= nums[right]) {
+                return searchFunc(nums, mid + 1, right, target);
+            } else {
+                return searchFunc(nums, left, mid - 1, target);
+            }
+       }
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+</content:encoded></item><item><title>Linux笔记（软件包管理、Shell编程）</title><link>https://thrinisty.github.io/posts/linux%E7%AC%94%E8%AE%B0%E8%BD%AF%E4%BB%B6%E5%8C%85%E7%AE%A1%E7%90%86shell%E7%BC%96%E7%A8%8B/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/linux%E7%AC%94%E8%AE%B0%E8%BD%AF%E4%BB%B6%E5%8C%85%E7%AE%A1%E7%90%86shell%E7%BC%96%E7%A8%8B/</guid><description>rpm包管理、Shell编程快速入门</description><pubDate>Tue, 30 Sep 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;Linux笔记&lt;/h1&gt;
+&lt;h2&gt;软件包管理&lt;/h2&gt;
+&lt;h3&gt;rpm指令&lt;/h3&gt;
+&lt;p&gt;rpm -qa 查询当前系统安装的所有rpm软件包&lt;/p&gt;
+&lt;p&gt;rpm -q 软件包名	查询是否安装对应软件包&lt;/p&gt;
+&lt;p&gt;rpm -qi 软件包名	查询软件包信息&lt;/p&gt;
+&lt;p&gt;rpm -ql 软件包名	查询软件包中的文件&lt;/p&gt;
+&lt;p&gt;rpm -qf 文件全路径名	查询文件所属软件包&lt;/p&gt;
+&lt;p&gt;rpm -ivh rpm包全路径	i：安装		v：提示		h：进度条&lt;/p&gt;
+&lt;p&gt;rpm -e  [--nodeps]  rpm包名称	删除软件包	可以加上可选项强制卸载&lt;/p&gt;
+&lt;p&gt;我使用的Debian 系（Ubuntu、Debian）Ubuntu一般用的是apt来管理软件，rpm一般管理 Red Hat 系（RHEL、CentOS、Fedora）&lt;/p&gt;
+&lt;h3&gt;yum指令&lt;/h3&gt;
+&lt;p&gt;yum是一个Shell前端软件包管理器，基于RPM包管理，可以从指定的服务器上自动下载rpm包并安装，可以自动处理依赖关系，可以一次性安装所有依赖的软件包&lt;/p&gt;
+&lt;p&gt;yum list 	显示yum服务器的软件列表，结合grep进行过滤筛选&lt;/p&gt;
+&lt;p&gt;yum install yum软件包	下载安装对应的软件&lt;/p&gt;
+&lt;h3&gt;配置环境变量&lt;/h3&gt;
+&lt;p&gt;/etc/profile 中配置环境变量&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;export JAVA_HOME=/usr/local/java/jdk1.8.0_261
+export PATH=$JAVA_HOME/bin:$PATH
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;source /etc/profile使得环境变量生效&lt;/p&gt;
+&lt;p&gt;之后我们通过echo $JAVA_HOME就可以得到home目录，PATH中也有java jdk的bin了&lt;/p&gt;
+&lt;h2&gt;Shell编程&lt;/h2&gt;
+&lt;p&gt;Shell是一个命令行解释器，为用户提供了一个向Linux内核发送请求以便运行程序的界面系统级程序，可以通过Shell启动、挂起、停止甚至编写一些程序&lt;/p&gt;
+&lt;h3&gt;执行方式&lt;/h3&gt;
+&lt;p&gt;1.脚本以#!/bin/bash开头&lt;/p&gt;
+&lt;p&gt;2.脚本有可执行权限&lt;/p&gt;
+&lt;p&gt;通过相对或者绝对路径即可运行其中内容&lt;/p&gt;
+&lt;p&gt;如果没有执行权限我我们也可以通过sh指令来执行sh脚本文件&lt;/p&gt;
+&lt;h3&gt;Shell变量&lt;/h3&gt;
+&lt;p&gt;Linux Shell中的变量分为系统变量和用户自定义变量&lt;/p&gt;
+&lt;p&gt;系统变量&lt;/p&gt;
+&lt;p&gt;set 指令：显示当前Shell中的所有系统变量&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$HOME,$PWD,$SHELL,$USER等
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;基本语法&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;撤销变量：unset 变量&lt;/p&gt;
+&lt;p&gt;定义变量：变量=值&lt;/p&gt;
+&lt;p&gt;声明静态变量：readonly 变量=值，不可unset&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;A=100
+echo A=$A
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;./test.sh 或 sh test.sh
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;A=100
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;将命令的返回值赋给变量&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;A=`cal`
+A=$(cal)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;注释&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;:&amp;lt;&amp;lt;!
+A=`cal`
+A=$(cal)
+!
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;命名规范&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;1.变量名称可以由字母，数字，下划线组成，不能以数字开头&lt;/p&gt;
+&lt;p&gt;2.等号两侧不能为空格&lt;/p&gt;
+&lt;p&gt;3.变量名称一般习惯为大写&lt;/p&gt;
+&lt;h3&gt;环境变量&lt;/h3&gt;
+&lt;p&gt;&lt;strong&gt;基本语法&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;export 变量名=变量值&lt;/p&gt;
+&lt;p&gt;source 配置文件&lt;/p&gt;
+&lt;p&gt;echo $变量名&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;位置参数变量&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;当我们执行Shell脚本的时候，我们如果希望获取到命令行参数信息，就可以使用到位置参数变量，如./myshell 100 200 在执行的时候就可以在脚本中使用位置参数&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;基本语法&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;$n&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$1-$9代表第一到第九个参数，十个以上的参数需要使用大括号包围${10}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;$* 	代表命令行中所有的参数，把所有参数看做是一个整体&lt;/p&gt;
+&lt;p&gt;$@	代表命令行中所有参数，把每个参数区分对待&lt;/p&gt;
+&lt;p&gt;$#	代表命令行中所有的参数个数&lt;/p&gt;
+&lt;h3&gt;预定义变量&lt;/h3&gt;
+&lt;p&gt;是Shell设计者事先定义好的变量，可以在Shell脚本中使用&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$$	显示当前进程的PID
+$!	后台运行的最后一个进程的PID
+$?	最后一次执行的命令的返回状态，如果变量为0代表上一个命令正确执行
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;编程语法&lt;/h3&gt;
+&lt;p&gt;&lt;strong&gt;运算符&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$[运算式] 或  $((运算式)) 或  expr m + n
+expr \*, /, %	乘除取余
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;条件语句&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;condition前后需要有空格，返回非空返回为true，可以用$?验证，（0为true， &amp;gt;1为false）&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;[ condition ]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;常用判断条件&lt;/p&gt;
+&lt;p&gt;1.字符串比较	=&lt;/p&gt;
+&lt;p&gt;2.整数比较	-lt：小于，-le：小于等于，-eq：等于，-gt：大于，-ge：大于等于，-ne：不等于&lt;/p&gt;
+&lt;p&gt;3.按照文件权限进行判断	-r 有读权限，-w 有写权限，-x 有执行权限&lt;/p&gt;
+&lt;p&gt;4.按照文件类型进行判断	-f 文件存在且是一个常规文件，-e 文件存在， -d 文件存在并且是一个目录&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;[ -d /root ]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;流程控制&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;if语句&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;if [ condition1 ]
+then
+	代码1
+elif [ condition2 ]
+then
+	代码2
+else
+	代码3
+fi
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;grade=$1
+if [ $grade -ge 60 ]
+then    
+        echo &quot;及格&quot;
+elif [ $grade -lt 60 ]
+then
+        echo &quot;不及格&quot;
+fi
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;case语句&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;case $1 in
+&quot;1&quot;)
+echo &quot;周一&quot;
+;;
+&quot;2&quot;)
+echo &quot;周二&quot;
+;;
+*)
+echo &quot;other&quot;
+;;
+esac
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;for循环&lt;/p&gt;
+&lt;p&gt;语法1：有点类似于增强for循环&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;for 变量 in 值1 值2 值3
+do
+代码
+done
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;例如&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;for i in $@
+do
+echo $i
+done
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;语法2：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;for (( 初始值; 循环控制条件; 变量变化 ))
+do
+代码
+done
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;for (( i=0; i&amp;lt;10; i++ ))
+do
+        echo $i
+done
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;while循环&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;while [ condition ]
+do
+code
+done
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;sum=0
+i=1
+while [ $sum -lt 100 ]
+do
+        sum=$((sum + i))
+        i=$((i + 1))
+done
+echo $sum
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;read输入&lt;/p&gt;
+&lt;p&gt;基本语法：read(选项)(参数)&lt;/p&gt;
+&lt;p&gt;-p：指定读取值时的提示符；&lt;/p&gt;
+&lt;p&gt;-t：指定读取值时等待的时间（s），如果没有能够在指定时间内输入就不再等待&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;read -p &quot;请输入数字num1：&quot; NUM1
+read -p &quot;请输入数字num2：&quot; -t 10 NUM2
+echo $((NUM1 + NUM2))
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;Shell函数&lt;/h3&gt;
+&lt;p&gt;又分为系统函数和自定义函数&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;系统函数&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;常见的系统函数：basename、dirname&lt;/p&gt;
+&lt;p&gt;basename：&lt;/p&gt;
+&lt;p&gt;basename返回完整路径最后/的部分，如果suffix被指定了，那么basename将会把pathname或string中的suffix删除&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;basename [pathname][suffix]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;basename /home/lory/test.txt .txt
+返回test
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;dirname：&lt;/p&gt;
+&lt;p&gt;回返回完整路径最后的/的前边的部分&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;dirname /home/1.txt
+/home
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;自定义函数&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;基本语法&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;定义：
+[ function ] funname[()]
+{
+	Action;
+	[return int;]
+}
+
+调用：
+funname [值]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;function getSum() {
+        SUM=$(($1 + $2))
+        echo &quot;和为:$SUM&quot;
+}
+
+n1=10
+n2=20
+getSum $n1 $n2
+&lt;/code&gt;&lt;/pre&gt;
+</content:encoded></item><item><title>LeetCode刷题（两数相加、搜索二维矩阵）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E9%93%BE%E8%A1%A8%E4%B8%A4%E6%95%B0%E7%9B%B8%E5%8A%A0%E6%90%9C%E7%B4%A2%E4%BA%8C%E7%BB%B4%E7%9F%A9%E9%98%B5/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E9%93%BE%E8%A1%A8%E4%B8%A4%E6%95%B0%E7%9B%B8%E5%8A%A0%E6%90%9C%E7%B4%A2%E4%BA%8C%E7%BB%B4%E7%9F%A9%E9%98%B5/</guid><description>链表两数相加、搜索二维矩阵</description><pubDate>Mon, 29 Sep 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;两数相加&lt;/h1&gt;
 &lt;h2&gt;题目描述&lt;/h2&gt;
 &lt;p&gt;给你两个 &lt;strong&gt;非空&lt;/strong&gt; 的链表，表示两个非负的整数。它们每位数字都是按照 &lt;strong&gt;逆序&lt;/strong&gt; 的方式存储的，并且每个节点只能存储 &lt;strong&gt;一位&lt;/strong&gt; 数字。&lt;/p&gt;
 &lt;p&gt;请你将两个数相加，并以相同形式返回一个表示和的链表。&lt;/p&gt;
@@ -680,7 +1167,7 @@ init [0123456] 通过init来切换不同的运行级别&lt;/p&gt;
 &lt;p&gt;which 指令名称  可以查看某个指令在哪一个目录下&lt;/p&gt;
 &lt;p&gt;grep指令 过滤查找 通常和管道 | 一起使用	-n显示匹配行及行号	-i忽略大小写
 例如在hello.txt中查找&quot;yes&quot;所在行，并且显示行号&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;cat	hello.txt | grep -n &quot;yes&quot; |
+&lt;pre&gt;&lt;code&gt;cat	hello.txt | grep -n &quot;yes&quot; 
 &lt;/code&gt;&lt;/pre&gt;
 </content:encoded></item><item><title>Linux笔记（目录结构、vim、用户管理）</title><link>https://thrinisty.github.io/posts/linux%E7%AC%94%E8%AE%B0%E7%9B%AE%E5%BD%95%E7%BB%93%E6%9E%84vim%E7%94%A8%E6%88%B7%E7%AE%A1%E7%90%86/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/linux%E7%AC%94%E8%AE%B0%E7%9B%AE%E5%BD%95%E7%BB%93%E6%9E%84vim%E7%94%A8%E6%88%B7%E7%AE%A1%E7%90%86/</guid><description>Linux目录结构、vim文本编辑器、用户管理</description><pubDate>Mon, 15 Sep 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;Linux笔记&lt;/h1&gt;
 &lt;p&gt;这是回到学校的第一天，开始备战秋招，目前是这么打算的：&lt;/p&gt;

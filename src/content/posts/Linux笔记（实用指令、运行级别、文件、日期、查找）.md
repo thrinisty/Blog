@@ -102,6 +102,6 @@ grep指令 过滤查找 通常和管道 | 一起使用	-n显示匹配行及行�
 例如在hello.txt中查找"yes"所在行，并且显示行号
 
 ```
-cat	hello.txt | grep -n "yes" |
+cat	hello.txt | grep -n "yes" 
 ```
 
