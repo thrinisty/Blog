@@ -1,4 +1,831 @@
-<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Thrinisty&apos;s Blog</title><description>New Blog</description><link>https://thrinisty.github.io/</link><language>zh_CN</language><item><title>LeetCode刷题（和为K的子数组、二叉树中最大路径和）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E5%92%8C%E4%B8%BAk%E7%9A%84%E5%AD%90%E6%95%B0%E7%BB%84%E4%BA%8C%E5%8F%89%E6%A0%91%E4%B8%AD%E6%9C%80%E5%A4%A7%E8%B7%AF%E5%BE%84%E5%92%8C/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E5%92%8C%E4%B8%BAk%E7%9A%84%E5%AD%90%E6%95%B0%E7%BB%84%E4%BA%8C%E5%8F%89%E6%A0%91%E4%B8%AD%E6%9C%80%E5%A4%A7%E8%B7%AF%E5%BE%84%E5%92%8C/</guid><description>和为K的子数组、二叉树中最大路径和</description><pubDate>Wed, 01 Oct 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;和为K的子数组&lt;/h1&gt;
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Thrinisty&apos;s Blog</title><description>New Blog</description><link>https://thrinisty.github.io/</link><language>zh_CN</language><item><title>Redis笔记（客户端）</title><link>https://thrinisty.github.io/posts/redis%E7%AC%94%E8%AE%B0java%E5%AE%A2%E6%88%B7%E7%AB%AF/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/redis%E7%AC%94%E8%AE%B0java%E5%AE%A2%E6%88%B7%E7%AB%AF/</guid><description>Java客户端，基础指令入门</description><pubDate>Sat, 04 Oct 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;Redis笔记&lt;/h1&gt;
+&lt;h2&gt;Jedis&lt;/h2&gt;
+&lt;p&gt;我们学Redis最终还是要回到编码上，我们需要使用到Redis提供的客户端，推荐的有Jedis、lettuce、Redisson&lt;/p&gt;
+&lt;p&gt;Jedis，以Redis命令作为方法名称，学习成本较低，简单实用，但是Jedis实例线程不安全，多线程环境下需要基于连接池来使用&lt;/p&gt;
+&lt;p&gt;Lettuce，是基于Netty实现的，支持同步，异步，响应式编程方式，线程安全，支持Redis的哨兵模式，集群模式，管道模式&lt;/p&gt;
+&lt;p&gt;Redisson，是基于Redis实现的分布式，可伸缩的Java数据结构集合，包含了Map、Queue、Lock、Semaphore、AtomicLong等强大功能&lt;/p&gt;
+&lt;p&gt;而其中Spring Data Redis支持jedis和lettuce&lt;/p&gt;
+&lt;h3&gt;Jedis使用&lt;/h3&gt;
+&lt;p&gt;用Maven添加如下的依赖&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;dependencies&amp;gt;
+    &amp;lt;dependency&amp;gt;
+        &amp;lt;groupId&amp;gt;redis.clients&amp;lt;/groupId&amp;gt;
+        &amp;lt;artifactId&amp;gt;jedis&amp;lt;/artifactId&amp;gt;
+        &amp;lt;version&amp;gt;5.2.0&amp;lt;/version&amp;gt;
+    &amp;lt;/dependency&amp;gt;
+
+    &amp;lt;dependency&amp;gt;
+        &amp;lt;groupId&amp;gt;junit&amp;lt;/groupId&amp;gt;
+        &amp;lt;artifactId&amp;gt;junit&amp;lt;/artifactId&amp;gt;
+        &amp;lt;version&amp;gt;4.13.2&amp;lt;/version&amp;gt;
+        &amp;lt;scope&amp;gt;test&amp;lt;/scope&amp;gt;
+    &amp;lt;/dependency&amp;gt;
+    &amp;lt;dependency&amp;gt;
+        &amp;lt;groupId&amp;gt;org.junit.jupiter&amp;lt;/groupId&amp;gt;
+        &amp;lt;artifactId&amp;gt;junit-jupiter&amp;lt;/artifactId&amp;gt;
+        &amp;lt;version&amp;gt;5.8.1&amp;lt;/version&amp;gt;
+        &amp;lt;scope&amp;gt;test&amp;lt;/scope&amp;gt;
+    &amp;lt;/dependency&amp;gt;
+&amp;lt;/dependencies&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;测试代码&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;package org.example;
+
+public class Main {
+    public static void main(String[] args) {
+        JedisTest jedis = new JedisTest();
+        jedis.setUP();
+        jedis.testString();
+        jedis.tearDown();
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
+
+public class JedisTest {
+    private Jedis jedis;
+
+    public void setUP(){
+        jedis = new Jedis(&quot;192.168.104.52&quot;, 6379);
+        jedis.auth(&quot;654321&quot;);
+        jedis.select(0);
+    }
+
+    public void testString() {
+        jedis.hset(&quot;hash&quot;, &quot;test&quot;, &quot;value&quot;);
+        Map&amp;lt;String, String&amp;gt; hash = jedis.hgetAll(&quot;hash&quot;);
+        Set&amp;lt;Map.Entry&amp;lt;String, String&amp;gt;&amp;gt; entrySet = hash.entrySet();
+        Iterator&amp;lt;Map.Entry&amp;lt;String, String&amp;gt;&amp;gt; iterator = entrySet.iterator();
+        while(iterator.hasNext()) {
+            Map.Entry&amp;lt;String, String&amp;gt; entry = iterator.next();
+            System.out.println(entry.getKey() + &quot; &quot; + entry.getValue());
+        }
+    }
+
+    public void tearDown() {
+        if(jedis != null) {
+            jedis.close();
+        }
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;fieldString1 HelloWorld1
+test value
+fieldInt 1
+fieldString HelloWorld
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;可以看到，所有的jedis指令名称和参数都和redis中的对应，使用起来异常的方便，Hash数据结构中的hgetAll也使用HashMap的形式返回，方便用迭代器进行处理&lt;/p&gt;
+&lt;h3&gt;Jedis连接池&lt;/h3&gt;
+&lt;p&gt;Jedis本身是线程不安全的，而且频繁地创建和销毁连接会有性能上的损耗，推荐使用Jedis地连接池来替代Jedis地直接连接方式&lt;/p&gt;
+&lt;p&gt;封装连接池类&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class JedisConnectionFactory {
+    private static final JedisPool jedisPool;
+
+    static {
+        JedisPoolConfig jedisPoolConfig = new JedisPoolConfig();
+        //设置最大连接数
+        jedisPoolConfig.setMaxTotal(8);
+        //设置最大空闲连接
+        jedisPoolConfig.setMaxIdle(8);
+        //设置最小空闲连接
+        jedisPoolConfig.setMinIdle(8);
+        //设置最长等待时间ms
+        jedisPoolConfig.setMaxWait(Duration.ofMillis(2000));
+        jedisPool = new JedisPool(jedisPoolConfig, &quot;192.168.104.52&quot;, 6379, 1000, &quot;654321&quot;);
+    }
+    //1000 是连接 Redis 服务器的超时时间（毫秒）
+
+    public static Jedis getJedis() {
+        return jedisPool.getResource();
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;public class Main {
+    public static void main(String[] args) {
+        Jedis jedis = JedisConnectionFactory.getJedis();
+        jedis.set(&quot;key&quot;, &quot;value&quot;);
+        String s = jedis.get(&quot;key&quot;);
+        System.out.println(s);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;SpringDataRedis&lt;/h2&gt;
+&lt;p&gt;SpringData是Spring中数据操作的模块，包含对于各种数据库的集成，其中对Redis的集成模块就是SpringDataRedis，总的来说包含了以下的功能&lt;/p&gt;
+&lt;p&gt;1.提供了对不同Redis客户端的整合（Lettuce和Jedis）&lt;/p&gt;
+&lt;p&gt;2.提供了RedisTemplate统一API操作Redis&lt;/p&gt;
+&lt;p&gt;3.支持Redis的发布订阅模型&lt;/p&gt;
+&lt;p&gt;4.支持Redis哨兵和Redis集群&lt;/p&gt;
+&lt;p&gt;5.支持基于Lettuce的响应式编程&lt;/p&gt;
+&lt;p&gt;6.支持基于JDK，JSON，字符串，Spring对象的数据序列化和反序列化&lt;/p&gt;
+&lt;p&gt;7.支持基于Redis的JDKCollection实现&lt;/p&gt;
+&lt;h3&gt;快速入门&lt;/h3&gt;
+&lt;p&gt;&lt;img src=&quot;../images/131.png&quot; alt=&quot;131&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;配置文件，这里我用的docker redis没有设置密码&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;spring:
+  data:
+    redis:
+      port: 6379
+      host: localhost
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;测试代码&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@SpringBootTest
+class Class01ApplicationTests {
+
+    @Autowired
+    private RedisTemplate redisTemplate;
+
+    @Test
+    void contextLoads() {
+        redisTemplate.opsForValue().set(&quot;key9&quot;, &quot;value9&quot;);
+        Object object = redisTemplate.opsForValue().get(&quot;key9&quot;);
+        System.out.println(&quot;object: &quot; + object);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;通过注入的redisTemplate我们即可完成数据的存入与取出&lt;/p&gt;
+&lt;h3&gt;一个小问题&lt;/h3&gt;
+&lt;p&gt;这里虽然可以取出值，但是我们看到客户端中的key其实不是key9，而是带上了一个乱码前缀&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/233.png&quot; alt=&quot;233&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;这其实是序列化的问题，Redis接受的是Object对象，将其序列化，而不是String，Spring利用了JDK序列化处理工具将其转化存储&lt;/p&gt;
+&lt;p&gt;我们要解决这个问题我们就要改变序列化工具，可以使用StringRedisSerializer来getBytes或者GenericJackson2JsonRedisSerializer&lt;/p&gt;
+&lt;p&gt;用一个配置类来配置我们的redisTemplate&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@Configuration
+public class RedisConfig {
+    @Bean
+    public RedisTemplate&amp;lt;String, Object&amp;gt; redisTemplate(RedisConnectionFactory factory) {
+        RedisTemplate&amp;lt;String, Object&amp;gt; template = new RedisTemplate&amp;lt;&amp;gt;();
+        template.setConnectionFactory(factory);
+        template.setKeySerializer(new StringRedisSerializer()); // Key用字符串
+        template.setValueSerializer(new GenericJackson2JsonRedisSerializer()); // Value用JSON
+        return template;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;除此以外我们还需要引入jackson的相关依赖&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;!-- pom.xml（Maven） --&amp;gt;
+&amp;lt;dependency&amp;gt;
+    &amp;lt;groupId&amp;gt;com.fasterxml.jackson.core&amp;lt;/groupId&amp;gt;
+    &amp;lt;artifactId&amp;gt;jackson-databind&amp;lt;/artifactId&amp;gt;
+    &amp;lt;version&amp;gt;2.17.1&amp;lt;/version&amp;gt; &amp;lt;!-- 或使用 Spring Boot 默认版本 --&amp;gt;
+&amp;lt;/dependency&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;我们就可以指定Key用的StringRedisSerializer序列化，Value用的GenericJackson2JsonRedisSerializer序列化&lt;/p&gt;
+&lt;h3&gt;StringRedisTemplate&lt;/h3&gt;
+&lt;p&gt;我们在使用json序列化处理器的时候值会包含类的全路径，这也是json反序列化处理时需要的一部分&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;{&quot;@class&quot;:&quot;com.redis.entity.Student&quot;,&quot;name&quot;:&quot;Lory&quot;,&quot;age&quot;:18}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;但是有的时候为了节省空间我们会使用统一的String序列化器，要求用String类型来存储key和value，而需要存储Java对象的时候再进行手动对对象序列化和反序列化&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@SpringBootTest
+class Class01ApplicationTests {
+
+    @Resource
+    private RedisTemplate redisTemplate;
+
+    @Resource
+    private StringRedisTemplate stringRedisTemplate;
+
+    @Test
+    void contextLoads() {
+        Student student = new Student(&quot;Lory&quot;, 18);
+        String value = JSON.toJSONString(student);
+        stringRedisTemplate.opsForValue().set(&quot;key9&quot;, value);
+
+        String targetString = stringRedisTemplate.opsForValue().get(&quot;key9&quot;);
+        Student stu = JSON.parseObject(targetString, Student.class);
+        System.out.println(stu.getName());
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;这样存入的就是json字符串&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;{&quot;age&quot;:18,&quot;name&quot;:&quot;Lory&quot;}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;Hash类型操作&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;void contextLoads() {
+        stringRedisTemplate.opsForHash().put(&quot;key10&quot;, &quot;name&quot;, &quot;lory&quot;);
+        stringRedisTemplate.opsForHash().put(&quot;key10&quot;, &quot;age&quot;, &quot;18&quot;);
+        Map&amp;lt;Object, Object&amp;gt; key10 = stringRedisTemplate.opsForHash().entries(&quot;key10&quot;);//获取键对应的Hash结构数据
+    }
+&lt;/code&gt;&lt;/pre&gt;
+</content:encoded></item><item><title>Redis笔记（NoSQL、基本操作）</title><link>https://thrinisty.github.io/posts/redis%E7%AC%94%E8%AE%B0nosqlredis%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/redis%E7%AC%94%E8%AE%B0nosqlredis%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/</guid><description>NoSQL，Redis数据结构</description><pubDate>Fri, 03 Oct 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;Redis笔记&lt;/h1&gt;
+&lt;p&gt;教程包括了：八种不同的数据结构，两个消息队列，四个相关的运维操作，Scrip脚本，事务操作&lt;/p&gt;
+&lt;h2&gt;NoSQL&lt;/h2&gt;
+&lt;p&gt;SQL是关系型数据库，而NoSQL是非关系型数据库&lt;/p&gt;
+&lt;h3&gt;与SQL的区别&lt;/h3&gt;
+&lt;h4&gt;结构化&lt;/h4&gt;
+&lt;p&gt;SQL高度结构化，每个字段每个值都会有严格的要求，一般难以修改。而NoSQL是非结构化的，对于key没有严格要求，支持自定义，还可以键值类型，列类型，文档存储，Graph存储，相对SQL，结构便于修改&lt;/p&gt;
+&lt;h4&gt;关联性&lt;/h4&gt;
+&lt;p&gt;SQL有外键的约束，数据是相关联的，NoSQL没有关联（程序员手动维护）&lt;/p&gt;
+&lt;h4&gt;SQL查询&lt;/h4&gt;
+&lt;p&gt;只要是SQL都可以使用相同的查询语句查询，而NoSQL没有固定的语法格式&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/124.png&quot; alt=&quot;124&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;每一个类型的数据查询方式不同&lt;/p&gt;
+&lt;h4&gt;事务&lt;/h4&gt;
+&lt;p&gt;SQL有事务满足ACID，而NoSQL只满足BASE&lt;/p&gt;
+&lt;h4&gt;总结&lt;/h4&gt;
+&lt;p&gt;&lt;img src=&quot;../images/125.png&quot; alt=&quot;125&quot; /&gt;&lt;/p&gt;
+&lt;h2&gt;Redis&lt;/h2&gt;
+&lt;h3&gt;基本介绍&lt;/h3&gt;
+&lt;p&gt;Remote Dictionary Server 远程词典服务器，是一个基于内存的键值型NoSQL数据库，以下是Redis的基本特征&lt;/p&gt;
+&lt;p&gt;键值型：value支持多种不同数据结构，功能丰富&lt;/p&gt;
+&lt;p&gt;单线程：每个命令具备原子性（Redis 6可以多线程处理网络请求）&lt;/p&gt;
+&lt;p&gt;高性能：低延迟，速度快（基于内存，IO多路复用，良好的编码【C语言编写】）&lt;/p&gt;
+&lt;p&gt;持久化：内存以往是不持久化的，而Redis定期存入磁盘，支持持久化&lt;/p&gt;
+&lt;p&gt;高可用：支持主从集群，分片集群&lt;/p&gt;
+&lt;p&gt;语言支持：支持多种语言的客户端&lt;/p&gt;
+&lt;h3&gt;常用命令&lt;/h3&gt;
+&lt;p&gt;我们一般的redis数据库会配置在Linux环境下，之后可以使用Windows的GUI软件RESP来使用Linux下的数据库&lt;/p&gt;
+&lt;p&gt;再Linux下装好redis后，可以使用如下的指令&lt;/p&gt;
+&lt;p&gt;命令行客户端&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;redis-cli
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;服务端启动脚本&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;redis-server
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;哨兵启动脚本&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;redis-sentinel
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;可以在redis.conf中设置，允许访问的地址，密码，是否后台运行等&lt;/p&gt;
+&lt;p&gt;再用如下的指令指定配置文件启动&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;redis-server redis.conf
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;利用如下指令查找开启的进程&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;ps -ef | grep redis
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;杀死对应端口的进程&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;kill -9 2574
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;用命令行客户端连接redis&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;redis-cli -a ******
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;连接成功后，ping和服务端交互&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;ping
+PONG
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;还可以进行存取数据&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;127.0.0.1:6379&amp;gt; set name jack
+OK
+127.0.0.1:6379&amp;gt; set age 21
+OK
+127.0.0.1:6379&amp;gt; get name
+&quot;jack&quot;
+127.0.0.1:6379&amp;gt; get age
+&quot;21&quot;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;再windows宿主机使用如下指令连接（虚拟机网络适配器改为桥接连接模式）&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;redis-cli -h 192.168.104.52 -p 6379 -a ******
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;使用GUI客户端连接&lt;/p&gt;
+&lt;p&gt;网址链接： https://github.com/lework/RedisDesktopManager-Windows&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/126.png&quot; alt=&quot;126&quot; /&gt;&lt;/p&gt;
+&lt;h2&gt;Redis数据结构&lt;/h2&gt;
+&lt;p&gt;Redis是一个键值对形式存储的数据库，key一般是String类型的，不过Value的类型非常多种多样&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/127.png&quot; alt=&quot;127&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;其中前五种是基本数据类型，后三种是特殊数据类型&lt;/p&gt;
+&lt;p&gt;数据类型的具体使用详见 https://redis.io/docs/latest/commands&lt;/p&gt;
+&lt;p&gt;如果在连接到redis下的客户端中可以使用如下指令获取帮助&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;help @数据类型
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;例如查看String的相关指令&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;help @String
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;Key的层级格式&lt;/h3&gt;
+&lt;p&gt;Redis没有类似MySQL中的Table概念，而所有的键值对都是存储在一起的，怎么区分不同类型的key？&lt;/p&gt;
+&lt;p&gt;例如需要存储用户，商品信息到redis，一个用户的id是1，而另一个商品id也为1&lt;/p&gt;
+&lt;p&gt;而为了解决这类的问题，redis引入了key的层级结构：Redis的key允许有多个单词形成层级结构，多个单词之间用：隔开，格式如下&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;项目名称:业务名称:类型:id
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;格式并非固定不变，可以根据需求删除或者添加词条&lt;/p&gt;
+&lt;p&gt;user相关的key：com.user:1&lt;/p&gt;
+&lt;p&gt;product相关的key：com.product:1&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/128.png&quot; alt=&quot;128&quot; /&gt;&lt;/p&gt;
+&lt;h3&gt;Redis通用命令&lt;/h3&gt;
+&lt;p&gt;虽然有非常多的数据类型以及相关操作，但是其中也有一些通用的命令&lt;/p&gt;
+&lt;h4&gt;KEYS&lt;/h4&gt;
+&lt;p&gt;查看符合模板的所有key，不建议在Redis服务器端使用，会阻塞所有的其他指令&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;KEYS pattern
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;例如：返回所有的键值&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;KEYS *
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;返回a开头的所有键值&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;KEYS a*
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;DEL&lt;/h4&gt;
+&lt;p&gt;删除一个指定的键值(例如age)&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;DEL age
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;也可以删除多个&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;DEL k1 k2 k3
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;MSET&lt;/h4&gt;
+&lt;p&gt;批量插入键值对&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;MSET k1 v1 k2 v2 k3 v3 k4 v4
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;EXISTS&lt;/h4&gt;
+&lt;p&gt;判断是否存在键值&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;EXISTS k4
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;EXPIRE&lt;/h4&gt;
+&lt;p&gt;给一个key设置有效期，有效期到达时key会被删除&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;EXPIRE key second
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;EXPIRE name 5
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;TTL&lt;/h4&gt;
+&lt;p&gt;查看一个键的有效期&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;TTL key
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;其中返回-1代表永久有效 -2为无效，其余为有效的秒数&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;TTL k1
+(integer) -1
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;String类型&lt;/h3&gt;
+&lt;p&gt;是字符串类型，是Redis中最简单的存储类型，value是字符串，根据不同的格式又分为了三类：String 普通字符串  int 整数类型  float  浮点类型&lt;/p&gt;
+&lt;p&gt;无论是哪一种格式存储，底层都是字节数组形式，只是编码方式不同，字符串类型的最大空间不可以超过512M&lt;/p&gt;
+&lt;p&gt;以下是String类型常见的命令&lt;/p&gt;
+&lt;h4&gt;SET&lt;/h4&gt;
+&lt;p&gt;添加或者修改一个存在的String类型的键值对&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt; set k1 123
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;GET&lt;/h4&gt;
+&lt;p&gt;根据key获取String类型的value&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;get k1
+&quot;123&quot;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;MSET&lt;/h4&gt;
+&lt;p&gt;批量添加多个String类型的的键值对&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;MSET t1 1 t2 2 t3 3
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;MGET&lt;/h4&gt;
+&lt;p&gt;根据多个key获取多个String类型的value&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;MGET k1 k2 k3
+1) &quot;v1&quot;
+2) &quot;v2&quot;
+3) &quot;v3&quot;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;INCR&lt;/h4&gt;
+&lt;p&gt;让一个整型的key自增1&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;get 1
+&quot;23&quot;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;INCR 1
+(integer) 24
+get 1
+&quot;24&quot;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;INCRBY&lt;/h4&gt;
+&lt;p&gt;让一个整形的key自增并指定步长，例如incrby num 2让num自增2&lt;/p&gt;
+&lt;p&gt;在INCR的基础上增加步长&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;INCRBY 1 4
+(integer) 28
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;INCRBYFLOAT&lt;/h4&gt;
+&lt;p&gt;让一个浮点类型的数字自增并指定步长&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;append 2 3.1415296
+(integer) 9
+get 2
+&quot;3.1415296&quot;
+INCRBYFLOAT 2 1.1
+&quot;4.2415296&quot;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;SETNX&lt;/h4&gt;
+&lt;p&gt;添加一个String类型的键值对，前提是这个key不存在，否则不执行&lt;/p&gt;
+&lt;p&gt;k1以及存在，不执行语句&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;SETNX k1 1
+(integer) 0
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;SETEX&lt;/h4&gt;
+&lt;p&gt;添加一个String类型的键值对，并且指定有效期&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;SETEX key seconds value
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;设置键3值12，持续30每秒&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;SETEX 3 30 12
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;或者可以这么写&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;set 3 12 ex 30
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;Hash类型&lt;/h3&gt;
+&lt;p&gt;Hash类型，又称为散列，它的value是一个无序字典，类似于Java中的HashMap结构，String结构是将对象序列化为JSON字符串后存储，当需要修改某个字段的时候很不方便&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/129.png&quot; alt=&quot;129&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;而Hash结构可以将对象中的每个字段独立存储，可以针对单个字段作增删改查&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/130.png&quot; alt=&quot;130&quot; /&gt;&lt;/p&gt;
+&lt;h4&gt;HSET&lt;/h4&gt;
+&lt;p&gt;添加或者修改hash类型key的field值&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;hset key field value
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;hset hash1 field value
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;HGET&lt;/h4&gt;
+&lt;p&gt;获取一个hash类型的key的field值&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;HGET key field
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;hget hash1 field
+&quot;value&quot;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;HMSET&lt;/h4&gt;
+&lt;p&gt;批量添加多个hash类型key的field值&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;HMSET hash1 field2 value2 field3 value3
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;HMGET&lt;/h4&gt;
+&lt;p&gt;批量获取多个hash类型的key的field值&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;HMGET hash1 field field1 field2
+1) &quot;value&quot;
+2) &quot;value2&quot;
+3) &quot;value2&quot;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;HDEL&lt;/h4&gt;
+&lt;p&gt;删除指定hash中的某个字段&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;HDEL hash fieldString
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;HGETALL&lt;/h4&gt;
+&lt;p&gt;获取一个hash类型的key中所有的field和value&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;HGETALL hash1
+1) &quot;field&quot;
+2) &quot;value&quot;
+3) &quot;field1&quot;
+4) &quot;value2&quot;
+5) &quot;field2&quot;
+6) &quot;value2&quot;
+7) &quot;field3&quot;
+8) &quot;value3&quot;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;HKEYS&lt;/h4&gt;
+&lt;p&gt;获取一个hash类型的所有field&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;HKEYS hash1
+1) &quot;field&quot;
+2) &quot;field1&quot;
+3) &quot;field2&quot;
+4) &quot;field3&quot;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;HVALS&lt;/h4&gt;
+&lt;p&gt;获取一个hash类型的所有value&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;HVALS hash1
+1) &quot;value&quot;
+2) &quot;value2&quot;
+3) &quot;value2&quot;
+4) &quot;value3&quot;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;HINCRBY&lt;/h4&gt;
+&lt;p&gt;让一个hash类型key的字段值自增，并指定步长&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;HSET hash fieldInt 1
+(integer) 1
+HINCRBY hash fieldInt 3
+(integer) 4
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;HSETNX&lt;/h4&gt;
+&lt;p&gt;添加一个hash类型key的field值，前提是field不存在，否则不执行（就是不允许修改存在的键的值）&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;HSETNX hash fieldString HelloWorld
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;List类型&lt;/h3&gt;
+&lt;p&gt;对于List而言，可以使用该数据类型进行模拟栈：只需要入口和出口在同一边，如LPUSH+LPOP或者RPUSH+RPOP&lt;/p&gt;
+&lt;p&gt;也可以模拟一个队列：需要入口和出口在不同边即可，如RPUSH+LPOP或者RPUSH+LPOP&lt;/p&gt;
+&lt;p&gt;阻塞队列的模拟：入口出口不同边，取出采用BLPOP或者BRPOP&lt;/p&gt;
+&lt;p&gt;基本介绍&lt;/p&gt;
+&lt;p&gt;Redis中的List类型，和Java中的LinkedList类似，可以看作是一个双向链表的结构，既支持正向检索也可以支持反向检索&lt;/p&gt;
+&lt;p&gt;特征：有序，元素可以重复，插入和删除较快，查询效率一般&lt;/p&gt;
+&lt;p&gt;以下是List的常见命令&lt;/p&gt;
+&lt;h4&gt;LPUSH&lt;/h4&gt;
+&lt;p&gt;向列表左侧插入一个或者多个元素&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;LPUSH key element ...
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;LPUSH list a b c d e f g
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;LPOP&lt;/h4&gt;
+&lt;p&gt;移除并返回列表左侧的第一个元素，没有则返回nil&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;LPOP key 
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;LPOP list
+&quot;g&quot;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;RPUSH&lt;/h4&gt;
+&lt;p&gt;向列表右侧插入一个或者多个元素&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;RPUSH list a b c d e f g h
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;RPOP&lt;/h4&gt;
+&lt;p&gt;移除并返回列表右侧的第一个元素&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;RPOP list
+&quot;h&quot;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;LRANGE&lt;/h4&gt;
+&lt;p&gt;返回一段角标范围内的所有元素&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;LRANGE key star end
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;LRANGE list 1 3
+1) &quot;b&quot;
+2) &quot;c&quot;
+3) &quot;d&quot;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;BLPOP与BRPOP&lt;/h4&gt;
+&lt;p&gt;和LPOP，RPOP类似，只是在没有元素时等待指定时间，而不是返回nil&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;BLPOP list 60
+1) &quot;list&quot;
+2) &quot;target&quot;
+(15.01s)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;其中list本来没有值，进入阻塞等待最多60s，新创建的客户端加入list 数据 target数据被读到&lt;/p&gt;
+&lt;h3&gt;Set类型&lt;/h3&gt;
+&lt;p&gt;Redis的Set结构和Java中的HashSet类似，可以看为是一个value为null的HashMap，因为是一个hash表，因此具备和HashSet类似的特征：无序，元素不可重复，查找快，支持交集、并集、差集的功能&lt;/p&gt;
+&lt;p&gt;以下是Set类型常见的命令&lt;/p&gt;
+&lt;h4&gt;SADD&lt;/h4&gt;
+&lt;p&gt;向set中添加一个或者多个元素&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;SADD key member ...
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;SADD set a b c d e f g
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;SREM&lt;/h4&gt;
+&lt;p&gt;移除set中的指定元素&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;SREM key member ...
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;SREM set a b c
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;SCARD&lt;/h4&gt;
+&lt;p&gt;返回set中的元素个数&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;SCARD key
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;SCARD set
+(integer) 4
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;SISMEMBER&lt;/h4&gt;
+&lt;p&gt;判断一个元素是否存在于set中&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;SISMEMBER key member
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;SISMEMBER set g
+(integer) 1
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;SMEMBERS&lt;/h4&gt;
+&lt;p&gt;获取set中的所有元素&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;SMEMBERS set
+1) &quot;g&quot;
+2) &quot;d&quot;
+3) &quot;f&quot;
+4) &quot;e&quot;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;前置操作&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;SADD set1 a b c d e f
+SADD set2 a b
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;SINTER&lt;/h4&gt;
+&lt;p&gt;求两个集合的交集&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;SINTER set1 set2
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;1) &quot;b&quot;
+2) &quot;a&quot;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;SDIFF&lt;/h4&gt;
+&lt;p&gt;求两个集合的差集&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;SDIFF set1 set2
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;1) &quot;c&quot;
+2) &quot;e&quot;
+3) &quot;f&quot;
+4) &quot;d&quot;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;SUNION&lt;/h4&gt;
+&lt;p&gt;求两个集合的并集&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;SUNION set1 set2
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;1) &quot;b&quot;
+2) &quot;a&quot;
+3) &quot;d&quot;
+4) &quot;c&quot;
+5) &quot;e&quot;
+6) &quot;f&quot;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;SortedSet类型&lt;/h3&gt;
+&lt;p&gt;Redis的SortedSet是一个可排序的set集合，与Java中的TreeSet有些类似，但是底层数据结构差别巨大，SortedSet中的每一个元素都带有一个score属性，可以基于score属性对元素排序，底层是一个跳表（Skip List）加上hash表&lt;/p&gt;
+&lt;p&gt;以下是SortedSet的特征：可排序 元素不重复  查询速度快&lt;/p&gt;
+&lt;p&gt;因为SortedSet的可排序性，经常用于实现排行榜等功能&lt;/p&gt;
+&lt;p&gt;以下是Sorted的常见命令，所有排名默认为升序，降序在命令Z后加REV即可&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;ZREVRANGE 
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;ZADD&lt;/h4&gt;
+&lt;p&gt;添加一个或者多个元素到sorted set，如果与存在则更新其score值&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;ZADD key score member
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;ZADD sortedset 1 Hello
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;ZREM&lt;/h4&gt;
+&lt;p&gt;删除sorted set中的一个元素&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;ZREM key member
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;zrem sortedset HelloWorld
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;ZSCORE&lt;/h4&gt;
+&lt;p&gt;获取sorted set中指定元素的score值&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;ZSCORE key member
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;ZSCORE sortedset Hello
+&quot;1&quot;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;ZRANK&lt;/h4&gt;
+&lt;p&gt;获取sorted set中的指定元素排名&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;ZRANK key member
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;ZRANK sortedset Hello
+(integer) 0
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;ZCARD&lt;/h4&gt;
+&lt;p&gt;获取sorted set中的元素个数&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;ZCARD key
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;zcard sortedset
+(integer) 2
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;ZCOUNT&lt;/h4&gt;
+&lt;p&gt;统计指定范围内元素的个数&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;ZCOUNT key min max
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;ZCOUNT sortedset 2 5
+(integer) 1
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;ZINCRBY&lt;/h4&gt;
+&lt;p&gt;让sorted set 中指定score元素自增，指定步长&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;ZINCRBY key increment member
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;ZINCRBY sortedset 4 1
+&quot;22&quot;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;ZRANGE&lt;/h4&gt;
+&lt;p&gt;按照score排序后，获取指定排名范围内的元素&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;ZRANGE key min max
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;ZRANGE sortedset 0 1
+1) &quot;Hello&quot;
+2) &quot;World&quot;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;ZRANGEBYSCORE&lt;/h4&gt;
+&lt;p&gt;按照score排序后，获取指定score范围内的元素&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;ZRANGEBYSCORE key min max
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;ZRANGEBYSCORE sortedset 0 44
+1) &quot;Hello&quot;
+2) &quot;World&quot;
+3) &quot;1&quot;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;ZDIFF、ZINTER、ZUNION&lt;/h4&gt;
+&lt;p&gt;求差集、交集、并集&lt;/p&gt;
+&lt;p&gt;和Set类中的类似，不再过多叙述&lt;/p&gt;
+</content:encoded></item><item><title>LeetCode刷题（验证二叉搜索树）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E9%AA%8C%E8%AF%81%E4%BA%8C%E5%8F%89%E6%90%9C%E7%B4%A2%E6%A0%91/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E9%AA%8C%E8%AF%81%E4%BA%8C%E5%8F%89%E6%90%9C%E7%B4%A2%E6%A0%91/</guid><description>验证二叉搜索树</description><pubDate>Fri, 03 Oct 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;验证二叉搜索树&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;给你一个二叉树的根节点 &lt;code&gt;root&lt;/code&gt; ，判断其是否是一个有效的二叉搜索树。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;有效&lt;/strong&gt; 二叉搜索树定义如下：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;节点的左子树只包含 &lt;strong&gt;严格小于&lt;/strong&gt; 当前节点的数。&lt;/li&gt;
+&lt;li&gt;节点的右子树只包含 &lt;strong&gt;严格大于&lt;/strong&gt; 当前节点的数。&lt;/li&gt;
+&lt;li&gt;所有左子树和右子树自身必须也是二叉搜索树。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：root = [2,1,3]
+输出：true
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：root = [5,1,4,null,null,3,6]
+输出：false
+解释：根节点的值是 5 ，但是右子节点的值是 4 。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;递归一手，遍历结点的时候同时传入节点必须小于的值和必须大于的值，对于左节点而言必须小于父节点的值，对于右节点最小的值必须要大于父节点的值&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public boolean isValidBST(TreeNode root) {
+        return isValid(root, Integer.MIN_VALUE, Integer.MAX_VALUE);
+    }
+
+    public boolean isValid(TreeNode root, int min, int max) {
+        if(root == null) {
+            return true;
+        }
+        if(root.val &amp;gt;= max || root.val &amp;lt;= min) {
+            return false;
+        }
+        return isValid(root.left, min, root.val) &amp;amp;&amp;amp; isValid(root.right, root.val , max);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+</content:encoded></item><item><title>LeetCode刷题（路径总和III、零钱兑换）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E8%B7%AF%E5%BE%84%E6%80%BB%E5%92%8Ciii%E9%9B%B6%E9%92%B1%E5%85%91%E6%8D%A2/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E8%B7%AF%E5%BE%84%E6%80%BB%E5%92%8Ciii%E9%9B%B6%E9%92%B1%E5%85%91%E6%8D%A2/</guid><description>路径总和III、零钱兑换</description><pubDate>Thu, 02 Oct 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;路径总和III&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;给定一个二叉树的根节点 &lt;code&gt;root&lt;/code&gt; ，和一个整数 &lt;code&gt;targetSum&lt;/code&gt; ，求该二叉树里节点值之和等于 &lt;code&gt;targetSum&lt;/code&gt; 的 &lt;strong&gt;路径&lt;/strong&gt; 的数目。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;路径&lt;/strong&gt; 不需要从根节点开始，也不需要在叶子节点结束，但是路径方向必须是向下的（只能从父节点到子节点）。&lt;img src=&quot;../images/232.jpg&quot; alt=&quot;232&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：root = [10,5,-3,3,2,null,11,3,-2,null,1], targetSum = 8
+输出：3
+解释：和等于 8 的路径有 3 条，如图所示。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：root = [5,4,8,11,null,13,4,7,2,null,null,5,1], targetSum = 22
+输出：3
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;题解和和为k的子数组次数思路一致，将数据结构更换为了二叉树，我们还是使用前缀和+哈希表的方式求解，全局定义一个存储前缀和的哈希表，依次通过dfs的方式遍历左右节点，最后回溯删除当前节点的前缀和情况防止对于其他路径进行干扰&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    Map&amp;lt;Long, Integer&amp;gt; map = new HashMap&amp;lt;&amp;gt;();
+    public int pathSum(TreeNode root, int targetSum) {
+        map.put(0L, 1);
+        return dfs(root, 0L, targetSum);
+    }
+
+    public int dfs(TreeNode root, long preSum, int targetSum) {
+        if(root == null) {
+            return 0;
+        }
+        int result = 0;
+        preSum += root.val;
+        long target = preSum - targetSum;
+        result += map.getOrDefault(target, 0);
+        map.put(preSum, map.getOrDefault(preSum, 0) + 1);
+        result += dfs(root.left, preSum, targetSum);
+        result += dfs(root.right, preSum, targetSum);
+        map.put(preSum, map.getOrDefault(preSum, 0) - 1);
+        return result;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1&gt;零钱兑换&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;给你一个整数数组 &lt;code&gt;coins&lt;/code&gt; ，表示不同面额的硬币；以及一个整数 &lt;code&gt;amount&lt;/code&gt; ，表示总金额。&lt;/p&gt;
+&lt;p&gt;计算并返回可以凑成总金额所需的 &lt;strong&gt;最少的硬币个数&lt;/strong&gt; 。如果没有任何一种硬币组合能组成总金额，返回 &lt;code&gt;-1&lt;/code&gt; 。&lt;/p&gt;
+&lt;p&gt;你可以认为每种硬币的数量是无限的。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：coins = [1, 2, 5], amount = 11
+输出：3 
+解释：11 = 5 + 5 + 1
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：coins = [2], amount = 3
+输出：-1
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 3：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：coins = [1], amount = 0
+输出：0
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;解法一 回溯法（超时）&lt;/p&gt;
+&lt;p&gt;我一看到这一题，我就想这不是做过嘛，回溯法直接秒，遍历一下之前的结果即可，果不其然时间效率惨淡（39/189）&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    List&amp;lt;List&amp;lt;Integer&amp;gt;&amp;gt; result = new ArrayList&amp;lt;&amp;gt;();
+    List&amp;lt;Integer&amp;gt; list = new ArrayList&amp;lt;&amp;gt;();
+    public int coinChange(int[] coins, int amount) {
+        dfs(coins, amount, 0);
+        if(result.size() == 0) {
+            return -1;
+        }
+        int target = Integer.MAX_VALUE;
+        for(int i = 0; i &amp;lt; result.size(); i++) {
+            List&amp;lt;Integer&amp;gt; currentList = result.get(i);
+            target = Math.min(target, currentList.size());
+        }
+        return target;
+    }
+
+    public void dfs(int[] coins, int amount, int index) {
+        if(index == coins.length) {
+            return;
+        }
+        if(amount == 0) {
+            result.add(new ArrayList&amp;lt;&amp;gt;(list));
+            return;
+        }
+        dfs(coins, amount, index + 1);
+        int newNum = coins[index];
+        int newTarget = amount - newNum;
+        if(newNum &amp;lt;= amount) {
+            list.add(newNum);
+            dfs(coins, newTarget, index);
+            list.remove(list.size() - 1);
+        }
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;看了下题解应该使用动态规划完成，不然在不限制硬币数量的时候，复杂度随amount指数增长，就太夸张了&lt;/p&gt;
+&lt;p&gt;解法二：动态规划&lt;/p&gt;
+&lt;p&gt;建立一个amount + 1大小的int数组其中存放到这个下表的最小硬币数量，逐个遍历，对每个目标i循环中遍历coins数组，当不超过i时，更新min最小硬币数量（用dp[i - coins[i]] + 1进行迭代min）&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public int coinChange(int[] coins, int amount) {
+        if(coins.length == 0) {
+            return -1;
+        }
+        int[] dp = new int[amount + 1];
+        Arrays.fill(dp, Integer.MAX_VALUE);
+        dp[0] = 0;
+        for(int i = 1; i &amp;lt;= amount; i++) {
+            int min = Integer.MAX_VALUE;
+            for(int coin : coins) {
+                if(i &amp;gt;= coin &amp;amp;&amp;amp; dp[i - coin] != Integer.MAX_VALUE) {
+                    min = Math.min(min, dp[i - coin] + 1);
+                }
+            }
+            dp[i] = min;
+        }
+        return dp[amount] == Integer.MAX_VALUE ? -1 : dp[amount];
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+</content:encoded></item><item><title>LeetCode刷题（）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E6%A8%A1%E6%9D%BF/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E6%A8%A1%E6%9D%BF/</guid><pubDate>Wed, 01 Oct 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;（题目）&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+</content:encoded></item><item><title>LeetCode刷题（和为K的子数组、二叉树中最大路径和）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E5%92%8C%E4%B8%BAk%E7%9A%84%E5%AD%90%E6%95%B0%E7%BB%84%E4%BA%8C%E5%8F%89%E6%A0%91%E4%B8%AD%E6%9C%80%E5%A4%A7%E8%B7%AF%E5%BE%84%E5%92%8C/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E5%92%8C%E4%B8%BAk%E7%9A%84%E5%AD%90%E6%95%B0%E7%BB%84%E4%BA%8C%E5%8F%89%E6%A0%91%E4%B8%AD%E6%9C%80%E5%A4%A7%E8%B7%AF%E5%BE%84%E5%92%8C/</guid><description>和为K的子数组、二叉树中最大路径和</description><pubDate>Wed, 01 Oct 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;和为K的子数组&lt;/h1&gt;
 &lt;h2&gt;题目描述&lt;/h2&gt;
 &lt;p&gt;给你一个整数数组 &lt;code&gt;nums&lt;/code&gt; 和一个整数 &lt;code&gt;k&lt;/code&gt; ，请你统计并返回 &lt;em&gt;该数组中和为 &lt;code&gt;k&lt;/code&gt; 的子数组的个数&lt;/em&gt; 。&lt;/p&gt;
 &lt;p&gt;子数组是数组中元素的连续非空序列。&lt;/p&gt;
@@ -104,7 +931,17 @@
     }
 }
 &lt;/code&gt;&lt;/pre&gt;
-</content:encoded></item><item><title>Linux笔记（日志管理）</title><link>https://thrinisty.github.io/posts/linux%E7%AC%94%E8%AE%B0%E6%97%A5%E5%BF%97%E7%AE%A1%E7%90%86/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/linux%E7%AC%94%E8%AE%B0%E6%97%A5%E5%BF%97%E7%AE%A1%E7%90%86/</guid><description>Linux日志管理</description><pubDate>Wed, 01 Oct 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;Linux笔记&lt;/h1&gt;
+</content:encoded></item><item><title>自学第七月份总结</title><link>https://thrinisty.github.io/posts/%E8%87%AA%E5%AD%A6%E7%AC%AC%E4%B8%83%E6%9C%88%E4%BB%BD%E6%80%BB%E7%BB%93/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/%E8%87%AA%E5%AD%A6%E7%AC%AC%E4%B8%83%E6%9C%88%E4%BB%BD%E6%80%BB%E7%BB%93/</guid><description>强度稍微偏低</description><pubDate>Wed, 01 Oct 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;自学第七月份总结&lt;/h1&gt;
+&lt;h2&gt;公司项目&lt;/h2&gt;
+&lt;p&gt;9月份上旬，完善了一下固件系统，情报过滤器，维护了一下注释，给导师交接工作，顺便帮导师搞了一下前端，把项目跑通了&lt;/p&gt;
+&lt;p&gt;9.12号离职，回西安上学去喽&lt;/p&gt;
+&lt;h2&gt;秋招投递&lt;/h2&gt;
+&lt;p&gt;这段时间一直在投递简历，笔试，可能是稍微有点晚了点，暂时只约到了国庆后的面试，还在顺便复习Hot100的机考题目，目前复习完了，新题目也做到73题了，准备暂时做满80题就暂时收手，开始学习新的开发框架&lt;/p&gt;
+&lt;h2&gt;自学进度&lt;/h2&gt;
+&lt;p&gt;估计再有个2-3天完成linux系统学习，10月份会开始进行Redis的查缺补漏，以及会开发新的项目。&lt;/p&gt;
+&lt;h2&gt;总结&lt;/h2&gt;
+&lt;p&gt;秋招有好的机会，合适的岗位就上吧，没有的话耐心沉淀一下，积累技术等来年春招发力了，学习总是没有错的。&lt;/p&gt;
+</content:encoded></item><item><title>Linux笔记（日志管理、面试题）</title><link>https://thrinisty.github.io/posts/linux%E7%AC%94%E8%AE%B0%E6%97%A5%E5%BF%97%E7%AE%A1%E7%90%86%E9%9D%A2%E8%AF%95%E9%A2%98/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/linux%E7%AC%94%E8%AE%B0%E6%97%A5%E5%BF%97%E7%AE%A1%E7%90%86%E9%9D%A2%E8%AF%95%E9%A2%98/</guid><description>Linux日志管理、Linux相关面试题目</description><pubDate>Wed, 01 Oct 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;Linux笔记&lt;/h1&gt;
 &lt;h2&gt;日志管理&lt;/h2&gt;
 &lt;h3&gt;基本介绍&lt;/h3&gt;
 &lt;p&gt;日志记录很多重要的系统事件，包括用户的登录信息、系统的启动信息、系统的安全信息、邮件的相关信息、各种服务的相关信息&lt;/p&gt;
@@ -136,16 +973,41 @@
 &lt;p&gt;-p err	查看报错日志&lt;/p&gt;
 &lt;p&gt;-o verbose	日志详细内容&lt;/p&gt;
 &lt;p&gt;_PID=1245 _COMD=sshd	查看特定程序的日志&lt;/p&gt;
-</content:encoded></item><item><title>自学第七月份总结</title><link>https://thrinisty.github.io/posts/%E8%87%AA%E5%AD%A6%E7%AC%AC%E4%B8%83%E6%9C%88%E4%BB%BD%E6%80%BB%E7%BB%93/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/%E8%87%AA%E5%AD%A6%E7%AC%AC%E4%B8%83%E6%9C%88%E4%BB%BD%E6%80%BB%E7%BB%93/</guid><description>强度稍微偏低</description><pubDate>Wed, 01 Oct 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;自学第七月份总结&lt;/h1&gt;
-&lt;h2&gt;公司项目&lt;/h2&gt;
-&lt;p&gt;9月份上旬，完善了一下固件系统，情报过滤器，维护了一下注释，给导师交接工作，顺便帮导师搞了一下前端，把项目跑通了&lt;/p&gt;
-&lt;p&gt;9.12号离职，回西安上学去喽&lt;/p&gt;
-&lt;h2&gt;秋招投递&lt;/h2&gt;
-&lt;p&gt;这段时间一直在投递简历，笔试，可能是稍微有点晚了点，暂时只约到了国庆后的面试，还在顺便复习Hot100的机考题目，目前复习完了，新题目也做到73题了，准备暂时做满80题就暂时收手，开始学习新的开发框架&lt;/p&gt;
-&lt;h2&gt;自学进度&lt;/h2&gt;
-&lt;p&gt;估计再有个2-3天完成linux系统学习，10月份会开始进行Redis的查缺补漏，以及会开发新的项目。&lt;/p&gt;
-&lt;h2&gt;总结&lt;/h2&gt;
-&lt;p&gt;秋招有好的机会，合适的岗位就上吧，没有的话耐心沉淀一下，积累技术等来年春招发力了，学习总是没有错的。&lt;/p&gt;
+&lt;h2&gt;面试题集&lt;/h2&gt;
+&lt;p&gt;有这么一个t.txt 文件其中有互联网的访问请求，需要对于ip提出并且统计，要求按照从出现次数从大到小排序&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;https://189.0.9.1/index1.html  
+https://github.com/index2.html  
+https://189.0.9.1/index3.html  # 重复 IP  
+https://189.0.9.1/index4.html  # 重复 IP  
+https://example.com/index5.html  
+https://203.0.113.1/index6.html  
+https://203.0.113.1/index7.html  # 重复 IP  
+https://192.168.1.1/index8.html  
+https://192.168.1.1/index9.html  # 重复 IP  
+https://10.0.0.1/index10.html  
+https://10.0.0.1/index11.html  # 重复 IP  
+https://172.16.0.1/index12.html  
+https://172.16.0.1/index13.html  # 重复 IP 
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;cat t.txt | cut -d &apos;/&apos; -f 3 | sort | uniq -c | sort -nr
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;cut -d &apos;/&apos; -f 3代表按照/分隔符进行分割 取出第三个部分&lt;/p&gt;
+&lt;p&gt;我们需要从其中获取到ip，我们需要使用awk进行对于空格的分割&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;[root@iv-ye5w83dog0bw80eugddg lory]# netstat -an | grep ESTABLISHED
+tcp        0      0 192.168.95.8:22         119.112.204.254:54359   ESTABLISHED
+tcp        0      0 192.168.95.8:55054      128.1.164.196:443       ESTABLISHED
+tcp        0     36 192.168.95.8:22         223.104.204.225:49676   ESTABLISHED
+tcp        0      0 192.168.95.8:39136      100.64.205.163:80       ESTABLISHED
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;最终指令&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;netstat -an | grep ESTABLISHED | awk -F &quot; &quot; &apos;{print $5}&apos; | cut -d &apos;:&apos; -f 1
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;175.174.139.246
+128.1.164.196
+223.104.204.225
+100.64.205.163
+&lt;/code&gt;&lt;/pre&gt;
+</content:encoded></item><item><title>Redis笔记（）</title><link>https://thrinisty.github.io/posts/redis%E7%AC%94%E8%AE%B0%E6%A8%A1%E6%9D%BF/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/redis%E7%AC%94%E8%AE%B0%E6%A8%A1%E6%9D%BF/</guid><pubDate>Wed, 01 Oct 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;Redis笔记&lt;/h1&gt;
 </content:encoded></item><item><title>LeetCode刷题（二分查找改编、搜索旋转排序数组）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E4%BA%8C%E5%88%86%E6%9F%A5%E6%89%BE%E6%94%B9%E7%BC%96/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E4%BA%8C%E5%88%86%E6%9F%A5%E6%89%BE%E6%94%B9%E7%BC%96/</guid><description>在排序数组中查找元素第一个位置和最后一个位置、搜索旋转排序数组</description><pubDate>Tue, 30 Sep 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;查找元素第一个和最后一个位置&lt;/h1&gt;
 &lt;h2&gt;题目描述&lt;/h2&gt;
 &lt;p&gt;给你一个按照非递减顺序排列的整数数组 &lt;code&gt;nums&lt;/code&gt;，和一个目标值 &lt;code&gt;target&lt;/code&gt;。请你找出给定目标值在数组中的开始位置和结束位置。&lt;/p&gt;
@@ -448,7 +1310,7 @@ echo $sum
 read -p &quot;请输入数字num2：&quot; -t 10 NUM2
 echo $((NUM1 + NUM2))
 &lt;/code&gt;&lt;/pre&gt;
-&lt;h3&gt;Shell函数&lt;/h3&gt;
+&lt;p&gt;&lt;strong&gt;Shell函数&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;又分为系统函数和自定义函数&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;系统函数&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;常见的系统函数：basename、dirname&lt;/p&gt;
@@ -604,7 +1466,7 @@ getSum $n1 $n2
     }
 }
 &lt;/code&gt;&lt;/pre&gt;
-</content:encoded></item><item><title>LeetCode刷题（删除链表的倒数第N个节点、启云方笔试、零钱兑换）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E5%88%A0%E9%99%A4%E9%93%BE%E8%A1%A8%E7%9A%84%E5%80%92%E6%95%B0%E7%AC%ACn%E4%B8%AA%E8%8A%82%E7%82%B9%E4%BA%8C%E5%8F%89%E6%A0%91%E9%9D%A2%E8%AF%95%E9%A2%98/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E5%88%A0%E9%99%A4%E9%93%BE%E8%A1%A8%E7%9A%84%E5%80%92%E6%95%B0%E7%AC%ACn%E4%B8%AA%E8%8A%82%E7%82%B9%E4%BA%8C%E5%8F%89%E6%A0%91%E9%9D%A2%E8%AF%95%E9%A2%98/</guid><description>删除链表的倒数第N个节点、二叉树面试题（层序，构造）</description><pubDate>Sun, 28 Sep 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;删除链表的倒数第N个节点&lt;/h1&gt;
+</content:encoded></item><item><title>LeetCode刷题（删除链表的倒数第N个节点、启云方笔试）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E5%88%A0%E9%99%A4%E9%93%BE%E8%A1%A8%E7%9A%84%E5%80%92%E6%95%B0%E7%AC%ACn%E4%B8%AA%E8%8A%82%E7%82%B9%E4%BA%8C%E5%8F%89%E6%A0%91%E9%9D%A2%E8%AF%95%E9%A2%98/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E5%88%A0%E9%99%A4%E9%93%BE%E8%A1%A8%E7%9A%84%E5%80%92%E6%95%B0%E7%AC%ACn%E4%B8%AA%E8%8A%82%E7%82%B9%E4%BA%8C%E5%8F%89%E6%A0%91%E9%9D%A2%E8%AF%95%E9%A2%98/</guid><description>删除链表的倒数第N个节点、二叉树面试题（层序，构造）</description><pubDate>Sun, 28 Sep 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;删除链表的倒数第N个节点&lt;/h1&gt;
 &lt;h2&gt;题目描述&lt;/h2&gt;
 &lt;p&gt;给你一个链表，删除链表的倒数第 &lt;code&gt;n&lt;/code&gt; 个结点，并且返回链表的头结点。&lt;/p&gt;
 &lt;p&gt;&lt;img src=&quot;../images/221.jpg&quot; alt=&quot;221&quot; /&gt;&lt;/p&gt;
@@ -621,6 +1483,7 @@ getSum $n1 $n2
 输出：[1]
 &lt;/code&gt;&lt;/pre&gt;
 &lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;解法一：&lt;/p&gt;
 &lt;p&gt;我的思路是遍历一遍链表，找出节点偏移，用一个方法结合偏移删除目标节点&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;class Solution {
     public ListNode removeNthFromEnd(ListNode head, int n) {
@@ -645,6 +1508,26 @@ getSum $n1 $n2
             p = p.next;
         }
         p.next = p.next.next;
+        return result.next;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;解法二：&lt;/p&gt;
+&lt;p&gt;先将快指针移动n步，之后快慢指针一起移动直到快指针的下一个节点为空，这个时候慢指针所指的下一个元素即为需要删除的节点&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public ListNode removeNthFromEnd(ListNode head, int n) {
+        ListNode result = new ListNode();
+        result.next = head;
+        ListNode fast = result;
+        ListNode slow = result;
+        for(int i = 0; i &amp;lt; n; i++) {
+            fast = fast.next;
+        }
+        while(fast.next != null) {
+            fast = fast.next;
+            slow = slow.next;
+        }
+        slow.next = slow.next.next;
         return result.next;
     }
 }
@@ -753,86 +1636,6 @@ public class Main {
         func(root.left);
         System.out.println(root.val);
         func(root.right);
-    }
-}
-&lt;/code&gt;&lt;/pre&gt;
-&lt;h1&gt;零钱兑换&lt;/h1&gt;
-&lt;h2&gt;题目描述&lt;/h2&gt;
-&lt;p&gt;给你一个整数数组 &lt;code&gt;coins&lt;/code&gt; ，表示不同面额的硬币；以及一个整数 &lt;code&gt;amount&lt;/code&gt; ，表示总金额。&lt;/p&gt;
-&lt;p&gt;计算并返回可以凑成总金额所需的 &lt;strong&gt;最少的硬币个数&lt;/strong&gt; 。如果没有任何一种硬币组合能组成总金额，返回 &lt;code&gt;-1&lt;/code&gt; 。&lt;/p&gt;
-&lt;p&gt;你可以认为每种硬币的数量是无限的。&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;输入：coins = [1, 2, 5], amount = 11
-输出：3 
-解释：11 = 5 + 5 + 1
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;输入：coins = [2], amount = 3
-输出：-1
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;strong&gt;示例 3：&lt;/strong&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;输入：coins = [1], amount = 0
-输出：0
-&lt;/code&gt;&lt;/pre&gt;
-&lt;h2&gt;题解&lt;/h2&gt;
-&lt;p&gt;解法一 回溯法（超时）&lt;/p&gt;
-&lt;p&gt;我一看到这一题，我就想这不是做过嘛，回溯法直接秒，遍历一下之前的结果即可，果不其然时间效率惨淡（39/189）&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;class Solution {
-    List&amp;lt;List&amp;lt;Integer&amp;gt;&amp;gt; result = new ArrayList&amp;lt;&amp;gt;();
-    List&amp;lt;Integer&amp;gt; list = new ArrayList&amp;lt;&amp;gt;();
-    public int coinChange(int[] coins, int amount) {
-        dfs(coins, amount, 0);
-        if(result.size() == 0) {
-            return -1;
-        }
-        int target = Integer.MAX_VALUE;
-        for(int i = 0; i &amp;lt; result.size(); i++) {
-            List&amp;lt;Integer&amp;gt; currentList = result.get(i);
-            target = Math.min(target, currentList.size());
-        }
-        return target;
-    }
-
-    public void dfs(int[] coins, int amount, int index) {
-        if(index == coins.length) {
-            return;
-        }
-        if(amount == 0) {
-            result.add(new ArrayList&amp;lt;&amp;gt;(list));
-            return;
-        }
-        dfs(coins, amount, index + 1);
-        int newNum = coins[index];
-        int newTarget = amount - newNum;
-        if(newNum &amp;lt;= amount) {
-            list.add(newNum);
-            dfs(coins, newTarget, index);
-            list.remove(list.size() - 1);
-        }
-    }
-}
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;看了下题解应该使用动态规划完成，不然在不限制硬币数量的时候，复杂度随amount指数增长，就太夸张了&lt;/p&gt;
-&lt;p&gt;解法二：动态规划&lt;/p&gt;
-&lt;p&gt;建立一个amount + 1大小的int数组其中存放到这个下表的最小硬币数量，逐个遍历，对每个目标i循环中遍历coins数组，当不超过i时，更新min最小硬币数量（用dp[i - coins[i]] + 1进行迭代min）&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;class Solution {
-    public int coinChange(int[] coins, int amount) {
-        if(coins.length == 0) {
-            return -1;
-        }
-        int[] dp = new int[amount + 1];
-        Arrays.fill(dp, Integer.MAX_VALUE);
-        dp[0] = 0;
-        for(int i = 1; i &amp;lt;= amount; i++) {
-            int min = Integer.MAX_VALUE;
-            for(int coin : coins) {
-                if(i &amp;gt;= coin &amp;amp;&amp;amp; dp[i - coin] != Integer.MAX_VALUE) {
-                    min = Math.min(min, dp[i - coin] + 1);
-                }
-            }
-            dp[i] = min;
-        }
-        return dp[amount] == Integer.MAX_VALUE ? -1 : dp[amount];
     }
 }
 &lt;/code&gt;&lt;/pre&gt;
@@ -1257,7 +2060,6 @@ sync						将内存中的数据同步到磁盘&lt;/p&gt;
 &lt;p&gt;说起来从我学习Java企业知识，到现在也有了小半年，在这一段时间中，我做好了就业的打算，放弃了考研，这也不是个容易的决定，但是我觉得这是适合我最好的道路，而目前的收获而言，我也觉得我确实是在走向正轨，我认为学有所得才有向前的动力。&lt;/p&gt;
 &lt;p&gt;我希望把自己的人生经历抓在自己的手里，我渴望着迈向更好的自己，我们都是在追求人生理想的过程中匍匐前进。&lt;/p&gt;
 &lt;p&gt;我现在感觉很好，同时希望以后会变得更好。&lt;/p&gt;
-</content:encoded></item><item><title>Linux笔记（）</title><link>https://thrinisty.github.io/posts/linux%E7%AC%94%E8%AE%B0%E6%A8%A1%E6%9D%BF/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/linux%E7%AC%94%E8%AE%B0%E6%A8%A1%E6%9D%BF/</guid><pubDate>Mon, 01 Sep 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;Linux笔记&lt;/h1&gt;
 </content:encoded></item><item><title>自学第五月份总结</title><link>https://thrinisty.github.io/posts/%E8%87%AA%E5%AD%A6%E7%AC%AC%E4%BA%94%E6%9C%88%E4%BB%BD%E6%80%BB%E7%BB%93/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/%E8%87%AA%E5%AD%A6%E7%AC%AC%E4%BA%94%E6%9C%88%E4%BB%BD%E6%80%BB%E7%BB%93/</guid><description>Vue3的学习，公司项目实操</description><pubDate>Fri, 01 Aug 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;自学第五月份总结&lt;/h1&gt;
 &lt;h2&gt;Spring框架学习&lt;/h2&gt;
 &lt;p&gt;上一个月速成了一下SpringBoot中常用的相关开发注解，能够在不需要AI辅助的情况下进行后端项目的开发，这个月进入了实际的开发工作中也能够用到60%左右的上个月学习到的内容，Rest风格的API，Controller，Service等项目编写的规范，同一异常处理等等诸如此类。因为对于项目上还有一些速成课程中没有接触到的，在Spring方面还有一些点滴型的收获：AOP，配置文件中参数的统一配置，前端返回参数工具类（泛型的实际使用）&lt;/p&gt;
@@ -8975,9 +9777,6 @@ OrderService proxy = (OrderService) proxyObj;
     }
 }
 &lt;/code&gt;&lt;/pre&gt;
-</content:encoded></item><item><title>LeetCode刷题（）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E6%A8%A1%E6%9D%BF/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E6%A8%A1%E6%9D%BF/</guid><description>Leet</description><pubDate>Sun, 01 Jun 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;（题目）&lt;/h1&gt;
-&lt;h2&gt;题目描述&lt;/h2&gt;
-&lt;h2&gt;题解&lt;/h2&gt;
 </content:encoded></item><item><title>自学第三月份总结</title><link>https://thrinisty.github.io/posts/%E8%87%AA%E5%AD%A6%E7%AC%AC%E4%B8%89%E6%9C%88%E4%BB%BD%E6%80%BB%E7%BB%93/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/%E8%87%AA%E5%AD%A6%E7%AC%AC%E4%B8%89%E6%9C%88%E4%BB%BD%E6%80%BB%E7%BB%93/</guid><description>结束JavaWeb，开始Spring的学习，LeetCode刷题</description><pubDate>Sun, 01 Jun 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;自学第三月份总结&lt;/h1&gt;
 &lt;p&gt;第三个月有很多的考试内容需要复习，但是好在自己还是抽空出来完成了一些学习，虽然和预期的进度差了一部分，但好在把持续学习的习惯保持了下来，以下是这个月完成的一些内容（虽然内容部分和前两个月的量没法比）&lt;/p&gt;
 &lt;p&gt;劳动节过了个生日，和同学去外边玩了下，好好放松了几天，得劳逸结合吧，人太久都是紧绷的状态是会出问题的。&lt;/p&gt;
@@ -17131,658 +17930,6 @@ obj.fun();
 &lt;h1&gt;总结&lt;/h1&gt;
 &lt;p&gt;今天为JavaWeb开了一个头，感觉学起来还是非常轻松的，尤其是在JavaScript上由于语法和Java大体类似，只需要过一遍就可以很快的掌握语法，并加以使用，而CSS和HTML部分的学习我觉得作为主攻后端开发来说做到随超随用就行，大概了解使用方式即可&lt;/p&gt;
 &lt;p&gt;明天会结束JavaScript部分的内容（事件），并开始jQuery的学习&lt;/p&gt;
-</content:encoded></item><item><title>Redis</title><link>https://thrinisty.github.io/posts/redis%E7%AC%94%E8%AE%B0java%E5%AE%A2%E6%88%B7%E7%AB%AF/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/redis%E7%AC%94%E8%AE%B0java%E5%AE%A2%E6%88%B7%E7%AB%AF/</guid><description>Java客户端，待学部分，等到Java框架学习完成后进行</description><pubDate>Thu, 24 Apr 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;Redis笔记&lt;/h1&gt;
-&lt;h2&gt;Jedis&lt;/h2&gt;
-&lt;p&gt;我们学Redis最终还是要回到编码上，我们需要使用到Redis提供的客户端，推荐的有Jedis、lettuce、Redisson&lt;/p&gt;
-&lt;p&gt;Jedis，以Redis命令作为方法名称，学习成本较低，简单实用，但是Jedis实例线程不安全，多线程环境下需要基于连接池来使用&lt;/p&gt;
-&lt;p&gt;Lettuce，是基于Netty实现的，支持同步，异步，响应式编程方式，线程安全，支持Redis的哨兵模式，集群模式，管道模式&lt;/p&gt;
-&lt;p&gt;Redisson，是基于Redis实现的分布式，可伸缩的Java数据结构集合，包含了Map、Queue、Lock、Semaphore、AtomicLong等强大功能&lt;/p&gt;
-&lt;p&gt;而其中Spring Data Redis支持jedis和lettuce&lt;/p&gt;
-&lt;h3&gt;Jedis使用&lt;/h3&gt;
-&lt;p&gt;用Maven添加如下的依赖&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;&amp;lt;dependencies&amp;gt;
-    &amp;lt;dependency&amp;gt;
-        &amp;lt;groupId&amp;gt;redis.clients&amp;lt;/groupId&amp;gt;
-        &amp;lt;artifactId&amp;gt;jedis&amp;lt;/artifactId&amp;gt;
-        &amp;lt;version&amp;gt;5.2.0&amp;lt;/version&amp;gt;
-    &amp;lt;/dependency&amp;gt;
-
-    &amp;lt;dependency&amp;gt;
-        &amp;lt;groupId&amp;gt;junit&amp;lt;/groupId&amp;gt;
-        &amp;lt;artifactId&amp;gt;junit&amp;lt;/artifactId&amp;gt;
-        &amp;lt;version&amp;gt;4.13.2&amp;lt;/version&amp;gt;
-        &amp;lt;scope&amp;gt;test&amp;lt;/scope&amp;gt;
-    &amp;lt;/dependency&amp;gt;
-    &amp;lt;dependency&amp;gt;
-        &amp;lt;groupId&amp;gt;org.junit.jupiter&amp;lt;/groupId&amp;gt;
-        &amp;lt;artifactId&amp;gt;junit-jupiter&amp;lt;/artifactId&amp;gt;
-        &amp;lt;version&amp;gt;5.8.1&amp;lt;/version&amp;gt;
-        &amp;lt;scope&amp;gt;test&amp;lt;/scope&amp;gt;
-    &amp;lt;/dependency&amp;gt;
-&amp;lt;/dependencies&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;全部配置文件&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;&amp;lt;project xmlns=&quot;http://maven.apache.org/POM/4.0.0&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
-  xsi:schemaLocation=&quot;http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd&quot;&amp;gt;
-  &amp;lt;modelVersion&amp;gt;4.0.0&amp;lt;/modelVersion&amp;gt;
-
-  &amp;lt;groupId&amp;gt;org.example&amp;lt;/groupId&amp;gt;
-  &amp;lt;artifactId&amp;gt;JedisTest&amp;lt;/artifactId&amp;gt;
-  &amp;lt;version&amp;gt;1.0-SNAPSHOT&amp;lt;/version&amp;gt;
-  &amp;lt;packaging&amp;gt;jar&amp;lt;/packaging&amp;gt;
-
-  &amp;lt;name&amp;gt;JedisTest&amp;lt;/name&amp;gt;
-  &amp;lt;url&amp;gt;http://maven.apache.org&amp;lt;/url&amp;gt;
-
-  &amp;lt;properties&amp;gt;
-    &amp;lt;project.build.sourceEncoding&amp;gt;UTF-8&amp;lt;/project.build.sourceEncoding&amp;gt;
-  &amp;lt;/properties&amp;gt;
-
-  &amp;lt;dependencies&amp;gt;
-    &amp;lt;dependency&amp;gt;
-      &amp;lt;groupId&amp;gt;redis.clients&amp;lt;/groupId&amp;gt;
-      &amp;lt;artifactId&amp;gt;jedis&amp;lt;/artifactId&amp;gt;
-      &amp;lt;version&amp;gt;5.2.0&amp;lt;/version&amp;gt;
-    &amp;lt;/dependency&amp;gt;
-
-    &amp;lt;dependency&amp;gt;
-      &amp;lt;groupId&amp;gt;junit&amp;lt;/groupId&amp;gt;
-      &amp;lt;artifactId&amp;gt;junit&amp;lt;/artifactId&amp;gt;
-      &amp;lt;version&amp;gt;4.13.2&amp;lt;/version&amp;gt;
-      &amp;lt;scope&amp;gt;test&amp;lt;/scope&amp;gt;
-    &amp;lt;/dependency&amp;gt;
-
-  &amp;lt;/dependencies&amp;gt;
-&amp;lt;/project&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;h3&gt;测试代码&lt;/h3&gt;
-&lt;pre&gt;&lt;code&gt;package org.example;
-
-public class Main {
-    public static void main(String[] args) {
-        JedisTest jedis = new JedisTest();
-        jedis.setUP();
-        jedis.testString();
-        jedis.tearDown();
-    }
-}
-&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
-
-public class JedisTest {
-    private Jedis jedis;
-
-    public void setUP(){
-        jedis = new Jedis(&quot;192.168.104.52&quot;, 6379);
-        jedis.auth(&quot;654321&quot;);
-        jedis.select(0);
-    }
-
-    public void testString() {
-        jedis.hset(&quot;hash&quot;, &quot;test&quot;, &quot;value&quot;);
-        Map&amp;lt;String, String&amp;gt; hash = jedis.hgetAll(&quot;hash&quot;);
-        Set&amp;lt;Map.Entry&amp;lt;String, String&amp;gt;&amp;gt; entrySet = hash.entrySet();
-        Iterator&amp;lt;Map.Entry&amp;lt;String, String&amp;gt;&amp;gt; iterator = entrySet.iterator();
-        while(iterator.hasNext()) {
-            Map.Entry&amp;lt;String, String&amp;gt; entry = iterator.next();
-            System.out.println(entry.getKey() + &quot; &quot; + entry.getValue());
-        }
-    }
-
-    public void tearDown() {
-        if(jedis != null) {
-            jedis.close();
-        }
-    }
-}
-&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;fieldString1 HelloWorld1
-test value
-fieldInt 1
-fieldString HelloWorld
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;可以看到，所有的jedis指令名称和参数都和redis中的对应，使用起来异常的方便，Hash数据结构中的hgetAll也使用HashMap的形式返回，方便用迭代器进行处理&lt;/p&gt;
-&lt;h3&gt;Jedis连接池&lt;/h3&gt;
-&lt;p&gt;Jedis本身是线程不安全的，而且频繁地创建和销毁连接会有性能上的损耗，推荐使用Jedis地连接池来替代Jedis地直接连接方式&lt;/p&gt;
-&lt;p&gt;封装连接池类&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;public class JedisConnectionFactory {
-    private static final JedisPool jedisPool;
-
-    static {
-        JedisPoolConfig jedisPoolConfig = new JedisPoolConfig();
-        //设置最大连接数
-        jedisPoolConfig.setMaxTotal(8);
-        //设置最大空闲连接
-        jedisPoolConfig.setMaxIdle(8);
-        //设置最小空闲连接
-        jedisPoolConfig.setMinIdle(8);
-        //设置最长等待时间ms
-        jedisPoolConfig.setMaxWait(Duration.ofMillis(2000));
-        jedisPool = new JedisPool(jedisPoolConfig, &quot;192.168.104.52&quot;, 6379, 1000, &quot;654321&quot;);
-    }
-    //1000 是连接 Redis 服务器的超时时间（毫秒）
-
-    public static Jedis getJedis() {
-        return jedisPool.getResource();
-    }
-}
-&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;public class Main {
-    public static void main(String[] args) {
-        Jedis jedis = JedisConnectionFactory.getJedis();
-        jedis.set(&quot;key&quot;, &quot;value&quot;);
-        String s = jedis.get(&quot;key&quot;);
-        System.out.println(s);
-    }
-}
-&lt;/code&gt;&lt;/pre&gt;
-&lt;h2&gt;SpringDataRedis&lt;/h2&gt;
-&lt;p&gt;SpringData是Spring中数据操作的模块，包含对于各种数据库的集成，其中对Redis的集成模块就是SpringDataRedis，总的来说包含了以下的功能&lt;/p&gt;
-&lt;p&gt;1.提供了对不同Redis客户端的整合（Lettuce和Jedis）&lt;/p&gt;
-&lt;p&gt;2.提供了RedisTemplate统一API操作Redis&lt;/p&gt;
-&lt;p&gt;3.支持Redis的发布订阅模型&lt;/p&gt;
-&lt;p&gt;4.支持Redis哨兵和Redis集群&lt;/p&gt;
-&lt;p&gt;5.支持基于Lettuce的响应式编程&lt;/p&gt;
-&lt;p&gt;6.支持基于JDK，JSON，字符串，Spring对象的数据序列化和反序列化&lt;/p&gt;
-&lt;p&gt;7.支持基于Redis的JDKCollection实现&lt;/p&gt;
-&lt;h3&gt;快速入门&lt;/h3&gt;
-&lt;p&gt;&lt;img src=&quot;../images/131.png&quot; alt=&quot;131&quot; /&gt;&lt;/p&gt;
-&lt;h3&gt;问题解决&lt;/h3&gt;
-&lt;p&gt;IDEA下创建项目SpringBoot发生如下问题，而没有Java更低版本&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;项目 SDK &apos;1.8&apos; 不支持所选版本的 Java 17。请选择较低版本的 Java，或设置较高版本的 SDK
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;可以尝试替换源，选择更低版本Java&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;https://start.aliyun.com
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Maven获取依赖&lt;/p&gt;
-&lt;p&gt;如果在使用Maven获取依赖项的时候用时太久可以尝试替换&lt;/p&gt;
-&lt;p&gt;配置阿里云镜像&lt;/p&gt;
-&lt;p&gt;在 &lt;code&gt;~/.m2/settings.xml&lt;/code&gt; 中添加：&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;&amp;lt;mirrors&amp;gt;
-    &amp;lt;mirror&amp;gt;
-        &amp;lt;id&amp;gt;aliyunmaven&amp;lt;/id&amp;gt;
-        &amp;lt;url&amp;gt;https://maven.aliyun.com/repository/public&amp;lt;/url&amp;gt;
-        &amp;lt;mirrorOf&amp;gt;central&amp;lt;/mirrorOf&amp;gt;
-    &amp;lt;/mirror&amp;gt;
-&amp;lt;/mirrors&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;感觉学到这里有点寸步难行，redis的各种相关配置，用到的SpringBoot，Maven之类，我都没有接触过，还是得回到Java的开发框架进行学习，Redis教程的进度先耽搁一下&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;@SpringBootTest
-class RedisDataApplicationTests {
-
-    @Autowired
-    private RedisTemplate redisTemplate;
-    @Test
-    void testString() {
-        redisTemplate.opsForValue().set(&quot;dataTest&quot;, &quot;李四&quot;);
-        Object dataTest = redisTemplate.opsForValue().get(&quot;dataTest&quot;);
-        System.out.println(dataTest);
-    }
-
-}
-&lt;/code&gt;&lt;/pre&gt;
-</content:encoded></item><item><title>Redis</title><link>https://thrinisty.github.io/posts/redis%E7%AC%94%E8%AE%B0nosqlredis%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/redis%E7%AC%94%E8%AE%B0nosqlredis%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/</guid><description>NoSQL，Redis数据结构</description><pubDate>Wed, 23 Apr 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;Redis笔记&lt;/h1&gt;
-&lt;p&gt;花了大概两天完成，Java8内容的学习，比预期的要上了短一些，本来打算按照学习计划先进行Java开发框架的学习，但是发现面试的时候Redis考点会更多一点，所以将Redis部分的学习提前，预定大概10天完成（黑马Redis教程）&lt;/p&gt;
-&lt;p&gt;教程包括了：八种不同的数据结构，两个消息队列，四个相关的运维操作，Scrip脚本，事务操作&lt;/p&gt;
-&lt;h2&gt;NoSQL&lt;/h2&gt;
-&lt;p&gt;SQL是关系型数据库，而NoSQL是非关系型数据库&lt;/p&gt;
-&lt;h3&gt;与SQL的区别&lt;/h3&gt;
-&lt;h4&gt;结构化&lt;/h4&gt;
-&lt;p&gt;SQL高度结构化，每个字段每个值都会有严格的要求，一般难以修改。而NoSQL是非结构化的，对于key没有严格要求，支持自定义，还可以键值类型，列类型，文档存储，Graph存储，相对SQL，结构便于修改&lt;/p&gt;
-&lt;h4&gt;关联性&lt;/h4&gt;
-&lt;p&gt;SQL有外键的约束，数据是相关联的，NoSQL没有关联（程序员手动维护）&lt;/p&gt;
-&lt;h4&gt;SQL查询&lt;/h4&gt;
-&lt;p&gt;只要是SQL都可以使用相同的查询语句查询，而NoSQL没有固定的语法格式&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;../images/124.png&quot; alt=&quot;124&quot; /&gt;&lt;/p&gt;
-&lt;p&gt;每一个类型的数据查询方式不同&lt;/p&gt;
-&lt;h4&gt;事务&lt;/h4&gt;
-&lt;p&gt;SQL有事务满足ACID，而NoSQL只满足BASE&lt;/p&gt;
-&lt;h4&gt;总结&lt;/h4&gt;
-&lt;p&gt;&lt;img src=&quot;../images/125.png&quot; alt=&quot;125&quot; /&gt;&lt;/p&gt;
-&lt;h2&gt;Redis&lt;/h2&gt;
-&lt;h3&gt;基本介绍&lt;/h3&gt;
-&lt;p&gt;Remote Dictionary Server 远程词典服务器，是一个基于内存的键值型NoSQL数据库，以下是Redis的基本特征&lt;/p&gt;
-&lt;p&gt;键值型：value支持多种不同数据结构，功能丰富&lt;/p&gt;
-&lt;p&gt;单线程：每个命令具备原子性（Redis 6可以多线程处理网络请求）&lt;/p&gt;
-&lt;p&gt;高性能：低延迟，速度快（基于内存，IO多路复用，良好的编码【C语言编写】）&lt;/p&gt;
-&lt;p&gt;持久化：内存以往是不持久化的，而Redis定期存入磁盘，支持持久化&lt;/p&gt;
-&lt;p&gt;高可用：支持主从集群，分片集群&lt;/p&gt;
-&lt;p&gt;语言支持：支持多种语言的客户端&lt;/p&gt;
-&lt;h3&gt;常用命令&lt;/h3&gt;
-&lt;p&gt;我们一般的redis数据库会配置在Linux环境下，之后可以使用Windows的GUI软件RESP来使用Linux下的数据库&lt;/p&gt;
-&lt;p&gt;再Linux下装好redis后，可以使用如下的指令&lt;/p&gt;
-&lt;p&gt;命令行客户端&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;redis-cli
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;服务端启动脚本&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;redis-server
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;哨兵启动脚本&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;redis-sentinel
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;可以在redis.conf中设置，允许访问的地址，密码，是否后台运行等&lt;/p&gt;
-&lt;p&gt;再用如下的指令指定配置文件启动&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;redis-server redis.conf
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;利用如下指令查找开启的进程&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;ps -ef | grep redis
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;杀死对应端口的进程&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;kill -9 2574
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;用命令行客户端连接redis&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;redis-cli -a ******
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;连接成功后，ping和服务端交互&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;ping
-PONG
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;还可以进行存取数据&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;127.0.0.1:6379&amp;gt; set name jack
-OK
-127.0.0.1:6379&amp;gt; set age 21
-OK
-127.0.0.1:6379&amp;gt; get name
-&quot;jack&quot;
-127.0.0.1:6379&amp;gt; get age
-&quot;21&quot;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;再windows宿主机使用如下指令连接（虚拟机网络适配器改为桥接连接模式）&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;redis-cli -h 192.168.104.52 -p 6379 -a ******
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;使用GUI客户端连接&lt;/p&gt;
-&lt;p&gt;网址链接： https://github.com/lework/RedisDesktopManager-Windows&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;../images/126.png&quot; alt=&quot;126&quot; /&gt;&lt;/p&gt;
-&lt;h2&gt;Redis数据结构&lt;/h2&gt;
-&lt;p&gt;Redis是一个键值对形式存储的数据库，key一般是String类型的，不过Value的类型非常多种多样&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;../images/127.png&quot; alt=&quot;127&quot; /&gt;&lt;/p&gt;
-&lt;p&gt;其中前五种是基本数据类型，后三种是特殊数据类型&lt;/p&gt;
-&lt;p&gt;数据类型的具体使用详见 https://redis.io/docs/latest/commands&lt;/p&gt;
-&lt;p&gt;如果在连接到redis下的客户端中可以使用如下指令获取帮助&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;help @数据类型
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;例如查看String的相关指令&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;help @String
-&lt;/code&gt;&lt;/pre&gt;
-&lt;h3&gt;Key的层级格式&lt;/h3&gt;
-&lt;p&gt;Redis没有类似MySQL中的Table概念，而所有的键值对都是存储在一起的，怎么区分不同类型的key？&lt;/p&gt;
-&lt;p&gt;例如需要存储用户，商品信息到redis，一个用户的id是1，而另一个商品id也为1&lt;/p&gt;
-&lt;p&gt;而为了解决这类的问题，redis引入了key的层级结构：Redis的key允许有多个单词形成层级结构，多个单词之间用：隔开，格式如下&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;项目名称:业务名称:类型:id
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;格式并非固定不变，可以根据需求删除或者添加词条&lt;/p&gt;
-&lt;p&gt;user相关的key：com.user:1&lt;/p&gt;
-&lt;p&gt;product相关的key：com.product:1&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;../images/128.png&quot; alt=&quot;128&quot; /&gt;&lt;/p&gt;
-&lt;h3&gt;Redis通用命令&lt;/h3&gt;
-&lt;p&gt;虽然有非常多的数据类型以及相关操作，但是其中也有一些通用的命令&lt;/p&gt;
-&lt;h4&gt;KEYS&lt;/h4&gt;
-&lt;p&gt;查看符合模板的所有key，不建议在Redis服务器端使用，会阻塞所有的其他指令&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;KEYS pattern
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;例如：返回所有的键值&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;KEYS *
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;返回a开头的所有键值&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;KEYS a*
-&lt;/code&gt;&lt;/pre&gt;
-&lt;h4&gt;DEL&lt;/h4&gt;
-&lt;p&gt;删除一个指定的键值(例如age)&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;DEL age
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;也可以删除多个&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;DEL k1 k2 k3
-&lt;/code&gt;&lt;/pre&gt;
-&lt;h4&gt;MSET&lt;/h4&gt;
-&lt;p&gt;批量插入键值对&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;MSET k1 v1 k2 v2 k3 v3 k4 v4
-&lt;/code&gt;&lt;/pre&gt;
-&lt;h4&gt;EXISTS&lt;/h4&gt;
-&lt;p&gt;判断是否存在键值&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;EXISTS k4
-&lt;/code&gt;&lt;/pre&gt;
-&lt;h4&gt;EXPIRE&lt;/h4&gt;
-&lt;p&gt;给一个key设置有效期，有效期到达时key会被删除&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;EXPIRE key second
-&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;EXPIRE name 5
-&lt;/code&gt;&lt;/pre&gt;
-&lt;h4&gt;TTL&lt;/h4&gt;
-&lt;p&gt;查看一个键的有效期&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;TTL key
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;其中返回-1代表永久有效 -2为无效，其余为有效的秒数&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;TTL k1
-(integer) -1
-&lt;/code&gt;&lt;/pre&gt;
-&lt;h3&gt;String类型&lt;/h3&gt;
-&lt;p&gt;是字符串类型，是Redis中最简单的存储类型，value是字符串，根据不同的格式又分为了三类：String 普通字符串  int 整数类型  float  浮点类型&lt;/p&gt;
-&lt;p&gt;无论是哪一种格式存储，底层都是字节数组形式，只是编码方式不同，字符串类型的最大空间不可以超过512M&lt;/p&gt;
-&lt;p&gt;以下是String类型常见的命令&lt;/p&gt;
-&lt;h4&gt;SET&lt;/h4&gt;
-&lt;p&gt;添加或者修改一个存在的String类型的键值对&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt; set k1 123
-&lt;/code&gt;&lt;/pre&gt;
-&lt;h4&gt;GET&lt;/h4&gt;
-&lt;p&gt;根据key获取String类型的value&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;get k1
-&quot;123&quot;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;h4&gt;MSET&lt;/h4&gt;
-&lt;p&gt;批量添加多个String类型的的键值对&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;MSET t1 1 t2 2 t3 3
-&lt;/code&gt;&lt;/pre&gt;
-&lt;h4&gt;MGET&lt;/h4&gt;
-&lt;p&gt;根据多个key获取多个String类型的value&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;MGET k1 k2 k3
-1) &quot;v1&quot;
-2) &quot;v2&quot;
-3) &quot;v3&quot;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;h4&gt;INCR&lt;/h4&gt;
-&lt;p&gt;让一个整型的key自增1&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;get 1
-&quot;23&quot;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;INCR 1
-(integer) 24
-get 1
-&quot;24&quot;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;h4&gt;INCRBY&lt;/h4&gt;
-&lt;p&gt;让一个整形的key自增并指定步长，例如incrby num 2让num自增2&lt;/p&gt;
-&lt;p&gt;在INCR的基础上增加步长&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;INCRBY 1 4
-(integer) 28
-&lt;/code&gt;&lt;/pre&gt;
-&lt;h4&gt;INCRBYFLOAT&lt;/h4&gt;
-&lt;p&gt;让一个浮点类型的数字自增并指定步长&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;append 2 3.1415296
-(integer) 9
-get 2
-&quot;3.1415296&quot;
-INCRBYFLOAT 2 1.1
-&quot;4.2415296&quot;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;h4&gt;SETNX&lt;/h4&gt;
-&lt;p&gt;添加一个String类型的键值对，前提是这个key不存在，否则不执行&lt;/p&gt;
-&lt;p&gt;k1以及存在，不执行语句&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;SETNX k1 1
-(integer) 0
-&lt;/code&gt;&lt;/pre&gt;
-&lt;h4&gt;SETEX&lt;/h4&gt;
-&lt;p&gt;添加一个String类型的键值对，并且指定有效期&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;SETEX key seconds value
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;设置键3值12，持续30每秒&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;SETEX 3 30 12
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;或者可以这么写&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;set 3 12 ex 30
-&lt;/code&gt;&lt;/pre&gt;
-&lt;h3&gt;Hash类型&lt;/h3&gt;
-&lt;p&gt;Hash类型，又称为散列，它的value是一个无序字典，类似于Java中的HashMap结构，String结构是将对象序列化为JSON字符串后存储，当需要修改某个字段的时候很不方便&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;../images/129.png&quot; alt=&quot;129&quot; /&gt;&lt;/p&gt;
-&lt;p&gt;而Hash结构可以将对象中的每个字段独立存储，可以针对单个字段作增删改查&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;../images/130.png&quot; alt=&quot;130&quot; /&gt;&lt;/p&gt;
-&lt;h4&gt;HSET&lt;/h4&gt;
-&lt;p&gt;添加或者修改hash类型key的field值&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;hset key field value
-&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;hset hash1 field value
-&lt;/code&gt;&lt;/pre&gt;
-&lt;h4&gt;HGET&lt;/h4&gt;
-&lt;p&gt;获取一个hash类型的key的field值&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;HGET key field
-&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;hget hash1 field
-&quot;value&quot;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;h4&gt;HMSET&lt;/h4&gt;
-&lt;p&gt;批量添加多个hash类型key的field值&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;HMSET hash1 field2 value2 field3 value3
-&lt;/code&gt;&lt;/pre&gt;
-&lt;h4&gt;HMGET&lt;/h4&gt;
-&lt;p&gt;批量获取多个hash类型的key的field值&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;HMGET hash1 field field1 field2
-1) &quot;value&quot;
-2) &quot;value2&quot;
-3) &quot;value2&quot;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;h4&gt;HDEL&lt;/h4&gt;
-&lt;p&gt;删除指定hash中的某个字段&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;HDEL hash fieldString
-&lt;/code&gt;&lt;/pre&gt;
-&lt;h4&gt;HGETALL&lt;/h4&gt;
-&lt;p&gt;获取一个hash类型的key中所有的field和value&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;HGETALL hash1
-1) &quot;field&quot;
-2) &quot;value&quot;
-3) &quot;field1&quot;
-4) &quot;value2&quot;
-5) &quot;field2&quot;
-6) &quot;value2&quot;
-7) &quot;field3&quot;
-8) &quot;value3&quot;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;h4&gt;HKEYS&lt;/h4&gt;
-&lt;p&gt;获取一个hash类型的所有field&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;HKEYS hash1
-1) &quot;field&quot;
-2) &quot;field1&quot;
-3) &quot;field2&quot;
-4) &quot;field3&quot;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;h4&gt;HVALS&lt;/h4&gt;
-&lt;p&gt;获取一个hash类型的所有value&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;HVALS hash1
-1) &quot;value&quot;
-2) &quot;value2&quot;
-3) &quot;value2&quot;
-4) &quot;value3&quot;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;h4&gt;HINCRBY&lt;/h4&gt;
-&lt;p&gt;让一个hash类型key的字段值自增，并指定步长&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;HSET hash fieldInt 1
-(integer) 1
-HINCRBY hash fieldInt 3
-(integer) 4
-&lt;/code&gt;&lt;/pre&gt;
-&lt;h4&gt;HSETNX&lt;/h4&gt;
-&lt;p&gt;添加一个hash类型key的field值，前提是field不存在，否则不执行（就是不允许修改存在的键的值）&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;HSETNX hash fieldString HelloWorld
-&lt;/code&gt;&lt;/pre&gt;
-&lt;h3&gt;List类型&lt;/h3&gt;
-&lt;p&gt;对于List而言，可以使用该数据类型进行模拟栈：只需要入口和出口在同一边，如LPUSH+LPOP或者RPUSH+RPOP&lt;/p&gt;
-&lt;p&gt;也可以模拟一个队列：需要入口和出口在不同边即可，如RPUSH+LPOP或者RPUSH+LPOP&lt;/p&gt;
-&lt;p&gt;阻塞队列的模拟：入口出口不同边，取出采用BLPOP或者BRPOP&lt;/p&gt;
-&lt;p&gt;基本介绍&lt;/p&gt;
-&lt;p&gt;Redis中的List类型，和Java中的LinkedList类似，可以看作是一个双向链表的结构，既支持正向检索也可以支持反向检索&lt;/p&gt;
-&lt;p&gt;特征：有序，元素可以重复，插入和删除较快，查询效率一般&lt;/p&gt;
-&lt;p&gt;以下是List的常见命令&lt;/p&gt;
-&lt;h4&gt;LPUSH&lt;/h4&gt;
-&lt;p&gt;向列表左侧插入一个或者多个元素&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;LPUSH key element ...
-&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;LPUSH list a b c d e f g
-&lt;/code&gt;&lt;/pre&gt;
-&lt;h4&gt;LPOP&lt;/h4&gt;
-&lt;p&gt;移除并返回列表左侧的第一个元素，没有则返回nil&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;LPOP key 
-&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;LPOP list
-&quot;g&quot;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;h4&gt;RPUSH&lt;/h4&gt;
-&lt;p&gt;向列表右侧插入一个或者多个元素&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;RPUSH list a b c d e f g h
-&lt;/code&gt;&lt;/pre&gt;
-&lt;h4&gt;RPOP&lt;/h4&gt;
-&lt;p&gt;移除并返回列表右侧的第一个元素&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;RPOP list
-&quot;h&quot;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;h4&gt;LRANGE&lt;/h4&gt;
-&lt;p&gt;返回一段角标范围内的所有元素&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;LRANGE key star end
-&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;LRANGE list 1 3
-1) &quot;b&quot;
-2) &quot;c&quot;
-3) &quot;d&quot;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;h4&gt;BLPOP与BRPOP&lt;/h4&gt;
-&lt;p&gt;和LPOP，RPOP类似，只是在没有元素时等待指定时间，而不是返回nil&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;BLPOP list 60
-1) &quot;list&quot;
-2) &quot;target&quot;
-(15.01s)
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;其中list本来没有值，进入阻塞等待最多60s，新创建的客户端加入list 数据 target数据被读到&lt;/p&gt;
-&lt;h3&gt;Set类型&lt;/h3&gt;
-&lt;p&gt;Redis的Set结构和Java中的HashSet类似，可以看为是一个value为null的HashMap，因为是一个hash表，因此具备和HashSet类似的特征：无序，元素不可重复，查找快，支持交集、并集、差集的功能&lt;/p&gt;
-&lt;p&gt;以下是Set类型常见的命令&lt;/p&gt;
-&lt;h4&gt;SADD&lt;/h4&gt;
-&lt;p&gt;向set中添加一个或者多个元素&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;SADD key member ...
-&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;SADD set a b c d e f g
-&lt;/code&gt;&lt;/pre&gt;
-&lt;h4&gt;SREM&lt;/h4&gt;
-&lt;p&gt;移除set中的指定元素&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;SREM key member ...
-&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;SREM set a b c
-&lt;/code&gt;&lt;/pre&gt;
-&lt;h4&gt;SCARD&lt;/h4&gt;
-&lt;p&gt;返回set中的元素个数&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;SCARD key
-&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;SCARD set
-(integer) 4
-&lt;/code&gt;&lt;/pre&gt;
-&lt;h4&gt;SISMEMBER&lt;/h4&gt;
-&lt;p&gt;判断一个元素是否存在于set中&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;SISMEMBER key member
-&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;SISMEMBER set g
-(integer) 1
-&lt;/code&gt;&lt;/pre&gt;
-&lt;h4&gt;SMEMBERS&lt;/h4&gt;
-&lt;p&gt;获取set中的所有元素&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;SMEMBERS set
-1) &quot;g&quot;
-2) &quot;d&quot;
-3) &quot;f&quot;
-4) &quot;e&quot;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;前置操作&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;SADD set1 a b c d e f
-SADD set2 a b
-&lt;/code&gt;&lt;/pre&gt;
-&lt;h4&gt;SINTER&lt;/h4&gt;
-&lt;p&gt;求两个集合的交集&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;SINTER set1 set2
-&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;1) &quot;b&quot;
-2) &quot;a&quot;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;h4&gt;SDIFF&lt;/h4&gt;
-&lt;p&gt;求两个集合的差集&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;SDIFF set1 set2
-&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;1) &quot;c&quot;
-2) &quot;e&quot;
-3) &quot;f&quot;
-4) &quot;d&quot;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;h4&gt;SUNION&lt;/h4&gt;
-&lt;p&gt;求两个集合的并集&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;SUNION set1 set2
-&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;1) &quot;b&quot;
-2) &quot;a&quot;
-3) &quot;d&quot;
-4) &quot;c&quot;
-5) &quot;e&quot;
-6) &quot;f&quot;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;h3&gt;SortedSet类型&lt;/h3&gt;
-&lt;p&gt;Redis的SortedSet是一个可排序的set集合，与Java中的TreeSet有些类似，但是底层数据结构差别巨大，SortedSet中的每一个元素都带有一个score属性，可以基于score属性对元素排序，底层是一个跳表（Skip List）加上hash表&lt;/p&gt;
-&lt;p&gt;以下是SortedSet的特征：可排序 元素不重复  查询速度快&lt;/p&gt;
-&lt;p&gt;因为SortedSet的可排序性，经常用于实现排行榜等功能&lt;/p&gt;
-&lt;p&gt;以下是Sorted的常见命令，所有排名默认为升序，降序在命令Z后加REV即可&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;ZREVRANGE 
-&lt;/code&gt;&lt;/pre&gt;
-&lt;h4&gt;ZADD&lt;/h4&gt;
-&lt;p&gt;添加一个或者多个元素到sorted set，如果与存在则更新其score值&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;ZADD key score member
-&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;ZADD sortedset 1 Hello
-&lt;/code&gt;&lt;/pre&gt;
-&lt;h4&gt;ZREM&lt;/h4&gt;
-&lt;p&gt;删除sorted set中的一个元素&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;ZREM key member
-&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;zrem sortedset HelloWorld
-&lt;/code&gt;&lt;/pre&gt;
-&lt;h4&gt;ZSCORE&lt;/h4&gt;
-&lt;p&gt;获取sorted set中指定元素的score值&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;ZSCORE key member
-&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;ZSCORE sortedset Hello
-&quot;1&quot;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;h4&gt;ZRANK&lt;/h4&gt;
-&lt;p&gt;获取sorted set中的指定元素排名&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;ZRANK key member
-&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;ZRANK sortedset Hello
-(integer) 0
-&lt;/code&gt;&lt;/pre&gt;
-&lt;h4&gt;ZCARD&lt;/h4&gt;
-&lt;p&gt;获取sorted set中的元素个数&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;ZCARD key
-&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;zcard sortedset
-(integer) 2
-&lt;/code&gt;&lt;/pre&gt;
-&lt;h4&gt;ZCOUNT&lt;/h4&gt;
-&lt;p&gt;统计指定范围内元素的个数&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;ZCOUNT key min max
-&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;ZCOUNT sortedset 2 5
-(integer) 1
-&lt;/code&gt;&lt;/pre&gt;
-&lt;h4&gt;ZINCRBY&lt;/h4&gt;
-&lt;p&gt;让sorted set 中指定score元素自增，指定步长&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;ZINCRBY key increment member
-&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;ZINCRBY sortedset 4 1
-&quot;22&quot;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;h4&gt;ZRANGE&lt;/h4&gt;
-&lt;p&gt;按照score排序后，获取指定排名范围内的元素&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;ZRANGE key min max
-&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;ZRANGE sortedset 0 1
-1) &quot;Hello&quot;
-2) &quot;World&quot;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;h4&gt;ZRANGEBYSCORE&lt;/h4&gt;
-&lt;p&gt;按照score排序后，获取指定score范围内的元素&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;ZRANGEBYSCORE key min max
-&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;ZRANGEBYSCORE sortedset 0 44
-1) &quot;Hello&quot;
-2) &quot;World&quot;
-3) &quot;1&quot;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;h4&gt;ZDIFF、ZINTER、ZUNION&lt;/h4&gt;
-&lt;p&gt;求差集、交集、并集&lt;/p&gt;
-&lt;p&gt;和Set类中的类似，不再过多叙述&lt;/p&gt;
 </content:encoded></item><item><title>Java8笔记</title><link>https://thrinisty.github.io/posts/java8%E7%AC%94%E8%AE%B0lambda%E8%A1%A8%E8%BE%BE%E5%BC%8Fstream-apioptional/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/java8%E7%AC%94%E8%AE%B0lambda%E8%A1%A8%E8%BE%BE%E5%BC%8Fstream-apioptional/</guid><description>Lambda表达式，函数式接口，Stream API，Optional</description><pubDate>Sun, 20 Apr 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;Java8笔记&lt;/h1&gt;
 &lt;p&gt;拖了一天，本来打算从昨天就开始Java8特性的学习。但是有门事多题难分少的编译原理实验课把自己搞得心烦，晚上就没有精力学习了。&lt;/p&gt;
 &lt;p&gt;第二天还要体测，38度的高温，就隔这室外干站着，等半天跑1000米，跑前本来想着4分30以内及格就好，压着脚步跑，结果才4分37，还贼累，险些没给自己跑死。&lt;/p&gt;

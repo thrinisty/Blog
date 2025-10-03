@@ -1,5 +1,5 @@
 ---
-title: LeetCode刷题（删除链表的倒数第N个节点、启云方笔试、零钱兑换）
+title: LeetCode刷题（删除链表的倒数第N个节点、启云方笔试）
 published: 2025-09-28
 updated: 2025-09-28
 description: '删除链表的倒数第N个节点、二叉树面试题（层序，构造）'
@@ -42,6 +42,8 @@ draft: false
 
 ## 题解
 
+解法一：
+
 我的思路是遍历一遍链表，找出节点偏移，用一个方法结合偏移删除目标节点
 
 ```java
@@ -68,6 +70,32 @@ class Solution {
             p = p.next;
         }
         p.next = p.next.next;
+        return result.next;
+    }
+}
+```
+
+
+
+解法二：
+
+先将快指针移动n步，之后快慢指针一起移动直到快指针的下一个节点为空，这个时候慢指针所指的下一个元素即为需要删除的节点
+
+```java
+class Solution {
+    public ListNode removeNthFromEnd(ListNode head, int n) {
+        ListNode result = new ListNode();
+        result.next = head;
+        ListNode fast = result;
+        ListNode slow = result;
+        for(int i = 0; i < n; i++) {
+            fast = fast.next;
+        }
+        while(fast.next != null) {
+            fast = fast.next;
+            slow = slow.next;
+        }
+        slow.next = slow.next.next;
         return result.next;
     }
 }
@@ -187,110 +215,4 @@ public class Main {
 ```
 
 
-
-# 零钱兑换
-
-## 题目描述
-
-给你一个整数数组 `coins` ，表示不同面额的硬币；以及一个整数 `amount` ，表示总金额。
-
-计算并返回可以凑成总金额所需的 **最少的硬币个数** 。如果没有任何一种硬币组合能组成总金额，返回 `-1` 。
-
-你可以认为每种硬币的数量是无限的。
-
-**示例 1：**
-
-```
-输入：coins = [1, 2, 5], amount = 11
-输出：3 
-解释：11 = 5 + 5 + 1
-```
-
-**示例 2：**
-
-```
-输入：coins = [2], amount = 3
-输出：-1
-```
-
-**示例 3：**
-
-```
-输入：coins = [1], amount = 0
-输出：0
-```
-
-
-
-## 题解
-
-解法一 回溯法（超时）
-
-我一看到这一题，我就想这不是做过嘛，回溯法直接秒，遍历一下之前的结果即可，果不其然时间效率惨淡（39/189）
-
-```java
-class Solution {
-    List<List<Integer>> result = new ArrayList<>();
-    List<Integer> list = new ArrayList<>();
-    public int coinChange(int[] coins, int amount) {
-        dfs(coins, amount, 0);
-        if(result.size() == 0) {
-            return -1;
-        }
-        int target = Integer.MAX_VALUE;
-        for(int i = 0; i < result.size(); i++) {
-            List<Integer> currentList = result.get(i);
-            target = Math.min(target, currentList.size());
-        }
-        return target;
-    }
-
-    public void dfs(int[] coins, int amount, int index) {
-        if(index == coins.length) {
-            return;
-        }
-        if(amount == 0) {
-            result.add(new ArrayList<>(list));
-            return;
-        }
-        dfs(coins, amount, index + 1);
-        int newNum = coins[index];
-        int newTarget = amount - newNum;
-        if(newNum <= amount) {
-            list.add(newNum);
-            dfs(coins, newTarget, index);
-            list.remove(list.size() - 1);
-        }
-    }
-}
-```
-
-看了下题解应该使用动态规划完成，不然在不限制硬币数量的时候，复杂度随amount指数增长，就太夸张了
-
-解法二：动态规划
-
-建立一个amount + 1大小的int数组其中存放到这个下表的最小硬币数量，逐个遍历，对每个目标i循环中遍历coins数组，当不超过i时，更新min最小硬币数量（用dp[i - coins[i]] + 1进行迭代min）
-
-```java
-class Solution {
-    public int coinChange(int[] coins, int amount) {
-        if(coins.length == 0) {
-            return -1;
-        }
-        int[] dp = new int[amount + 1];
-        Arrays.fill(dp, Integer.MAX_VALUE);
-        dp[0] = 0;
-        for(int i = 1; i <= amount; i++) {
-            int min = Integer.MAX_VALUE;
-            for(int coin : coins) {
-                if(i >= coin && dp[i - coin] != Integer.MAX_VALUE) {
-                    min = Math.min(min, dp[i - coin] + 1);
-                }
-            }
-            dp[i] = min;
-        }
-        return dp[amount] == Integer.MAX_VALUE ? -1 : dp[amount];
-    }
-}
-```
 

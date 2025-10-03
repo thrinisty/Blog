@@ -1,8 +1,8 @@
 ---
-title: Linux笔记（日志管理）
+title: Linux笔记（日志管理、面试题）
 published: 2025-10-01
 updated: 2025-10-01
-description: 'Linux日志管理'
+description: 'Linux日志管理、Linux相关面试题目'
 image: ''
 tags: [linux]
 category: 'OS'
@@ -80,3 +80,57 @@ journalctl	可以查看内存日志，默认查看全部
 -o verbose	日志详细内容
 
 _PID=1245 _COMD=sshd	查看特定程序的日志
+
+
+
+## 面试题集
+
+有这么一个t.txt 文件其中有互联网的访问请求，需要对于ip提出并且统计，要求按照从出现次数从大到小排序
+
+```
+https://189.0.9.1/index1.html  
+https://github.com/index2.html  
+https://189.0.9.1/index3.html  # 重复 IP  
+https://189.0.9.1/index4.html  # 重复 IP  
+https://example.com/index5.html  
+https://203.0.113.1/index6.html  
+https://203.0.113.1/index7.html  # 重复 IP  
+https://192.168.1.1/index8.html  
+https://192.168.1.1/index9.html  # 重复 IP  
+https://10.0.0.1/index10.html  
+https://10.0.0.1/index11.html  # 重复 IP  
+https://172.16.0.1/index12.html  
+https://172.16.0.1/index13.html  # 重复 IP 
+```
+
+```
+cat t.txt | cut -d '/' -f 3 | sort | uniq -c | sort -nr
+```
+
+cut -d '/' -f 3代表按照/分隔符进行分割 取出第三个部分
+
+
+
+我们需要从其中获取到ip，我们需要使用awk进行对于空格的分割
+
+```sh
+[root@iv-ye5w83dog0bw80eugddg lory]# netstat -an | grep ESTABLISHED
+tcp        0      0 192.168.95.8:22         119.112.204.254:54359   ESTABLISHED
+tcp        0      0 192.168.95.8:55054      128.1.164.196:443       ESTABLISHED
+tcp        0     36 192.168.95.8:22         223.104.204.225:49676   ESTABLISHED
+tcp        0      0 192.168.95.8:39136      100.64.205.163:80       ESTABLISHED
+```
+
+最终指令
+
+```sh
+netstat -an | grep ESTABLISHED | awk -F " " '{print $5}' | cut -d ':' -f 1
+```
+
+```
+175.174.139.246
+128.1.164.196
+223.104.204.225
+100.64.205.163
+```
+

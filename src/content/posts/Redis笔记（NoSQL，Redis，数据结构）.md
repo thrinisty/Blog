@@ -1,7 +1,7 @@
 ---
-title: Redis
-published: 2025-04-23
-updated: 2025-04-23
+title: Redis笔记（NoSQL、基本操作）
+published: 2025-10-03
+updated: 2025-10-03
 description: 'NoSQL，Redis数据结构'
 image: './photo/redis.png'
 tags: [Redis]
@@ -10,8 +10,6 @@ draft: false
 ---
 
 # Redis笔记
-
-花了大概两天完成，Java8内容的学习，比预期的要上了短一些，本来打算按照学习计划先进行Java开发框架的学习，但是发现面试的时候Redis考点会更多一点，所以将Redis部分的学习提前，预定大概10天完成（黑马Redis教程）
 
 教程包括了：八种不同的数据结构，两个消息队列，四个相关的运维操作，Scrip脚本，事务操作
 

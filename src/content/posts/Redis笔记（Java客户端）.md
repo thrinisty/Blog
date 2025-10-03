@@ -1,8 +1,8 @@
 ---
-title: Redis
-published: 2025-04-24
-updated: 2025-04-24
-description: 'Java客户端，待学部分，等到Java框架学习完成后进行'
+title: Redis笔记（客户端）
+published: 2025-10-04
+updated: 2025-10-04
+description: 'Java客户端，基础指令入门'
 image: ''
 tags: [Redis]
 category: ''
@@ -48,43 +48,6 @@ Redisson，是基于Redis实现的分布式，可伸缩的Java数据结构集合
         <scope>test</scope>
     </dependency>
 </dependencies>
-```
-
-全部配置文件
-
-```xml
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-
-  <groupId>org.example</groupId>
-  <artifactId>JedisTest</artifactId>
-  <version>1.0-SNAPSHOT</version>
-  <packaging>jar</packaging>
-
-  <name>JedisTest</name>
-  <url>http://maven.apache.org</url>
-
-  <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-  </properties>
-
-  <dependencies>
-    <dependency>
-      <groupId>redis.clients</groupId>
-      <artifactId>jedis</artifactId>
-      <version>5.2.0</version>
-    </dependency>
-
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>4.13.2</version>
-      <scope>test</scope>
-    </dependency>
-
-  </dependencies>
-</project>
 ```
 
 
@@ -215,58 +178,129 @@ SpringData是Spring中数据操作的模块，包含对于各种数据库的集�
 
 ![131](../images/131.png)
 
+配置文件，这里我用的docker redis没有设置密码
 
-
-### 问题解决
-
-IDEA下创建项目SpringBoot发生如下问题，而没有Java更低版本
-
-```
-项目 SDK '1.8' 不支持所选版本的 Java 17。请选择较低版本的 Java，或设置较高版本的 SDK
-```
-
-可以尝试替换源，选择更低版本Java
+```yaml
+spring:
+  data:
+    redis:
+      port: 6379
+      host: localhost
 
 ```
-https://start.aliyun.com
-```
 
-
-
-Maven获取依赖
-
-如果在使用Maven获取依赖项的时候用时太久可以尝试替换
-
-配置阿里云镜像
-
-在 `~/.m2/settings.xml` 中添加：
-
-```xml
-<mirrors>
-    <mirror>
-        <id>aliyunmaven</id>
-        <url>https://maven.aliyun.com/repository/public</url>
-        <mirrorOf>central</mirrorOf>
-    </mirror>
-</mirrors>
-```
-
-
-
-感觉学到这里有点寸步难行，redis的各种相关配置，用到的SpringBoot，Maven之类，我都没有接触过，还是得回到Java的开发框架进行学习，Redis教程的进度先耽搁一下
+测试代码
 
 ```java
 @SpringBootTest
-class RedisDataApplicationTests {
+class Class01ApplicationTests {
 
     @Autowired
     private RedisTemplate redisTemplate;
-    @Test
-    void testString() {
-        redisTemplate.opsForValue().set("dataTest", "李四");
-        Object dataTest = redisTemplate.opsForValue().get("dataTest");
-        System.out.println(dataTest);
-    }
 
+    @Test
+    void contextLoads() {
+        redisTemplate.opsForValue().set("key9", "value9");
+        Object object = redisTemplate.opsForValue().get("key9");
+        System.out.println("object: " + object);
+    }
 }
+```
+
+通过注入的redisTemplate我们即可完成数据的存入与取出
+
+
+
+### 一个小问题
+
+这里虽然可以取出值，但是我们看到客户端中的key其实不是key9，而是带上了一个乱码前缀
+
+![233](../images/233.png)
+
+这其实是序列化的问题，Redis接受的是Object对象，将其序列化，而不是String，Spring利用了JDK序列化处理工具将其转化存储
+
+我们要解决这个问题我们就要改变序列化工具，可以使用StringRedisSerializer来getBytes或者GenericJackson2JsonRedisSerializer
+
+
+
+用一个配置类来配置我们的redisTemplate
+
+```java
+@Configuration
+public class RedisConfig {
+    @Bean
+    public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory factory) {
+        RedisTemplate<String, Object> template = new RedisTemplate<>();
+        template.setConnectionFactory(factory);
+        template.setKeySerializer(new StringRedisSerializer()); // Key用字符串
+        template.setValueSerializer(new GenericJackson2JsonRedisSerializer()); // Value用JSON
+        return template;
+    }
+}
+```
+
+除此以外我们还需要引入jackson的相关依赖
+
+```xml
+<!-- pom.xml（Maven） -->
+<dependency>
+    <groupId>com.fasterxml.jackson.core</groupId>
+    <artifactId>jackson-databind</artifactId>
+    <version>2.17.1</version> <!-- 或使用 Spring Boot 默认版本 -->
+</dependency>
+```
+
+我们就可以指定Key用的StringRedisSerializer序列化，Value用的GenericJackson2JsonRedisSerializer序列化
+
+
+
+### StringRedisTemplate
+
+我们在使用json序列化处理器的时候值会包含类的全路径，这也是json反序列化处理时需要的一部分
+
+```
+{"@class":"com.redis.entity.Student","name":"Lory","age":18}
+```
+
+但是有的时候为了节省空间我们会使用统一的String序列化器，要求用String类型来存储key和value，而需要存储Java对象的时候再进行手动对对象序列化和反序列化
+
+```java
+@SpringBootTest
+class Class01ApplicationTests {
+
+    @Resource
+    private RedisTemplate redisTemplate;
+
+    @Resource
+    private StringRedisTemplate stringRedisTemplate;
+
+    @Test
+    void contextLoads() {
+        Student student = new Student("Lory", 18);
+        String value = JSON.toJSONString(student);
+        stringRedisTemplate.opsForValue().set("key9", value);
+
+        String targetString = stringRedisTemplate.opsForValue().get("key9");
+        Student stu = JSON.parseObject(targetString, Student.class);
+        System.out.println(stu.getName());
+    }
+}
+```
+
+这样存入的就是json字符串
+
+```
+{"age":18,"name":"Lory"}
+```
+
+
+
+### Hash类型操作
+
+```java
+void contextLoads() {
+        stringRedisTemplate.opsForHash().put("key10", "name", "lory");
+        stringRedisTemplate.opsForHash().put("key10", "age", "18");
+        Map<Object, Object> key10 = stringRedisTemplate.opsForHash().entries("key10");//获取键对应的Hash结构数据
+    }
 ```
