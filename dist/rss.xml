@@ -1,4 +1,92 @@
-<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Thrinisty&apos;s Blog</title><description>New Blog</description><link>https://thrinisty.github.io/</link><language>zh_CN</language><item><title>Redis笔记（客户端）</title><link>https://thrinisty.github.io/posts/redis%E7%AC%94%E8%AE%B0java%E5%AE%A2%E6%88%B7%E7%AB%AF/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/redis%E7%AC%94%E8%AE%B0java%E5%AE%A2%E6%88%B7%E7%AB%AF/</guid><description>Java客户端，基础指令入门</description><pubDate>Sat, 04 Oct 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;Redis笔记&lt;/h1&gt;
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Thrinisty&apos;s Blog</title><description>New Blog</description><link>https://thrinisty.github.io/</link><language>zh_CN</language><item><title>Redis笔记（缓存）</title><link>https://thrinisty.github.io/posts/redis%E7%AC%94%E8%AE%B0%E7%BC%93%E5%AD%98/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/redis%E7%AC%94%E8%AE%B0%E7%BC%93%E5%AD%98/</guid><description>Redis缓存</description><pubDate>Sun, 05 Oct 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;Redis笔记&lt;/h1&gt;
+&lt;h2&gt;缓存&lt;/h2&gt;
+&lt;p&gt;缓存是数据的缓存区，是存储数据的地方，读写性能高，对于后端可以降低后端的负载，降低响应时间。&lt;/p&gt;
+&lt;p&gt;也带来了一些数据一致性的成本、代码维护成本、运维成本&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/235.png&quot; alt=&quot;235&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;以下是代码实现，随便写了一个&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public Result&amp;lt;User&amp;gt; getUserByPhone(String phone) {
+        User user;
+        String s = stringRedisTemplate.opsForValue().get(&quot;getUser:&quot; + phone);
+        if (s == null) {
+            user = userMapper.getUserByPhone(phone);
+        } else {
+            user = JSON.parseObject(s, User.class);
+        }
+        if (user == null) {
+           return Result.error(404, &quot;不存在用户&quot;);
+        }
+        stringRedisTemplate.opsForValue().set(&quot;getUser:&quot; + phone, JSON.toJSONString(user), 10, TimeUnit.MINUTES);
+        return Result.success(user);
+    }
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;主动更新缓存策略&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/236.png&quot; alt=&quot;236&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;如何保证缓存和数据库的一致性&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/237.png&quot; alt=&quot;237&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;问题：先更新数据库还是先删除缓存&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/238.png&quot; alt=&quot;238&quot; /&gt;&lt;/p&gt;
+</content:encoded></item><item><title>LeetCode刷题（乘积最大子数组）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E4%B9%98%E7%A7%AF%E6%9C%80%E5%A4%A7%E5%AD%90%E6%95%B0%E7%BB%84/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E4%B9%98%E7%A7%AF%E6%9C%80%E5%A4%A7%E5%AD%90%E6%95%B0%E7%BB%84/</guid><pubDate>Sat, 04 Oct 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;乘积最大子数组&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;给你一个整数数组 &lt;code&gt;nums&lt;/code&gt; ，请你找出数组中乘积最大的非空连续 子数组（该子数组中至少包含一个数字），并返回该子数组所对应的乘积。&lt;/p&gt;
+&lt;p&gt;测试用例的答案是一个 &lt;strong&gt;32-位&lt;/strong&gt; 整数。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 1:&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入: nums = [2,3,-2,4]
+输出: 6
+解释: 子数组 [2,3] 有最大乘积 6。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2:&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入: nums = [-2,0,-1]
+输出: 0
+解释: 结果不能为 2, 因为 [-2,-1] 不是子数组。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;解法一：暴力拆解&lt;/p&gt;
+&lt;p&gt;第一个想到的就是这个，没想到竟然没超时&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public int maxProduct(int[] nums) {
+        int result = Integer.MIN_VALUE;
+        for(int i = 0; i &amp;lt; nums.length; i++) {
+            int max = nums[i];
+            int mul = nums[i]; 
+            for(int j = i + 1; j &amp;lt; nums.length; j++) {
+                mul *= nums[j];
+                max = Math.max(max, mul);
+            }
+            result = Math.max(result, max);
+        }
+        return result;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;解法二：LeetCode上一位佬写出来的，搬来用下&lt;/p&gt;
+&lt;p&gt;设立min变量和max变量，初始化为1，遍历过程中如果数字为负数就交换二者，因为×上负号大的就变成了小的。&lt;/p&gt;
+&lt;p&gt;迭代一下min和max，每次循环最后再用max迭代result&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;遍历数组时计算当前最大值，不断更新
+令imax为当前最大值，则当前最大值为 imax = max(imax * nums[i], nums[i])
+由于存在负数，那么会导致最大的变最小的，最小的变最大的。因此还需要维护当前最小值imin，imin = min(imin * nums[i], nums[i])
+当负数出现时则imax与imin进行交换再进行下一步计算
+时间复杂度：O(n)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public int maxProduct(int[] nums) {
+        int result = Integer.MIN_VALUE;
+        int max = 1;
+        int min = 1;
+        for(int num : nums) {
+            if(num &amp;lt; 0) {
+                int temp = max;
+                max = min;
+                min = temp;
+            }
+            max = Math.max(max * num, num);
+            min = Math.min(min * num, num);
+            result = Math.max(result, max);
+        }
+        return result;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+</content:encoded></item><item><title>Redis笔记（客户端、短信登陆）</title><link>https://thrinisty.github.io/posts/redis%E7%AC%94%E8%AE%B0%E5%AE%A2%E6%88%B7%E7%AB%AF%E7%9F%AD%E4%BF%A1%E7%99%BB%E9%99%86/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/redis%E7%AC%94%E8%AE%B0%E5%AE%A2%E6%88%B7%E7%AB%AF%E7%9F%AD%E4%BF%A1%E7%99%BB%E9%99%86/</guid><description>Java客户端，基础指令入门，短信登录</description><pubDate>Sat, 04 Oct 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;Redis笔记&lt;/h1&gt;
 &lt;h2&gt;Jedis&lt;/h2&gt;
 &lt;p&gt;我们学Redis最终还是要回到编码上，我们需要使用到Redis提供的客户端，推荐的有Jedis、lettuce、Redisson&lt;/p&gt;
 &lt;p&gt;Jedis，以Redis命令作为方法名称，学习成本较低，简单实用，但是Jedis实例线程不安全，多线程环境下需要基于连接池来使用&lt;/p&gt;
@@ -208,6 +296,118 @@ class Class01ApplicationTests {
         stringRedisTemplate.opsForHash().put(&quot;key10&quot;, &quot;age&quot;, &quot;18&quot;);
         Map&amp;lt;Object, Object&amp;gt; key10 = stringRedisTemplate.opsForHash().entries(&quot;key10&quot;);//获取键对应的Hash结构数据
     }
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;短信登录&lt;/h2&gt;
+&lt;p&gt;分为了三个部分：验证码发送，验证码登录/注册，校验登陆状态&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/234.png&quot; alt=&quot;225&quot; /&gt;&lt;/p&gt;
+&lt;h3&gt;验证码发送&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;@RestController
+@RequestMapping(&quot;/user&quot;)
+public class LoginController {
+    @Autowired
+    private UserService userService;
+    @GetMapping(&quot;/verify&quot;)
+    public Result&amp;lt;String&amp;gt; verify(@RequestParam(&quot;telephone&quot;) String telephone, HttpSession session) {
+        return userService.sendCode(telephone, session);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;sendCode方法实现&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public Result&amp;lt;String&amp;gt; sendCode(@RequestParam(&quot;telephone&quot;) String telephone, HttpSession session) {
+    if(!PhoneValidator.isChinaPhone(telephone)) {
+        return Result.error(400, &quot;请输入正确的手机号码&quot;);
+    }
+    String code = RandomUtil.randomNumbers(6);
+    session.setAttribute(telephone, code);
+    //发送验证码至对应手机，这里做模拟
+    log.info(&quot;验证码 &quot; + code + &quot; 已发送至 &quot; + telephone);
+    return Result.success(code);
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;验证码登录&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;public Result&amp;lt;User&amp;gt; login(@RequestParam(&quot;telephone&quot;) String telephone, String code, HttpSession session) {
+    if(!PhoneValidator.isChinaPhone(telephone)) {
+        return Result.error(400, &quot;请输入正确的手机号码&quot;);
+    }
+    String telCode = (String)(session.getAttribute(telephone));
+    if(!code.equals(telCode)) {
+        return Result.error(400, &quot;验证码不一致，请重新输入&quot;);
+    }
+    User user = userMapper.getUserByPhone(telephone);
+    if(user == null) {
+        user = new User();
+        user.setPhone(telephone);
+    }
+    session.setAttribute(USER_LOGIN_STATUS, user);
+    return Result.success(user);
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;登录验证&lt;/h3&gt;
+&lt;p&gt;通过拦截器进行请求的拦截&lt;/p&gt;
+&lt;p&gt;我一般使用的AOP对于指定的接口进行Session状态的检测，不登陆报错到异常统一处理，这里不浪费时间了&lt;/p&gt;
+&lt;h3&gt;Session共享问题&lt;/h3&gt;
+&lt;p&gt;因为如果后续需要拓展服务器集群，Session就不会被服务器之间共享，服务就没有办法找到用户的登录信息，用户体验差。我们可以使用Redis代替Session&lt;/p&gt;
+&lt;p&gt;对于验证码我们用电话号码作为key存储验证码，而对于用户登陆状态的存储我们使用一个生成的token作为key，并将token返回给前端，前端每次请求的时候附带上这个token请求&lt;/p&gt;
+&lt;p&gt;我们还需要设置一下TTL有效时间，验证码一般就5min，登陆状态看情况设置，我设定的一天&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@Slf4j
+@Service
+public class UserService {
+    @Autowired
+    private UserMapper userMapper;
+
+    @Autowired
+    private StringRedisTemplate stringRedisTemplate;
+
+    public final static String USER_LOGIN_STATUS = &quot;USER_LOGIN_STATUS&quot;;
+
+    public PageInfo&amp;lt;User&amp;gt; getUserByPage(int pageNum, int pageSize) {
+        PageHelper.startPage(pageNum, pageSize);
+        List&amp;lt;User&amp;gt; users = userMapper.getUsers();
+        return new PageInfo&amp;lt;&amp;gt;(users);
+    }
+
+    public Result&amp;lt;User&amp;gt; getCurrentUser(@RequestParam(&quot;token&quot;) String token) {
+        String s = stringRedisTemplate.opsForValue().get(&quot;user:&quot; + token);
+        User user = JSON.parseObject(s, User.class);
+        return Result.success(user);
+    }
+
+    public Result&amp;lt;String&amp;gt; sendCode(@RequestParam(&quot;telephone&quot;) String telephone, HttpSession session) {
+        if(!PhoneValidator.isChinaPhone(telephone)) {
+            return Result.error(400, &quot;请输入正确的手机号码&quot;);
+        }
+        String code = RandomUtil.randomNumbers(6);
+//        session.setAttribute(telephone, code);
+        stringRedisTemplate.opsForValue().set(&quot;login:&quot; + telephone, code, 5, TimeUnit.MINUTES);
+        //发送验证码至对应手机，这里做模拟
+        log.info(&quot;验证码 &quot; + code + &quot; 已发送至 &quot; + telephone);
+        return Result.success(code);
+    }
+
+    public Result&amp;lt;String&amp;gt; login(@RequestParam(&quot;telephone&quot;) String telephone, String code, HttpSession session) {
+        if(!PhoneValidator.isChinaPhone(telephone)) {
+            return Result.error(400, &quot;请输入正确的手机号码&quot;);
+        }
+//        String telCode = (String)(session.getAttribute(telephone));
+        String telCode = stringRedisTemplate.opsForValue().get(&quot;login:&quot; + telephone);
+        if(!code.equals(telCode)) {
+            return Result.error(400, &quot;验证码不一致，请重新输入&quot;);
+        }
+        User user = userMapper.getUserByPhone(telephone);
+        if(user == null) {
+            user = new User();
+            user.setPhone(telephone);
+            user.setUpdateTime(LocalDateTime.now());
+            user.setCreateTime(LocalDateTime.now());
+            userMapper.insertUser(user);
+        }
+//        session.setAttribute(USER_LOGIN_STATUS, user);
+        String userString = JSON.toJSONString(user);
+        String token = RandomUtil.randomNumbers(8);
+        stringRedisTemplate.opsForValue().set(&quot;user:&quot; + token, userString, 1, TimeUnit.DAYS);
+        return Result.success(token);
+    }
+}
 &lt;/code&gt;&lt;/pre&gt;
 </content:encoded></item><item><title>Redis笔记（NoSQL、基本操作）</title><link>https://thrinisty.github.io/posts/redis%E7%AC%94%E8%AE%B0nosqlredis%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/redis%E7%AC%94%E8%AE%B0nosqlredis%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/</guid><description>NoSQL，Redis数据结构</description><pubDate>Fri, 03 Oct 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;Redis笔记&lt;/h1&gt;
 &lt;p&gt;教程包括了：八种不同的数据结构，两个消息队列，四个相关的运维操作，Scrip脚本，事务操作&lt;/p&gt;
@@ -737,7 +937,7 @@ SADD set2 a b
         map.put(preSum, map.getOrDefault(preSum, 0) + 1);
         result += dfs(root.left, preSum, targetSum);
         result += dfs(root.right, preSum, targetSum);
-        map.put(preSum, map.getOrDefault(preSum, 0) - 1);
+        map.put(preSum, map.get(preSum) - 1);
         return result;
     }
 }

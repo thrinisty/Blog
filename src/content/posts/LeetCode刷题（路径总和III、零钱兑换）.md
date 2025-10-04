@@ -57,7 +57,7 @@ class Solution {
         map.put(preSum, map.getOrDefault(preSum, 0) + 1);
         result += dfs(root.left, preSum, targetSum);
         result += dfs(root.right, preSum, targetSum);
-        map.put(preSum, map.getOrDefault(preSum, 0) - 1);
+        map.put(preSum, map.get(preSum) - 1);
         return result;
     }
 }

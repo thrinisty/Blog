@@ -1,8 +1,8 @@
 ---
-title: Redis笔记（客户端）
+title: Redis笔记（客户端、短信登陆）
 published: 2025-10-04
 updated: 2025-10-04
-description: 'Java客户端，基础指令入门'
+description: 'Java客户端，基础指令入门，短信登录'
 image: ''
 tags: [Redis]
 category: ''
@@ -303,4 +303,141 @@ void contextLoads() {
         stringRedisTemplate.opsForHash().put("key10", "age", "18");
         Map<Object, Object> key10 = stringRedisTemplate.opsForHash().entries("key10");//获取键对应的Hash结构数据
     }
+```
+
+
+
+## 短信登录
+
+分为了三个部分：验证码发送，验证码登录/注册，校验登陆状态
+
+![225](../images/234.png)
+
+### 验证码发送
+
+```java
+@RestController
+@RequestMapping("/user")
+public class LoginController {
+    @Autowired
+    private UserService userService;
+    @GetMapping("/verify")
+    public Result<String> verify(@RequestParam("telephone") String telephone, HttpSession session) {
+        return userService.sendCode(telephone, session);
+    }
+}
+```
+
+sendCode方法实现
+
+```java
+public Result<String> sendCode(@RequestParam("telephone") String telephone, HttpSession session) {
+    if(!PhoneValidator.isChinaPhone(telephone)) {
+        return Result.error(400, "请输入正确的手机号码");
+    }
+    String code = RandomUtil.randomNumbers(6);
+    session.setAttribute(telephone, code);
+    //发送验证码至对应手机，这里做模拟
+    log.info("验证码 " + code + " 已发送至 " + telephone);
+    return Result.success(code);
+}
+```
+
+### 验证码登录
+
+```java
+public Result<User> login(@RequestParam("telephone") String telephone, String code, HttpSession session) {
+    if(!PhoneValidator.isChinaPhone(telephone)) {
+        return Result.error(400, "请输入正确的手机号码");
+    }
+    String telCode = (String)(session.getAttribute(telephone));
+    if(!code.equals(telCode)) {
+        return Result.error(400, "验证码不一致，请重新输入");
+    }
+    User user = userMapper.getUserByPhone(telephone);
+    if(user == null) {
+        user = new User();
+        user.setPhone(telephone);
+    }
+    session.setAttribute(USER_LOGIN_STATUS, user);
+    return Result.success(user);
+}
+```
+
+### 登录验证
+
+通过拦截器进行请求的拦截
+
+我一般使用的AOP对于指定的接口进行Session状态的检测，不登陆报错到异常统一处理，这里不浪费时间了
+
+
+
+### Session共享问题
+
+因为如果后续需要拓展服务器集群，Session就不会被服务器之间共享，服务就没有办法找到用户的登录信息，用户体验差。我们可以使用Redis代替Session
+
+对于验证码我们用电话号码作为key存储验证码，而对于用户登陆状态的存储我们使用一个生成的token作为key，并将token返回给前端，前端每次请求的时候附带上这个token请求
+
+我们还需要设置一下TTL有效时间，验证码一般就5min，登陆状态看情况设置，我设定的一天
+
+```java
+@Slf4j
+@Service
+public class UserService {
+    @Autowired
+    private UserMapper userMapper;
+
+    @Autowired
+    private StringRedisTemplate stringRedisTemplate;
+
+    public final static String USER_LOGIN_STATUS = "USER_LOGIN_STATUS";
+
+    public PageInfo<User> getUserByPage(int pageNum, int pageSize) {
+        PageHelper.startPage(pageNum, pageSize);
+        List<User> users = userMapper.getUsers();
+        return new PageInfo<>(users);
+    }
+
+    public Result<User> getCurrentUser(@RequestParam("token") String token) {
+        String s = stringRedisTemplate.opsForValue().get("user:" + token);
+        User user = JSON.parseObject(s, User.class);
+        return Result.success(user);
+    }
+
+    public Result<String> sendCode(@RequestParam("telephone") String telephone, HttpSession session) {
+        if(!PhoneValidator.isChinaPhone(telephone)) {
+            return Result.error(400, "请输入正确的手机号码");
+        }
+        String code = RandomUtil.randomNumbers(6);
+//        session.setAttribute(telephone, code);
+        stringRedisTemplate.opsForValue().set("login:" + telephone, code, 5, TimeUnit.MINUTES);
+        //发送验证码至对应手机，这里做模拟
+        log.info("验证码 " + code + " 已发送至 " + telephone);
+        return Result.success(code);
+    }
+
+    public Result<String> login(@RequestParam("telephone") String telephone, String code, HttpSession session) {
+        if(!PhoneValidator.isChinaPhone(telephone)) {
+            return Result.error(400, "请输入正确的手机号码");
+        }
+//        String telCode = (String)(session.getAttribute(telephone));
+        String telCode = stringRedisTemplate.opsForValue().get("login:" + telephone);
+        if(!code.equals(telCode)) {
+            return Result.error(400, "验证码不一致，请重新输入");
+        }
+        User user = userMapper.getUserByPhone(telephone);
+        if(user == null) {
+            user = new User();
+            user.setPhone(telephone);
+            user.setUpdateTime(LocalDateTime.now());
+            user.setCreateTime(LocalDateTime.now());
+            userMapper.insertUser(user);
+        }
+//        session.setAttribute(USER_LOGIN_STATUS, user);
+        String userString = JSON.toJSONString(user);
+        String token = RandomUtil.randomNumbers(8);
+        stringRedisTemplate.opsForValue().set("user:" + token, userString, 1, TimeUnit.DAYS);
+        return Result.success(token);
+    }
+}
 ```
