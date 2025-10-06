@@ -1,23 +1,575 @@
-<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Thrinisty&apos;s Blog</title><description>New Blog</description><link>https://thrinisty.github.io/</link><language>zh_CN</language><item><title>Redis笔记（缓存）</title><link>https://thrinisty.github.io/posts/redis%E7%AC%94%E8%AE%B0%E7%BC%93%E5%AD%98/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/redis%E7%AC%94%E8%AE%B0%E7%BC%93%E5%AD%98/</guid><description>Redis缓存</description><pubDate>Sun, 05 Oct 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;Redis笔记&lt;/h1&gt;
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Thrinisty&apos;s Blog</title><description>New Blog</description><link>https://thrinisty.github.io/</link><language>zh_CN</language><item><title>LeetCode刷题（最短无序连续子数组、下一个排列）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E6%9C%80%E7%9F%AD%E6%97%A0%E5%BA%8F%E8%BF%9E%E7%BB%AD%E5%AD%90%E6%95%B0%E7%BB%84%E4%B8%8B%E4%B8%80%E4%B8%AA%E6%8E%92%E5%88%97/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E6%9C%80%E7%9F%AD%E6%97%A0%E5%BA%8F%E8%BF%9E%E7%BB%AD%E5%AD%90%E6%95%B0%E7%BB%84%E4%B8%8B%E4%B8%80%E4%B8%AA%E6%8E%92%E5%88%97/</guid><pubDate>Mon, 06 Oct 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;最短无序连续子数组&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;给你一个整数数组 &lt;code&gt;nums&lt;/code&gt; ，你需要找出一个 &lt;strong&gt;连续子数组&lt;/strong&gt; ，如果对这个子数组进行升序排序，那么整个数组都会变为升序排序。&lt;/p&gt;
+&lt;p&gt;请你找出符合题意的 &lt;strong&gt;最短&lt;/strong&gt; 子数组，并输出它的长度。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：nums = [2,6,4,8,10,9,15]
+输出：5
+解释：你只需要对 [6, 4, 8, 10, 9] 进行升序排序，那么整个表都会变为升序排序。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：nums = [1,2,3,4]
+输出：0
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 3：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：nums = [1]
+输出：0
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;左往右看：就是一个升序数组，时刻更新max，如果突然是降序，那么它肯定有问题，记录为右边界。&lt;/p&gt;
+&lt;p&gt;右往左看：就是一个降序数组，时刻更新min，如果突然是升序，那么它肯定有问题，记录为左边界。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/247.png&quot; alt=&quot;247&quot; /&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public int findUnsortedSubarray(int[] nums) {
+        int n = nums.length;
+        int min = Integer.MAX_VALUE;
+        int max = Integer.MIN_VALUE;
+        int begin = 0;  //中间段的起始位置
+        int end = -1;   //中间段的终止位置
+        for(int i = 0; i &amp;lt; n; i++) {
+            if(nums[i] &amp;gt; max) {
+                max = nums[i];
+            } else {
+                end = i;
+            }
+            int j = n - 1 - i;
+            if(nums[j] &amp;lt; min) {
+                min = nums[j];
+            } else {
+                begin = j;
+            }
+        }
+        return end - begin + 1;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1&gt;下一个排列&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;整数数组的一个 &lt;strong&gt;排列&lt;/strong&gt; 就是将其所有成员以序列或线性顺序排列。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;例如，&lt;code&gt;arr = [1,2,3]&lt;/code&gt; ，以下这些都可以视作 &lt;code&gt;arr&lt;/code&gt; 的排列：&lt;code&gt;[1,2,3]&lt;/code&gt;、&lt;code&gt;[1,3,2]&lt;/code&gt;、&lt;code&gt;[3,1,2]&lt;/code&gt;、&lt;code&gt;[2,3,1]&lt;/code&gt; 。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;整数数组的 &lt;strong&gt;下一个排列&lt;/strong&gt; 是指其整数的下一个字典序更大的排列。更正式地，如果数组的所有排列根据其字典顺序从小到大排列在一个容器中，那么数组的 &lt;strong&gt;下一个排列&lt;/strong&gt; 就是在这个有序容器中排在它后面的那个排列。如果不存在下一个更大的排列，那么这个数组必须重排为字典序最小的排列（即，其元素按升序排列）。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;例如，&lt;code&gt;arr = [1,2,3]&lt;/code&gt; 的下一个排列是 &lt;code&gt;[1,3,2]&lt;/code&gt; 。&lt;/li&gt;
+&lt;li&gt;类似地，&lt;code&gt;arr = [2,3,1]&lt;/code&gt; 的下一个排列是 &lt;code&gt;[3,1,2]&lt;/code&gt; 。&lt;/li&gt;
+&lt;li&gt;而 &lt;code&gt;arr = [3,2,1]&lt;/code&gt; 的下一个排列是 &lt;code&gt;[1,2,3]&lt;/code&gt; ，因为 &lt;code&gt;[3,2,1]&lt;/code&gt; 不存在一个字典序更大的排列。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;给你一个整数数组 &lt;code&gt;nums&lt;/code&gt; ，找出 &lt;code&gt;nums&lt;/code&gt; 的下一个排列。&lt;/p&gt;
+&lt;p&gt;必须**&lt;a href=&quot;https://baike.baidu.com/item/%E5%8E%9F%E5%9C%B0%E7%AE%97%E6%B3%95&quot;&gt; 原地 &lt;/a&gt;**修改，只允许使用额外常数空间。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：nums = [1,2,3]
+输出：[1,3,2]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：nums = [3,2,1]
+输出：[1,2,3]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 3：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：nums = [1,1,5]
+输出：[1,5,1]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;我们希望找到一种方法，能够找到一个大于当前序列的新序列，且变大的幅度尽可能小&lt;/p&gt;
+&lt;p&gt;我们需要将一个左边的「较小数」与一个右边的「较大数」交换，以能够让当前排列变大，从而得到下一个排列。&lt;/p&gt;
+&lt;p&gt;同时我们要让这个「较小数」尽量靠右，而「较大数」尽可能小。当交换完成后，「较大数」右边的数需要按照升序重新排列。这样可以在保证新排列大于原来排列的情况下，使变大的幅度尽可能小。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public void nextPermutation(int[] nums) {
+        int n = nums.length;
+        int i = n - 2;
+        //获取左边的较小数
+        while (i &amp;gt;= 0 &amp;amp;&amp;amp; nums[i] &amp;gt;= nums[i + 1]) {
+            i--;	
+        }
+
+        if (i &amp;gt;= 0) {
+            //获取最右边的靠右较大数
+            int j = n - 1;
+            while (j &amp;gt;= 0 &amp;amp;&amp;amp; nums[i] &amp;gt;= nums[j]) {
+                j--;
+            }
+            swap(nums, i, j);
+        }
+        //排序交换后较大数之后的数组部分
+        reverse(nums, i + 1, n - 1);
+
+    }
+
+    public void swap(int[] nums, int i, int j) {
+        int temp = nums[i];
+        nums[i] = nums[j];
+        nums[j] = temp;
+    }
+
+    public void reverse(int[] nums, int start, int end) {
+        int i = start;
+        int j = end;
+        while (i &amp;lt; j) {
+            swap(nums, i, j);
+            i++;
+            j--;
+        }
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+</content:encoded></item><item><title>MyBatis-plus笔记（基本使用、核心功能、拓展功能、分页插件）</title><link>https://thrinisty.github.io/posts/mybatis-plus%E7%AC%94%E8%AE%B0%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8%E6%A0%B8%E5%BF%83%E5%8A%9F%E8%83%BD%E6%8B%93%E5%B1%95%E5%8A%9F%E8%83%BD%E5%88%86%E9%A1%B5%E6%8F%92%E4%BB%B6/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/mybatis-plus%E7%AC%94%E8%AE%B0%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8%E6%A0%B8%E5%BF%83%E5%8A%9F%E8%83%BD%E6%8B%93%E5%B1%95%E5%8A%9F%E8%83%BD%E5%88%86%E9%A1%B5%E6%8F%92%E4%BB%B6/</guid><description>神！！伟大无需多言！</description><pubDate>Mon, 06 Oct 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;MyBatis-plus笔记&lt;/h1&gt;
+&lt;p&gt;MyBatisPlus是MyBatis的增强版，旨在简化单表SQL的编写&lt;/p&gt;
+&lt;h2&gt;基本使用&lt;/h2&gt;
+&lt;p&gt;相关依赖：这个依赖可以直接替代原先的MyBatis依赖&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;dependency&amp;gt;
+    &amp;lt;groupId&amp;gt;com.baomidou&amp;lt;/groupId&amp;gt;
+    &amp;lt;artifactId&amp;gt;mybatis-plus-spring-boot3-starter&amp;lt;/artifactId&amp;gt;
+    &amp;lt;version&amp;gt;3.5.7&amp;lt;/version&amp;gt;
+&amp;lt;/dependency&amp;gt;
+&amp;lt;dependency&amp;gt;
+    &amp;lt;groupId&amp;gt;mysql&amp;lt;/groupId&amp;gt;
+    &amp;lt;artifactId&amp;gt;mysql-connector-java&amp;lt;/artifactId&amp;gt;
+    &amp;lt;version&amp;gt;8.0.33&amp;lt;/version&amp;gt;
+&amp;lt;/dependency&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;User用TableName注解指定表格&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@Data
+@TableName(&quot;tb_user&quot;)
+public class User {
+    private int id;
+    private String phone;
+    private String password;
+    private String nickName;
+    private String icon;
+    private LocalDateTime createTime;
+    private LocalDateTime updateTime;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;对于Mapper我们通过继承BaseMapper&amp;lt;User&amp;gt;即可实现增删改查的基本功能，且不会影响我们原先实现的MyBatis方法（非侵入式）&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@Mapper
+public interface UserMapper extends BaseMapper&amp;lt;User&amp;gt; {
+    @Select(&quot;SELECT id, phone, password, nick_name AS nickName, icon, create_time AS createTime,&quot; +
+            &quot; update_time AS updateTime FROM tb_user WHERE id = #{id}&quot;)
+    User getUserById(int id);
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;@Test
+void contextLoads() {
+    User user = userMapper.getUserById(1);
+    System.out.println(user);
+}
+
+@Test
+void testMybatisPlus() {
+    User user = userMapper.selectById(1);
+    System.out.println(user);
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;常用注解&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;MyBatisPlus是通过扫描实体类，并基于反射获取实体类信息作为数据库表信息&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;类名驼峰转下划线作为表名
+名为id的字段作为主键
+变量名驼峰转下划线作为表的字段名称
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;但是如果不符合以上的配置我们就需要手动使用注解进行配置&lt;/p&gt;
+&lt;p&gt;@TableName：指定表名，我们还可以&lt;/p&gt;
+&lt;p&gt;@TableId：指定表的主键字段信息，我们还可以使用type指定主键id的生成策略&lt;/p&gt;
+&lt;p&gt;@TableField：指定表的普通字段信息&lt;/p&gt;
+&lt;p&gt;如下是一个完整的配置entity对象，有一些字段或者id是可以省略的，因为符合约定的配置&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@Data
+@TableName(&quot;tb_user&quot;)
+public class User {
+    @TableId(&quot;id&quot;)
+    private int id;
+
+    @TableField(&quot;phone&quot;)
+    private String phone;
+
+    @TableField(&quot;password&quot;)
+    private String password;
+
+    @TableField(&quot;nick_name&quot;)
+    private String nickName;
+
+    @TableField(&quot;icon&quot;)
+    private String icon;
+
+    @TableField(&quot;create_time&quot;)
+    private LocalDateTime createTime;
+
+    @TableField(&quot;update_time&quot;)
+    private LocalDateTime updateTime;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;加入我们的字段属于SQL中的关键字，我们可以使用TableField来加上``字符包裹&lt;/p&gt;
+&lt;p&gt;我们如果一个对象中有不是数据库的字段我们可以通过设置exist=false来进行设置&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@Data
+@TableName(&quot;tb_user&quot;)
+public class User {
+    @TableId(value = &quot;id&quot;, type = IdType.AUTO)
+    private int id;
+
+    @TableField(&quot;phone&quot;)
+    private String phone;
+
+    @TableField(&quot;password&quot;)
+    private String password;
+
+    @TableField(&quot;nick_name&quot;)
+    private String nickName;
+
+    @TableField(&quot;icon&quot;)
+    private String icon;
+
+    @TableField(&quot;create_time&quot;)
+    private LocalDateTime createTime;
+
+    @TableField(&quot;update_time&quot;)
+    private LocalDateTime updateTime;
+
+    @TableField(exist = false)
+    private LocalDateTime LogicTime;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;常见配置&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;这配置中可以进行一些参数的设置&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/249.png&quot; alt=&quot;249&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/250.png&quot; alt=&quot;250&quot; /&gt;&lt;/p&gt;
+&lt;h2&gt;核心功能&lt;/h2&gt;
+&lt;h3&gt;条件构造器&lt;/h3&gt;
+&lt;p&gt;MyBatisPlus支持各种各样的复杂where条件，可以满足日常开发的所有需求&lt;/p&gt;
+&lt;p&gt;我们有这样一个结构&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@Data
+@TableName(&quot;tb_shop&quot;)
+public class Shop {
+    @TableId(type = IdType.AUTO)
+    int id;
+    String name;
+    int typeId;
+    String images;
+    String area;
+    String address;
+    double x;
+    double y;
+    int avgPrice;
+    int sold;
+    int comments;
+    int score;
+    String openHours;
+    LocalDateTime createTime;
+    LocalDateTime updateTime;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&quot;../images/251.png&quot; alt=&quot;251&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;现在我们需要用MyBatis完成如下功能&lt;/p&gt;
+&lt;p&gt;1.查询avg_price大于50且得分小于40的商店的id，name，area字段&lt;/p&gt;
+&lt;p&gt;如果是SQL写为如下，用QueryWrapper实现&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;select id, name, area from tb_shop where score &amp;lt; 40 and avg_price &amp;gt; 50
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;@Test
+void testMybatisPlus() {
+    QueryWrapper&amp;lt;Shop&amp;gt; wrapper = new QueryWrapper&amp;lt;&amp;gt;();
+    wrapper.select(&quot;id&quot;, &quot;name&quot;, &quot;area&quot;)
+            .lt(&quot;score&quot;, 40)
+            .gt(&quot;avg_price&quot;, 50);
+    List&amp;lt;Shop&amp;gt; shops = shopMapper.selectList(wrapper);
+    for(Shop shop : shops) {
+        System.out.println(shop);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;Shop(id=10, name=开乐迪KTV（运河上街店）, typeId=0, images=null, area=运河上街, address=null, x=0.0, y=0.0, avgPrice=0, sold=0, comments=0, score=0, openHours=null, createTime=null, updateTime=null)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;在实际开发中我们其实更加推荐于使用Lambda的形式获取属性名称而非硬编码的方式&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@Test
+void testMybatisPlus() {
+    LambdaQueryWrapper&amp;lt;Shop&amp;gt; wrapper = new QueryWrapper&amp;lt;Shop&amp;gt;().lambda();
+    wrapper.select(Shop::getId, Shop::getName, Shop::getArea)
+            .lt(Shop::getScore, 40)
+            .gt(Shop::getAvgPrice, 50);
+    List&amp;lt;Shop&amp;gt; shops = shopMapper.selectList(wrapper);
+    for(Shop shop : shops) {
+        System.out.println(shop);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;2.更新103茶餐厅的x为101.02，y为120.01&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;update tb_shop set x = 101.02, y = 120.01 where name = &quot;103茶餐厅&quot;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;@Test
+void contextLoads() {
+    Shop shop = new Shop();
+    shop.setX(101.02);
+    shop.setY(120.01);
+    QueryWrapper&amp;lt;Shop&amp;gt; wrapper = new QueryWrapper&amp;lt;&amp;gt;();
+    wrapper.eq(&quot;name&quot;, &quot;103茶餐厅&quot;);
+    int update = shopMapper.update(shop, wrapper);
+    System.out.println(update);
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;3.更新1、2、4商店，使其score得分加10&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;update tb_shop set score = score + 10 where id in (1,2,4)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;我们给予UpdateWrapper实现&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@Test
+void contextLoads() {
+    UpdateWrapper&amp;lt;Shop&amp;gt; wrapper = new UpdateWrapper&amp;lt;&amp;gt;();
+    wrapper.setSql(&quot;score = score + 10&quot;).in(&quot;id&quot;, List.of(1, 2, 4));
+    shopMapper.update(null, wrapper);
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;自定义SQL&lt;/h3&gt;
+&lt;p&gt;可以利用MyBatisPlus的Wrapper来构建复杂的where条件，然后自定义SQL语句中的剩下一个部分&lt;/p&gt;
+&lt;p&gt;我们在上述的时候用的UpdateWrapper是在业务层进行代码的编写的，但是在实际开发的过程中我们往往规定SQL只能在Mapper中提供方法供以Service层调用，这个时候我们就需要使用到自定义SQL&lt;/p&gt;
+&lt;p&gt;需求：将id指定范围内的用户余额扣除指定值，在业务层指定查询条件，SQL语句构造在xml文件中&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@Test
+void contextLoads() {
+    List&amp;lt;Integer&amp;gt; idList = List.of(1, 2, 4);
+    LambdaUpdateWrapper&amp;lt;Shop&amp;gt; wrapper = new UpdateWrapper&amp;lt;Shop&amp;gt;().lambda();
+    wrapper.in(Shop::getId, idList);
+    int amount = 5;
+    shopMapper.updateScoreByIds(wrapper, amount);
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;写上对应的接口mapper，注意这里一定要ew标注wrapper&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@Mapper
+public interface ShopMapper extends BaseMapper&amp;lt;Shop&amp;gt; {
+    void updateScoreByIds(@Param(&quot;ew&quot;) LambdaUpdateWrapper&amp;lt;Shop&amp;gt; wrapper, @Param(&quot;amount&quot;) int amount);
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;在Mapper中进行拼接&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;update id=&quot;updateScoreByIds&quot;&amp;gt;
+    update tb_shop set score = score + #{amount} where ${ew.sqlSegment}
+&amp;lt;/update&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;Service接口&lt;/h3&gt;
+&lt;p&gt;Service业务层使用Mapper层级的接口进行业务的编写，MyBatisPlus帮助我们实现了很对Service的方法，我们使用对应服务的接口继承IService接口即可使用相关的方法，我们的实现类继承于业务接口但是因为没有实现IService接口的相关方法我们还需要用业务的实现类去继承ServiceImpl的实现方法&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/252.png&quot; alt=&quot;252&quot; /&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public interface ShopService extends IService&amp;lt;Shop&amp;gt; {
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;@Service
+public class UserServiceImpl extends ServiceImpl&amp;lt;ShopMapper, Shop&amp;gt; implements ShopService {
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;此时我们注入ShopService就可以使用其下的方法，其方法基于ShopMapper实现&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@Test
+void testShopService() {
+    Shop shop = shopService.getById(1);
+    System.out.println(shop);
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;网络请求示例&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@Service
+public class ShopServiceImpl extends ServiceImpl&amp;lt;ShopMapper, Shop&amp;gt; implements ShopService {
+    @Autowired
+    private ShopMapper shopMapper;
+
+    @Override
+    public void updateScore(int id, int amount) {
+        //实现以下updateScore方法
+        LambdaUpdateWrapper&amp;lt;Shop&amp;gt; wrapper= new UpdateWrapper&amp;lt;Shop&amp;gt;().lambda();
+        wrapper.eq(Shop::getId, id);
+        shopMapper.updateScoreByIds(wrapper, amount);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;@RestController
+@RequestMapping(&quot;shop&quot;)
+public class ShopController {
+    @Autowired
+    private ShopService shopService;
+
+    @PostMapping
+    public void addShop(@RequestBody Shop shop) {
+        shopService.save(shop);
+    }
+
+    @DeleteMapping(&quot;{id}&quot;)
+    public void deleteShop(@PathVariable int id) {
+        shopService.removeById(id);
+    }
+
+    @GetMapping(&quot;{id}&quot;)
+    public Shop getShop(@PathVariable int id) {
+        return shopService.getById(id);
+    }
+
+    @GetMapping
+    public List&amp;lt;Shop&amp;gt; getShops(@RequestParam(&quot;id&quot;) List&amp;lt;Integer&amp;gt; list) {
+        QueryWrapper&amp;lt;Shop&amp;gt; wrapper = new QueryWrapper&amp;lt;&amp;gt;();
+        wrapper.in(&quot;id&quot;, list);
+        return shopService.list(wrapper);
+    }
+
+    @PutMapping(&quot;/score/{id}/{amount}&quot;)
+    public void updateScore(@PathVariable int id, @PathVariable int amount) {
+        shopService.updateScore(id, amount);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;Lambda查询&lt;/h3&gt;
+&lt;p&gt;我们在之前多条件查询使用的是动态SQL来进行条件的选择性过滤，现在基于Lambda查询我们也可以做到相同的功能&lt;/p&gt;
+&lt;p&gt;常规方式：通过动态SQL进行查询&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@Override
+public List&amp;lt;Shop&amp;gt; multiQuery(ShopQueryEntity query) {
+    return shopMapper.multiSelect(query);
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;select id=&quot;multiSelect&quot; resultType=&quot;com.nwpu.mybatistest.entity.Shop&quot;&amp;gt;
+    SELECT id, name, type_id, images, area, address, x, y, avg_price,
+           sold, comments, score, open_hours, create_time, update_time
+    FROM tb_shop
+    &amp;lt;where&amp;gt;
+        &amp;lt;if test=&quot;id != null&quot;&amp;gt;
+            AND id = #{id}
+        &amp;lt;/if&amp;gt;
+        &amp;lt;if test=&quot;name != null&quot;&amp;gt;
+            AND name like #{id}
+        &amp;lt;/if&amp;gt;
+        &amp;lt;if test=&quot;typeId != null&quot;&amp;gt;
+            AND type_id = #{typeId}
+        &amp;lt;/if&amp;gt;
+    &amp;lt;/where&amp;gt;
+&amp;lt;/select&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;而我们Lambda查询实现如下：在业务层使用lambdaQuery传入条件，最后的结果以list返回，同样的我们也可以count计算数量，one返回一个，page分页返回，方法非常多样&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@Override
+public List&amp;lt;Shop&amp;gt; multiQueryByLambda(ShopQueryEntity query) {
+    List&amp;lt;Shop&amp;gt; list = lambdaQuery().eq(query.getId() != null, Shop::getId, query.getId())
+            .like(query.getName() != null, Shop::getName, query.getName())
+            .eq(query.getTypeId() != null, Shop::getTypeId, query.getTypeId())
+            .list();
+    return list;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;同样的我们也可以进行一些其他逻辑的编写：当amount小于100的时候才会用amount更新指定id的score，记得最后update&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@Override
+public void updateScoreByLambda(int id, int amount) {
+    lambdaUpdate()
+            .set(amount &amp;lt; 100, Shop::getScore, amount)
+            .eq(Shop::getId, id)
+            .update();
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;批量新增&lt;/h3&gt;
+&lt;p&gt;通过saveBatch，传入list集合，可以一次性传入多条数据，性能部分提升&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;List&amp;lt;Shop&amp;gt; shops = List.of(shop);
+shopService.saveBatch(shops);
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;但是我们批处理性能最好的应该是如下的方式，这会将value写在一条SQL中&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;url: jdbc:mysql://thrinisty.top:3306/redis?useSSL=false&amp;amp;serverTimezone=UTC&amp;amp;characterEncoding=UTF-8&amp;amp;rewriteBatchedStatements=true
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;代码不需要改变，加上rewriteBatchedStatements=true配置即可，加上这一条配置数据库驱动就会把一条条SQL合并为一条SQL执行&lt;/p&gt;
+&lt;h2&gt;拓展功能&lt;/h2&gt;
+&lt;h3&gt;静态工具&lt;/h3&gt;
+&lt;p&gt;在使用上和分层的注入对象大体类似，只是不需要去注入，只需要Db的静态方法传入对象字节码对象即可使用，用这个静态工具我们可以放置一些业务层之间的注入依赖，但是在实际尽量还是使用分层，更加符合规范&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public void addUserPoints(List&amp;lt;Long&amp;gt; userIds, int points) {
+    Db.lambdaUpdate(User.class)
+       .in(User::getId, userIds)
+       .setSql(&quot;points = points + &quot; + points)
+       .update();
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;逻辑删除&lt;/h3&gt;
+&lt;p&gt;逻辑删除是基于代码的逻辑模拟删除的效果，不会真的删除数据，可以定义一个字段为1代表该数据被删除，当增改查的时候只对于字段标记为0的数据进行操作&lt;/p&gt;
+&lt;p&gt;我们后续如果误删数据也可以及时恢复，将对应逻辑删除字段设置成为0即可&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@Data
+public class User {
+    @TableId
+    private Long id;
+    private String name;
+    
+    @TableLogic
+    private Integer deleted;  // 1表示已删除，0表示未删除（类型可以是int/boolean/String等）
+}
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;mybatis-plus:
+  global-config:
+    db-config:
+      logic-delete-field: deleted  # 全局逻辑删除字段名（与实体类字段名一致）
+      logic-not-delete-value: 0    # 未删除的值
+      logic-delete-value: 1        # 已删除的值
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;配置完成后我们的方法逻辑就会改变，符合逻辑删除的方式&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;userMapper.deleteById(1L);  
+// SQL: UPDATE user SET deleted=1 WHERE id=1 AND deleted=0
+List&amp;lt;User&amp;gt; list = userMapper.selectList(null); 
+// SQL: SELECT * FROM user WHERE deleted=0
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;当然也会有危险：垃圾数据越来越多，SQL中全部都需要对逻辑字段做一个判断，影响查询效率。&lt;/p&gt;
+&lt;p&gt;ps：但是从我实习的公司看来，似乎逻辑删除还是很重要滴，在大的互联网厂或者网络安全公司，数据的价值往往被放的非常高&lt;/p&gt;
+&lt;h3&gt;枚举处理器&lt;/h3&gt;
+&lt;p&gt;解决枚举转换&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/253.png&quot; alt=&quot;253&quot; /&gt;&lt;/p&gt;
+&lt;h3&gt;Json处理器&lt;/h3&gt;
+&lt;p&gt;1.给对应属性添加实体，添加注解，添加Json处理器&lt;/p&gt;
+&lt;p&gt;2.给表添加autoResultMap设置为True&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@Data
+@TableName(value = &quot;product&quot;, autoResultMap = true)
+public class Product {
+    private Long id;
+
+    // 方案1：使用 MyBatis-Plus 内置的 Jackson 处理器
+    @TableField(typeHandler = JacksonTypeHandler.class)
+    private Map&amp;lt;String, Object&amp;gt; attributes;
+
+    // 方案2：映射到具体 POJO
+    @TableField(typeHandler = JacksonTypeHandler.class)
+    private ProductDetail detail;
+}
+
+@Data
+public class ProductDetail {
+    private String color;
+    private Integer weight;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;分页插件&lt;/h2&gt;
+&lt;p&gt;用原先的PageHelper实现分页，我们引入依赖后发生冲突，我们需要手动的排除mybatis依赖（PageHelper 引入了旧版 MyBatis，与 MyBatis-Plus 的 MyBatis 版本冲突）&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;dependency&amp;gt;
+    &amp;lt;groupId&amp;gt;com.github.pagehelper&amp;lt;/groupId&amp;gt;
+    &amp;lt;artifactId&amp;gt;pagehelper-spring-boot-starter&amp;lt;/artifactId&amp;gt;
+    &amp;lt;version&amp;gt;2.1.0&amp;lt;/version&amp;gt;
+    &amp;lt;exclusions&amp;gt;
+        &amp;lt;!-- 排除潜在的冲突依赖 --&amp;gt;
+        &amp;lt;exclusion&amp;gt;
+            &amp;lt;groupId&amp;gt;org.mybatis&amp;lt;/groupId&amp;gt;
+            &amp;lt;artifactId&amp;gt;mybatis&amp;lt;/artifactId&amp;gt;
+        &amp;lt;/exclusion&amp;gt;
+        &amp;lt;exclusion&amp;gt;
+            &amp;lt;groupId&amp;gt;org.mybatis&amp;lt;/groupId&amp;gt;
+            &amp;lt;artifactId&amp;gt;mybatis-spring&amp;lt;/artifactId&amp;gt;
+        &amp;lt;/exclusion&amp;gt;
+    &amp;lt;/exclusions&amp;gt;
+&amp;lt;/dependency&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;之后我们采用常规的方式即可完成分页查询&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@Override
+public PageInfo&amp;lt;Shop&amp;gt; multiQuery(ShopQueryEntity query, int pageNum, int pageSize) {
+    PageHelper.startPage(pageNum, pageSize);
+    List&amp;lt;Shop&amp;gt; shops = shopMapper.multiSelect(query);
+    PageInfo&amp;lt;Shop&amp;gt; pageInfo = new PageInfo&amp;lt;&amp;gt;(shops);
+    return pageInfo;
+}
+&lt;/code&gt;&lt;/pre&gt;
+</content:encoded></item><item><title>Redis笔记（缓存、秒杀）</title><link>https://thrinisty.github.io/posts/redis%E7%AC%94%E8%AE%B0%E7%BC%93%E5%AD%98/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/redis%E7%AC%94%E8%AE%B0%E7%BC%93%E5%AD%98/</guid><description>Redis缓存、redis的秒杀业务</description><pubDate>Sun, 05 Oct 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;Redis笔记&lt;/h1&gt;
 &lt;h2&gt;缓存&lt;/h2&gt;
 &lt;p&gt;缓存是数据的缓存区，是存储数据的地方，读写性能高，对于后端可以降低后端的负载，降低响应时间。&lt;/p&gt;
 &lt;p&gt;也带来了一些数据一致性的成本、代码维护成本、运维成本&lt;/p&gt;
 &lt;p&gt;&lt;img src=&quot;../images/235.png&quot; alt=&quot;235&quot; /&gt;&lt;/p&gt;
-&lt;p&gt;以下是代码实现，随便写了一个&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;public Result&amp;lt;User&amp;gt; getUserByPhone(String phone) {
-        User user;
-        String s = stringRedisTemplate.opsForValue().get(&quot;getUser:&quot; + phone);
-        if (s == null) {
-            user = userMapper.getUserByPhone(phone);
-        } else {
-            user = JSON.parseObject(s, User.class);
+&lt;p&gt;以下是代码实现，随便写了一个商店的id查询&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@Autowired
+ShopMapper shopMapper;
+public Result&amp;lt;Shop&amp;gt; getShopById(int id) {
+    String shopString = stringRedisTemplate.opsForValue().get(RedisCache.SHOP_CACHE_NAME + id);
+    Shop shop;
+    if(shopString != null) {
+        shop = JSON.parseObject(shopString, Shop.class);
+    } else {
+        shop = shopMapper.getShopById(id);
+        if(shop != null) {
+            stringRedisTemplate.opsForValue().set(RedisCache.SHOP_CACHE_NAME + id, JSON.toJSONString(shop), RedisTTL.REDIS_CACHE_TTL_MIN, TimeUnit.MINUTES);
         }
-        if (user == null) {
-           return Result.error(404, &quot;不存在用户&quot;);
-        }
-        stringRedisTemplate.opsForValue().set(&quot;getUser:&quot; + phone, JSON.toJSONString(user), 10, TimeUnit.MINUTES);
-        return Result.success(user);
     }
+    return Result.success(shop);
+}
 &lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;strong&gt;主动更新缓存策略&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;&lt;img src=&quot;../images/236.png&quot; alt=&quot;236&quot; /&gt;&lt;/p&gt;
@@ -25,6 +577,299 @@
 &lt;p&gt;&lt;img src=&quot;../images/237.png&quot; alt=&quot;237&quot; /&gt;&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;问题：先更新数据库还是先删除缓存&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;&lt;img src=&quot;../images/238.png&quot; alt=&quot;238&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;在更新数据库后删除缓存，这里用了事务进行控制，防止由于redis宕机，缓存没有删去而导致到数据库不一致（如果宕机在事务的控制下数据库数据回滚）&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@Transactional
+public Result&amp;lt;String&amp;gt; updateShop(Shop shop) {
+    boolean b = shopMapper.updateShop(shop);
+    stringRedisTemplate.delete(RedisCache.SHOP_CACHE_NAME + shop.getId());
+    return Result.success(b ? &quot;success&quot; : &quot;fail&quot;);
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;缓存常见问题&lt;/h2&gt;
+&lt;h3&gt;缓存穿透&lt;/h3&gt;
+&lt;p&gt;指的是请求的数据在缓存和数据库都不存在，这一些请求都会被打到数据库&lt;/p&gt;
+&lt;p&gt;解决方式：缓存空对象、布隆过滤器&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;缓存空对象&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;缓存空对象实现起来非常简单，把之前的判断SQL查询是否为空的条件添加一个较短的TTL NULL缓存即可&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@Autowired
+ShopMapper shopMapper;
+public Result&amp;lt;Shop&amp;gt; getShopById(int id) {
+    String shopString = stringRedisTemplate.opsForValue().get(RedisCache.SHOP_CACHE_NAME + id);
+    Shop shop;
+    if(shopString != null) {
+        shop = JSON.parseObject(shopString, Shop.class);
+    } else {
+        shop = shopMapper.getShopById(id);
+        if(shop != null) {
+            stringRedisTemplate.opsForValue().set(RedisCache.SHOP_CACHE_NAME + id, JSON.toJSONString(shop),
+                    RedisTTL.REDIS_CACHE_TTL_MIN, TimeUnit.MINUTES);
+        } else {
+            stringRedisTemplate.opsForValue().set(RedisCache.SHOP_CACHE_NAME + id, JSON.toJSONString(shop),
+                    RedisTTL.REDIS_CACHE_NULL_TTL_MIN, TimeUnit.MINUTES);
+        }
+    }
+    return Result.success(shop);
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;缺点：&lt;/p&gt;
+&lt;p&gt;会造成内存的浪费，缓存了大量null的值，这里可以设置更短的TTL做一个优化&lt;/p&gt;
+&lt;p&gt;会造成短期的不一致，如果后续插入了一个之前缓存过的NULL的id数据，查到的会是NULL结果，我们可以在插入的时候删除缓存来解决这个问题&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;布隆过滤&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;在Redis层和请求之间加上一个中间层，对于不存在的数据请求直接拒绝，如果存在（可能误报，但是也减少了请求数据库的次数）则继续访问&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/240.png&quot; alt=&quot;240&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;布隆过滤器的实现也较为复杂，我们在实际使用的时候一般用的是缓存空对象的方式&lt;/p&gt;
+&lt;p&gt;还有一些其他解决或改善缓存穿透的方式&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/241.png&quot; alt=&quot;241&quot; /&gt;&lt;/p&gt;
+&lt;h3&gt;缓存雪崩&lt;/h3&gt;
+&lt;p&gt;指的是同一时间缓存大量的key同时失效，或者Redis服务宕机导致大量请求打到数据库，给数据库造成巨大压力&lt;/p&gt;
+&lt;p&gt;常见的解决方案：给不同的key的TTL添加随机值，使用Redis集群提高可用性，给缓存业务添加降级限流策略，给业务添加多级缓存&lt;/p&gt;
+&lt;p&gt;最简单的就是TTL加上随机值，在过期时间加上Random&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;stringRedisTemplate.opsForValue().set(RedisCache.SHOP_CACHE_NAME + id, JSON.toJSONString(shop),
+        RedisTTL.REDIS_CACHE_TTL_MIN + (int)(Math.random() * 10), TimeUnit.MINUTES);
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;缓存击穿&lt;/h3&gt;
+&lt;p&gt;也称为热点key问题，是一个高并发访问并且缓存重建业务较为复杂的key突然失效，无数请求访问会给数据库带来巨大压力&lt;/p&gt;
+&lt;p&gt;常见的解决方案如下：互斥锁、逻辑过期&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;互斥锁&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;优点：没有额外的内存消耗，保证一致性，实现简单&lt;/p&gt;
+&lt;p&gt;缺点：线程需要等待，性能较差，可能会有死锁风险&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/242.png&quot; alt=&quot;242&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;我们可以使用setnx来作为锁，当第一个setnx lock 1后返回1，后续的setnx lock ...会返回0，我们再执行完毕后释放锁即可del lock，在设置锁的时候加上一个10s的有效期，避免死锁&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/244.png&quot; alt=&quot;244&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;加锁解锁的方法&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;private boolean tryLock(String key) {
+    Boolean flag = stringRedisTemplate.opsForValue().setIfAbsent(key, &quot;1&quot;, 10, TimeUnit.SECONDS);
+    return flag != null &amp;amp;&amp;amp; flag;
+}
+
+private void unlock(String key) {
+    stringRedisTemplate.delete(key);
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;    private static final int MAX_RETRY = 3;
+    private static final int BASE_SLEEP_MS = 50;
+    public Result&amp;lt;Shop&amp;gt; getShopById(int id) {
+        String cacheKey = RedisCache.SHOP_CACHE_NAME + id;
+        String lockKey = &quot;shop:lock:&quot; + id;
+
+        // 1. 先查缓存
+        String shopJson = stringRedisTemplate.opsForValue().get(cacheKey);
+        if (shopJson != null) {
+            return &quot;null&quot;.equals(shopJson) ?
+                    Result.success(null) :
+                    Result.success(JSON.parseObject(shopJson, Shop.class));
+        }
+        // 2. 获取锁
+        boolean locked = false;
+        try {
+            int retryCount = 0;
+            while (!(locked = tryLock(lockKey)) &amp;amp;&amp;amp; retryCount++ &amp;lt; MAX_RETRY) {
+                Thread.sleep(BASE_SLEEP_MS * (1 + retryCount));
+            }
+
+            if (!locked) {
+                return Result.error(500, &quot;系统繁忙，请稍后再试&quot;);
+            }
+            // 双重检查缓存
+            shopJson = stringRedisTemplate.opsForValue().get(cacheKey);
+            if (shopJson != null) {
+                return &quot;null&quot;.equals(shopJson) ?
+                        Result.success(null) :
+                        Result.success(JSON.parseObject(shopJson, Shop.class));
+            }
+            // 3. 查询数据库
+            Shop shop = shopMapper.getShopById(id);
+            // 4. 写入缓存
+            if (shop != null) {
+                stringRedisTemplate.opsForValue().set(
+                        cacheKey,
+                        JSON.toJSONString(shop),
+                        RedisTTL.REDIS_CACHE_TTL_MIN + ThreadLocalRandom.current().nextInt(30),  // 更大的随机范围
+                        TimeUnit.MINUTES
+                );
+            } else {
+                stringRedisTemplate.opsForValue().set(
+                        cacheKey,
+                        &quot;null&quot;,
+                        RedisTTL.REDIS_CACHE_NULL_TTL_MIN + ThreadLocalRandom.current().nextInt(10),
+                        TimeUnit.MINUTES
+                );
+            }
+            return Result.success(shop);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new RuntimeException(&quot;查询中断&quot;, e);
+        } catch (Exception e) {
+            throw new RuntimeException(&quot;查询异常&quot;, e);
+        } finally {
+            if (locked) {
+                try {
+                    unlock(lockKey);
+                } catch (Exception e) {
+                    log.error(&quot;释放锁失败&quot;, e);
+                }
+            }
+        }
+    }
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;逻辑过期&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;优点：线程无需等待如果没获取到锁，返回旧数据，性能好&lt;/p&gt;
+&lt;p&gt;缺点：不保证一致性，有额外的内存消耗（逻辑过期字段），实现复杂&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/243.png&quot; alt=&quot;243&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;业务流程&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/245.png&quot; alt=&quot;245&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;设计一个RedisData，给其添加expireTime逻辑超时字段&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@Data
+public class RedisData {
+    private LocalDateTime expireTime;
+    private Object data;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;private static final ExecutorService CACHE_REBUILD_EXECUTOR = Executors.newFixedThreadPool(10);
+public Result&amp;lt;Shop&amp;gt; getShopByIdLogic(int id) {
+    String logic = &quot;shop:logic:&quot; + id;
+    String lockKey = &quot;shop:lock:&quot; + id;
+    String shopJson = stringRedisTemplate.opsForValue().get(logic);
+    if (shopJson == null) {
+        return Result.error(404, &quot;没有找到指定热点数据&quot;);
+    }
+    RedisData data = JSON.parseObject(shopJson, RedisData.class);
+    LocalDateTime expireTime = data.getExpireTime();
+    Shop shop = (Shop) data.getData();
+    if(expireTime.isAfter(LocalDateTime.now())) {
+        return Result.success(shop);
+    }
+    if(tryLock(lockKey)) {
+        //开启独立线程异步写入数据至Redis缓存，设置新的过期时间，最后释放互斥锁
+        CACHE_REBUILD_EXECUTOR.submit(() -&amp;gt; {
+            try {
+                RedisData newData = JSON.parseObject(shopJson, RedisData.class);
+                Shop newShop = shopMapper.getShopById(id);
+                newData.setData(newShop);
+                newData.setExpireTime(LocalDateTime.now());
+                stringRedisTemplate.opsForValue().set(logic, JSON.toJSONString(newData));
+            } finally {
+                unlock(lockKey);
+            }
+        });
+    }
+    return Result.success(shop);
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;秒杀&lt;/h2&gt;
+&lt;h3&gt;全局ID生成器&lt;/h3&gt;
+&lt;p&gt;当用户订单的ID自增插入，就会存在一些问题：&lt;/p&gt;
+&lt;p&gt;1.id规律性太明显&lt;/p&gt;
+&lt;p&gt;2.受单表数据量的限制&lt;/p&gt;
+&lt;p&gt;全局ID生成器：是一种在分布式系统下用来生成全局唯一ID的工具，包括了一下的特性：1.唯一性，2.高可用，3.高性能，4.递增性，5.安全性&lt;/p&gt;
+&lt;p&gt;Redis的INCR自增性可以满足1、2、3、4，而安全性，我们可以不直接使用Redis的自增数值，而是拼接一些其他的信息。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/246.png&quot; alt=&quot;246&quot; /&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@Component
+public class RedisIdWorker {
+    @Autowired
+    private StringRedisTemplate stringRedisTemplate;
+    private static final long BEGIN_TIMESTAMP = 1735689600L;
+
+    public long nextId(String keyPrefix) {
+        //生成时间戳
+        LocalDateTime time = LocalDateTime.now();
+        long second = time.toEpochSecond(ZoneOffset.UTC) - BEGIN_TIMESTAMP;
+
+        //生成序列号
+        String date = time.format(DateTimeFormatter.ofPattern(&quot;yyyy:MM:dd&quot;));
+        long count = stringRedisTemplate.opsForValue().increment(&quot;icr:&quot; + keyPrefix + &quot;:&quot; + date);
+        return second &amp;lt;&amp;lt; 32 | count;
+    }
+
+    public static void main(String[] args) {
+        LocalDateTime time = LocalDateTime.of(2025, 1, 1, 0, 0, 0);
+        long second = time.toEpochSecond(ZoneOffset.UTC);
+        System.out.println(second);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;实现秒杀功能&lt;/h3&gt;
+&lt;p&gt;下单需要判断两点：&lt;/p&gt;
+&lt;p&gt;1.秒杀是否满足时间要求&lt;/p&gt;
+&lt;p&gt;2.库存是否充足，不足则无法下单&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/248.png&quot; alt=&quot;248&quot; /&gt;&lt;/p&gt;
+</content:encoded></item><item><title>LeetCode刷题（二叉树[反]序列化）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E4%BA%8C%E5%8F%89%E6%A0%91%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E4%BA%8C%E5%8F%89%E6%A0%91%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/</guid><description>二叉树的序列化和反序列化</description><pubDate>Sun, 05 Oct 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;二叉树的序列化和反序列化&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;序列化是将一个数据结构或者对象转换为连续的比特位的操作，进而可以将转换后的数据存储在一个文件或者内存中，同时也可以通过网络传输到另一个计算机环境，采取相反方式重构得到原数据。&lt;/p&gt;
+&lt;p&gt;请设计一个算法来实现二叉树的序列化与反序列化。这里不限定你的序列 / 反序列化算法执行逻辑，你只需要保证一个二叉树可以被序列化为一个字符串并且将这个字符串反序列化为原始的树结构。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;提示:&lt;/strong&gt; 输入输出格式与 LeetCode 目前使用的方式一致，详情请参阅 &lt;a href=&quot;https://support.leetcode.cn/hc/kb/article/1567641/&quot;&gt;LeetCode 序列化二叉树的格式&lt;/a&gt;。你并非必须采取这种方式，你也可以采用其他的方法解决这个问题。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/239.jpg&quot; alt=&quot;239&quot; /&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：root = [1,2,3,null,null,4,5]
+输出：[1,2,3,null,null,4,5]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：root = []
+输出：[]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 3：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：root = [1]
+输出：[1]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 4：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：root = [1,2]
+输出：[1,2]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;二叉树的层序遍历思路，在遍历的过程中将节点中的数据添加到StringBuilder中，不一样的是当node不为空的时候左右节点就会被放到队列中在下一轮的循环中判断null，而不是原先的只有左右节点不为空的情况下才放入队列&lt;/p&gt;
+&lt;p&gt;在反序列化的时候按照 &quot;,&quot; 进行拆分，同样的也设立一个队列，层序的添加节点的左右节点，如果当前数组索引的值不为null，则将其创建写入到队列中并且使其成为当前节点的左/右节点（按照顺序分别构造左右节点）&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class Codec {
+
+    // Encodes a tree to a single string.
+    public String serialize(TreeNode root) {
+        if(root == null) {
+            return &quot;[]&quot;;
+        }
+        StringBuilder result = new StringBuilder(&quot;[&quot;);
+        Queue&amp;lt;TreeNode&amp;gt; queue = new LinkedList&amp;lt;&amp;gt;();
+        queue.offer(root);
+        while(!queue.isEmpty()) {
+            TreeNode node = queue.poll();
+            if(node != null) {
+                result.append(node.val + &quot;,&quot;);
+                queue.offer(node.left);
+                queue.offer(node.right);
+            } else {
+                result.append(&quot;null&quot; + &quot;,&quot;);
+            }
+        }
+        result.deleteCharAt(result.length() - 1);
+        result.append(&quot;]&quot;);
+        return result.toString();
+    }
+
+    // Decodes your encoded data to tree.
+    public TreeNode deserialize(String data) {
+        if(data.equals(&quot;[]&quot;)) {
+            return null;
+        }
+        String[] vals = data.substring(1, data.length() - 1).split(&quot;,&quot;);
+        TreeNode root = new TreeNode(Integer.parseInt(vals[0]));
+        Queue&amp;lt;TreeNode&amp;gt; queue = new LinkedList&amp;lt;&amp;gt;();
+        queue.add(root);
+        int index = 1;
+        while(!queue.isEmpty()) {
+            TreeNode node = queue.poll();
+            if(!vals[index].equals(&quot;null&quot;)) {
+                node.left = new TreeNode(Integer.parseInt(vals[index]));
+                queue.offer(node.left);
+            }
+            index++;
+            if(!vals[index].equals(&quot;null&quot;)) {
+                node.right = new TreeNode(Integer.parseInt(vals[index]));
+                queue.offer(node.right);
+            }
+            index++;
+        }
+        return root;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
 </content:encoded></item><item><title>LeetCode刷题（乘积最大子数组）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E4%B9%98%E7%A7%AF%E6%9C%80%E5%A4%A7%E5%AD%90%E6%95%B0%E7%BB%84/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E4%B9%98%E7%A7%AF%E6%9C%80%E5%A4%A7%E5%AD%90%E6%95%B0%E7%BB%84/</guid><pubDate>Sat, 04 Oct 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;乘积最大子数组&lt;/h1&gt;
 &lt;h2&gt;题目描述&lt;/h2&gt;
 &lt;p&gt;给你一个整数数组 &lt;code&gt;nums&lt;/code&gt; ，请你找出数组中乘积最大的非空连续 子数组（该子数组中至少包含一个数字），并返回该子数组所对应的乘积。&lt;/p&gt;
@@ -904,6 +1749,9 @@ SADD set2 a b
     }
 }
 &lt;/code&gt;&lt;/pre&gt;
+</content:encoded></item><item><title>LeetCode刷题（）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E6%A8%A1%E6%9D%BF/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E6%A8%A1%E6%9D%BF/</guid><pubDate>Thu, 02 Oct 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;（题目）&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
 </content:encoded></item><item><title>LeetCode刷题（路径总和III、零钱兑换）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E8%B7%AF%E5%BE%84%E6%80%BB%E5%92%8Ciii%E9%9B%B6%E9%92%B1%E5%85%91%E6%8D%A2/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E8%B7%AF%E5%BE%84%E6%80%BB%E5%92%8Ciii%E9%9B%B6%E9%92%B1%E5%85%91%E6%8D%A2/</guid><description>路径总和III、零钱兑换</description><pubDate>Thu, 02 Oct 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;路径总和III&lt;/h1&gt;
 &lt;h2&gt;题目描述&lt;/h2&gt;
 &lt;p&gt;给定一个二叉树的根节点 &lt;code&gt;root&lt;/code&gt; ，和一个整数 &lt;code&gt;targetSum&lt;/code&gt; ，求该二叉树里节点值之和等于 &lt;code&gt;targetSum&lt;/code&gt; 的 &lt;strong&gt;路径&lt;/strong&gt; 的数目。&lt;/p&gt;
@@ -1022,9 +1870,6 @@ SADD set2 a b
     }
 }
 &lt;/code&gt;&lt;/pre&gt;
-</content:encoded></item><item><title>LeetCode刷题（）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E6%A8%A1%E6%9D%BF/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E6%A8%A1%E6%9D%BF/</guid><pubDate>Wed, 01 Oct 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;（题目）&lt;/h1&gt;
-&lt;h2&gt;题目描述&lt;/h2&gt;
-&lt;h2&gt;题解&lt;/h2&gt;
 </content:encoded></item><item><title>LeetCode刷题（和为K的子数组、二叉树中最大路径和）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E5%92%8C%E4%B8%BAk%E7%9A%84%E5%AD%90%E6%95%B0%E7%BB%84%E4%BA%8C%E5%8F%89%E6%A0%91%E4%B8%AD%E6%9C%80%E5%A4%A7%E8%B7%AF%E5%BE%84%E5%92%8C/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E5%92%8C%E4%B8%BAk%E7%9A%84%E5%AD%90%E6%95%B0%E7%BB%84%E4%BA%8C%E5%8F%89%E6%A0%91%E4%B8%AD%E6%9C%80%E5%A4%A7%E8%B7%AF%E5%BE%84%E5%92%8C/</guid><description>和为K的子数组、二叉树中最大路径和</description><pubDate>Wed, 01 Oct 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;和为K的子数组&lt;/h1&gt;
 &lt;h2&gt;题目描述&lt;/h2&gt;
 &lt;p&gt;给你一个整数数组 &lt;code&gt;nums&lt;/code&gt; 和一个整数 &lt;code&gt;k&lt;/code&gt; ，请你统计并返回 &lt;em&gt;该数组中和为 &lt;code&gt;k&lt;/code&gt; 的子数组的个数&lt;/em&gt; 。&lt;/p&gt;
