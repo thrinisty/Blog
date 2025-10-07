@@ -55,22 +55,22 @@ class Solution {
         int n = nums.length;
         int min = Integer.MAX_VALUE;
         int max = Integer.MIN_VALUE;
-        int begin = 0;  //中间段的起始位置
-        int end = -1;   //中间段的终止位置
+        int left = 0;
+        int right = -1;
         for(int i = 0; i < n; i++) {
-            if(nums[i] > max) {
+            if(nums[i] >= max) {
                 max = nums[i];
             } else {
-                end = i;
+                right = i;
             }
-            int j = n - 1 - i;
-            if(nums[j] < min) {
+            int j = n - i - 1;
+            if(nums[j] <= min) {
                 min = nums[j];
             } else {
-                begin = j;
+                left = j;
             }
         }
-        return end - begin + 1;
+        return right - left + 1;
     }
 }
 ```

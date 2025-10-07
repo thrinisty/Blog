@@ -1,8 +1,8 @@
 ---
-title: JavaWeb笔记(Tomcat，Maven，Docker)
+title: JavaWeb笔记(Tomcat，Maven)
 published: 2025-04-29
 updated: 2025-04-29
-description: '服务器部署Tomcat，jar包管理Maven，环境Docker'
+description: '服务器部署Tomcat，jar包管理Maven'
 image: ''
 tags: [JavaWeb]
 category: 'JavaWeb'
@@ -161,101 +161,6 @@ setting.xml配置
 </settings>
 ```
 
-
-
 父子模块管理
 
 在父工程中的pom文件下添加的依赖可以被子模块中使用，所有将公共的依赖放置在父工程中可以简化依赖，也可以设置为不默认继承依赖，而是手动集成父工程依赖
-
-
-
-## Docker
-
-### 基本概念
-
-Docker是一个用于构建运行传送应用程序的平台，可以解决环境配置的问题，将第三方软件库，依赖等打包，运行在任何的环境
-
-Docker是一个容器的实现，容器是一个虚拟化技术是一个独立的环境，使用宿主机的OS操作系统，减少资源的浪费（运行多个操作系统和图形化界面）
-
-容器是Docker的一个运行实例，提供一个可以移植的环境，可以在这个环境中运行应用程序，镜像和容器的关系类似Java中的类和实例，Docker仓库可以存储Docker镜像和上传，我们打包容器为镜像上传给别人，别人就可以使用镜像创建相应的容器
-
-
-
-### 大致使用
-
-Dockerfile是构建指令，包含了如何配置环境的一些指令，用于告诉如何构建镜像
-
-```dockerfile
-FROM node:14-alpine
-COPY index.js /index.js
-CMD ["node", "/index.js"]
-```
-
-构建镜像
-
-```cmd
-docker build -t hello-docker .
-```
-
-查看镜像
-
-```
-docker image ls
-REPOSITORY   TAG       IMAGE ID       CREATED        SIZE
-nginx        latest    9bea9f2796e2   5 months ago   192MB
-```
-
-运行镜像
-
-```
-docker run hello-docker
-```
-
-可以通过网页使用在线的play with docker来远程通过dockerhub下载镜像，运行容器
-
-```
-docker pull thrinisty/hello-docker
-```
-
-
-
-### Docker Compose
-
-用于定义和运行多容器Docker应用程序的工具，使用yaml文件来设置应用程序服务
-
-通过docker-compose.yaml配置文件将一组互相关联的容器组合在一起，形成项目，通过一条命令即可创建并启动所有的服务
-
-```
-docker compose up
-```
-
-
-
-### 实际使用
-
-我们现在在Docker上下载一个redis的镜像，并且通过镜像创建运行redis容器，之后在宿主机上用客户端连接服务器
-
-查找可用redis镜像
-
-```
-docker search redis
-```
-
-下载redis镜像
-
-```
-docker pull redis
-```
-
-运行redis容器，并且通过-p参数将容器端口映射到宿主机端口
-
-```
-docker run --name redis_test -p 6379:6379 -d redis
-```
-
-在宿主机连接docker运行中的redis容器对象
-
-```
-redis-cli -h 127.0.0.1 -p 6379
-```
-

@@ -1,5 +1,5 @@
 ---
-title: Redis笔记（缓存、秒杀）
+title: Redis笔记（缓存、秒杀实现）
 published: 2025-10-05
 updated: 2025-10-05
 description: 'Redis缓存、redis的秒杀业务'
@@ -301,7 +301,7 @@ public Result<Shop> getShopByIdLogic(int id) {
 
 
 
-## 秒杀
+## 秒杀实现
 
 ### 全局ID生成器
 
@@ -354,3 +354,137 @@ public class RedisIdWorker {
 2.库存是否充足，不足则无法下单
 
 ![248](../images/248.png)
+
+```java
+@Override
+public Result<VoucherOrder> buyAVoucher(int id) {
+    Voucher voucher = voucherMapper.selectById(id);
+    if(voucher.getCount() <= 0) {
+        return Result.error(400, "库存不足");
+    }
+    UpdateWrapper<Voucher> wrapper = new UpdateWrapper<>();
+    wrapper.setSql("count = count - 1")       // 让数据库直接计算 count - 1
+            .eq("id", id);                       // 限定更新的记录
+    int updated = voucherMapper.update(null, wrapper);
+    //        voucherService.update().setSql("count = count - 1").eq("id", id).update();
+
+    VoucherOrder voucherOrder = new VoucherOrder();
+    voucherOrder.setId(redisIdWorker.nextId("order:voucher:"));
+    voucherOrder.setUserId(1L);
+    voucherOrder.setVoucherId(Long.valueOf(voucher.getId()));
+    voucherOrder.setPayType(1);
+    voucherOrder.setStatus(1);
+    voucherOrder.setCreateTime(LocalDateTime.now());
+    voucherOrder.setUpdateTime(LocalDateTime.now());
+
+    voucherOrderMapper.insert(voucherOrder);
+    return Result.success(voucherOrder);
+}
+```
+
+
+
+### 超卖问题分析
+
+当我们高并发的情况下是否逻辑也是正确的
+
+我们通过JMeter做压力测试，发现发生了超卖的情况
+
+![254](../images/254.png)
+
+这是由于高并发的情况下，多个线程会同时查询count>0的情况，但是事实上我们的剩余数量并不支持这么多个线程消费
+
+我们对于这样的问题有两种解决方案
+
+![255](../images/255.png)
+
+**悲观锁解决方式**
+
+利用select by id for update添加排他锁
+
+```java
+@Transactional
+    @Override
+    public Result<VoucherOrder> buyAVoucher(int id) {
+//        Voucher voucher = voucherMapper.selectById(id);
+        //用for update查询替代
+        Voucher voucher = voucherMapper.selectByIdForUpdate(id);
+        if(voucher.getCount() <= 0) {
+            return Result.error(400, "库存不足");
+        }
+        UpdateWrapper<Voucher> wrapper = new UpdateWrapper<>();
+        wrapper.setSql("count = count - 1")       // 让数据库直接计算 count - 1
+                .eq("id", id);                       // 限定更新的记录
+        int updated = voucherMapper.update(null, wrapper);
+        //        voucherService.update().setSql("count = count - 1").eq("id", id).update();
+
+        VoucherOrder voucherOrder = new VoucherOrder();
+        voucherOrder.setId(redisIdWorker.nextId("order:voucher:"));
+        voucherOrder.setUserId(1L);
+        voucherOrder.setVoucherId(Long.valueOf(voucher.getId()));
+        voucherOrder.setPayType(1);
+        voucherOrder.setStatus(1);
+        voucherOrder.setCreateTime(LocalDateTime.now());
+        voucherOrder.setUpdateTime(LocalDateTime.now());
+
+        voucherOrderMapper.insert(voucherOrder);
+        return Result.success(voucherOrder);
+    }
+```
+
+
+
+**乐观锁解决方案**
+
+版本号法：在修改的时候查看之前查询版本号是否被修改，如果修改则不执行语句顺便更新版本号
+
+![256](../images/256.png)
+
+CAS法：
+
+我们也可以用这里都库存代替version，判断修改时候的库存是否和之前的相等
+
+![257](../images/257.png)
+
+但是乐观锁有一些弊端，容易在高并发的情况下发生冲突，例如1000张票100个人同时抢，理论上都可以抢到，但是由于判断发生了修改，只会有部分的人抢到票，剩余的部分失败或者需要重试
+
+对于秒票的业务而言，较为特殊，我们可以修改的时候判断count>0，如果count>0就允许买票
+
+```java
+@Override
+    public Result<VoucherOrder> buyAVoucher(int id) {
+        Voucher voucher = voucherMapper.selectById(id);
+//        Voucher voucher = voucherMapper.selectByIdForUpdate(id);
+        if(voucher.getCount() <= 0) {
+            return Result.error(400, "库存不足");
+        }
+        UpdateWrapper<Voucher> wrapper = new UpdateWrapper<>();
+        wrapper.setSql("count = count - 1")       // 让数据库直接计算 count - 1
+                .eq("id", id)
+                .gt("count", 0);
+        int updated = voucherMapper.update(null, wrapper);
+        //        voucherService.update().setSql("count = count - 1").eq("id", id).update();
+        if(updated == 0) {
+            return Result.error(400, "库存不足");
+        }
+        VoucherOrder voucherOrder = new VoucherOrder();
+        voucherOrder.setId(redisIdWorker.nextId("order:voucher:"));
+        voucherOrder.setUserId(1L);
+        voucherOrder.setVoucherId(Long.valueOf(voucher.getId()));
+        voucherOrder.setPayType(1);
+        voucherOrder.setStatus(1);
+        voucherOrder.setCreateTime(LocalDateTime.now());
+        voucherOrder.setUpdateTime(LocalDateTime.now());
+
+        voucherOrderMapper.insert(voucherOrder);
+        return Result.success(voucherOrder);
+    }
+```
+
+
+
+### 一人一单
+
+我们要实现一人一单我们就需要在创建订单的前面加上对于订单表中是否有对应优惠卷并且userid对应的数据，有则返回错误，但是和之前一样我们需要进行线程安全的处理，这里的解决思路是使用悲观锁，（乐观锁没有办法处理查的操作）将对应userid上锁，在所的范围内取进行存在性的查询，保证了对应userid的原子性
+
+我们在使用synchronized关键字只能在单台服务器上进行处理，如果拓展到多台服务器也会有线程安全问题，之后的内容由于需要用到分布式系统的处理，目前没有接触过在多台服务器上部署项目的经验，我想先进行Docker和Nginx的学习后再进行Redis进度的推进。

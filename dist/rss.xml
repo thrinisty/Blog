@@ -1,4 +1,247 @@
-<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Thrinisty&apos;s Blog</title><description>New Blog</description><link>https://thrinisty.github.io/</link><language>zh_CN</language><item><title>LeetCode刷题（最短无序连续子数组、下一个排列）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E6%9C%80%E7%9F%AD%E6%97%A0%E5%BA%8F%E8%BF%9E%E7%BB%AD%E5%AD%90%E6%95%B0%E7%BB%84%E4%B8%8B%E4%B8%80%E4%B8%AA%E6%8E%92%E5%88%97/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E6%9C%80%E7%9F%AD%E6%97%A0%E5%BA%8F%E8%BF%9E%E7%BB%AD%E5%AD%90%E6%95%B0%E7%BB%84%E4%B8%8B%E4%B8%80%E4%B8%AA%E6%8E%92%E5%88%97/</guid><pubDate>Mon, 06 Oct 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;最短无序连续子数组&lt;/h1&gt;
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Thrinisty&apos;s Blog</title><description>New Blog</description><link>https://thrinisty.github.io/</link><language>zh_CN</language><item><title>Docker笔记（安装、相关指令）</title><link>https://thrinisty.github.io/posts/docker%E7%AC%94%E8%AE%B0%E6%A8%A1%E6%9D%BF/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/docker%E7%AC%94%E8%AE%B0%E6%A8%A1%E6%9D%BF/</guid><description>Docker安装、常见指令、部署案例</description><pubDate>Tue, 07 Oct 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;Docker笔记&lt;/h1&gt;
+&lt;h2&gt;基本概念&lt;/h2&gt;
+&lt;p&gt;Docker是一个用于构建运行传送应用程序的平台，可以解决环境配置的问题，将第三方软件库，依赖等打包，运行在任何的环境&lt;/p&gt;
+&lt;p&gt;Docker是一个容器的实现，容器是一个虚拟化技术是一个独立的环境，使用宿主机的OS操作系统，减少资源的浪费（运行多个操作系统和图形化界面）&lt;/p&gt;
+&lt;p&gt;容器是Docker的一个运行实例，提供一个可以移植的环境，可以在这个环境中运行应用程序，镜像和容器的关系类似Java中的类和实例，Docker仓库可以存储Docker镜像和上传，我们打包容器为镜像上传给别人，别人就可以使用镜像创建相应的容器&lt;/p&gt;
+&lt;h2&gt;Docker安装&lt;/h2&gt;
+&lt;p&gt;在Windows版本中有Docker的桌面版本，相比于命令行的方式简单方便，照着教程配即可，这里安装的是linux版本（CentOS7）&lt;/p&gt;
+&lt;p&gt;更换国内源&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;sudo yum-config-manager --add-repo https://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;卸载旧有版本&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;sudo yum remove docker \
+               docker-client \
+               docker-client-latest \
+               docker-common \
+               docker-latest \
+               docker-latest-logrotate \
+               docker-logrotate \
+               docker-engine
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;安装必要依赖包&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;sudo yum install -y yum-utils device-mapper-persistent-data lvm2
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;添加Docker官方仓库&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;sudo yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;安装Docker引擎：查看最新版本，指定版本号&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;yum list docker-ce --showduplicates | sort -r
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;sudo yum install -y docker-ce-20.10.17 docker-ce-cli-20.10.17 containerd.io
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;相关指令&lt;/h2&gt;
+&lt;h3&gt;基础指令&lt;/h3&gt;
+&lt;p&gt;&lt;img src=&quot;../images/258.png&quot; alt=&quot;258&quot; /&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;- 搜索仓库镜像：docker search 镜像名
+- 拉取镜像：docker pull 镜像名
+- 查看正在运行的容器：docker ps
+- 查看所有容器：docker ps -a
+- 删除容器：docker rm container_id
+- 查看镜像：docker images
+- 删除镜像：docker rmi image_id
+- 启动（停止的）容器：docker start 容器ID
+- 停止容器：docker stop  容器ID
+- 重启容器：docker restart 容器ID
+- 启动（新）容器：docker run -it ubuntu /bin/bash
+- 进入容器：`docker attach 容器ID`或`docker exec -it 容器ID /bin/bash`，推荐使用后者。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;将镜像打成tar包&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;docker save -o nginx.tar nginx:latest
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;加载tar包&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;docker load -i nginx.tar
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;运行镜像&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;docker run -d --name nginx -p 80:80 nginx
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;启动/停止容器&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;docker start/stop nginx
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;进入容器内部交互&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;docker exec -it nginx bash
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;启动Redis服务&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;或者我们通过Docker启动一个redis服务&lt;/p&gt;
+&lt;p&gt;查找可用redis镜像&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;docker search redis
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;下载redis镜像&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;docker pull redis
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;运行redis容器，并且通过-p参数将容器端口映射到宿主机端口&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;docker run --name redis_name -p 6379:6379 -d redis
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;在宿主机连接docker运行中的redis容器对象&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;redis-cli -h 127.0.0.1 -p 6379
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;数据卷&lt;/h3&gt;
+&lt;p&gt;数据卷（volume）是一个虚拟目录，是容器内目录和宿主机目录之间的映射桥梁&lt;/p&gt;
+&lt;p&gt;通过在系统的数据卷虚拟目录即可操作Docker容器中的内容，可以解决容器中不能运行大部分指令的问题&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/259.png&quot; alt=&quot;259&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;我们在执行docker run命令的时候，使用-v 数据卷：容器内目录 可以完成数据卷挂载&lt;/p&gt;
+&lt;p&gt;当创建容器时，如果挂载了数据卷且数据卷不存在，则会自动创建数据卷&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;docker run -d --name nginx -p 80:80 -v usr:/usr/share nginx
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;容器被挂载到了/var/lib/docker/volumes/usr/_data&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;[root@iv-ye5w83dog0bw80eugddg _data]# docker volume inspect usr
+[
+    {
+        &quot;CreatedAt&quot;: &quot;2025-10-07T21:14:39+08:00&quot;,
+        &quot;Driver&quot;: &quot;local&quot;,
+        &quot;Labels&quot;: null,
+        &quot;Mountpoint&quot;: &quot;/var/lib/docker/volumes/usr/_data&quot;,
+        &quot;Name&quot;: &quot;usr&quot;,
+        &quot;Options&quot;: null,
+        &quot;Scope&quot;: &quot;local&quot;
+    }
+]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;或者我们也可以挂载到指定的目录 /home/nginx&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;docker run -d --name nginx -p 80:80 -v /home/nginx:/usr/share nginx
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;如果需要挂在多个目录也可以多加几个-v 参数&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/260.png&quot; alt=&quot;260&quot; /&gt;&lt;/p&gt;
+&lt;h3&gt;自定义镜像&lt;/h3&gt;
+&lt;p&gt;镜像就是包含了应用程序，程序运行的系统函数库、运行配置等文件的文件包。构建镜像的过程实际上就是把上述文件打包的过程&lt;/p&gt;
+</content:encoded></item><item><title>LeetCode刷题（无重复字符的最长字串、寻找两个正序数组中的中位数）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E6%97%A0%E9%87%8D%E5%A4%8D%E5%AD%97%E7%AC%A6%E7%9A%84%E6%9C%80%E9%95%BF%E5%AD%97%E4%B8%B2%E5%AF%BB%E6%89%BE%E4%B8%A4%E4%B8%AA%E6%AD%A3%E5%BA%8F%E6%95%B0%E7%BB%84%E4%B8%AD%E7%9A%84%E4%B8%AD%E4%BD%8D%E6%95%B0/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E6%97%A0%E9%87%8D%E5%A4%8D%E5%AD%97%E7%AC%A6%E7%9A%84%E6%9C%80%E9%95%BF%E5%AD%97%E4%B8%B2%E5%AF%BB%E6%89%BE%E4%B8%A4%E4%B8%AA%E6%AD%A3%E5%BA%8F%E6%95%B0%E7%BB%84%E4%B8%AD%E7%9A%84%E4%B8%AD%E4%BD%8D%E6%95%B0/</guid><description>无重复字符的最长字串、寻找两个正序数组中的中位数</description><pubDate>Tue, 07 Oct 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;无重复字符的最长字串&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;给定一个字符串 &lt;code&gt;s&lt;/code&gt; ，请你找出其中不含有重复字符的 &lt;strong&gt;最长 子串&lt;/strong&gt; 的长度。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 1:&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入: s = &quot;abcabcbb&quot;
+输出: 3 
+解释: 因为无重复字符的最长子串是 &quot;abc&quot;，所以其长度为 3。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2:&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入: s = &quot;bbbbb&quot;
+输出: 1
+解释: 因为无重复字符的最长子串是 &quot;b&quot;，所以其长度为 1。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 3:&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入: s = &quot;pwwkew&quot;
+输出: 3
+解释: 因为无重复字符的最长子串是 &quot;wke&quot;，所以其长度为 3。
+     请注意，你的答案必须是 子串 的长度，&quot;pwke&quot; 是一个子序列，不是子串。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;解法一：我记得原先做过一道用boolean[26]存储是否被存储的题目，我们可以使用Set来构造是否被放入，如果被放入，需要依次将Set中的元素取出直至元素中不含有c为止&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public int lengthOfLongestSubstring(String s) {
+        Set&amp;lt;Character&amp;gt; set = new HashSet&amp;lt;&amp;gt;();
+        int result = 0;
+        int left = 0;
+        int n = s.length();
+        for(int right = 0; right &amp;lt; n; right++) {
+            char c = s.charAt(right);
+            while(set.contains(c)) {
+                set.remove(s.charAt(left));
+                left++;
+            }
+            set.add(c);
+            result = Math.max(result, right - left + 1);
+        }
+        return result;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;解法二：&lt;/p&gt;
+&lt;p&gt;构造一个HashMap其中key存字符数值，value存放对应的下表，如果当前遍历元素中被mapKey包含，则证明加上该字符后重复，需要更新左边界，从map中取出对应的值即为左边界，（字符串集不包含左边界）&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public int lengthOfLongestSubstring(String s) {
+        Map&amp;lt;Character, Integer&amp;gt; map = new HashMap&amp;lt;&amp;gt;();
+        int result = 0;
+        int n = s.length();
+        int i = -1;
+        for(int j = 0; j &amp;lt; n; j++) {
+            char c = s.charAt(j);
+            if(map.containsKey(c)) {
+                i = Math.max(i, map.get(c));
+            }
+            map.put(c, j);
+            result = Math.max(result, j - i);
+        }
+        return result;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;其实思路上大体一致，就是滑动窗口，区别于后者是会存入对应的下表，取得时候不用删除元素至没有重复元素&lt;/p&gt;
+&lt;h1&gt;寻找两个正序数组中的中位数&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;给定两个大小分别为 &lt;code&gt;m&lt;/code&gt; 和 &lt;code&gt;n&lt;/code&gt; 的正序（从小到大）数组 &lt;code&gt;nums1&lt;/code&gt; 和 &lt;code&gt;nums2&lt;/code&gt;。请你找出并返回这两个正序数组的 &lt;strong&gt;中位数&lt;/strong&gt; 。&lt;/p&gt;
+&lt;p&gt;算法的时间复杂度应该为 &lt;code&gt;O(log (m+n))&lt;/code&gt; 。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：nums1 = [1,3], nums2 = [2]
+输出：2.00000
+解释：合并数组 = [1,2,3] ，中位数 2
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：nums1 = [1,2], nums2 = [3,4]
+输出：2.50000
+解释：合并数组 = [1,2,3,4] ，中位数 (2 + 3) / 2 = 2.5
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;解法一：组合两个数组，因为顺序是单调的，我们可以利用类似合并二叉树哪一题的方式合成一个单调递增的数组，取left和right/2即可，时间复杂度为O(m + n)，因为合并两个数组需要遍历完整数组&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public double findMedianSortedArrays(int[] nums1, int[] nums2) {
+        int m = nums1.length;
+        int n = nums2.length;
+        int length = m + n;
+        int[] array = new int[length];
+        int i = 0;
+        int j = 0;
+        int index = 0;
+        while(i &amp;lt; m &amp;amp;&amp;amp; j &amp;lt; n) {
+            if(nums1[i] &amp;lt; nums2[j]) {
+                array[index++] = nums1[i++];
+            } else{
+                array[index++] = nums2[j++];
+            }
+        }
+        while(i &amp;lt; m) {
+            array[index++] = nums1[i++];
+        }
+        while(j &amp;lt; n) {
+            array[index++] = nums2[j++];
+        }
+        int left = (length - 1) / 2 ;
+        int right = length / 2;
+        return (double)(array[left] + array[right]) / 2;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;解法二：二分递归，定义一个方法，传入两个数组，以及对应的索引，需要获取到的第k个数，返回第k个数的值&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public double findMedianSortedArrays(int[] nums1, int[] nums2) {
+        int t = nums1.length + nums2.length;
+        if(t % 2 == 0) {
+            return (func(nums1, nums2, 0, 0, t / 2) + func(nums1, nums2, 0, 0, t / 2 + 1)) / 2.0;
+        } else {
+            return func(nums1, nums2, 0, 0, t / 2 + 1);
+        }
+    }
+
+    public int func(int[] nums1, int[] nums2, int i, int j, int k) {
+        int n1 = nums1.length;
+        int n2 = nums2.length;
+        if(n1 - i &amp;gt; n2 - j) {
+            return func(nums2, nums1, j, i, k);
+        }
+        if(n1 == i) {
+            return nums2[j + k - 1];
+        }
+        if(k == 1) {
+            return Math.min(nums1[i], nums2[j]);
+        }
+        int mid1 = Math.min(i + k / 2, nums1.length);
+        int mid2 = j + k / 2;
+        if(nums1[mid1 - 1] &amp;gt; nums2[mid2 - 1]) {
+            return func(nums1, nums2, i, mid2, k - k / 2);
+        } else {
+            return func(nums1, nums2, mid1, j, k - (mid1 - i));
+        }
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+</content:encoded></item><item><title>LeetCode刷题（最短无序连续子数组、下一个排列）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E6%9C%80%E7%9F%AD%E6%97%A0%E5%BA%8F%E8%BF%9E%E7%BB%AD%E5%AD%90%E6%95%B0%E7%BB%84%E4%B8%8B%E4%B8%80%E4%B8%AA%E6%8E%92%E5%88%97/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E6%9C%80%E7%9F%AD%E6%97%A0%E5%BA%8F%E8%BF%9E%E7%BB%AD%E5%AD%90%E6%95%B0%E7%BB%84%E4%B8%8B%E4%B8%80%E4%B8%AA%E6%8E%92%E5%88%97/</guid><pubDate>Mon, 06 Oct 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;最短无序连续子数组&lt;/h1&gt;
 &lt;h2&gt;题目描述&lt;/h2&gt;
 &lt;p&gt;给你一个整数数组 &lt;code&gt;nums&lt;/code&gt; ，你需要找出一个 &lt;strong&gt;连续子数组&lt;/strong&gt; ，如果对这个子数组进行升序排序，那么整个数组都会变为升序排序。&lt;/p&gt;
 &lt;p&gt;请你找出符合题意的 &lt;strong&gt;最短&lt;/strong&gt; 子数组，并输出它的长度。&lt;/p&gt;
@@ -24,22 +267,22 @@
         int n = nums.length;
         int min = Integer.MAX_VALUE;
         int max = Integer.MIN_VALUE;
-        int begin = 0;  //中间段的起始位置
-        int end = -1;   //中间段的终止位置
+        int left = 0;
+        int right = -1;
         for(int i = 0; i &amp;lt; n; i++) {
-            if(nums[i] &amp;gt; max) {
+            if(nums[i] &amp;gt;= max) {
                 max = nums[i];
             } else {
-                end = i;
+                right = i;
             }
-            int j = n - 1 - i;
-            if(nums[j] &amp;lt; min) {
+            int j = n - i - 1;
+            if(nums[j] &amp;lt;= min) {
                 min = nums[j];
             } else {
-                begin = j;
+                left = j;
             }
         }
-        return end - begin + 1;
+        return right - left + 1;
     }
 }
 &lt;/code&gt;&lt;/pre&gt;
@@ -549,7 +792,84 @@ public PageInfo&amp;lt;Shop&amp;gt; multiQuery(ShopQueryEntity query, int pageNu
     return pageInfo;
 }
 &lt;/code&gt;&lt;/pre&gt;
-</content:encoded></item><item><title>Redis笔记（缓存、秒杀）</title><link>https://thrinisty.github.io/posts/redis%E7%AC%94%E8%AE%B0%E7%BC%93%E5%AD%98/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/redis%E7%AC%94%E8%AE%B0%E7%BC%93%E5%AD%98/</guid><description>Redis缓存、redis的秒杀业务</description><pubDate>Sun, 05 Oct 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;Redis笔记&lt;/h1&gt;
+</content:encoded></item><item><title>LeetCode刷题（二叉树[反]序列化）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E4%BA%8C%E5%8F%89%E6%A0%91%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E4%BA%8C%E5%8F%89%E6%A0%91%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/</guid><description>二叉树的序列化和反序列化</description><pubDate>Sun, 05 Oct 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;二叉树的序列化和反序列化&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;序列化是将一个数据结构或者对象转换为连续的比特位的操作，进而可以将转换后的数据存储在一个文件或者内存中，同时也可以通过网络传输到另一个计算机环境，采取相反方式重构得到原数据。&lt;/p&gt;
+&lt;p&gt;请设计一个算法来实现二叉树的序列化与反序列化。这里不限定你的序列 / 反序列化算法执行逻辑，你只需要保证一个二叉树可以被序列化为一个字符串并且将这个字符串反序列化为原始的树结构。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;提示:&lt;/strong&gt; 输入输出格式与 LeetCode 目前使用的方式一致，详情请参阅 &lt;a href=&quot;https://support.leetcode.cn/hc/kb/article/1567641/&quot;&gt;LeetCode 序列化二叉树的格式&lt;/a&gt;。你并非必须采取这种方式，你也可以采用其他的方法解决这个问题。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/239.jpg&quot; alt=&quot;239&quot; /&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：root = [1,2,3,null,null,4,5]
+输出：[1,2,3,null,null,4,5]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：root = []
+输出：[]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 3：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：root = [1]
+输出：[1]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 4：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：root = [1,2]
+输出：[1,2]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;二叉树的层序遍历思路，在遍历的过程中将节点中的数据添加到StringBuilder中，不一样的是当node不为空的时候左右节点就会被放到队列中在下一轮的循环中判断null，而不是原先的只有左右节点不为空的情况下才放入队列&lt;/p&gt;
+&lt;p&gt;在反序列化的时候按照 &quot;,&quot; 进行拆分，同样的也设立一个队列，层序的添加节点的左右节点，如果当前数组索引的值不为null，则将其创建写入到队列中并且使其成为当前节点的左/右节点（按照顺序分别构造左右节点）&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class Codec {
+
+    // Encodes a tree to a single string.
+    public String serialize(TreeNode root) {
+        if(root == null) {
+            return &quot;[]&quot;;
+        }
+        StringBuilder result = new StringBuilder(&quot;[&quot;);
+        Queue&amp;lt;TreeNode&amp;gt; queue = new LinkedList&amp;lt;&amp;gt;();
+        queue.offer(root);
+        while(!queue.isEmpty()) {
+            TreeNode node = queue.poll();
+            if(node != null) {
+                result.append(node.val + &quot;,&quot;);
+                queue.offer(node.left);
+                queue.offer(node.right);
+            } else {
+                result.append(&quot;null&quot; + &quot;,&quot;);
+            }
+        }
+        result.deleteCharAt(result.length() - 1);
+        result.append(&quot;]&quot;);
+        return result.toString();
+    }
+
+    // Decodes your encoded data to tree.
+    public TreeNode deserialize(String data) {
+        if(data.equals(&quot;[]&quot;)) {
+            return null;
+        }
+        String[] vals = data.substring(1, data.length() - 1).split(&quot;,&quot;);
+        TreeNode root = new TreeNode(Integer.parseInt(vals[0]));
+        Queue&amp;lt;TreeNode&amp;gt; queue = new LinkedList&amp;lt;&amp;gt;();
+        queue.add(root);
+        int index = 1;
+        while(!queue.isEmpty()) {
+            TreeNode node = queue.poll();
+            if(!vals[index].equals(&quot;null&quot;)) {
+                node.left = new TreeNode(Integer.parseInt(vals[index]));
+                queue.offer(node.left);
+            }
+            index++;
+            if(!vals[index].equals(&quot;null&quot;)) {
+                node.right = new TreeNode(Integer.parseInt(vals[index]));
+                queue.offer(node.right);
+            }
+            index++;
+        }
+        return root;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+</content:encoded></item><item><title>Redis笔记（缓存、秒杀实现）</title><link>https://thrinisty.github.io/posts/redis%E7%AC%94%E8%AE%B0%E7%BC%93%E5%AD%98%E7%A7%92%E6%9D%80%E5%AE%9E%E7%8E%B0/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/redis%E7%AC%94%E8%AE%B0%E7%BC%93%E5%AD%98%E7%A7%92%E6%9D%80%E5%AE%9E%E7%8E%B0/</guid><description>Redis缓存、redis的秒杀业务</description><pubDate>Sun, 05 Oct 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;Redis笔记&lt;/h1&gt;
 &lt;h2&gt;缓存&lt;/h2&gt;
 &lt;p&gt;缓存是数据的缓存区，是存储数据的地方，读写性能高，对于后端可以降低后端的负载，降低响应时间。&lt;/p&gt;
 &lt;p&gt;也带来了一些数据一致性的成本、代码维护成本、运维成本&lt;/p&gt;
@@ -756,7 +1076,7 @@ public Result&amp;lt;Shop&amp;gt; getShopByIdLogic(int id) {
     return Result.success(shop);
 }
 &lt;/code&gt;&lt;/pre&gt;
-&lt;h2&gt;秒杀&lt;/h2&gt;
+&lt;h2&gt;秒杀实现&lt;/h2&gt;
 &lt;h3&gt;全局ID生成器&lt;/h3&gt;
 &lt;p&gt;当用户订单的ID自增插入，就会存在一些问题：&lt;/p&gt;
 &lt;p&gt;1.id规律性太明显&lt;/p&gt;
@@ -793,83 +1113,108 @@ public class RedisIdWorker {
 &lt;p&gt;1.秒杀是否满足时间要求&lt;/p&gt;
 &lt;p&gt;2.库存是否充足，不足则无法下单&lt;/p&gt;
 &lt;p&gt;&lt;img src=&quot;../images/248.png&quot; alt=&quot;248&quot; /&gt;&lt;/p&gt;
-</content:encoded></item><item><title>LeetCode刷题（二叉树[反]序列化）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E4%BA%8C%E5%8F%89%E6%A0%91%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E4%BA%8C%E5%8F%89%E6%A0%91%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/</guid><description>二叉树的序列化和反序列化</description><pubDate>Sun, 05 Oct 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;二叉树的序列化和反序列化&lt;/h1&gt;
-&lt;h2&gt;题目描述&lt;/h2&gt;
-&lt;p&gt;序列化是将一个数据结构或者对象转换为连续的比特位的操作，进而可以将转换后的数据存储在一个文件或者内存中，同时也可以通过网络传输到另一个计算机环境，采取相反方式重构得到原数据。&lt;/p&gt;
-&lt;p&gt;请设计一个算法来实现二叉树的序列化与反序列化。这里不限定你的序列 / 反序列化算法执行逻辑，你只需要保证一个二叉树可以被序列化为一个字符串并且将这个字符串反序列化为原始的树结构。&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;提示:&lt;/strong&gt; 输入输出格式与 LeetCode 目前使用的方式一致，详情请参阅 &lt;a href=&quot;https://support.leetcode.cn/hc/kb/article/1567641/&quot;&gt;LeetCode 序列化二叉树的格式&lt;/a&gt;。你并非必须采取这种方式，你也可以采用其他的方法解决这个问题。&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;../images/239.jpg&quot; alt=&quot;239&quot; /&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;输入：root = [1,2,3,null,null,4,5]
-输出：[1,2,3,null,null,4,5]
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;输入：root = []
-输出：[]
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;strong&gt;示例 3：&lt;/strong&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;输入：root = [1]
-输出：[1]
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;strong&gt;示例 4：&lt;/strong&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;输入：root = [1,2]
-输出：[1,2]
-&lt;/code&gt;&lt;/pre&gt;
-&lt;h2&gt;题解&lt;/h2&gt;
-&lt;p&gt;二叉树的层序遍历思路，在遍历的过程中将节点中的数据添加到StringBuilder中，不一样的是当node不为空的时候左右节点就会被放到队列中在下一轮的循环中判断null，而不是原先的只有左右节点不为空的情况下才放入队列&lt;/p&gt;
-&lt;p&gt;在反序列化的时候按照 &quot;,&quot; 进行拆分，同样的也设立一个队列，层序的添加节点的左右节点，如果当前数组索引的值不为null，则将其创建写入到队列中并且使其成为当前节点的左/右节点（按照顺序分别构造左右节点）&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;public class Codec {
-
-    // Encodes a tree to a single string.
-    public String serialize(TreeNode root) {
-        if(root == null) {
-            return &quot;[]&quot;;
-        }
-        StringBuilder result = new StringBuilder(&quot;[&quot;);
-        Queue&amp;lt;TreeNode&amp;gt; queue = new LinkedList&amp;lt;&amp;gt;();
-        queue.offer(root);
-        while(!queue.isEmpty()) {
-            TreeNode node = queue.poll();
-            if(node != null) {
-                result.append(node.val + &quot;,&quot;);
-                queue.offer(node.left);
-                queue.offer(node.right);
-            } else {
-                result.append(&quot;null&quot; + &quot;,&quot;);
-            }
-        }
-        result.deleteCharAt(result.length() - 1);
-        result.append(&quot;]&quot;);
-        return result.toString();
+&lt;pre&gt;&lt;code&gt;@Override
+public Result&amp;lt;VoucherOrder&amp;gt; buyAVoucher(int id) {
+    Voucher voucher = voucherMapper.selectById(id);
+    if(voucher.getCount() &amp;lt;= 0) {
+        return Result.error(400, &quot;库存不足&quot;);
     }
+    UpdateWrapper&amp;lt;Voucher&amp;gt; wrapper = new UpdateWrapper&amp;lt;&amp;gt;();
+    wrapper.setSql(&quot;count = count - 1&quot;)       // 让数据库直接计算 count - 1
+            .eq(&quot;id&quot;, id);                       // 限定更新的记录
+    int updated = voucherMapper.update(null, wrapper);
+    //        voucherService.update().setSql(&quot;count = count - 1&quot;).eq(&quot;id&quot;, id).update();
 
-    // Decodes your encoded data to tree.
-    public TreeNode deserialize(String data) {
-        if(data.equals(&quot;[]&quot;)) {
-            return null;
-        }
-        String[] vals = data.substring(1, data.length() - 1).split(&quot;,&quot;);
-        TreeNode root = new TreeNode(Integer.parseInt(vals[0]));
-        Queue&amp;lt;TreeNode&amp;gt; queue = new LinkedList&amp;lt;&amp;gt;();
-        queue.add(root);
-        int index = 1;
-        while(!queue.isEmpty()) {
-            TreeNode node = queue.poll();
-            if(!vals[index].equals(&quot;null&quot;)) {
-                node.left = new TreeNode(Integer.parseInt(vals[index]));
-                queue.offer(node.left);
-            }
-            index++;
-            if(!vals[index].equals(&quot;null&quot;)) {
-                node.right = new TreeNode(Integer.parseInt(vals[index]));
-                queue.offer(node.right);
-            }
-            index++;
-        }
-        return root;
-    }
+    VoucherOrder voucherOrder = new VoucherOrder();
+    voucherOrder.setId(redisIdWorker.nextId(&quot;order:voucher:&quot;));
+    voucherOrder.setUserId(1L);
+    voucherOrder.setVoucherId(Long.valueOf(voucher.getId()));
+    voucherOrder.setPayType(1);
+    voucherOrder.setStatus(1);
+    voucherOrder.setCreateTime(LocalDateTime.now());
+    voucherOrder.setUpdateTime(LocalDateTime.now());
+
+    voucherOrderMapper.insert(voucherOrder);
+    return Result.success(voucherOrder);
 }
 &lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;超卖问题分析&lt;/h3&gt;
+&lt;p&gt;当我们高并发的情况下是否逻辑也是正确的&lt;/p&gt;
+&lt;p&gt;我们通过JMeter做压力测试，发现发生了超卖的情况&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/254.png&quot; alt=&quot;254&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;这是由于高并发的情况下，多个线程会同时查询count&amp;gt;0的情况，但是事实上我们的剩余数量并不支持这么多个线程消费&lt;/p&gt;
+&lt;p&gt;我们对于这样的问题有两种解决方案&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/255.png&quot; alt=&quot;255&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;悲观锁解决方式&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;利用select by id for update添加排他锁&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@Transactional
+    @Override
+    public Result&amp;lt;VoucherOrder&amp;gt; buyAVoucher(int id) {
+//        Voucher voucher = voucherMapper.selectById(id);
+        //用for update查询替代
+        Voucher voucher = voucherMapper.selectByIdForUpdate(id);
+        if(voucher.getCount() &amp;lt;= 0) {
+            return Result.error(400, &quot;库存不足&quot;);
+        }
+        UpdateWrapper&amp;lt;Voucher&amp;gt; wrapper = new UpdateWrapper&amp;lt;&amp;gt;();
+        wrapper.setSql(&quot;count = count - 1&quot;)       // 让数据库直接计算 count - 1
+                .eq(&quot;id&quot;, id);                       // 限定更新的记录
+        int updated = voucherMapper.update(null, wrapper);
+        //        voucherService.update().setSql(&quot;count = count - 1&quot;).eq(&quot;id&quot;, id).update();
+
+        VoucherOrder voucherOrder = new VoucherOrder();
+        voucherOrder.setId(redisIdWorker.nextId(&quot;order:voucher:&quot;));
+        voucherOrder.setUserId(1L);
+        voucherOrder.setVoucherId(Long.valueOf(voucher.getId()));
+        voucherOrder.setPayType(1);
+        voucherOrder.setStatus(1);
+        voucherOrder.setCreateTime(LocalDateTime.now());
+        voucherOrder.setUpdateTime(LocalDateTime.now());
+
+        voucherOrderMapper.insert(voucherOrder);
+        return Result.success(voucherOrder);
+    }
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;乐观锁解决方案&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;版本号法：在修改的时候查看之前查询版本号是否被修改，如果修改则不执行语句顺便更新版本号&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/256.png&quot; alt=&quot;256&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;CAS法：&lt;/p&gt;
+&lt;p&gt;我们也可以用这里都库存代替version，判断修改时候的库存是否和之前的相等&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/257.png&quot; alt=&quot;257&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;但是乐观锁有一些弊端，容易在高并发的情况下发生冲突，例如1000张票100个人同时抢，理论上都可以抢到，但是由于判断发生了修改，只会有部分的人抢到票，剩余的部分失败或者需要重试&lt;/p&gt;
+&lt;p&gt;对于秒票的业务而言，较为特殊，我们可以修改的时候判断count&amp;gt;0，如果count&amp;gt;0就允许买票&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@Override
+    public Result&amp;lt;VoucherOrder&amp;gt; buyAVoucher(int id) {
+        Voucher voucher = voucherMapper.selectById(id);
+//        Voucher voucher = voucherMapper.selectByIdForUpdate(id);
+        if(voucher.getCount() &amp;lt;= 0) {
+            return Result.error(400, &quot;库存不足&quot;);
+        }
+        UpdateWrapper&amp;lt;Voucher&amp;gt; wrapper = new UpdateWrapper&amp;lt;&amp;gt;();
+        wrapper.setSql(&quot;count = count - 1&quot;)       // 让数据库直接计算 count - 1
+                .eq(&quot;id&quot;, id)
+                .gt(&quot;count&quot;, 0);
+        int updated = voucherMapper.update(null, wrapper);
+        //        voucherService.update().setSql(&quot;count = count - 1&quot;).eq(&quot;id&quot;, id).update();
+        if(updated == 0) {
+            return Result.error(400, &quot;库存不足&quot;);
+        }
+        VoucherOrder voucherOrder = new VoucherOrder();
+        voucherOrder.setId(redisIdWorker.nextId(&quot;order:voucher:&quot;));
+        voucherOrder.setUserId(1L);
+        voucherOrder.setVoucherId(Long.valueOf(voucher.getId()));
+        voucherOrder.setPayType(1);
+        voucherOrder.setStatus(1);
+        voucherOrder.setCreateTime(LocalDateTime.now());
+        voucherOrder.setUpdateTime(LocalDateTime.now());
+
+        voucherOrderMapper.insert(voucherOrder);
+        return Result.success(voucherOrder);
+    }
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;一人一单&lt;/h3&gt;
+&lt;p&gt;我们要实现一人一单我们就需要在创建订单的前面加上对于订单表中是否有对应优惠卷并且userid对应的数据，有则返回错误，但是和之前一样我们需要进行线程安全的处理，这里的解决思路是使用悲观锁，（乐观锁没有办法处理查的操作）将对应userid上锁，在所的范围内取进行存在性的查询，保证了对应userid的原子性&lt;/p&gt;
+&lt;p&gt;我们在使用synchronized关键字只能在单台服务器上进行处理，如果拓展到多台服务器也会有线程安全问题，之后的内容由于需要用到分布式系统的处理，目前没有接触过在多台服务器上部署项目的经验，我想先进行Docker和Nginx的学习后再进行Redis进度的推进。&lt;/p&gt;
 </content:encoded></item><item><title>LeetCode刷题（乘积最大子数组）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E4%B9%98%E7%A7%AF%E6%9C%80%E5%A4%A7%E5%AD%90%E6%95%B0%E7%BB%84/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E4%B9%98%E7%A7%AF%E6%9C%80%E5%A4%A7%E5%AD%90%E6%95%B0%E7%BB%84/</guid><pubDate>Sat, 04 Oct 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;乘积最大子数组&lt;/h1&gt;
 &lt;h2&gt;题目描述&lt;/h2&gt;
 &lt;p&gt;给你一个整数数组 &lt;code&gt;nums&lt;/code&gt; ，请你找出数组中乘积最大的非空连续 子数组（该子数组中至少包含一个数字），并返回该子数组所对应的乘积。&lt;/p&gt;
@@ -17132,7 +17477,7 @@ protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws Se
 &lt;p&gt;​	之后又用了两天的时间完成JDBC的相关概念学习（SQL注入，连接池）学会了如何使用JDBC操作数据库，配置DBUtils，能够独立对于JDBC结合德鲁伊连接池，阿帕奇的Utils将SQL查询封装为Dao对象便于操作，用了两天的时间对于Redis有了一些初级的了解（数据结构，NoSQL，客户端），之后又花了一天半的时间完成了git版本控制工具的使用，能够结合远程代码托管平台（Github，Gitee），使用命令行或者IDEA集成开发环境，对于自己写的代码进行版本管理&lt;/p&gt;
 &lt;p&gt;​	最后的8天稍微有些懈怠，由于课程安排有些紧凑，实际上满打满算的学习只有大概5天左右，完成了JavaWeb中的一部分学习：一些前端基础（html，CSS，JavaScript，jQuery），Web服务器（Tomcat），以及依赖管理工具Maven的基本使用，我对前端这部分的理解是在实际使用中搞清楚怎么用即可，没有花太多时间去像Java基础部分一样记录较为详细的笔记。&lt;/p&gt;
 &lt;p&gt;​	五一假期打算过完生日后，抽出一天时间过一遍线代考试内容（5.10）另外两天看一下编译原理实验的作业和机器学习的大作业，假期之后再进行JavaWeb中Servlet的学习。&lt;/p&gt;
-</content:encoded></item><item><title>JavaWeb笔记(Tomcat，Maven，Docker)</title><link>https://thrinisty.github.io/posts/javaweb%E7%AC%94%E8%AE%B0tomcatmavendocker/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/javaweb%E7%AC%94%E8%AE%B0tomcatmavendocker/</guid><description>服务器部署Tomcat，jar包管理Maven，环境Docker</description><pubDate>Tue, 29 Apr 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;JavaWeb笔记&lt;/h1&gt;
+</content:encoded></item><item><title>JavaWeb笔记(Tomcat，Maven)</title><link>https://thrinisty.github.io/posts/javaweb%E7%AC%94%E8%AE%B0tomcatmaven/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/javaweb%E7%AC%94%E8%AE%B0tomcatmaven/</guid><description>服务器部署Tomcat，jar包管理Maven</description><pubDate>Tue, 29 Apr 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;JavaWeb笔记&lt;/h1&gt;
 &lt;h2&gt;Tomcat&lt;/h2&gt;
 &lt;p&gt;JavaWeb：所用通过Java语言编写可以通过浏览器访问的程序的总称，基于请求和响应来开发的&lt;/p&gt;
 &lt;p&gt;Web资源：根据资源实现的技术和呈现的效果不同，分为静态资源和动态资源&lt;/p&gt;
@@ -17214,50 +17559,6 @@ protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws Se
 &lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;父子模块管理&lt;/p&gt;
 &lt;p&gt;在父工程中的pom文件下添加的依赖可以被子模块中使用，所有将公共的依赖放置在父工程中可以简化依赖，也可以设置为不默认继承依赖，而是手动集成父工程依赖&lt;/p&gt;
-&lt;h2&gt;Docker&lt;/h2&gt;
-&lt;h3&gt;基本概念&lt;/h3&gt;
-&lt;p&gt;Docker是一个用于构建运行传送应用程序的平台，可以解决环境配置的问题，将第三方软件库，依赖等打包，运行在任何的环境&lt;/p&gt;
-&lt;p&gt;Docker是一个容器的实现，容器是一个虚拟化技术是一个独立的环境，使用宿主机的OS操作系统，减少资源的浪费（运行多个操作系统和图形化界面）&lt;/p&gt;
-&lt;p&gt;容器是Docker的一个运行实例，提供一个可以移植的环境，可以在这个环境中运行应用程序，镜像和容器的关系类似Java中的类和实例，Docker仓库可以存储Docker镜像和上传，我们打包容器为镜像上传给别人，别人就可以使用镜像创建相应的容器&lt;/p&gt;
-&lt;h3&gt;大致使用&lt;/h3&gt;
-&lt;p&gt;Dockerfile是构建指令，包含了如何配置环境的一些指令，用于告诉如何构建镜像&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;FROM node:14-alpine
-COPY index.js /index.js
-CMD [&quot;node&quot;, &quot;/index.js&quot;]
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;构建镜像&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;docker build -t hello-docker .
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;查看镜像&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;docker image ls
-REPOSITORY   TAG       IMAGE ID       CREATED        SIZE
-nginx        latest    9bea9f2796e2   5 months ago   192MB
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;运行镜像&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;docker run hello-docker
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;可以通过网页使用在线的play with docker来远程通过dockerhub下载镜像，运行容器&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;docker pull thrinisty/hello-docker
-&lt;/code&gt;&lt;/pre&gt;
-&lt;h3&gt;Docker Compose&lt;/h3&gt;
-&lt;p&gt;用于定义和运行多容器Docker应用程序的工具，使用yaml文件来设置应用程序服务&lt;/p&gt;
-&lt;p&gt;通过docker-compose.yaml配置文件将一组互相关联的容器组合在一起，形成项目，通过一条命令即可创建并启动所有的服务&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;docker compose up
-&lt;/code&gt;&lt;/pre&gt;
-&lt;h3&gt;实际使用&lt;/h3&gt;
-&lt;p&gt;我们现在在Docker上下载一个redis的镜像，并且通过镜像创建运行redis容器，之后在宿主机上用客户端连接服务器&lt;/p&gt;
-&lt;p&gt;查找可用redis镜像&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;docker search redis
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;下载redis镜像&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;docker pull redis
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;运行redis容器，并且通过-p参数将容器端口映射到宿主机端口&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;docker run --name redis_test -p 6379:6379 -d redis
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;在宿主机连接docker运行中的redis容器对象&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;redis-cli -h 127.0.0.1 -p 6379
-&lt;/code&gt;&lt;/pre&gt;
 </content:encoded></item><item><title>JavaWeb笔记（jQuery）</title><link>https://thrinisty.github.io/posts/javaweb%E7%AC%94%E8%AE%B0jqueryxml/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/javaweb%E7%AC%94%E8%AE%B0jqueryxml/</guid><description>jQuery，XML</description><pubDate>Sun, 27 Apr 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;JavaWeb笔记&lt;/h1&gt;
 &lt;p&gt;计划两天完成jQuery和XML部分的学习&lt;/p&gt;
 &lt;h2&gt;jQuery&lt;/h2&gt;
