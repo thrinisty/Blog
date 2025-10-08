@@ -162,19 +162,19 @@ class Solution {
 ```java
 class Solution {
     public double findMedianSortedArrays(int[] nums1, int[] nums2) {
-        int t = nums1.length + nums2.length;
-        if(t % 2 == 0) {
-            return (func(nums1, nums2, 0, 0, t / 2) + func(nums1, nums2, 0, 0, t / 2 + 1)) / 2.0;
+        int len  = nums1.length + nums2.length;
+        if(len % 2 == 1){
+            return findK(nums1, nums2, 0, 0, len / 2 + 1);
         } else {
-            return func(nums1, nums2, 0, 0, t / 2 + 1);
+            return (findK(nums1, nums2, 0, 0, len / 2 + 1) + findK(nums1, nums2, 0, 0, len / 2)) / 2.0;
         }
     }
 
-    public int func(int[] nums1, int[] nums2, int i, int j, int k) {
+    public int findK(int[] nums1, int[] nums2, int i, int j, int k) {
         int n1 = nums1.length;
         int n2 = nums2.length;
         if(n1 - i > n2 - j) {
-            return func(nums2, nums1, j, i, k);
+            return findK(nums2, nums1, j, i, k);
         }
         if(n1 == i) {
             return nums2[j + k - 1];
@@ -182,12 +182,12 @@ class Solution {
         if(k == 1) {
             return Math.min(nums1[i], nums2[j]);
         }
-        int mid1 = Math.min(i + k / 2, nums1.length);
+        int mid1 = Math.min(i + k / 2, n1);
         int mid2 = j + k / 2;
         if(nums1[mid1 - 1] > nums2[mid2 - 1]) {
-            return func(nums1, nums2, i, mid2, k - k / 2);
+            return findK(nums1, nums2, i, mid2, k - (mid2 - j));
         } else {
-            return func(nums1, nums2, mid1, j, k - (mid1 - i));
+            return findK(nums1, nums2, mid1, j, k - (mid1 - i));
         }
     }
 }

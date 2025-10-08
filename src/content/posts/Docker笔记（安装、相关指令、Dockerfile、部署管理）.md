@@ -1,8 +1,8 @@
 ---
-title: Docker笔记（安装、相关指令）
+title: Docker笔记（安装、相关指令、Dockerfile、部署管理）
 published: 2025-10-07
 updated: 2025-10-07
-description: 'Docker安装、常见指令、部署案例'
+description: 'Docker安装、常见指令、部署案例、DockerCompose快速部署'
 image: './photo/docker.png'
 tags: [Docker]
 category: ''
@@ -169,7 +169,7 @@ redis-cli -h 127.0.0.1 -p 6379
 docker run -d --name nginx -p 80:80 -v usr:/usr/share nginx
 ```
 
-容器被挂载到了/var/lib/docker/volumes/usr/_data
+容器被挂载到了/var/lib/docker/volumes/usr_data
 
 ```
 [root@iv-ye5w83dog0bw80eugddg _data]# docker volume inspect usr
@@ -178,7 +178,7 @@ docker run -d --name nginx -p 80:80 -v usr:/usr/share nginx
         "CreatedAt": "2025-10-07T21:14:39+08:00",
         "Driver": "local",
         "Labels": null,
-        "Mountpoint": "/var/lib/docker/volumes/usr/_data",
+        "Mountpoint": "/var/lib/docker/volumes/usr_data",
         "Name": "usr",
         "Options": null,
         "Scope": "local"
@@ -201,3 +201,119 @@ docker run -d --name nginx -p 80:80 -v /home/nginx:/usr/share nginx
 ### 自定义镜像
 
 镜像就是包含了应用程序，程序运行的系统函数库、运行配置等文件的文件包。构建镜像的过程实际上就是把上述文件打包的过程
+
+![262](../images/262.png)
+
+
+
+**Dockerfile**
+
+Dockerfile是一个文本文件，其中包含指令，可以指定要执行什么操作构建镜像，将来Docker可以根据Dockerfile帮助我们构建镜像，常见指令如下
+
+![263](../images/263.png)
+
+以下是一个代码示例：
+
+![264](../images/264.png)
+
+如果我们觉得构建JDK环境过于复杂，我们还可以使用JDK的基础镜像，进行制作
+
+![265](../images/265.png)
+
+```dockerfile
+# 使用官方 Eclipse Temurin (JDK 17) 镜像作为基础
+FROM eclipse-temurin:17-jdk-jammy
+# 设置工作目录
+WORKDIR /app
+# 复制构建好的 JAR 文件到镜像中
+COPY app.jar app.jar
+# 暴露端口（根据实际应用端口修改）
+EXPOSE 8080
+# 启动应用
+ENTRYPOINT ["java", "-jar", "app.jar"]
+```
+
+写完Dockerfile后我们通过build指令制作镜像
+
+```
+docker build -t app .
+```
+
+```
+[root@iv-ye5w83dog0bw80eugddg lory]# docker images
+REPOSITORY        TAG            IMAGE ID       CREATED         SIZE
+app               latest         df91bfe6a5ad   3 minutes ago   465MB
+```
+
+查看镜像发现创建镜像完成，之后我们运行镜像
+
+```
+docker run -d --name app -p 8080:8080 app
+```
+
+尝试去调用写的api接口，发现可以正常使用，也可以通过logs查看对应日志
+
+```
+docker logs -f app
+```
+
+```
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v3.5.6)
+```
+
+
+
+### 网络
+
+默认情况下，所有容器都是以桥接的方式连接到Docker的一个虚拟网桥上
+
+![267](../images/267.png)
+
+自定义网络 docker network
+
+![266](../images/266.png)
+
+
+
+## 统一管理
+
+DockerCompose通过一个单独的docker-compose.yml模板文件来定义一组相关联的应用容器，帮助我们实现多个相互关联的Docker容器的快速部署
+
+![268](../images/268.png)
+
+```yaml
+version: "3.8"  # Compose 文件版本（推荐 3.8+）
+services:
+  # 服务名称（自定义）
+  my-java-app:
+    # 镜像构建方式（二选一）
+    build:
+      context: .                # 构建上下文目录（Dockerfile 所在路径）
+      dockerfile: Dockerfile    # 指定 Dockerfile 文件名（默认就是 Dockerfile）
+    # 或用已有镜像（如果已手动构建过）
+    # image: app:1.0.0
+    container_name: myapp      # 自定义容器名称（可选）
+    restart: unless-stopped    # 容器退出时自动重启（除非手动停止）
+    # 环境变量（根据需求添加）
+    environment:
+      - TZ=Asia/Shanghai       # 时区设置
+      - JAVA_OPTS=-Xmx512m     # JVM 参数
+    # 端口映射（主机端口:容器端口）
+    ports:
+      - "8080:8080"            # 应用端口
+      - "5005:5005"            # 调试端口（可选）
+    # 数据卷映射（主机路径:容器路径）
+    volumes:
+      - ./logs:/app/logs       # 挂载日志目录（需确保主机路径存在）
+```
+
+相关指令
+
+![269](../images/269.png)
