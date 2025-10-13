@@ -1,8 +1,8 @@
 ---
-title: Nginx笔记（基本使用、配置文件、反向代理）
+title: Nginx笔记（入门）
 published: 2025-10-08
 updated: 2025-10-08
-description: '入门'
+description: '入门基本使用、配置文件、反向代理'
 image: './photo/nginx.png'
 tags: [Nginx]
 category: ''

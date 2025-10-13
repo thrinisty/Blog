@@ -1,4 +1,824 @@
-<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Thrinisty&apos;s Blog</title><description>New Blog</description><link>https://thrinisty.github.io/</link><language>zh_CN</language><item><title>LeetCode刷题（最长有效括号、最长回文子串）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E6%9C%80%E9%95%BF%E6%9C%89%E6%95%88%E6%8B%AC%E5%8F%B7%E6%9C%80%E9%95%BF%E5%9B%9E%E6%96%87%E5%AD%90%E4%B8%B2/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E6%9C%80%E9%95%BF%E6%9C%89%E6%95%88%E6%8B%AC%E5%8F%B7%E6%9C%80%E9%95%BF%E5%9B%9E%E6%96%87%E5%AD%90%E4%B8%B2/</guid><pubDate>Wed, 08 Oct 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;最长有效括号&lt;/h1&gt;
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Thrinisty&apos;s Blog</title><description>New Blog</description><link>https://thrinisty.github.io/</link><language>zh_CN</language><item><title>LeetCode刷题（柱状图中的最大矩形、最小覆盖字串）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E6%9F%B1%E7%8A%B6%E5%9B%BE%E4%B8%AD%E7%9A%84%E6%9C%80%E5%A4%A7%E7%9F%A9%E5%BD%A2%E6%9C%80%E5%B0%8F%E8%A6%86%E7%9B%96%E5%AD%97%E4%B8%B2/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E6%9F%B1%E7%8A%B6%E5%9B%BE%E4%B8%AD%E7%9A%84%E6%9C%80%E5%A4%A7%E7%9F%A9%E5%BD%A2%E6%9C%80%E5%B0%8F%E8%A6%86%E7%9B%96%E5%AD%97%E4%B8%B2/</guid><description>柱状图中的最大矩形（暴力超时）、最小覆盖字串</description><pubDate>Mon, 13 Oct 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;柱状图中的最大矩形&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;给定 &lt;em&gt;n&lt;/em&gt; 个非负整数，用来表示柱状图中各个柱子的高度。每个柱子彼此相邻，且宽度为 1 。&lt;/p&gt;
+&lt;p&gt;求在该柱状图中，能够勾勒出来的矩形的最大面积。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 1:&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/281.jpg&quot; alt=&quot;281&quot; /&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：heights = [2,1,5,6,2,3]
+输出：10
+解释：最大的矩形为图中红色区域，面积为 10
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/282.jpg&quot; alt=&quot;282&quot; /&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入： heights = [2,4]
+输出： 4
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;解法一：暴力枚举（93/99），对于每个数组元素取其高度，向左向右看其对应的的最长长度，用得到的面积迭代result&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public int largestRectangleArea(int[] heights) {
+        int n = heights.length;
+        int result = 0;
+        for(int i = 0; i &amp;lt; n; i++) {
+            int height = heights[i];
+            int left = i;
+            while(left - 1 &amp;gt;= 0 &amp;amp;&amp;amp; heights[left - 1] &amp;gt;= height) {
+                left--;
+            }
+            int right = i;
+            while(right + 1 &amp;lt; n &amp;amp;&amp;amp; heights[right + 1] &amp;gt;= height) {
+                right++;
+            }
+            result = Math.max(result, height * (right - left + 1));
+        }
+        return result;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1&gt;最小覆盖字串&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;给你一个字符串 &lt;code&gt;s&lt;/code&gt; 、一个字符串 &lt;code&gt;t&lt;/code&gt; 。返回 &lt;code&gt;s&lt;/code&gt; 中涵盖 &lt;code&gt;t&lt;/code&gt; 所有字符的最小子串。如果 &lt;code&gt;s&lt;/code&gt; 中不存在涵盖 &lt;code&gt;t&lt;/code&gt; 所有字符的子串，则返回空字符串 &lt;code&gt;&quot;&quot;&lt;/code&gt; 。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;注意：&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;对于 &lt;code&gt;t&lt;/code&gt; 中重复字符，我们寻找的子字符串中该字符数量必须不少于 &lt;code&gt;t&lt;/code&gt; 中该字符数量。&lt;/li&gt;
+&lt;li&gt;如果 &lt;code&gt;s&lt;/code&gt; 中存在这样的子串，我们保证它是唯一的答案。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：s = &quot;ADOBECODEBANC&quot;, t = &quot;ABC&quot;
+输出：&quot;BANC&quot;
+解释：最小覆盖子串 &quot;BANC&quot; 包含来自字符串 t 的 &apos;A&apos;、&apos;B&apos; 和 &apos;C&apos;。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：s = &quot;a&quot;, t = &quot;a&quot;
+输出：&quot;a&quot;
+解释：整个字符串 s 是最小覆盖子串。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 3:&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入: s = &quot;a&quot;, t = &quot;aa&quot;
+输出: &quot;&quot;
+解释: t 中两个字符 &apos;a&apos; 均应包含在 s 的子串中，
+因此没有符合条件的子字符串，返回空字符串。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;构建一个Map集合存储第二个字符需要匹配的字符类型count数量以及字符其所需要的数量，初始化答案的左边界以及右边界（这里合理定义就好，后续不发生改变则证明没有，匹配一下初始值返回空字符），构造一个滑动窗口左右边界分别为l和r，都初始化为0&lt;/p&gt;
+&lt;p&gt;用右边界遍历s字符串，如果当前字符在Map中使其数量减一，如果减完之后为0代表该字符匹配完成满足对应数量&lt;/p&gt;
+&lt;p&gt;当count为0的时候代表所有目标字符数量满足要求，这个时候是我们覆盖的一种情况，如果左右边界详见结果小于原先的结果就进行迭代，之后从左向右移动左边界，当当前的左边界的字符存在于map中将其对应需求数量加一，如果数量&amp;gt;0则count++，直到count不在等于0的时候说明当前情况不满足覆盖，进入下下一次循环，重复向后遍历右边界&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public String minWindow(String s, String t) {
+        Map&amp;lt;Character, Integer&amp;gt; map = new HashMap&amp;lt;&amp;gt;();
+        for(char c : t.toCharArray()) {
+            map.put(c, map.getOrDefault(c, 0) + 1);
+        }
+        int count = map.size();
+        //这里的初始化包围s就好，注意最后的匹配返回&quot;&quot;
+        int result_l = -1;
+        int result_r = s.length();
+        for(int l = 0, r = 0; r &amp;lt; s.length(); r++) {
+            char c = s.charAt(r);
+            if(map.containsKey(c)) {
+                int num = map.get(c);
+                if(num == 1) {
+                    count--;
+                }
+                map.put(c, num - 1);
+            }
+            while(count == 0) {
+                if(result_r - result_l &amp;gt; r - l) {
+                    result_l = l;
+                    result_r = r;
+                }
+                char ch = s.charAt(l);
+                if(map.containsKey(ch)) {
+                    int num = map.get(ch);
+                    if(num == 0) {
+                        count++;
+                    }
+                    map.put(ch, num + 1);
+                }
+                l++;
+            }
+        }
+        if(result_l == -1) return &quot;&quot;;
+        return s.substring(result_l, result_r + 1);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+</content:encoded></item><item><title>LeetCode刷题（网易云笔试题目、最长公共子序列）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E7%BD%91%E6%98%93%E4%BA%91%E7%AC%94%E8%AF%95%E9%A2%98%E7%9B%AE%E6%9C%80%E9%95%BF%E5%85%AC%E5%85%B1%E5%AD%90%E5%BA%8F%E5%88%97/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E7%BD%91%E6%98%93%E4%BA%91%E7%AC%94%E8%AF%95%E9%A2%98%E7%9B%AE%E6%9C%80%E9%95%BF%E5%85%AC%E5%85%B1%E5%AD%90%E5%BA%8F%E5%88%97/</guid><description>仓库租聘收益、最长公共子序列</description><pubDate>Sun, 12 Oct 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;仓库租聘收益&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;大概就是股票买卖的升级版本，在基础之上增添了买入卖出的额外支出，还有仓库空闲可以出租时的额外收益&lt;/p&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;增加一个空闲仓库的状态，在初始置为rent，代表当日出租&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public static void main(String[] args) {
+        Scanner in = new Scanner(System.in);
+        int cent = in.nextInt(); // 每日租金收益
+        int pay = in.nextInt();  // 每次买卖的运费
+        int n = in.nextInt();    // 天数
+        int[] prices = new int[n]; // 每天的货物价格
+        
+        for (int i = 0; i &amp;lt; n; i++) {
+            prices[i] = in.nextInt();
+        }
+        // DP 状态定义
+        int[] buy = new int[n];  // buy[i]: 第i天持有货物时的最大收益
+        int[] sell = new int[n]; // sell[i]: 第i天卖出货物时的最大收益
+        int[] rent = new int[n]; // rent[i]: 第i天出租仓库时的最大收益
+        
+        // 初始化
+        buy[0] = -prices[0] - pay;   // 第一天买入货物，支付价格和运费
+        sell[0] = Integer.MIN_VALUE; // 第一天无法卖出（之前无持有）
+        rent[0] = cent;              // 第一天出租仓库
+        // DP 状态转移
+        for (int i = 1; i &amp;lt; n; i++) {
+            // 买入：前一天必须是出租或卖出状态
+            buy[i] = Math.max(
+                rent[i - 1] - prices[i] - pay,
+                sell[i - 1] - prices[i] - pay
+            );
+            
+            // 卖出：前一天必须持有货物
+            sell[i] = buy[i - 1] + prices[i] - pay;
+            
+            // 出租：前一天可以继续出租或从卖出转入
+            rent[i] = Math.max(
+                rent[i - 1] + cent,
+                sell[i - 1] + cent
+            );
+        }
+        // 最终结果是最后一天三种状态的最大值
+        int maxProfit = Math.max(rent[n - 1], Math.max(sell[n - 1], buy[n - 1]));
+        System.out.println(maxProfit);
+    }
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1&gt;最长公共子序列&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;给定两个字符串 &lt;code&gt;text1&lt;/code&gt; 和 &lt;code&gt;text2&lt;/code&gt;，返回这两个字符串的最长 &lt;strong&gt;公共子序列&lt;/strong&gt; 的长度。如果不存在 &lt;strong&gt;公共子序列&lt;/strong&gt; ，返回 &lt;code&gt;0&lt;/code&gt; 。&lt;/p&gt;
+&lt;p&gt;一个字符串的 &lt;strong&gt;子序列&lt;/strong&gt; 是指这样一个新的字符串：它是由原字符串在不改变字符的相对顺序的情况下删除某些字符（也可以不删除任何字符）后组成的新字符串。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;例如，&lt;code&gt;&quot;ace&quot;&lt;/code&gt; 是 &lt;code&gt;&quot;abcde&quot;&lt;/code&gt; 的子序列，但 &lt;code&gt;&quot;aec&quot;&lt;/code&gt; 不是 &lt;code&gt;&quot;abcde&quot;&lt;/code&gt; 的子序列。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;两个字符串的 &lt;strong&gt;公共子序列&lt;/strong&gt; 是这两个字符串所共同拥有的子序列。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：text1 = &quot;abcde&quot;, text2 = &quot;ace&quot; 
+输出：3  
+解释：最长公共子序列是 &quot;ace&quot; ，它的长度为 3 。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：text1 = &quot;abc&quot;, text2 = &quot;abc&quot;
+输出：3
+解释：最长公共子序列是 &quot;abc&quot; ，它的长度为 3 。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 3：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：text1 = &quot;abc&quot;, text2 = &quot;def&quot;
+输出：0
+解释：两个字符串没有公共子序列，返回 0 。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;动态规划：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;dp[i+1][j+1]表示text1[0,i]范围和text2[0,j]范围构成的最长公共子序列，初始都为0
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public int longestCommonSubsequence(String text1, String text2) {
+        int m = text1.length();
+        int n = text2.length();
+        int[][] dp = new int[m + 1][n + 1];
+        for(int i = 0; i &amp;lt; m; i++) {
+            for(int j = 0; j &amp;lt; n; j++) {
+                if(text1.charAt(i) == text2.charAt(j)) {
+                    dp[i + 1][j + 1] = dp[i][j] + 1;
+                } else {
+                    dp[i + 1][j + 1] = Math.max(dp[i][j + 1], dp[i + 1][j]);
+                }
+            }
+        }
+        return dp[m][n];
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+</content:encoded></item><item><title>LeetCode刷题（最长连续序列、最大正方形）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E6%9C%80%E9%95%BF%E8%BF%9E%E7%BB%AD%E5%BA%8F%E5%88%97%E6%9C%80%E5%A4%A7%E6%AD%A3%E6%96%B9%E5%BD%A2/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E6%9C%80%E9%95%BF%E8%BF%9E%E7%BB%AD%E5%BA%8F%E5%88%97%E6%9C%80%E5%A4%A7%E6%AD%A3%E6%96%B9%E5%BD%A2/</guid><pubDate>Sat, 11 Oct 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;最长连续序列&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;给定一个未排序的整数数组 &lt;code&gt;nums&lt;/code&gt; ，找出数字连续的最长序列（不要求序列元素在原数组中连续）的长度。&lt;/p&gt;
+&lt;p&gt;请你设计并实现时间复杂度为 &lt;code&gt;O(n)&lt;/code&gt; 的算法解决此问题。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：nums = [100,4,200,1,3,2]
+输出：4
+解释：最长数字连续序列是 [1, 2, 3, 4]。它的长度为 4。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：nums = [0,3,7,2,5,8,4,6,0,1]
+输出：9
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 3：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：nums = [1,0,1,2]
+输出：3
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;解法一：排序后遍历 O(nlogn)&lt;/p&gt;
+&lt;p&gt;将整个数组用sort排序，在遍历的过程中判断当前数是否符合连续，如果不连续将count重置为1，如果符合条件count自增并且迭代result&lt;/p&gt;
+&lt;p&gt;还需要注意当存在重复数字的时候我们需要将其跳过，不然也不符合条件（实际上是符合的，因为可以不取同样的数字）&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public int longestConsecutive(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return 0;
+        }
+        Arrays.sort(nums);
+        int result = 1;
+        int count = 1;
+        for (int i = 1; i &amp;lt; nums.length; i++) {
+            if(nums[i] == nums[i - 1]) {
+                continue;
+            }
+            if (nums[i - 1] + 1 == nums[i]) {
+                count++;
+                result = Math.max(result, count);
+            } else {
+                count = 1;
+            }
+        }
+        return result;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;解法二：Set集合遍历&lt;/p&gt;
+&lt;p&gt;将数组中的元素放入Set集合中，去重并且便于后续使用contains快速判断是否存在目标数字&lt;/p&gt;
+&lt;p&gt;遍历Set中的数字num，仅当Set中不存在 num - 1 的时候（说明如果将其包含在连续序列中的时候其为序列的起始位置），此时将起始的数字用current记录，并将计数器count设置为1，我们从Set中依次寻找是否存在current + 1，如果没有证明该起始位置的序列结束，用count迭代result，如果存在则继续判断下去&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public int longestConsecutive(int[] nums) {
+        Set&amp;lt;Integer&amp;gt; set = new HashSet&amp;lt;&amp;gt;();
+        for(int num : nums) {
+            set.add(num);
+        }
+        int result = 0;
+        for(int num : set) {
+            if(set.contains(num - 1)) {
+               continue; 
+            }
+            int currentNum = num;
+            int count = 1;
+            while(set.contains(currentNum + 1)) {
+                count++;
+                currentNum++;
+            }
+            result = Math.max(result, count);
+        }
+        return result;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;这种解决方式的时间复杂度是O(n)，虽然用了两层循环，但是因为只选取各个连续子序列的起始元素，在所有的内层循环中每个数字只会被遍历一次&lt;/p&gt;
+&lt;h1&gt;最大正方形&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;在一个由 &lt;code&gt;&apos;0&apos;&lt;/code&gt; 和 &lt;code&gt;&apos;1&apos;&lt;/code&gt; 组成的二维矩阵内，找到只包含 &lt;code&gt;&apos;1&apos;&lt;/code&gt; 的最大正方形，并返回其面积。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/273.jpg&quot; alt=&quot;273&quot; /&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：matrix = [[&quot;1&quot;,&quot;0&quot;,&quot;1&quot;,&quot;0&quot;,&quot;0&quot;],[&quot;1&quot;,&quot;0&quot;,&quot;1&quot;,&quot;1&quot;,&quot;1&quot;],[&quot;1&quot;,&quot;1&quot;,&quot;1&quot;,&quot;1&quot;,&quot;1&quot;],[&quot;1&quot;,&quot;0&quot;,&quot;0&quot;,&quot;1&quot;,&quot;0&quot;]]
+输出：4
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/274.jpg&quot; alt=&quot;274&quot; /&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：matrix = [[&quot;0&quot;,&quot;1&quot;],[&quot;1&quot;,&quot;0&quot;]]
+输出：1
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 3：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：matrix = [[&quot;0&quot;]]
+输出：0
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public int maximalSquare(char[][] matrix) {
+        if(matrix == null || matrix.length == 0 || matrix[0].length == 0) {
+            return 0;
+        }
+        int row = matrix.length;
+        int col = matrix[0].length;
+        int result = 0;
+        int[][] dp = new int[row + 1][col + 1];
+        for(int i = 0; i &amp;lt; row; i++) {
+            for(int j = 0; j &amp;lt; col; j++) {
+                if(matrix[i][j] == &apos;1&apos;) {
+                    dp[i + 1][j + 1] = Math.min(Math.min(dp[i + 1][j], dp[i][j + 1]), dp[i][j]) + 1;
+                    result = Math.max(result, dp[i + 1][j + 1]); 
+                }
+            }
+        }
+        return result * result;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+</content:encoded></item><item><title>SpringCloud笔记（基本介绍、注册中心）</title><link>https://thrinisty.github.io/posts/springcloud%E7%AC%94%E8%AE%B0%E5%9F%BA%E6%9C%AC%E4%BB%8B%E7%BB%8D/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/springcloud%E7%AC%94%E8%AE%B0%E5%9F%BA%E6%9C%AC%E4%BB%8B%E7%BB%8D/</guid><description>Nacos注册中心</description><pubDate>Fri, 10 Oct 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;SpringCloud笔记&lt;/h1&gt;
+&lt;h2&gt;何为微服务&lt;/h2&gt;
+&lt;p&gt;微服务是一种经过良好架构设计的分布式框架方案，微服务框架特征如下：&lt;/p&gt;
+&lt;p&gt;单一职责：微服务拆分粒度更小，每一个服务对应唯一的业务能力，做到单一职责，避免重复业务开发&lt;/p&gt;
+&lt;p&gt;面向服务：微服务对外暴露业务接口&lt;/p&gt;
+&lt;p&gt;自治：团队独立，技术独立，数据独立，部署独立&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/275.png&quot; alt=&quot;275&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;微服务框架&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/276.png&quot; alt=&quot;276&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;相关功能&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/277.png&quot; alt=&quot;277&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;微服务拆分事项&lt;/p&gt;
+&lt;p&gt;1.不同微服务不要重复开发相同业务&lt;/p&gt;
+&lt;p&gt;2.微服务数据独立，不要访问其他微服务数据库&lt;/p&gt;
+&lt;p&gt;3.微服务将自己的业务暴露为接口，供其他微服务调用&lt;/p&gt;
+&lt;h2&gt;项目创建&lt;/h2&gt;
+&lt;p&gt;&lt;img src=&quot;../images/279.png&quot; alt=&quot;279&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;引入父工程版本管理，引入SpringCloud和SpringCloudAlibaba的版本管理&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&amp;gt;
+&amp;lt;project xmlns=&quot;http://maven.apache.org/POM/4.0.0&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
+         xsi:schemaLocation=&quot;http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd&quot;&amp;gt;
+    &amp;lt;modelVersion&amp;gt;4.0.0&amp;lt;/modelVersion&amp;gt;
+    &amp;lt;parent&amp;gt;
+        &amp;lt;groupId&amp;gt;org.springframework.boot&amp;lt;/groupId&amp;gt;
+        &amp;lt;artifactId&amp;gt;spring-boot-starter-parent&amp;lt;/artifactId&amp;gt;
+        &amp;lt;version&amp;gt;3.3.4&amp;lt;/version&amp;gt;
+        &amp;lt;relativePath/&amp;gt; &amp;lt;!-- lookup parent from repository --&amp;gt;
+    &amp;lt;/parent&amp;gt;
+    &amp;lt;packaging&amp;gt;pom&amp;lt;/packaging&amp;gt;
+    &amp;lt;groupId&amp;gt;com.nwpu&amp;lt;/groupId&amp;gt;
+    &amp;lt;artifactId&amp;gt;LearnAnother&amp;lt;/artifactId&amp;gt;
+    &amp;lt;version&amp;gt;0.0.1-SNAPSHOT&amp;lt;/version&amp;gt;
+    &amp;lt;name&amp;gt;LearnAnother&amp;lt;/name&amp;gt;
+    &amp;lt;description&amp;gt;LearnAnother&amp;lt;/description&amp;gt;
+    &amp;lt;url/&amp;gt;
+    &amp;lt;licenses&amp;gt;
+        &amp;lt;license/&amp;gt;
+    &amp;lt;/licenses&amp;gt;
+    &amp;lt;developers&amp;gt;
+        &amp;lt;developer/&amp;gt;
+    &amp;lt;/developers&amp;gt;
+    &amp;lt;scm&amp;gt;
+        &amp;lt;connection/&amp;gt;
+        &amp;lt;developerConnection/&amp;gt;
+        &amp;lt;tag/&amp;gt;
+        &amp;lt;url/&amp;gt;
+    &amp;lt;/scm&amp;gt;
+    &amp;lt;properties&amp;gt;
+        &amp;lt;!-- JDK 版本 --&amp;gt;
+        &amp;lt;java.version&amp;gt;17&amp;lt;/java.version&amp;gt;
+
+        &amp;lt;!-- Spring Boot 版本 (需与 Spring Cloud 2023.0.x 兼容) --&amp;gt;
+        &amp;lt;spring-boot.version&amp;gt;3.2.0&amp;lt;/spring-boot.version&amp;gt;
+
+        &amp;lt;!-- Spring Cloud 版本 (2023.0.x) --&amp;gt;
+        &amp;lt;spring-cloud.version&amp;gt;2023.0.3&amp;lt;/spring-cloud.version&amp;gt;
+
+        &amp;lt;!-- Spring Cloud Alibaba 版本 (需与 SC 2023.0.x 适配) --&amp;gt;
+        &amp;lt;spring-cloud-alibaba.version&amp;gt;2023.0.3.2&amp;lt;/spring-cloud-alibaba.version&amp;gt;
+    &amp;lt;/properties&amp;gt;
+
+    &amp;lt;dependencyManagement&amp;gt;
+        &amp;lt;dependencies&amp;gt;
+            &amp;lt;!-- Spring Boot Starter Parent (可选) --&amp;gt;
+            &amp;lt;dependency&amp;gt;
+                &amp;lt;groupId&amp;gt;org.springframework.boot&amp;lt;/groupId&amp;gt;
+                &amp;lt;artifactId&amp;gt;spring-boot-starter-parent&amp;lt;/artifactId&amp;gt;
+                &amp;lt;version&amp;gt;${spring-boot.version}&amp;lt;/version&amp;gt;
+                &amp;lt;type&amp;gt;pom&amp;lt;/type&amp;gt;
+                &amp;lt;scope&amp;gt;import&amp;lt;/scope&amp;gt;
+            &amp;lt;/dependency&amp;gt;
+            &amp;lt;!-- Spring Cloud BOM --&amp;gt;
+            &amp;lt;dependency&amp;gt;
+                &amp;lt;groupId&amp;gt;org.springframework.cloud&amp;lt;/groupId&amp;gt;
+                &amp;lt;artifactId&amp;gt;spring-cloud-dependencies&amp;lt;/artifactId&amp;gt;
+                &amp;lt;version&amp;gt;${spring-cloud.version}&amp;lt;/version&amp;gt;
+                &amp;lt;type&amp;gt;pom&amp;lt;/type&amp;gt;
+                &amp;lt;scope&amp;gt;import&amp;lt;/scope&amp;gt;
+            &amp;lt;/dependency&amp;gt;
+            &amp;lt;!-- Spring Cloud Alibaba BOM --&amp;gt;
+            &amp;lt;dependency&amp;gt;
+                &amp;lt;groupId&amp;gt;com.alibaba.cloud&amp;lt;/groupId&amp;gt;
+                &amp;lt;artifactId&amp;gt;spring-cloud-alibaba-dependencies&amp;lt;/artifactId&amp;gt;
+                &amp;lt;version&amp;gt;${spring-cloud-alibaba.version}&amp;lt;/version&amp;gt;
+                &amp;lt;type&amp;gt;pom&amp;lt;/type&amp;gt;
+                &amp;lt;scope&amp;gt;import&amp;lt;/scope&amp;gt;
+            &amp;lt;/dependency&amp;gt;
+        &amp;lt;/dependencies&amp;gt;
+    &amp;lt;/dependencyManagement&amp;gt;
+
+    &amp;lt;build&amp;gt;
+        &amp;lt;plugins&amp;gt;
+            &amp;lt;plugin&amp;gt;
+                &amp;lt;groupId&amp;gt;org.springframework.boot&amp;lt;/groupId&amp;gt;
+                &amp;lt;artifactId&amp;gt;spring-boot-maven-plugin&amp;lt;/artifactId&amp;gt;
+            &amp;lt;/plugin&amp;gt;
+        &amp;lt;/plugins&amp;gt;
+    &amp;lt;/build&amp;gt;
+
+&amp;lt;/project&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;在其子级中建立services模块作为统一依赖配置管理，services下创建各个微服务&lt;/p&gt;
+&lt;h2&gt;注册中心&lt;/h2&gt;
+&lt;p&gt;&lt;img src=&quot;../images/278.png&quot; alt=&quot;278&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;下载Nacos：在对应目录下使用如下指令启动Nacos服务&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;startup.cmd -m standalone
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;这个时候就可以访问Nacos的管理页面了&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;http://localhost:8848/nacos
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;注册流程&lt;/h3&gt;
+&lt;p&gt;1.启动微服务&lt;/p&gt;
+&lt;p&gt;2.引入服务发现依赖&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;dependency&amp;gt;
+    &amp;lt;groupId&amp;gt;com.alibaba.cloud&amp;lt;/groupId&amp;gt;
+    &amp;lt;artifactId&amp;gt;spring-cloud-starter-alibaba-nacos-discovery&amp;lt;/artifactId&amp;gt;
+&amp;lt;/dependency&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;3.配置Nacos地址：地址端口默认如下&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;spring:
+  application:
+    name: service-order
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:8848
+
+server:
+  port: 8000
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;4.查看注册中心效果：启动微服务，查看Nacos管理页面&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/280.png&quot; alt=&quot;280&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;5.集群模式启动测试&lt;/p&gt;
+&lt;p&gt;通过复制配置的方式传入端口参数在不同端口启动相同程序形成集群&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;--server.port=8002
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;服务发现&lt;/h3&gt;
+&lt;p&gt;想要获取到在Nacos中注册的所有服务以及其对应的IP端口可以通过以下步骤实现&lt;/p&gt;
+&lt;p&gt;1.开启服务发现功能：@EnableDiscoveryClient，这个根据有些版本可以自动开启服务发现，无需手动配置&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@EnableDiscoveryClient
+@SpringBootApplication
+public class OrderMainApplication {
+    public static void main(String[] args) {
+        SpringApplication.run(OrderMainApplication.class, args);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;2.测试服务发现API： DiscoveryClient&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@SpringBootTest
+class OrderMainApplicationTest {
+    @Autowired
+    DiscoveryClient discoveryClient;
+
+    @Test
+    void contextLoads() {
+        List&amp;lt;String&amp;gt; services = discoveryClient.getServices();
+        for (String service : services) {
+            System.out.println(&quot;service:&quot;+ service);
+        /*  获取服务
+            service:service-order
+s           service:service-product
+         */
+        }
+        //更具服务名称获取对应实例
+        List&amp;lt;ServiceInstance&amp;gt; instances = discoveryClient.getInstances(&quot;service-order&quot;);
+        for (ServiceInstance instance : instances) {
+            /*
+                 ip:192.168.20.29
+                 port:8000
+             */
+            System.out.println(&quot;ip:&quot;+ instance.getHost());
+            System.out.println(&quot;port:&quot;+ instance.getPort());
+            System.out.println();
+        }
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;3.测试服务发现API： NacosServiceDiscovery和上面的同理，只能使用引入Nacos注册的服务&lt;/p&gt;
+&lt;h3&gt;远程调用&lt;/h3&gt;
+&lt;p&gt;可以通过服务名称获取对应的实例，任取一个通过http请求url获取数据&lt;/p&gt;
+&lt;p&gt;Rest Template是一个线程安全的对象，也可以配置放入Bean中注入使用&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@GetMapping(&quot;{userId}/{proId}&quot;)
+public String order(@PathVariable int userId, @PathVariable int proId) {
+    Product product = getProduct(proId);
+    Order order = new Order();
+    order.setUserId(userId);
+    order.setPrice(product.getPrice());
+    orderService.save(order);
+    return order.toString();
+}
+
+private Product getProduct(int proId) {
+    List&amp;lt;ServiceInstance&amp;gt; instances = discoveryClient.getInstances(&quot;service-product&quot;);
+    ServiceInstance instance = instances.get(0);
+    //拼接url
+    String url = &quot;http://&quot; + instance.getHost() + &quot;:&quot; + instance.getPort() + &quot;/product/&quot; + proId;
+    RestTemplate restTemplate = new RestTemplate();
+    return restTemplate.getForObject(url, Product.class);
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;负载均衡&lt;/h3&gt;
+&lt;p&gt;我们在上述方式中采用的是服务实例的第一个服务，不能负载均衡，我们只需要调整调用的实例方式就可以实现负载均衡，在实际中使用LoadBalancerClient实现，自带负载均衡获取到实例&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;loadBalancerClient实现&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;dependency&amp;gt;
+    &amp;lt;groupId&amp;gt;org.springframework.cloud&amp;lt;/groupId&amp;gt;
+    &amp;lt;artifactId&amp;gt;spring-cloud-starter-loadbalancer&amp;lt;/artifactId&amp;gt;
+&amp;lt;/dependency&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;@Autowired
+LoadBalancerClient loadBalancerClient;
+@Test
+void test() {
+    ServiceInstance instance = loadBalancerClient.choose(&quot;service-product&quot;);
+    System.out.println(instance.getHost() + &quot;:&quot; + instance.getPort());
+    instance = loadBalancerClient.choose(&quot;service-product&quot;);
+    System.out.println(instance.getHost() + &quot;:&quot; + instance.getPort());
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;注解实现&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;放入一个负载均衡的RestTemplate&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@Configuration
+public class CloudConfig {
+    @LoadBalanced
+    @Bean
+    public RestTemplate restTemplate() {
+        return new RestTemplate();
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;直接在ip端口写服务名称，会被动态替换为对应负载均衡后的ip端口&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@Autowired
+RestTemplate restTemplate;
+
+private Product getProduct(int proId) {
+    String url = &quot;http://service-product/product/&quot; + proId;
+    return restTemplate.getForObject(url, Product.class);
+}
+&lt;/code&gt;&lt;/pre&gt;
+</content:encoded></item><item><title>LeetCode刷题（最长和为K的子数组，归并链表排序、三数之和）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E6%9C%80%E9%95%BF%E5%92%8C%E4%B8%BAk%E7%9A%84%E5%AD%90%E6%95%B0%E7%BB%84%E5%BD%92%E5%B9%B6%E9%93%BE%E8%A1%A8%E6%8E%92%E5%BA%8F%E4%B8%89%E6%95%B0%E4%B9%8B%E5%92%8C/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E6%9C%80%E9%95%BF%E5%92%8C%E4%B8%BAk%E7%9A%84%E5%AD%90%E6%95%B0%E7%BB%84%E5%BD%92%E5%B9%B6%E9%93%BE%E8%A1%A8%E6%8E%92%E5%BA%8F%E4%B8%89%E6%95%B0%E4%B9%8B%E5%92%8C/</guid><description>最长和为K的子数组，归并链表排序、三数之和</description><pubDate>Thu, 09 Oct 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;最长和为K的子数组&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;和之前的和为K的子数组相似，要求返回最长的子数组大小&lt;/p&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;还是用前缀和的方式进行求解，只不过Map后一个元素存储的不再是前面可以组合成为某一个值的可能数量了，而是存储第一个满足该前缀和的下表（后续存在不更新）&lt;/p&gt;
+&lt;p&gt;当前面存在目标前缀和的时候，用当前遍历的元素下减去前缀和所对应的下表，用这个结果迭代result&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public int subarraySum(int[] nums, int k) {
+        if(nums == null || nums.length == 0) {
+            return 0;
+        }
+        Map&amp;lt;Integer, Integer&amp;gt; map = new HashMap&amp;lt;&amp;gt;();
+        map.put(0, -1);
+        int preSum = 0;
+        int result = 0;
+        for(int i = 0; i &amp;lt; nums.length; i++) {
+            preSum += nums[i];
+            int target = preSum - k;
+            if(map.containsKey(target)) {
+                result = Math.max(result, i - map.get(target));
+            }
+            if(!map.containsKey(preSum)) {
+                map.put(preSum, i);
+            }
+        }
+        return result;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1&gt;归并链表排序&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;给你链表的头结点 &lt;code&gt;head&lt;/code&gt; ，请将其按 &lt;strong&gt;升序&lt;/strong&gt; 排列并返回 &lt;strong&gt;排序后的链表&lt;/strong&gt;&lt;/p&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;之前我们做过这一道题目，用的解法是递归的将头节点插入后续已排序的链表中，这样的时间复杂度为O(n2)，在模拟面试的题目中这种解法超时，我们采用更加快速的归并排序方式进行求解&lt;/p&gt;
+&lt;p&gt;用到回文链表中的returnHalf方法返回中间节点，在主方法中将前后断开分为两个两个链表，分别排序后用实现的mergeList方法合并&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public ListNode sortList(ListNode head) {
+        if(head == null || head.next == null) {
+            return head;
+        }
+        ListNode p = returnHalf(head);
+        ListNode midNode = p.next;
+        p.next = null;
+        ListNode left = sortList(head);
+        ListNode right = sortList(midNode);
+        return mergeList(left, right);
+    }
+
+    public ListNode returnHalf(ListNode head) {
+        ListNode slow = head;
+        ListNode fast = head;
+        while(fast.next != null &amp;amp;&amp;amp; fast.next.next != null) {
+            slow = slow.next;
+            fast = fast.next.next;
+        }
+        return slow;
+    }
+
+    public ListNode mergeList(ListNode n1, ListNode n2) {
+        ListNode result = new ListNode();
+        ListNode p = result;
+        while(n1 != null &amp;amp;&amp;amp; n2 != null) {
+            if(n1.val &amp;lt; n2.val) {
+                p.next = n1;
+                n1 = n1.next;
+                p = p.next;
+            } else {
+                p.next = n2;
+                n2 = n2.next;
+                p = p.next;
+            }
+        }
+        p.next = n1 == null ? n2 : n1;
+        return result.next;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1&gt;三数之和&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;给你一个整数数组 &lt;code&gt;nums&lt;/code&gt; ，判断是否存在三元组 &lt;code&gt;[nums[i], nums[j], nums[k]]&lt;/code&gt; 满足 &lt;code&gt;i != j&lt;/code&gt;、&lt;code&gt;i != k&lt;/code&gt; 且 &lt;code&gt;j != k&lt;/code&gt; ，同时还满足 &lt;code&gt;nums[i] + nums[j] + nums[k] == 0&lt;/code&gt; 。请你返回所有和为 &lt;code&gt;0&lt;/code&gt; 且不重复的三元组。&lt;/p&gt;
+&lt;p&gt;**注意：**答案中不可以包含重复的三元组。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：nums = [-1,0,1,2,-1,-4]
+输出：[[-1,-1,2],[-1,0,1]]
+解释：
+nums[0] + nums[1] + nums[2] = (-1) + 0 + 1 = 0 。
+nums[1] + nums[2] + nums[4] = 0 + 1 + (-1) = 0 。
+nums[0] + nums[3] + nums[4] = (-1) + 2 + (-1) = 0 。
+不同的三元组是 [-1,0,1] 和 [-1,-1,2] 。
+注意，输出的顺序和三元组的顺序并不重要。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：nums = [0,1,1]
+输出：[]
+解释：唯一可能的三元组和不为 0 。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 3：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：nums = [0,0,0]
+输出：[[0,0,0]]
+解释：唯一可能的三元组和为 0 。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;将整个链表从小到大排序，依次选取第一个数，如果该数大于0则代表后续不可能有和为0的情况的发生&lt;/p&gt;
+&lt;p&gt;用L和R标记选取的第一个数的下一个位置和最后一个位置，while循环遍历后续的地方，如果三数和为0则将其加入到结果集中并选取下一个非重复的大值和小值，如果结果小于0代表L选取的数字不够大L++，如果大于0则表示R选取的数字过大，R--选取更小的数字。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public List&amp;lt;List&amp;lt;Integer&amp;gt;&amp;gt; threeSum(int[] nums) {
+        List&amp;lt;List&amp;lt;Integer&amp;gt;&amp;gt; result = new ArrayList&amp;lt;&amp;gt;();
+        Arrays.sort(nums);
+        int n = nums.length;
+        if(nums == null || n &amp;lt; 3) {
+            return result;
+        }
+        for(int i = 0; i &amp;lt; n - 2; i++) {
+            if(nums[i] &amp;gt; 0) {
+                break;
+            }
+            if(i &amp;gt; 0 &amp;amp;&amp;amp; nums[i] == nums[i - 1]) {
+                continue;
+            }
+            int L = i + 1;
+            int R = n - 1;
+            while(L &amp;lt; R) {
+                int count = nums[i] + nums[L] + nums[R];
+                if(count == 0) {
+                    result.add(Arrays.asList(nums[i], nums[L], nums[R]));
+                    while (L &amp;lt; R &amp;amp;&amp;amp; nums[L] == nums[L + 1]) L++;
+                    while (L &amp;lt; R &amp;amp;&amp;amp; nums[R] == nums[R - 1]) R--;
+                    L++;
+                    R--;
+                } else if(count &amp;lt; 0) {            
+                    L++;
+                } else {
+                    R--;
+                }
+            }
+        }
+        return result;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+</content:encoded></item><item><title>用户中心项目（一些常见通用的代码）</title><link>https://thrinisty.github.io/posts/%E7%94%A8%E6%88%B7%E4%B8%AD%E5%BF%83%E9%A1%B9%E7%9B%AE%E4%B8%80%E4%BA%9B%E5%B8%B8%E8%A7%81%E9%80%9A%E7%94%A8%E7%9A%84%E4%BB%A3%E7%A0%81/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/%E7%94%A8%E6%88%B7%E4%B8%AD%E5%BF%83%E9%A1%B9%E7%9B%AE%E4%B8%80%E4%BA%9B%E5%B8%B8%E8%A7%81%E9%80%9A%E7%94%A8%E7%9A%84%E4%BB%A3%E7%A0%81/</guid><pubDate>Thu, 09 Oct 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;项目&lt;/h1&gt;
+&lt;p&gt;用户中心项目，记录一些以后可能会用到的新知识&lt;/p&gt;
+&lt;p&gt;Hutool工具库&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;dependency&amp;gt;
+    &amp;lt;groupId&amp;gt;cn.hutool&amp;lt;/groupId&amp;gt;
+    &amp;lt;artifactId&amp;gt;hutool-all&amp;lt;/artifactId&amp;gt;
+    &amp;lt;version&amp;gt;5.8.16&amp;lt;/version&amp;gt; &amp;lt;!-- 替换为最新版本 --&amp;gt;
+&amp;lt;/dependency&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;判断所有的字符串不为空&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;StrUtil.isAllNotEmpty(userAccount,userPassword,checkPassword)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;账号密码校验&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;//判断账户
+// 4-20位字符
+//允许字母、数字、下划线
+//必须以字母开头
+String usernameRegex = &quot;^[a-zA-Z]\\w{3,19}$&quot;; // 正则表达式
+if(!ReUtil.isMatch(usernameRegex, userAccount)) {
+    return -1;
+}
+
+//校验密码
+//8-16位字符
+//必须包含大小写字母、数字、特殊符号（如 !@#$%^&amp;amp;*）
+String passwordRegex = &quot;^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%^&amp;amp;*]).{8,16}$&quot;;
+if (!ReUtil.isMatch(passwordRegex, userPassword)) {
+    return -1;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;密码加密，md5加密&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;String password = DigestUtil.md5Hex(userPassword);
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;断言测试&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;import static org.junit.jupiter.api.Assertions.*;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;assertEquals(-1, userService.UserRegister(&quot;&quot;, &quot;/521010Hao&quot;, &quot;/521010Hao&quot;));
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;没有办法确定请求参数大小的时候尽量不要使用Get请求&lt;/p&gt;
+&lt;p&gt;逻辑删除配置&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;mybatis-plus:
+  mapper-locations: classpath:mapper/*.xml
+  global-config:
+    db-config:
+      update-strategy: not_null
+      logic-delete-field: deleted
+      logic-not-delete-value: 0
+      logic-delete-value: 1
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;通用的ErrorCode枚举类&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@Getter
+public enum ErrorCode {
+    PARAMS_ERROR(400, &quot;请求参数错误&quot;, &quot;&quot;),
+    PARAMS_NULL(401, &quot;请求参数为空&quot;, &quot;&quot;),
+    NO_AUTH(402, &quot;权限不足&quot;, &quot;&quot;),
+    NO_CURRENT_USER(403, &quot;不存在当前用户&quot;, &quot;&quot;),
+    NO_REQUEST_OBJECT(404, &quot;没有获取到request对象&quot;, &quot;&quot;);
+
+    private final int code;
+    private final String message;
+    private final String description;
+
+    ErrorCode(int code, String message, String description) {
+        this.code = code;
+        this.message = message;
+        this.description = description;
+    }
+
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;通用的ResultVo返回对象&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@Data
+public class ResultVo&amp;lt;T&amp;gt;{
+    int code;
+    T data;
+    String message;
+
+    public ResultVo(int code, T data, String message) {
+        this.code = code;
+        this.data = data;
+        this.message = message;
+    }
+
+    public static &amp;lt;T&amp;gt; ResultVo&amp;lt;T&amp;gt; success(T data) {
+        return new ResultVo&amp;lt;T&amp;gt;(200, data, &quot;success&quot;);
+    }
+
+    public static &amp;lt;T&amp;gt; ResultVo&amp;lt;T&amp;gt; success() {
+        return new ResultVo&amp;lt;T&amp;gt;(200, null, &quot;success&quot;);
+    }
+
+    public static &amp;lt;T&amp;gt; ResultVo&amp;lt;T&amp;gt; success(String message) {
+        return new ResultVo&amp;lt;T&amp;gt;(200, null, message);
+    }
+
+    public static &amp;lt;T&amp;gt; ResultVo&amp;lt;T&amp;gt; success(String message, T data) {
+        return new ResultVo&amp;lt;T&amp;gt;(200, data, message);
+    }
+
+    public static &amp;lt;T&amp;gt; ResultVo&amp;lt;T&amp;gt; fail(String message) {
+        return new ResultVo&amp;lt;T&amp;gt;(400, null, message);
+    }
+
+    public static &amp;lt;T&amp;gt; ResultVo&amp;lt;T&amp;gt; fail() {
+        return new ResultVo&amp;lt;T&amp;gt;(400, null, &quot;fail&quot;);
+    }
+
+    public static &amp;lt;T&amp;gt; ResultVo&amp;lt;T&amp;gt; message(int code, String message, T data) {
+        return new ResultVo&amp;lt;T&amp;gt;(code, data, message);
+    }
+
+    public static &amp;lt;T&amp;gt; ResultVo&amp;lt;T&amp;gt; fail(int code, String message) {
+        return new ResultVo&amp;lt;T&amp;gt;(code, null, message);
+    }
+
+    public static &amp;lt;T&amp;gt; ResultVo&amp;lt;T&amp;gt; fail(ErrorCode errorCode) {
+        return new ResultVo&amp;lt;T&amp;gt;(errorCode.getCode(), null, errorCode.getMessage());
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;创建登陆异常类&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class LoginException extends RuntimeException {
+    public LoginException(String message) {
+        super(message);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;异常全局处理&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@RestControllerAdvice
+public class GlobalExceptionHandler {
+    @ExceptionHandler(LoginException.class)
+    public ResultVo&amp;lt;?&amp;gt; exceptionHandler(LoginException e) {
+        return ResultVo.fail(ErrorCode.LOGIN_ERROR, e.getMessage());
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+</content:encoded></item><item><title>LeetCode刷题（最长有效括号、最长回文子串）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E6%9C%80%E9%95%BF%E6%9C%89%E6%95%88%E6%8B%AC%E5%8F%B7%E6%9C%80%E9%95%BF%E5%9B%9E%E6%96%87%E5%AD%90%E4%B8%B2/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E6%9C%80%E9%95%BF%E6%9C%89%E6%95%88%E6%8B%AC%E5%8F%B7%E6%9C%80%E9%95%BF%E5%9B%9E%E6%96%87%E5%AD%90%E4%B8%B2/</guid><pubDate>Wed, 08 Oct 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;最长有效括号&lt;/h1&gt;
 &lt;h2&gt;题目描述&lt;/h2&gt;
 &lt;p&gt;给你一个只包含 &lt;code&gt;&apos;(&apos;&lt;/code&gt; 和 &lt;code&gt;&apos;)&apos;&lt;/code&gt; 的字符串，找出最长有效（格式正确且连续）括号 子串 的长度。&lt;/p&gt;
 &lt;p&gt;左右括号匹配，即每个左括号都有对应的右括号将其闭合的字符串是格式正确的，比如 &lt;code&gt;&quot;(()())&quot;&lt;/code&gt;。&lt;/p&gt;
@@ -112,7 +932,7 @@
     }
 }
 &lt;/code&gt;&lt;/pre&gt;
-</content:encoded></item><item><title>Nginx笔记（基本使用、配置文件、反向代理）</title><link>https://thrinisty.github.io/posts/nginx%E7%AC%94%E8%AE%B0%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/nginx%E7%AC%94%E8%AE%B0%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86/</guid><description>入门</description><pubDate>Wed, 08 Oct 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;Nginx笔记&lt;/h1&gt;
+</content:encoded></item><item><title>Nginx笔记（入门）</title><link>https://thrinisty.github.io/posts/nginx%E7%AC%94%E8%AE%B0%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/nginx%E7%AC%94%E8%AE%B0%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86/</guid><description>入门基本使用、配置文件、反向代理</description><pubDate>Wed, 08 Oct 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;Nginx笔记&lt;/h1&gt;
 &lt;p&gt;Nginx是目前开发的主流Web服务器，初始的时候是为了支持同时处理高并发而发明的&lt;/p&gt;
 &lt;h2&gt;安装Nginx&lt;/h2&gt;
 &lt;p&gt;拉取镜像&lt;/p&gt;
@@ -495,16 +1315,16 @@ nginx: configuration file /etc/nginx/nginx.conf test is successful
 &lt;p&gt;&lt;img src=&quot;../images/259.png&quot; alt=&quot;259&quot; /&gt;&lt;/p&gt;
 &lt;p&gt;我们在执行docker run命令的时候，使用-v 数据卷：容器内目录 可以完成数据卷挂载&lt;/p&gt;
 &lt;p&gt;当创建容器时，如果挂载了数据卷且数据卷不存在，则会自动创建数据卷&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;docker run -d --name nginx -p 80:80 -v usr:/usr/share nginx
+&lt;pre&gt;&lt;code&gt;docker run -d --name nginx -p 80:80 -v html:/usr/share/nginx -v config:/etc/nginx nginx
 &lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;容器被挂载到了/var/lib/docker/volumes/usr_data&lt;/p&gt;
+&lt;p&gt;容器被挂载到了/var/lib/docker/volumes/usr/_data&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;[root@iv-ye5w83dog0bw80eugddg _data]# docker volume inspect usr
 [
     {
         &quot;CreatedAt&quot;: &quot;2025-10-07T21:14:39+08:00&quot;,
         &quot;Driver&quot;: &quot;local&quot;,
         &quot;Labels&quot;: null,
-        &quot;Mountpoint&quot;: &quot;/var/lib/docker/volumes/usr_data&quot;,
+        &quot;Mountpoint&quot;: &quot;/var/lib/docker/volumes/user/_data&quot;,
         &quot;Name&quot;: &quot;usr&quot;,
         &quot;Options&quot;: null,
         &quot;Scope&quot;: &quot;local&quot;
@@ -2751,7 +3571,7 @@ tcp        0      0 192.168.95.8:39136      100.64.205.163:80       ESTABLISHED
 &lt;/code&gt;&lt;/pre&gt;
 </content:encoded></item><item><title>Redis笔记（）</title><link>https://thrinisty.github.io/posts/redis%E7%AC%94%E8%AE%B0%E6%A8%A1%E6%9D%BF/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/redis%E7%AC%94%E8%AE%B0%E6%A8%A1%E6%9D%BF/</guid><pubDate>Wed, 01 Oct 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;Redis笔记&lt;/h1&gt;
 </content:encoded></item><item><title>SpringCloud笔记（）</title><link>https://thrinisty.github.io/posts/springcloud%E7%AC%94%E8%AE%B0%E6%A8%A1%E6%9D%BF/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/springcloud%E7%AC%94%E8%AE%B0%E6%A8%A1%E6%9D%BF/</guid><pubDate>Wed, 01 Oct 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;SpringCloud笔记&lt;/h1&gt;
-&lt;p&gt;由于Redis部分学习到了分布式所的部分，急需要使用分布式的后端设计，找了个7小时的速成视频先把框架搭起来，缺少的知识在后续补充&lt;/p&gt;
+</content:encoded></item><item><title>开发项目（）</title><link>https://thrinisty.github.io/posts/%E5%BC%80%E5%8F%91%E9%A1%B9%E7%9B%AE%E6%A8%A1%E6%9D%BF/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/%E5%BC%80%E5%8F%91%E9%A1%B9%E7%9B%AE%E6%A8%A1%E6%9D%BF/</guid><pubDate>Wed, 01 Oct 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;项目&lt;/h1&gt;
 </content:encoded></item><item><title>LeetCode刷题（二分查找改编、搜索旋转排序数组）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E4%BA%8C%E5%88%86%E6%9F%A5%E6%89%BE%E6%94%B9%E7%BC%96/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E4%BA%8C%E5%88%86%E6%9F%A5%E6%89%BE%E6%94%B9%E7%BC%96/</guid><description>在排序数组中查找元素第一个位置和最后一个位置、搜索旋转排序数组</description><pubDate>Tue, 30 Sep 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;查找元素第一个和最后一个位置&lt;/h1&gt;
 &lt;h2&gt;题目描述&lt;/h2&gt;
 &lt;p&gt;给你一个按照非递减顺序排列的整数数组 &lt;code&gt;nums&lt;/code&gt;，和一个目标值 &lt;code&gt;target&lt;/code&gt;。请你找出给定目标值在数组中的开始位置和结束位置。&lt;/p&gt;
@@ -10986,9 +11806,8 @@ public class TransactionAspect {
         int[] buy = new int[n];
         int[] sale = new int[n];
         buy[0] = -prices[0];
-        sale[0] = 0;
         for(int i = 1; i &amp;lt; n; i++) {
-            buy[i] = Math.max(buy[i - 1], (i &amp;gt;= 2 ? sale[i - 2] : 0) - prices[i]);
+            buy[i] = Math.max(buy[i - 1], (i == 1 ?  0 : sale[i - 2]) - prices[i]);
             sale[i] = Math.max(sale[i - 1], buy[i - 1] + prices[i]);
         }
         return sale[n - 1];

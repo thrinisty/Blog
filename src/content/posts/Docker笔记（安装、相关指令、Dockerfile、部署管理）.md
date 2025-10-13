@@ -166,10 +166,10 @@ redis-cli -h 127.0.0.1 -p 6379
 当创建容器时，如果挂载了数据卷且数据卷不存在，则会自动创建数据卷
 
 ```
-docker run -d --name nginx -p 80:80 -v usr:/usr/share nginx
+docker run -d --name nginx -p 80:80 -v html:/usr/share/nginx -v config:/etc/nginx nginx
 ```
 
-容器被挂载到了/var/lib/docker/volumes/usr_data
+容器被挂载到了/var/lib/docker/volumes/usr/_data
 
 ```
 [root@iv-ye5w83dog0bw80eugddg _data]# docker volume inspect usr
@@ -178,7 +178,7 @@ docker run -d --name nginx -p 80:80 -v usr:/usr/share nginx
         "CreatedAt": "2025-10-07T21:14:39+08:00",
         "Driver": "local",
         "Labels": null,
-        "Mountpoint": "/var/lib/docker/volumes/usr_data",
+        "Mountpoint": "/var/lib/docker/volumes/user/_data",
         "Name": "usr",
         "Options": null,
         "Scope": "local"

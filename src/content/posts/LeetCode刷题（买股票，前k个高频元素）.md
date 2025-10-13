@@ -57,9 +57,8 @@ class Solution {
         int[] buy = new int[n];
         int[] sale = new int[n];
         buy[0] = -prices[0];
-        sale[0] = 0;
         for(int i = 1; i < n; i++) {
-            buy[i] = Math.max(buy[i - 1], (i >= 2 ? sale[i - 2] : 0) - prices[i]);
+            buy[i] = Math.max(buy[i - 1], (i == 1 ?  0 : sale[i - 2]) - prices[i]);
             sale[i] = Math.max(sale[i - 1], buy[i - 1] + prices[i]);
         }
         return sale[n - 1];
