@@ -1,8 +1,8 @@
 ---
-title: SpringCloud笔记（基本介绍、注册中心）
+title: SpringCloud笔记（基本介绍、注册中心、配置中心）
 published: 2025-10-10
 updated: 2025-10-10
-description: 'Nacos注册中心'
+description: 'Nacos 注册中心，配置中心'
 image: './photo/springcloud.png'
 tags: [Cloud]
 category: ''
@@ -135,6 +135,21 @@ draft: false
 ```
 
 在其子级中建立services模块作为统一依赖配置管理，services下创建各个微服务
+
+```xml
+<dependency>
+    <groupId>com.alibaba.cloud</groupId>
+    <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
+</dependency>
+<dependency>
+    <groupId>org.springframework.cloud</groupId>
+    <artifactId>spring-cloud-starter-openfeign</artifactId>
+</dependency>
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-test</artifactId>
+</dependency>
+```
 
 
 
@@ -336,3 +351,165 @@ private Product getProduct(int proId) {
 
 
 
+## 配置中心
+
+### 配置流程
+
+启动Nacos，引入依赖
+
+```xml
+<dependency>
+    <groupId>com.alibaba.cloud</groupId>
+    <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
+</dependency>
+```
+
+在application中指定Nacos地址
+
+```yaml
+spring:
+  config:
+    import: nacos:service-order.properties
+```
+
+创建data_id，在其中编写配置文件
+
+```
+order.timeout=40
+```
+
+![285](../images/285.png)
+
+之后我们就可以使用配置文件的注解将其注入到字段中即可使用
+
+```java
+@Value("${order.timeout}")
+private int timeout;
+```
+
+我们现在尝试更改配置中兴参数数据，发现注入的参数并没有被修改，我们还需要在Controller上加一个注解@RefreshScope实现发布后参数的自动更新
+
+```java
+@RefreshScope
+@RestController
+@RequestMapping("order")
+public class OrderController {
+    @Autowired
+    DiscoveryClient discoveryClient;
+
+    @Autowired
+    OrderService orderService;
+
+    @Autowired
+    LoadBalancerClient loadBalancerClient;
+
+    @Value("${order.timeout}")
+    private int timeout;
+    ...
+```
+
+如果我们的有一个服务不需要使用到Nacos配置中心的参数，但是没有导入config.import配置，就会发生报错，我们这个使用需要手动禁用配置的检查功能
+
+```
+spring:
+  cloud:
+    nacos:
+      config.import-check.enabled: false
+```
+
+
+
+### 批量绑定
+
+当我们配置的数据项过多的时候，我们也可以使用ConfigurationProperties注解进行批量绑定
+
+```java
+@ConfigurationProperties(prefix = "order")
+@Data
+@Component
+public class OrderProperties {
+    Integer timeout;
+    Integer year;
+}
+```
+
+同时也无需使用RefreshScope注解刷新
+
+
+
+### 监听配置
+
+创建ApplicationRunner在项目启动时会开始运行方法，在方法中用Manager获取配置服务，向服务中添加监听器，传入配置对象，配置组，以及被重写的Listener对象
+
+```java
+@EnableDiscoveryClient
+@SpringBootApplication
+public class OrderMainApplication {
+    public static void main(String[] args) {
+        SpringApplication.run(OrderMainApplication.class, args);
+    }
+
+    @Bean
+    ApplicationRunner applicationRunner(NacosConfigManager  nacosConfigManager) {
+        return args -> {
+            System.out.println("启动时添加监听器================");
+            ConfigService service = nacosConfigManager.getConfigService();
+            service.addListener("service-order.properties",
+                    "DEFAULT_GROUP", new Listener() {
+                        @Override
+                        public Executor getExecutor() {
+                            return Executors.newFixedThreadPool(10);
+                        }
+
+                        @Override
+                        public void receiveConfigInfo(String s) {
+                            System.out.println("变化配置：" + s);
+                        }
+                    });
+        };
+    }
+
+}
+```
+
+```
+变化配置：order.timeout=4
+order.year=2001
+```
+
+在配置重复的时候以Nacos配置为先
+
+![286](../images/286.png)
+
+
+
+### 数据隔离
+
+![287](../images/287.png)
+
+```yaml
+spring:
+  config:
+    import:
+#    - nacos:service-order.properties
+    - nacos:common.properties?group=order
+    #指定指定对应组
+  application:
+    name: service-order
+  datasource:
+    url: jdbc:mysql://thrinisty.top:3306/cloud?useSSL=false&serverTimezone=UTC&characterEncoding=UTF-8
+    username: root
+    password: 771113
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  cloud:
+    nacos:
+      config:
+        namespace: dev
+        #设置命名空间，后续只需要改这个即可
+      discovery:
+        server-addr: 127.0.0.1:8848
+
+
+server:
+  port: 8000
+```
