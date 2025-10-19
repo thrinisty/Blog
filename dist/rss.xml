@@ -1,4 +1,24 @@
-<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Thrinisty&apos;s Blog</title><description>New Blog</description><link>https://thrinisty.github.io/</link><language>zh_CN</language><item><title>RabbitMQ笔记（）</title><link>https://thrinisty.github.io/posts/rabbitmq%E7%AC%94%E8%AE%B0%E6%A8%A1%E6%9D%BF/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/rabbitmq%E7%AC%94%E8%AE%B0%E6%A8%A1%E6%9D%BF/</guid><description>./photo/RabbitMQ.png</description><pubDate>Mon, 20 Oct 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;RabbitMQ笔记&lt;/h1&gt;
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Thrinisty&apos;s Blog</title><description>New Blog</description><link>https://thrinisty.github.io/</link><language>zh_CN</language><item><title>RabbitMQ笔记（）</title><link>https://thrinisty.github.io/posts/rabbitmq%E7%AC%94%E8%AE%B0%E6%A8%A1%E6%9D%BF/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/rabbitmq%E7%AC%94%E8%AE%B0%E6%A8%A1%E6%9D%BF/</guid><pubDate>Mon, 20 Oct 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;RabbitMQ笔记&lt;/h1&gt;
+</content:encoded></item><item><title>RabbitMQ笔记（入门使用）</title><link>https://thrinisty.github.io/posts/rabbitmq%E7%AC%94%E8%AE%B0%E5%85%A5%E9%97%A8%E4%BD%BF%E7%94%A8/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/rabbitmq%E7%AC%94%E8%AE%B0%E5%85%A5%E9%97%A8%E4%BD%BF%E7%94%A8/</guid><pubDate>Mon, 20 Oct 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;RabbitMQ笔记&lt;/h1&gt;
+&lt;h2&gt;消息队列&lt;/h2&gt;
+&lt;p&gt;我们在常规的访问通信是同步的，需要等到B返回响应后才可继续A的操作，而通过消息队列可以异步的继续远程的服务调用，不影响服务A的返回&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/311.png&quot; alt=&quot;311&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;RabbitMQ结构&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/312.png&quot; alt=&quot;312&quot; /&gt;&lt;/p&gt;
+&lt;h2&gt;入门使用&lt;/h2&gt;
+&lt;p&gt;使用Docker拉取镜像这里注意要下载的是带管理界面的management，默认的好像没有15672端口的管理界面&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;docker pull rabbitmq:management
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;启用Docker运行RabbitMQ&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;docker run -d \
+  --name rabbitmq \
+  -p 5672:5672 \
+  -p 15672:15672 \
+  --hostname my-rabbitmq-host \
+  -e RABBITMQ_DEFAULT_USER=admin \
+  -e RABBITMQ_DEFAULT_PASS=123456 \
+  rabbitmq:management
+&lt;/code&gt;&lt;/pre&gt;
 </content:encoded></item><item><title>LeetCode刷题（LRU缓存、百度笔试）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98lru%E7%BC%93%E5%AD%98%E7%99%BE%E5%BA%A6%E7%AC%94%E8%AF%95/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98lru%E7%BC%93%E5%AD%98%E7%99%BE%E5%BA%A6%E7%AC%94%E8%AF%95/</guid><description>LRU缓存，平衡子串计数</description><pubDate>Sun, 19 Oct 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;LRU缓存&lt;/h1&gt;
 &lt;h2&gt;题目描述&lt;/h2&gt;
 &lt;p&gt;请你设计并实现一个满足 &lt;a href=&quot;https://baike.baidu.com/item/LRU&quot;&gt;LRU (最近最少使用) 缓存&lt;/a&gt; 约束的数据结构。&lt;/p&gt;
