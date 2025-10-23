@@ -1,11 +1,1324 @@
-<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Thrinisty&apos;s Blog</title><description>New Blog</description><link>https://thrinisty.github.io/</link><language>zh_CN</language><item><title>RabbitMQ笔记（）</title><link>https://thrinisty.github.io/posts/rabbitmq%E7%AC%94%E8%AE%B0%E6%A8%A1%E6%9D%BF/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/rabbitmq%E7%AC%94%E8%AE%B0%E6%A8%A1%E6%9D%BF/</guid><pubDate>Mon, 20 Oct 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;RabbitMQ笔记&lt;/h1&gt;
-</content:encoded></item><item><title>RabbitMQ笔记（入门使用）</title><link>https://thrinisty.github.io/posts/rabbitmq%E7%AC%94%E8%AE%B0%E5%85%A5%E9%97%A8%E4%BD%BF%E7%94%A8/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/rabbitmq%E7%AC%94%E8%AE%B0%E5%85%A5%E9%97%A8%E4%BD%BF%E7%94%A8/</guid><pubDate>Mon, 20 Oct 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;RabbitMQ笔记&lt;/h1&gt;
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Thrinisty&apos;s Blog</title><description>New Blog</description><link>https://thrinisty.github.io/</link><language>zh_CN</language><item><title>设计模式笔记（结构性模式、行为型模式）</title><link>https://thrinisty.github.io/posts/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E7%AC%94%E8%AE%B0%E7%BB%93%E6%9E%84%E6%80%A7%E6%A8%A1%E5%BC%8F%E8%A1%8C%E4%B8%BA%E5%9E%8B%E6%A8%A1%E5%BC%8F/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E7%AC%94%E8%AE%B0%E7%BB%93%E6%9E%84%E6%80%A7%E6%A8%A1%E5%BC%8F%E8%A1%8C%E4%B8%BA%E5%9E%8B%E6%A8%A1%E5%BC%8F/</guid><description>结构性模式、行为型模式</description><pubDate>Fri, 24 Oct 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;设计模式&lt;/h1&gt;
+&lt;h2&gt;结构性模式&lt;/h2&gt;
+&lt;p&gt;主要关注类和对象的组合模式&lt;/p&gt;
+&lt;h3&gt;外观模式&lt;/h3&gt;
+&lt;p&gt;提供一个接口，用来访问子系统中的一群接口&lt;/p&gt;
+&lt;p&gt;定义了一个高层接口，让子系统使用更加容易&lt;/p&gt;
+&lt;p&gt;假设有一个电脑的启动流程，设计CPU、内存、硬盘等多个子系统，每个子系统都有自己的复杂操作&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;// 1. CPU子系统
+class CPU {
+    public void start() {
+        System.out.println(&quot;CPU启动...&quot;);
+    }
+}
+
+// 2. 内存子系统
+class Memory {
+    public void load() {
+        System.out.println(&quot;内存加载数据...&quot;);
+    }
+}
+
+// 3. 硬盘子系统
+class HardDrive {
+    public void read() {
+        System.out.println(&quot;硬盘读取数据...&quot;);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;如果我们直接创建对应的对象，再依次调用其中方法就会使代码很复杂&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class Main {
+    public static void main(String[] args) {
+        CPU cpu = new CPU();
+        Memory memory = new Memory();
+        HardDrive hardDrive = new HardDrive();
+
+        // 电脑启动流程
+        cpu.start();
+        memory.load();
+        hardDrive.read();
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;这个时候我们引入外观模式，对于这些子系统进行封装，提供总的启动方法，即可简化&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;// 外观类（封装所有底层操作）
+class ComputerFacade {
+    private CPU cpu;
+    private Memory memory;
+    private HardDrive hardDrive;
+
+    public ComputerFacade() {
+        this.cpu = new CPU();
+        this.memory = new Memory();
+        this.hardDrive = new HardDrive();
+    }
+
+    // 提供一个简化的启动方法
+    public void startComputer() {
+        cpu.start();
+        memory.load();
+        hardDrive.read();
+        System.out.println(&quot;电脑启动完毕！&quot;);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;在客户端使用的时候就只需要调用一个方法即可调用&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class Client {
+    public static void main(String[] args) {
+        ComputerFacade computer = new ComputerFacade();
+        computer.startComputer(); // 一键启动电脑！
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;子系统修改不影响客户端代码，便于维护，所有复杂操作集中在一个入口&lt;/p&gt;
+&lt;h3&gt;适配器模式&lt;/h3&gt;
+&lt;p&gt;是作为两个不兼容接口之间的桥梁，将一个类的接口转化为另一个接口（客户所希望的），使得将原先由于不兼容的接口导致的不能一起工作的类变得可以一起工作，结合了两个独立的接口功能&lt;/p&gt;
+&lt;p&gt;使用角色：被适配者、目标接口、适配器&lt;/p&gt;
+&lt;p&gt;来个真实场景：你是一个Java码农，你只会码Java，现在你需要参与到Golang工厂的开发中，你需要去实现Golang的接口方法&lt;/p&gt;
+&lt;p&gt;但是你不想要去学Golang，你只想复用一下Java的代码，这个时候你就需要使用到AiAdapter转化工具，这就是一个适配器，由它来实现Golang的接口，你只需要作为它的子类，由他调用你的代码作为转化即可&lt;/p&gt;
+&lt;p&gt;目标接口&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public interface Golang {
+    void work();
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;被适配者&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class JavaProgrammer {
+    public void code() {
+        System.out.println(&quot;码农码Java&quot;);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;适配器&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class AiAdapter implements Golang {
+    private JavaProgrammer programmer;
+
+    public AiAdapter(JavaProgrammer programmer) {
+        this.programmer = programmer;
+    }
+
+    @Override
+    public void work() {
+        programmer.code();
+        System.out.println(&quot;AI将Java语言转化为Go语言&quot;);
+        System.out.println(&quot;运行代码&quot;);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;在使用的时候，直接调用适配器的实现方法即可&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public static void main(String[] args) {
+    JavaProgrammer javaProgrammer = new JavaProgrammer();
+    Golang golangProj = new AiAdapter(javaProgrammer);
+    golangProj.work();
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;桥接模式&lt;/h3&gt;
+&lt;p&gt;用于把抽象化和实现化进行解耦，使得两者可以独立变化（组合优于继承）&lt;/p&gt;
+&lt;p&gt;分离抽象和实现，避免继承膨胀&lt;/p&gt;
+&lt;p&gt;现在有这么一个场景&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;// 支付方式
+class AliPayWithSMS {
+    public void pay() {
+        System.out.println(&quot;支付宝支付&quot;);
+    }
+    public void notifyBySMS() {
+        System.out.println(&quot;短信提醒&quot;);
+    }
+}
+
+class AliPayWithEmail {
+    public void pay() {
+        System.out.println(&quot;支付宝支付&quot;);
+    }
+    public void notifyByEmail() {
+        System.out.println(&quot;邮件提醒&quot;);
+    }
+}
+
+class WeChatPayWithSMS {
+    public void pay() {
+        System.out.println(&quot;微信支付&quot;);
+    }
+    public void notifyBySMS() {
+        System.out.println(&quot;短信提醒&quot;);
+    }
+}
+
+class WeChatPayWithEmail {
+    public void pay() {
+        System.out.println(&quot;微信支付&quot;);
+    }
+    public void notifyByEmail() {
+        System.out.println(&quot;邮件提醒&quot;);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;每一个实现都需要匹配对应的支付方式，消息类型，如果5种支付方式，3种邮件，就需要实现15个实现类，我们用桥接模式对他进行改造&lt;/p&gt;
+&lt;p&gt;设计消息接口，实现几种通知的实现&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;// 提醒方式接口
+interface NotifyMethod {
+    void notifyUser();
+}
+
+// 具体实现：短信提醒
+class SMSNotify implements NotifyMethod {
+    @Override
+    public void notifyUser() {
+        System.out.println(&quot;短信提醒&quot;);
+    }
+}
+
+// 具体实现：邮件提醒
+class EmailNotify implements NotifyMethod {
+    @Override
+    public void notifyUser() {
+        System.out.println(&quot;邮件提醒&quot;);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;设计支付的抽象类&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;// 支付抽象类（持有提醒方式）
+abstract class Payment {
+    protected NotifyMethod notifyMethod;  // 组合提醒方式
+
+    public Payment(NotifyMethod notifyMethod) {
+        this.notifyMethod = notifyMethod;
+    }
+
+    abstract void pay();
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;定义具体的支付方法&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;// 支付宝支付
+class AliPay extends Payment {
+    public AliPay(NotifyMethod notifyMethod) {
+        super(notifyMethod);
+    }
+
+    @Override
+    void pay() {
+        System.out.print(&quot;支付宝支付，&quot;);
+        notifyMethod.notifyUser();
+    }
+}
+
+// 微信支付
+class WeChatPay extends Payment {
+    public WeChatPay(NotifyMethod notifyMethod) {
+        super(notifyMethod);
+    }
+
+    @Override
+    void pay() {
+        System.out.print(&quot;微信支付，&quot;);
+        notifyMethod.notifyUser();
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;这样我们就只需要实现支付的几个实现，更具需要传入通知的类型即可&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class Client {
+    public static void main(String[] args) {
+        // 支付宝 + 短信
+        Payment aliPaySMS = new AliPay(new SMSNotify());
+        aliPaySMS.pay();
+
+        // 微信 + 邮件
+        Payment weChatPayEmail = new WeChatPay(new EmailNotify());
+        weChatPayEmail.pay();
+
+        // 如果新增“推送通知”，只需扩展 NotifyMethod，无需改支付类！
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;组合模式&lt;/h3&gt;
+&lt;p&gt;又称为部分整体模式，适用于把一组相似的对象当作一个单一对象&lt;/p&gt;
+&lt;p&gt;根据树形结构来组合对象，用来表示部分以及整体层次&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@Data
+public class Employee {
+    private String name;
+    private String dept;
+    private Long salary;
+    private List&amp;lt;Employee&amp;gt; employeeList;
+
+    public Employee(String name, String dept, Long salary) {
+        this.name = name;
+        this.dept = dept;
+        this.salary = salary;
+        this.employeeList = new ArrayList&amp;lt;Employee&amp;gt;();
+    }
+
+    public void addEmployee(Employee employee) {
+        employeeList.add(employee);
+    }
+
+    public void removeEmployee(Employee employee) {
+        employeeList.remove(employee);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;创建完成对象后通过方法添加关联的人员&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class Main {
+    public static void main(String[] args) {
+        Employee ceo = new Employee(&quot;张三&quot;, &quot;1&quot;, 200L);
+        Employee management = new Employee(&quot;李四&quot;, &quot;2&quot;, 150L);
+        Employee seller = new Employee(&quot;王五&quot;, &quot;3&quot;, 100L);
+        Employee store = new Employee(&quot;赵六&quot;, &quot;4&quot;, 50L);
+
+        ceo.addEmployee(management);
+        management.addEmployee(seller);
+        management.addEmployee(store);
+        System.out.println(ceo);
+        for (Employee manage : ceo.getEmployeeList()) {
+            System.out.println(manage);
+                for (Employee emp : manage.getEmployeeList()) {
+                    System.out.println(emp);
+                }
+        }
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;Employee(name=张三, dept=1, salary=200, employeeList=[Employee(name=李四, dept=2, salary=150, employeeList=[Employee(name=王五, dept=3, salary=100, employeeList=[]), Employee(name=赵六, dept=4, salary=50, employeeList=[])])])
+Employee(name=李四, dept=2, salary=150, employeeList=[Employee(name=王五, dept=3, salary=100, employeeList=[]), Employee(name=赵六, dept=4, salary=50, employeeList=[])])
+Employee(name=王五, dept=3, salary=100, employeeList=[])
+Employee(name=赵六, dept=4, salary=50, employeeList=[])
+&lt;/code&gt;&lt;/pre&gt;
+</content:encoded></item><item><title>LeetCode刷题（删除有序数组中的重复项、轮转数组）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E5%88%A0%E9%99%A4%E6%9C%89%E5%BA%8F%E6%95%B0%E7%BB%84%E4%B8%AD%E7%9A%84%E9%87%8D%E5%A4%8D%E9%A1%B9/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E5%88%A0%E9%99%A4%E6%9C%89%E5%BA%8F%E6%95%B0%E7%BB%84%E4%B8%AD%E7%9A%84%E9%87%8D%E5%A4%8D%E9%A1%B9/</guid><description>删除有序数组中的重复项、允许重复变种、轮转数组</description><pubDate>Thu, 23 Oct 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;删除有序数组中的重复项&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;给你一个 &lt;strong&gt;非严格递增排列&lt;/strong&gt; 的数组 &lt;code&gt;nums&lt;/code&gt; ，请你**&lt;a href=&quot;http://baike.baidu.com/item/%E5%8E%9F%E5%9C%B0%E7%AE%97%E6%B3%95&quot;&gt; 原地&lt;/a&gt;** 删除重复出现的元素，使每个元素 &lt;strong&gt;只出现一次&lt;/strong&gt; ，返回删除后数组的新长度。元素的 &lt;strong&gt;相对顺序&lt;/strong&gt; 应该保持 &lt;strong&gt;一致&lt;/strong&gt; 。然后返回 &lt;code&gt;nums&lt;/code&gt; 中唯一元素的个数。&lt;/p&gt;
+&lt;p&gt;考虑 &lt;code&gt;nums&lt;/code&gt; 的唯一元素的数量为 &lt;code&gt;k&lt;/code&gt;。去重后，返回唯一元素的数量 &lt;code&gt;k&lt;/code&gt;。&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;nums&lt;/code&gt; 的前 &lt;code&gt;k&lt;/code&gt; 个元素应包含 &lt;strong&gt;排序后&lt;/strong&gt; 的唯一数字。下标 &lt;code&gt;k - 1&lt;/code&gt; 之后的剩余元素可以忽略。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：nums = [1,1,2]
+输出：2, nums = [1,2,_]
+解释：函数应该返回新的长度 2 ，并且原数组 nums 的前两个元素被修改为 1, 2 。不需要考虑数组中超出新长度后面的元素。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：nums = [0,0,1,1,1,2,2,3,3,4]
+输出：5, nums = [0,1,2,3,4,_,_,_,_,_]
+解释：函数应该返回新的长度 5 ， 并且原数组 nums 的前五个元素被修改为 0, 1, 2, 3, 4 。不需要考虑数组中超出新长度后面的元素。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;设置i与j，其中i用于指向即将插入后面不重复元素的位置，用j进行数组的遍历，从1开始，如果遍历到的元素和上一个插入的元素不同，就将元素插入i位置，并向后移动i，更新&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public int removeDuplicates(int[] nums) {
+        int n = nums.length;
+        int i = 1;
+        for(int j = 1; j &amp;lt; n; j++) {
+            if(nums[i - 1] != nums[j]) {
+                nums[i] = nums[j];
+                i++;
+            }
+        }
+        return i;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1&gt;删除有序数组中的重复项Ⅱ&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;给你一个有序数组 &lt;code&gt;nums&lt;/code&gt; ，请你**&lt;a href=&quot;http://baike.baidu.com/item/%E5%8E%9F%E5%9C%B0%E7%AE%97%E6%B3%95&quot;&gt; 原地&lt;/a&gt;** 删除重复出现的元素，使得出现次数超过两次的元素&lt;strong&gt;只出现两次&lt;/strong&gt; ，返回删除后数组的新长度。&lt;/p&gt;
+&lt;p&gt;不要使用额外的数组空间，你必须在 &lt;strong&gt;&lt;a href=&quot;https://baike.baidu.com/item/%E5%8E%9F%E5%9C%B0%E7%AE%97%E6%B3%95&quot;&gt;原地 &lt;/a&gt;修改输入数组&lt;/strong&gt; 并在使用 O(1) 额外空间的条件下完成。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：nums = [1,1,1,2,2,3]
+输出：5, nums = [1,1,2,2,3]
+解释：函数应返回新长度 length = 5, 并且原数组的前五个元素被修改为 1, 1, 2, 2, 3。 不需要考虑数组中超出新长度后面的元素。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：nums = [0,0,1,1,1,1,2,3,3]
+输出：7, nums = [0,0,1,1,2,3,3]
+解释：函数应返回新长度 length = 7, 并且原数组的前七个元素被修改为 0, 0, 1, 1, 2, 3, 3。不需要考虑数组中超出新长度后面的元素。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;自己手写的有些复杂，其中flag代表是否可以插入相同的元素&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public int removeDuplicates(int[] nums) {
+        int i = 1;
+        boolean flag = true;
+        int num = nums[0];
+        int n = nums.length;
+        for(int j = 1; j &amp;lt; n; j++) {
+            if(flag) {
+                nums[i++] = nums[j];
+                if(num != nums[j]) {
+                    num = nums[j];
+                    flag = true;
+                } else {
+                    flag = false;
+                }
+            } else {
+                if(num != nums[j]) {
+                    nums[i++] = nums[j];
+                    num = nums[j];
+                    flag = true;
+                }
+            }
+        }
+        return i;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;精简一下，并可拓展，例如允许3个4个&lt;/p&gt;
+&lt;p&gt;当元素重复的时候就count++，如果元素重复数量大于2则不加入&lt;/p&gt;
+&lt;p&gt;这里没有处理nums长度为0的情况，如果为0或者空，返回0；&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public int removeDuplicates(int[] nums) {
+        int i = 1;
+        int n = nums.length;
+        int count = 1;
+        for(int j = 1; j &amp;lt; n; j++) {
+            if(nums[i - 1] == nums[j]) {
+                count++;
+                if(count &amp;lt;= 2) {
+                    nums[i++] = nums[j];
+                }
+            } else {
+                nums[i++] = nums[j];
+                count = 1;
+            }
+        }
+        return i;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1&gt;轮转数组&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;给定一个整数数组 &lt;code&gt;nums&lt;/code&gt;，将数组中的元素向右轮转 &lt;code&gt;k&lt;/code&gt; 个位置，其中 &lt;code&gt;k&lt;/code&gt; 是非负数。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 1:&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入: nums = [1,2,3,4,5,6,7], k = 3
+输出: [5,6,7,1,2,3,4]
+解释:
+向右轮转 1 步: [7,1,2,3,4,5,6]
+向右轮转 2 步: [6,7,1,2,3,4,5]
+向右轮转 3 步: [5,6,7,1,2,3,4]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2:&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：nums = [-1,-100,3,99], k = 2
+输出：[3,99,-1,-100]
+解释: 
+向右轮转 1 步: [99,-1,-100,3]
+向右轮转 2 步: [3,99,-1,-100]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;解法一：建立辅助数组，通过取模的方式进行移动&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public void rotate(int[] nums, int k) {
+        int n = nums.length;
+        int[] result = new int[n];
+        for(int i = 0; i &amp;lt; n; i++) {
+            result[(i + k) % n] = nums[i];
+        }
+        for(int i = 0; i &amp;lt; n; i++) {
+            nums[i] = result[i];
+        }
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+</content:encoded></item><item><title>设计模式笔记（七大原则、创建型模式）</title><link>https://thrinisty.github.io/posts/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E7%AC%94%E8%AE%B0%E4%B8%83%E5%A4%A7%E5%8E%9F%E5%88%99%E5%88%9B%E5%BB%BA%E5%9E%8B%E6%A8%A1%E5%BC%8F/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E7%AC%94%E8%AE%B0%E4%B8%83%E5%A4%A7%E5%8E%9F%E5%88%99%E5%88%9B%E5%BB%BA%E5%9E%8B%E6%A8%A1%E5%BC%8F/</guid><description>设计模式七大原则，工厂模式，建造者模式，原型模式，单例模式</description><pubDate>Thu, 23 Oct 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;设计模式&lt;/h1&gt;
+&lt;h2&gt;七大原则&lt;/h2&gt;
+&lt;p&gt;&lt;strong&gt;开闭原则&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;对于修改关闭，对扩展开放&lt;/p&gt;
+&lt;p&gt;我们现在有一个Human接口，有老师和学生对于Human的实现，后续如果需要拓展学生和老师，例如初中老师，高中学生，就可以继承于老师或者学生类，继承默认的学生、老师方法，有需要修改的直接重写方法或者增添方法即可。而无需修改老师和学生的实现类&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;依赖倒转原则&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;依赖倒转是开闭原则的基础，针对于接口进行编程&lt;/p&gt;
+&lt;p&gt;依赖抽象而不是具体的实现，可以减少类的耦合性，提升稳定性，提高代码的可读性和维护性，降低修改程序造成的风险&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;单一原则&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;一个类、接口、方法、只负责一项职责&lt;/p&gt;
+&lt;p&gt;降低程序复杂性，提高了可维护性，降低了变更带来的风险&lt;/p&gt;
+&lt;p&gt;例如我们有一个Java程序员继承自程序员抽象类，其中实现了吃饭的抽象方法，我们现在要改为点外卖，我们最好创建一个点外卖的吃饭类，其中包含了堂食和外卖两种方法，将点饭类放入程序员类中，由Java程序员来进行调用&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;接口隔离原则&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;用多个接口，而不是使用单一接口&lt;/p&gt;
+&lt;p&gt;尽量细化接口，其中的方法尽可能减少&lt;/p&gt;
+&lt;p&gt;符合低耦合设计思想，提高了可拓展性和可维护性&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;迪米特法则&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;最少知道原则：一个对象应该对于其他对象保持最少的了解，降低类和类之间的耦合性，强调之和朋友交流，不和陌生人说话&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;里氏替换原则&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;是继承复用的基石，也是对于开闭原则的补充&lt;/p&gt;
+&lt;p&gt;子类可以拓展父类的功能，但是不能修改父类原有的功能，&lt;/p&gt;
+&lt;p&gt;子类可以实现父类的抽象方法，但是不能覆盖原有的父类方法&lt;/p&gt;
+&lt;p&gt;对于子类的继承关系进行约束&lt;/p&gt;
+&lt;p&gt;增加程序健壮性&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;合成复用原则&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;尽量使用组合聚合的方式进行对象的使用，而不是使用继承关系达到软件复用的目的&lt;/p&gt;
+&lt;p&gt;可以使系统更加灵活，降低类与类之间的耦合度&lt;/p&gt;
+&lt;h2&gt;设计模式&lt;/h2&gt;
+&lt;p&gt;设计模式的类型分为三种&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;创建型模式&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;隐藏了创建对象的过程，通过逻辑方法创建对象，而不是new关键字&lt;/p&gt;
+&lt;p&gt;工厂方法模式、抽象工厂模式、单例模式、建造者模式、原型模式&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;结构型模式&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;主要关注类和对象的组合关系，集成的概念被用于组合接口和定义组合对象，从而获得新功能方式&lt;/p&gt;
+&lt;p&gt;适配器模式、桥接模式、组合模式、装饰模式、外观模式、享元模式、代理模式&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;行为型模式&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;主要关注对象之间的通信&lt;/p&gt;
+&lt;p&gt;责任链模式、命令模式、解释器模式、迭代器模式、中介者模式、备忘录模式、观察者模式、状态模式、策略模式、模板方法模式&lt;/p&gt;
+&lt;h2&gt;工厂模式&lt;/h2&gt;
+&lt;h3&gt;简单工厂&lt;/h3&gt;
+&lt;p&gt;是工厂方法模式的一种特殊实现，又称为静态工厂方法模式&lt;/p&gt;
+&lt;p&gt;有三个角色：抽象产品，具体产品，工厂类&lt;/p&gt;
+&lt;p&gt;具体产品&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class Fighter extends Weapon{
+    @Override
+    public void attack() {
+        System.out.println(&quot;飞机攻击&quot;);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;public class Tank extends Weapon{
+    @Override
+    public void attack() {
+        System.out.println(&quot;坦克攻击&quot;);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;抽象产品&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public abstract class Weapon {
+    public abstract void attack();
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;工厂类&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class WeaponFactory {
+    public static Weapon get(String weaponType) {
+        if (&quot;Tank&quot;.equals(weaponType)) {
+            return new Tank();
+        } else if (&quot;Fighter&quot;.equals(weaponType)) {
+            return new Fighter();
+        } else {
+            System.out.println(&quot;创建失败&quot;);
+            return null;
+        }
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;测试程序&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class Test {
+    public static void main(String[] args) {
+        Weapon tank = WeaponFactory.get(&quot;Tank&quot;);
+        if (tank != null) {
+            tank.attack();
+        }
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;优点：&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;客户只负责消费，工厂类负责生产，生产者和消费者分离，客户端不需要关注实现细节，只负责传入索要即可使用&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;缺点：&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;增加工厂产品，需要修改工厂类代码，违反OCP原则，另外工厂的责任大，发生问题的时候系统瘫痪，健壮性差&lt;/p&gt;
+&lt;h3&gt;工厂方法模式&lt;/h3&gt;
+&lt;p&gt;一个产品对应一个工厂&lt;/p&gt;
+&lt;p&gt;解决了简单工厂模式中出现的OCP问题&lt;/p&gt;
+&lt;p&gt;有四个角色：抽象产品，具体产品（多个），抽象工厂类，具体工厂类（多个）&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;抽象工厂&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public abstract class WeaponFactory {
+    public abstract Weapon get();
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;具体工厂&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class TankFactory extends WeaponFactory{
+    @Override
+    public Weapon get() {
+        return new Tank();
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;测试程序&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class Test {
+    public static void main(String[] args) {
+        WeaponFactory factory = new TankFactory();
+        Weapon tank = factory.get();
+        tank.attack();
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;添加新的产品的时候，只需要增加Weapon的实现类，以及对应武器的工厂实现类即可在不影响原有代码的基础上，通过对应的具体工厂创建武器的实例&lt;/p&gt;
+&lt;p&gt;缺点：类的复杂性增加，类的数量大&lt;/p&gt;
+&lt;h3&gt;抽象工厂&lt;/h3&gt;
+&lt;p&gt;抽象工厂提供了一系列相关或相互依赖对象的接口&lt;/p&gt;
+&lt;p&gt;定义按钮和文本框的通用接口&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;interface Button {
+    void render();
+    void onClick();
+}
+
+interface TextBox {
+    void render();
+    void input(String text);
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;实现具体产品，例如Windows风格的按钮和文本框&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class WindowsButton implements Button {
+    @Override
+    public void render() {
+        System.out.println(&quot;Windows 风格按钮渲染&quot;);
+    }
+    @Override
+    public void onClick() {
+        System.out.println(&quot;Windows 按钮点击&quot;);
+    }
+}
+
+class WindowsTextBox implements TextBox {
+    @Override
+    public void render() {
+        System.out.println(&quot;Windows 风格文本框渲染&quot;);
+    }
+    @Override
+    public void input(String text) {
+        System.out.println(&quot;Windows 文本框输入: &quot; + text);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;定义一个抽象工厂接口，其中规定了返回两个组件接口的方法&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;interface GUIFactory {
+    Button createButton();
+    TextBox createTextBox();
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;继承接口实现方法，返回Window类型的各个组件&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class WindowsFactory implements GUIFactory {
+    @Override
+    public Button createButton() {
+        return new WindowsButton();
+    }
+    @Override
+    public TextBox createTextBox() {
+        return new WindowsTextBox();
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;这样通过这个实现抽象工厂的Windows工厂实例去创建对应的各个组件了&lt;/p&gt;
+&lt;p&gt;定义客户端&lt;/p&gt;
+&lt;p&gt;我们对于这个工程再次进行封装，提取出抽象工厂作为接口，这样我们在传入工厂实例的时候就可以通过实例初始化各个组件了&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class Application {
+    private final Button button;
+    private final TextBox textBox;
+
+    public Application(GUIFactory factory) {
+        button = factory.createButton();
+        textBox = factory.createTextBox();
+    }
+
+    public void renderUI() {
+        button.render();
+        textBox.render();
+    }
+
+    public void simulateUserInput() {
+        button.onClick();
+        textBox.input(&quot;Hello, Abstract Factory!&quot;);
+    }
+
+    public static void main(String[] args) {
+        // 使用 Windows 风格
+        Application windowsApp = new Application(new WindowsFactory());
+        windowsApp.renderUI();
+        windowsApp.simulateUserInput();
+
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;后续我们扩展新的风格只需要：&lt;/p&gt;
+&lt;p&gt;1.创建Button和TextBox的实现类，2.新风格的工厂实例&lt;/p&gt;
+&lt;p&gt;在客户端中传入工厂实例即可&lt;/p&gt;
+&lt;h2&gt;建造者模式&lt;/h2&gt;
+&lt;p&gt;通过静态内部类Builder链式的设置其各个属性，通过build方法返回实例对象&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class Student {
+    private String name;
+    private int age;
+    public Student(Builder builder) {
+        this.name = builder.name;
+        this.age = builder.age;
+    }
+    public static class Builder{
+        private String name;
+        private int age;
+        public Builder name(String name){
+            this.name = name;
+            return this;
+        }
+        public Builder age(int age){
+            this.age = age;
+            return this;
+        }
+        public Student build(){
+            return new Student(this);
+        }
+    }
+    @Override
+    public String toString() {
+        return &quot;Student{&quot; +
+                &quot;name=&apos;&quot; + name + &apos;\&apos;&apos; +
+                &quot;, age=&quot; + age +
+                &apos;}&apos;;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;public class Main {
+    public static void main(String[] args) {
+        Student lory = new Student.Builder().
+                age(18).
+                name(&quot;lory&quot;).
+                build();
+        System.out.println(lory);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;将复杂对象的创建和属性分离，建造的过程和细节我们不需要知道，只需要通过构建者进行创建&lt;/p&gt;
+&lt;h2&gt;原型模式&lt;/h2&gt;
+&lt;p&gt;用于创建重复的对象，我们需要保证创建对象的性能&lt;/p&gt;
+&lt;p&gt;原型设计模式是创建对象的最佳方式，通过克隆现有对象来创建新的对象，避免重复初始化成本，适合用于创建开销大，或需要动态配置对象的场景&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class Pig {
+    private String name;
+    private String ability;
+
+    @Override
+    public String toString() {
+        return &quot;Pig{&quot; +
+                &quot;name=&apos;&quot; + name + &apos;\&apos;&apos; +
+                &quot;, ability=&apos;&quot; + ability + &apos;\&apos;&apos; +
+                &apos;}&apos;;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getAbility() {
+        return ability;
+    }
+
+    public void setAbility(String ability) {
+        this.ability = ability;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;每一次创建新的对象都要重新new对象，设置参数&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class Main {
+    public static void main(String[] args) {
+        Pig pig1 = new Pig();
+        pig1.setName(&quot;佩奇&quot;);
+        pig1.setAbility(&quot;睡觉&quot;);
+        System.out.println(pig1);
+        Pig pig2 = new Pig();
+        pig2.setName(&quot;乔治&quot;);
+        pig2.setAbility(&quot;吃饭&quot;);
+        System.out.println(pig2);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;现在我们通过原型设计模式对于这个类进行改造&lt;/p&gt;
+&lt;p&gt;实现Cloneable接口并实现其中方法&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;package com;
+
+public class Pig implements Cloneable {
+    private String name;
+    private String ability;
+
+    @Override
+    protected Pig clone() {
+        try {
+            return (Pig) super.clone();
+        } catch (CloneNotSupportedException e) {
+            throw new AssertionError(e);
+        }
+    }
+
+    @Override
+    public String toString() {
+        return &quot;Pig{&quot; +
+                &quot;name=&apos;&quot; + name + &apos;\&apos;&apos; +
+                &quot;, ability=&apos;&quot; + ability + &apos;\&apos;&apos; +
+                &apos;}&apos;;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getAbility() {
+        return ability;
+    }
+
+    public void setAbility(String ability) {
+        this.ability = ability;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;使用原先的pig，clone浅拷贝一份对象出来&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class Main {
+    public static void main(String[] args) {
+        Pig pig1 = new Pig();
+        pig1.setName(&quot;佩奇&quot;);
+        pig1.setAbility(&quot;睡觉&quot;);
+        System.out.println(pig1);
+        Pig pig2 = pig1.clone();
+//        Pig pig2 = new Pig();
+        pig2.setName(&quot;乔治&quot;);
+        pig2.setAbility(&quot;吃饭&quot;);
+        System.out.println(pig2);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;:::note&lt;/p&gt;
+&lt;p&gt;浅拷贝和深拷贝&lt;/p&gt;
+&lt;p&gt;:::&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;&lt;strong&gt;场景&lt;/strong&gt;&lt;/th&gt;
+&lt;th&gt;&lt;strong&gt;推荐方式&lt;/strong&gt;&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;对象的所有字段是&lt;strong&gt;基本类型&lt;/strong&gt;或&lt;strong&gt;不可变类&lt;/strong&gt;（如 &lt;code&gt;String&lt;/code&gt;、&lt;code&gt;Integer&lt;/code&gt;）&lt;/td&gt;
+&lt;td&gt;浅拷贝（安全）&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;对象包含&lt;strong&gt;可变引用类型&lt;/strong&gt;（如 &lt;code&gt;List&lt;/code&gt;、&lt;code&gt;Map&lt;/code&gt;、自定义类）&lt;/td&gt;
+&lt;td&gt;深拷贝（避免共享问题）&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;需要极高的性能，且确定引用字段不会被修改&lt;/td&gt;
+&lt;td&gt;浅拷贝（谨慎使用）&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h2&gt;单例模式&lt;/h2&gt;
+&lt;h3&gt;双重检查&lt;/h3&gt;
+&lt;p&gt;通过volatile和两次为null判断和synchronized关键字实现&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class Person {
+    private static volatile Person person = null;
+
+    private Person() {}
+
+    public static Person getInstance() {
+        if (person == null) {
+            synchronized (Person.class) {
+                if (person == null) {
+                    person = new Person();
+                }
+            }
+        }
+        return person;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;volatile&lt;/strong&gt; 的必要性&lt;/p&gt;
+&lt;p&gt;person = new Person();不是原子操作，它分为了三个部分&lt;/p&gt;
+&lt;p&gt;1.分配内存空间&lt;/p&gt;
+&lt;p&gt;2.初始化对象&lt;/p&gt;
+&lt;p&gt;3.将内存地址赋给person&lt;/p&gt;
+&lt;p&gt;如果没有进行volatile那么JMV可能会继续指令重排（1.3.2），导致其他线程没有拿到初始化的对象&lt;/p&gt;
+&lt;p&gt;确保一个线程对person的修改，对其他线程立即可见&lt;/p&gt;
+&lt;h3&gt;静态内部类&lt;/h3&gt;
+&lt;p&gt;通过在单例类中，通过私有的静态内部类，创建单例对象&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class Person {
+
+    private static class Inner {
+        private static final Person person = new Person();
+    }
+
+    private Person() {}
+
+    public static Person getInstance() {
+        return Inner.person;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;这里使用Person中的Inner内部类的Inner.person时候才会进行加载Inner类，实现了懒加载&lt;/p&gt;
+&lt;h3&gt;饿汉式&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;public class Person {
+    private static final Person person;
+    static {
+        person = new Person();
+    }
+
+    private Person() {}
+
+    public static Person getInstance() {
+        return person;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;枚举&lt;/h3&gt;
+&lt;p&gt;枚举方式实现单例模式，是最佳的实现方式，可以有效防止对于单例模式的破坏&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public enum Person {
+    INSTANCE;
+    public static Person getInstance() {
+        return INSTANCE;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;public enum Person {
+    INSTANCE;
+
+    private String name;
+
+    // 枚举构造器（天生 private，不可 public/protected）
+    Person() {
+        this.name = &quot;Default&quot;;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+}
+
+// 使用
+Person.INSTANCE.setName(&quot;Alice&quot;);
+System.out.println(Person.INSTANCE.getName()); // 输出 &quot;Alice&quot;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;单例破坏&lt;/h3&gt;
+&lt;p&gt;序列化破坏&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class Main {
+    public static void main(String[] args) throws Exception{
+        Person p1 = Person.getInstance();
+        ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(&quot;sin&quot;));
+        oos.writeObject(p1);
+        ObjectInputStream ois = new ObjectInputStream(new FileInputStream(&quot;sin&quot;));
+        Person p2 = (Person) ois.readObject();
+        System.out.println(p1.hashCode() + &quot;\n&quot; + p2.hashCode());
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;ul&gt;
+&lt;li&gt;Java 在反序列化 &lt;code&gt;enum&lt;/code&gt; 时，&lt;strong&gt;不会调用构造方法&lt;/strong&gt;，而是 &lt;strong&gt;直接返回 JVM 维护的唯一实例&lt;/strong&gt;（类似 &lt;code&gt;readResolve()&lt;/code&gt; 的逻辑）。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;enum&lt;/code&gt; 的序列化仅存储 &lt;code&gt;name&lt;/code&gt;，反序列化时根据 &lt;code&gt;name&lt;/code&gt; 查找已有实例（&lt;code&gt;Enum.valueOf&lt;/code&gt;）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;反射破坏&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class Main {
+    public static void main(String[] args) throws Exception{
+        Person p1 = Person.getInstance();
+        Constructor&amp;lt;Person&amp;gt; constructor = Person.class.getDeclaredConstructor();
+        constructor.setAccessible(true);
+        Person p2 = constructor.newInstance();
+        System.out.println(p1.hashCode() + &quot;\n&quot; + p2.hashCode());
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;Java 不允许通过反射创建 &lt;code&gt;enum&lt;/code&gt; 实例&lt;/strong&gt;：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;enum&lt;/code&gt; 的构造器默认 &lt;strong&gt;private&lt;/strong&gt;，且 &lt;strong&gt;JVM 进行严格限制&lt;/strong&gt;。&lt;/li&gt;
+&lt;li&gt;即使 &lt;strong&gt;反射强行调用 &lt;code&gt;enum&lt;/code&gt; 的构造器&lt;/strong&gt;，也会抛出 &lt;code&gt;IllegalArgumentException&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;克隆破坏&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;Person p1 = Person.getInstance();
+Person p2 = p1.clone();  // ❌ 创建新对象，破坏单例
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;enum类的clone方法由final修饰，禁止重写&lt;/p&gt;
+</content:encoded></item><item><title>LeetCode刷题（移除元素、最大数）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E7%A7%BB%E9%99%A4%E5%85%83%E7%B4%A0%E6%9C%80%E5%A4%A7%E6%95%B0/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E7%A7%BB%E9%99%A4%E5%85%83%E7%B4%A0%E6%9C%80%E5%A4%A7%E6%95%B0/</guid><description>今天同步刷top150面试题，每日两道，剩余的hop100的10题看情况完成，有重复的直接跳过不计入每日两道题目，除此以外看情况完成面试实战题目</description><pubDate>Wed, 22 Oct 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;移除元素&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;给你一个数组 &lt;code&gt;nums&lt;/code&gt; 和一个值 &lt;code&gt;val&lt;/code&gt;，你需要 &lt;strong&gt;&lt;a href=&quot;https://baike.baidu.com/item/%E5%8E%9F%E5%9C%B0%E7%AE%97%E6%B3%95&quot;&gt;原地&lt;/a&gt;&lt;/strong&gt; 移除所有数值等于 &lt;code&gt;val&lt;/code&gt; 的元素。元素的顺序可能发生改变。然后返回 &lt;code&gt;nums&lt;/code&gt; 中与 &lt;code&gt;val&lt;/code&gt; 不同的元素的数量。&lt;/p&gt;
+&lt;p&gt;假设 &lt;code&gt;nums&lt;/code&gt; 中不等于 &lt;code&gt;val&lt;/code&gt; 的元素数量为 &lt;code&gt;k&lt;/code&gt;，要通过此题，您需要执行以下操作：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;更改 &lt;code&gt;nums&lt;/code&gt; 数组，使 &lt;code&gt;nums&lt;/code&gt; 的前 &lt;code&gt;k&lt;/code&gt; 个元素包含不等于 &lt;code&gt;val&lt;/code&gt; 的元素。&lt;code&gt;nums&lt;/code&gt; 的其余元素和 &lt;code&gt;nums&lt;/code&gt; 的大小并不重要。&lt;/li&gt;
+&lt;li&gt;返回 &lt;code&gt;k&lt;/code&gt;。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：nums = [3,2,2,3], val = 3
+输出：2, nums = [2,2,_,_]
+解释：你的函数函数应该返回 k = 2, 并且 nums 中的前两个元素均为 2。
+你在返回的 k 个元素之外留下了什么并不重要（因此它们并不计入评测）。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：nums = [0,1,2,2,3,0,4,2], val = 2
+输出：5, nums = [0,1,4,0,3,_,_,_]
+解释：你的函数应该返回 k = 5，并且 nums 中的前五个元素为 0,0,1,3,4。
+注意这五个元素可以任意顺序返回。
+你在返回的 k 个元素之外留下了什么并不重要（因此它们并不计入评测）。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;利用双指针解决&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public int removeElement(int[] nums, int val) {
+        int result = 0;
+        int n = nums.length;
+        for(int i = 0; i &amp;lt; n; i++) {
+            if(nums[i] != val) {
+                nums[result] = nums[i];
+                result++;
+            }
+        }
+        return result;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1&gt;最大数&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;给定一组非负整数 &lt;code&gt;nums&lt;/code&gt;，重新排列每个数的顺序（每个数不可拆分）使之组成一个最大的整数。&lt;/p&gt;
+&lt;p&gt;**注意：**输出结果可能非常大，所以你需要返回一个字符串而不是整数。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：nums = [10,2]
+输出：&quot;210&quot;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：nums = [3,30,34,5,9]
+输出：&quot;9534330&quot;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;将int数组转化为String类型，利用字符串自带的比较方法进行从大到小排序，最后拼接为字符串即可&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public String largestNumber(int[] nums) {
+        String[] strs = new String[nums.length];
+        for(int i = 0; i &amp;lt; nums.length; i++) {
+            strs[i] = nums[i] + &quot;&quot;;
+        }
+        Arrays.sort(strs, (x, y) -&amp;gt; (y + x).compareTo(x + y));
+        if(strs[0].equals(&quot;0&quot;)) {
+            return &quot;0&quot;;
+        }
+        StringBuilder result = new StringBuilder();
+        for(String str : strs) {
+            result.append(str);
+        }
+        return result.toString();
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;附带一个冒泡排序的方法&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public String largestNumber(int[] nums) {
+        String[] strs = new String[nums.length];
+        for(int i = 0; i &amp;lt; nums.length; i++) {
+            strs[i] = nums[i] + &quot;&quot;;
+        }
+        // Arrays.sort(strs, (x, y) -&amp;gt; (y + x).compareTo(x + y));
+        int n = nums.length;
+        for(int i = 0; i &amp;lt; n - 1; i++) {
+            for(int j = 0; j &amp;lt; n - i - 1; j++) {
+                if((strs[j] + strs[j + 1]).compareTo(strs[j + 1] + strs[j]) &amp;lt; 0) {
+                    String temp = strs[j];
+                    strs[j] = strs[j + 1];
+                    strs[j + 1] = temp;
+                }
+            }
+        }
+        if(strs[0].equals(&quot;0&quot;)) {
+            return &quot;0&quot;;
+        }
+        StringBuilder result = new StringBuilder();
+        for(String str : strs) {
+            result.append(str);
+        }
+        return result.toString();
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+</content:encoded></item><item><title>微服务OJ在线判题（开发中值得记录的思路）</title><link>https://thrinisty.github.io/posts/%E5%BE%AE%E6%9C%8D%E5%8A%A1oj%E5%9C%A8%E7%BA%BF%E5%88%A4%E9%A2%98%E5%BC%80%E5%8F%91%E4%B8%AD%E5%80%BC%E5%BE%97%E8%AE%B0%E5%BD%95%E7%9A%84%E6%80%9D%E8%B7%AF/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/%E5%BE%AE%E6%9C%8D%E5%8A%A1oj%E5%9C%A8%E7%BA%BF%E5%88%A4%E9%A2%98%E5%BC%80%E5%8F%91%E4%B8%AD%E5%80%BC%E5%BE%97%E8%AE%B0%E5%BD%95%E7%9A%84%E6%80%9D%E8%B7%AF/</guid><pubDate>Wed, 22 Oct 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;微服务OJ在线判题&lt;/h1&gt;
+&lt;p&gt;OJ常见概念：题目内存时间限制，题目描述，题目输入，题目输出，输入用例，测试用例&lt;/p&gt;
+&lt;p&gt;判题过程异步，提交之后，生成提交记录，有运行的结果&lt;/p&gt;
+&lt;p&gt;目的：用于在线评测编程题目代码的系统，能够根据用户提交代码，出题人预先设置的题目输入输出用例，编译代码，运行代码，判断代码运行结果是否正确&lt;/p&gt;
+&lt;p&gt;判题系统作为API开放，便于开发者制作自己的系统&lt;/p&gt;
+&lt;p&gt;功能：&lt;/p&gt;
+&lt;p&gt;题目模块：创建、删除、修改题目，搜索用户，在线做题，提交代码模块&lt;/p&gt;
+&lt;p&gt;用户模块：登陆注册&lt;/p&gt;
+&lt;p&gt;判题模块：提交判题、错误处理、自主实现代码沙箱、开放接口&lt;/p&gt;
+&lt;p&gt;在线做题：在线提交&lt;/p&gt;
+&lt;p&gt;拓展思路：支持多种语言、Remote Judge、普通评测、特殊评测、交互评测、在线自测&lt;/p&gt;
+&lt;p&gt;统计分析用户记录、权限校验、子任务分组评测、文件IO&lt;/p&gt;
+</content:encoded></item><item><title>LeetCode刷题（合并区间、解码方法）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E5%90%88%E5%B9%B6%E5%8C%BA%E9%97%B4%E8%A7%A3%E7%A0%81%E6%96%B9%E6%B3%95/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E5%90%88%E5%B9%B6%E5%8C%BA%E9%97%B4%E8%A7%A3%E7%A0%81%E6%96%B9%E6%B3%95/</guid><pubDate>Tue, 21 Oct 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;合并区间&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;以数组 &lt;code&gt;intervals&lt;/code&gt; 表示若干个区间的集合，其中单个区间为 &lt;code&gt;intervals[i] = [starti, endi]&lt;/code&gt; 。请你合并所有重叠的区间，并返回 &lt;em&gt;一个不重叠的区间数组，该数组需恰好覆盖输入中的所有区间&lt;/em&gt; 。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：intervals = [[1,3],[2,6],[8,10],[15,18]]
+输出：[[1,6],[8,10],[15,18]]
+解释：区间 [1,3] 和 [2,6] 重叠, 将它们合并为 [1,6].
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：intervals = [[1,4],[4,5]]
+输出：[[1,5]]
+解释：区间 [1,4] 和 [4,5] 可被视为重叠区间。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 3：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：intervals = [[4,7],[1,4]]
+输出：[[1,7]]
+解释：区间 [1,4] 和 [4,7] 可被视为重叠区间。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;先进行排序，排序后构造List集合依次遍历所有区间，对于List为空和后区间的小值大与前区间的情况直接将区间放入，否则更新最近的右边界，取值为取出的右边界和遍历右边界最大数值&lt;/p&gt;
+&lt;p&gt;最后将List转化为int[][]数组&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public int[][] merge(int[][] intervals) {
+        if(intervals.length == 0) {
+            return new int[0][2];
+        }
+        Arrays.sort(intervals, (i1, i2) -&amp;gt; i1[0] - i2[0]);
+        List&amp;lt;int[]&amp;gt; merged = new ArrayList&amp;lt;&amp;gt;();
+        for(int i = 0; i &amp;lt; intervals.length; i++) {
+            int L = intervals[i][0];
+            int R = intervals[i][1];
+            if(merged.size() == 0 || merged.get(merged.size() - 1)[1] &amp;lt; L) {
+                merged.add(new int[]{L, R});
+            } else {
+                merged.get(merged.size() - 1)[1] = Math.max(merged.get(merged.size() - 1)[1], R);
+            }
+        }
+        return merged.toArray(new int[merged.size()][2]);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1&gt;解码方法&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;一条包含字母 &lt;code&gt;A-Z&lt;/code&gt; 的消息通过以下映射进行了 &lt;strong&gt;编码&lt;/strong&gt; ：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&quot;1&quot; -&amp;gt; &apos;A&apos; &quot;2&quot; -&amp;gt; &apos;B&apos; ... &quot;25&quot; -&amp;gt; &apos;Y&apos; &quot;26&quot; -&amp;gt; &apos;Z&apos;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;然而，在 &lt;strong&gt;解码&lt;/strong&gt; 已编码的消息时，你意识到有许多不同的方式来解码，因为有些编码被包含在其它编码当中（&lt;code&gt;&quot;2&quot;&lt;/code&gt; 和 &lt;code&gt;&quot;5&quot;&lt;/code&gt; 与 &lt;code&gt;&quot;25&quot;&lt;/code&gt;）。&lt;/p&gt;
+&lt;p&gt;例如，&lt;code&gt;&quot;11106&quot;&lt;/code&gt; 可以映射为：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;&quot;AAJF&quot;&lt;/code&gt; ，将消息分组为 &lt;code&gt;(1, 1, 10, 6)&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;&quot;KJF&quot;&lt;/code&gt; ，将消息分组为 &lt;code&gt;(11, 10, 6)&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;消息不能分组为 &lt;code&gt;(1, 11, 06)&lt;/code&gt; ，因为 &lt;code&gt;&quot;06&quot;&lt;/code&gt; 不是一个合法编码（只有 &quot;6&quot; 是合法的）。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;注意，可能存在无法解码的字符串。&lt;/p&gt;
+&lt;p&gt;给你一个只含数字的 &lt;strong&gt;非空&lt;/strong&gt; 字符串 &lt;code&gt;s&lt;/code&gt; ，请计算并返回 &lt;strong&gt;解码&lt;/strong&gt; 方法的 &lt;strong&gt;总数&lt;/strong&gt; 。如果没有合法的方式解码整个字符串，返回 &lt;code&gt;0&lt;/code&gt;。&lt;/p&gt;
+&lt;p&gt;题目数据保证答案肯定是一个 &lt;strong&gt;32 位&lt;/strong&gt; 的整数。&lt;/p&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;利用动态规划求解：创建dp数组，其中存储到第i个数解码的可能，单独的数字只要不是0，就可以把对应的可能加入到当前dp中，如果是两个数字的，转化为数字判断是否在10-26之间，是的话可以将dp向前推两位的可能加入到dp中&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public int numDecodings(String s) {
+        if(s.isEmpty() || s.charAt(0) == &apos;0&apos;) {
+            return 0;
+        }
+        int n = s.length();
+        int[] dp = new int[n + 1];
+        dp[0] = 1;
+        dp[1] = 1;
+        for(int i = 2; i &amp;lt;= n; i++) {
+            if(s.charAt(i - 1) != &apos;0&apos;) {
+                dp[i] += dp[i - 1];
+            }
+            int num = Integer.parseInt(s.substring(i - 2, i));
+            if(num &amp;gt;= 10 &amp;amp;&amp;amp; num &amp;lt;= 26) {
+                dp[i] += dp[i - 2];
+            }
+        }
+        return dp[n];
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+</content:encoded></item><item><title>RabbitMQ笔记（进阶使用）</title><link>https://thrinisty.github.io/posts/rabbitmq%E7%AC%94%E8%AE%B0%E8%BF%9B%E9%98%B6/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/rabbitmq%E7%AC%94%E8%AE%B0%E8%BF%9B%E9%98%B6/</guid><description>消费端限流，超时设置，死信，延迟队列，事务消息，惰性队列，优先级队列群</description><pubDate>Tue, 21 Oct 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;RabbitMQ笔记&lt;/h1&gt;
+&lt;h2&gt;进阶使用&lt;/h2&gt;
+&lt;h3&gt;消费端限流&lt;/h3&gt;
+&lt;p&gt;设置prefetch进行限流，从消息队列中取消息每秒取一个&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;spring:
+  application:
+    name: MQ
+  rabbitmq:
+    host: 115.190.182.149
+    port: 5672
+    username: admin
+    password: 123456
+    virtual-host: /
+    listener:
+      simple:
+        acknowledge-mode: manual
+        prefetch: 1 #每秒从队列中取回消息的数量
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;消息超时&lt;/h3&gt;
+&lt;p&gt;一旦设定一个过期时间，超过这个时间没有被取走的消息就会被删除&lt;/p&gt;
+&lt;p&gt;1.可以给队列指定过期时间，队列中所有消息就会按照对应的时间删除&lt;/p&gt;
+&lt;p&gt;在创建的时候指定即可&lt;/p&gt;
+&lt;p&gt;2.也可以给消息本身进行过期时间，如果两个都限制那么以小的为准&lt;/p&gt;
+&lt;p&gt;在我们发送消息的时候指定TTL即可，通过传入处理的messagePostProcessor调用setExpiration方法设置过期时间20s&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@GetMapping(&quot;/send&quot;)
+public void send() {
+    MessagePostProcessor messagePostProcessor = message -&amp;gt; {
+        message.getMessageProperties().setExpiration(&quot;20000&quot;);
+        return message;
+    };
+    rabbitTemplate.convertAndSend(EXCHANGE_NAME, ROUTING_KEY, &quot;Hello Order!&quot;, messagePostProcessor);
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;死信&lt;/h3&gt;
+&lt;p&gt;我们在上面超时后，消息就会变为死信，死信产生的情况大概有三种&lt;/p&gt;
+&lt;p&gt;1.拒绝：消费者拒绝接收消息，并且不把消息重新放回目标队列，requeue=false&lt;/p&gt;
+&lt;p&gt;2.溢出：后来的消息将前面的消息顶掉&lt;/p&gt;
+&lt;p&gt;3.超时：到达时间未被消费&lt;/p&gt;
+&lt;p&gt;处理方式：&lt;/p&gt;
+&lt;p&gt;1.丢弃：对于不重要的消息进行丢弃&lt;/p&gt;
+&lt;p&gt;2.入库：把死信放入数据库，后续处理&lt;/p&gt;
+&lt;p&gt;3.监听：把死信放入死信队列，设置专门的消费端监听死信队列，进行后续处理&lt;/p&gt;
+&lt;p&gt;我们常用的是第三种方式&lt;/p&gt;
+&lt;p&gt;需要我们设置死信队列和交换机，还需要建立正常交换机和正常队列消息，在正常队列指定死信交换机和死信的路由键，这样我们超时后的消息就会被转发到死信交换机，再经由死信交换机发送给死信队列&lt;/p&gt;
+&lt;h3&gt;延迟队列&lt;/h3&gt;
+&lt;p&gt;1.借助消息超时时间+死信队列&lt;/p&gt;
+&lt;p&gt;通过上述同样的方法设置过期时间，对于死信队列的消息进行消费即可完成&lt;/p&gt;
+&lt;p&gt;2.安装RabbitMQ插件x-delayed-message，最多可以延迟两天的时间&lt;/p&gt;
+&lt;p&gt;将交换机中指定x-delayed-massage，然后还需要设置工作类型&lt;/p&gt;
+&lt;p&gt;设置延迟时间，也是通过messagePostProcessor调用设置message进行设置&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@GetMapping(&quot;/send&quot;)
+public void send() {
+    MessagePostProcessor messagePostProcessor = message -&amp;gt; {
+        message.getMessageProperties().setHead(&quot;x-delay&quot;, &quot;20000&quot;);
+        return message;
+    };
+    rabbitTemplate.convertAndSend(EXCHANGE_NAME, ROUTING_KEY, &quot;Hello Order!&quot;, messagePostProcessor);
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;事务消息&lt;/h3&gt;
+&lt;p&gt;只在生产者，不能控制消费者&lt;/p&gt;
+&lt;p&gt;如果我们有这么一个要求：有几条消息需要统一提交到队列中，我们就可以把这些消息放入缓存中统一发送&lt;/p&gt;
+&lt;p&gt;实现：需要提供RabbitTransactionManager为Bean对象，另外需要设置rabbitTemplate.setChannelTransacted(true)&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@Configuration
+public class AnotherConfig {
+    @Bean
+    public RabbitTransactionManager rabbitTransactionManager(CachingConnectionFactory connectionFactory) {
+        return new RabbitTransactionManager(connectionFactory);
+    }
+    @Bean
+    public RabbitTemplate rabbitTemplate(CachingConnectionFactory connectionFactory) {
+        RabbitTemplate template = new RabbitTemplate(connectionFactory);
+        template.setChannelTransacted(true); // 启用通道事务
+        return template;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;@RestController
+@Transactional
+public class SendController {
+//    public static final String QUEUE_NAME = &quot;queue.order&quot;;
+    public static final String EXCHANGE_NAME = &quot;test.back&quot;;
+    public static final String ROUTING_KEY = &quot;test&quot;;
+
+    @Autowired
+    private RabbitTemplate rabbitTemplate;
+
+    @GetMapping(&quot;/send&quot;)
+    public void send() {
+        MessagePostProcessor messagePostProcessor = message -&amp;gt; {
+            message.getMessageProperties().setExpiration(&quot;20000&quot;);
+            return message;
+        };
+        rabbitTemplate.convertAndSend(EXCHANGE_NAME, ROUTING_KEY, &quot;Hello Order!&quot;, messagePostProcessor);
+        int i = 10 / 0;
+        rabbitTemplate.convertAndSend(EXCHANGE_NAME, ROUTING_KEY, &quot;Hello Order!&quot;, messagePostProcessor);
+
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;这样就不会发送前一条消息，因为回滚了，不进行缓存的提交&lt;/p&gt;
+&lt;h3&gt;惰性队列&lt;/h3&gt;
+&lt;p&gt;Durable代表队列是长久的，消息会被放在磁盘上持久化，Transient代表队列是临时的，关闭后队列会消失，消息也消失&lt;/p&gt;
+&lt;p&gt;在队列满了的时候或者关闭broker的时候就会被持久化到磁盘上，另外写入磁盘的时候，生产者存入会被临时阻塞&lt;/p&gt;
+&lt;p&gt;应用场景：支持非常长的队列，（消费者停机、生产高峰），直接将内容写入硬盘，在消费时再取&lt;/p&gt;
+&lt;h3&gt;优先级队列&lt;/h3&gt;
+&lt;p&gt;我们需要设置有些消息更早被处理，可以设置优先级，用正整数表示优先级范围1-255，官网建议在1-5之间设置优先级，优先级越高，占用CPU，内存资源越多&lt;/p&gt;
+&lt;p&gt;队列声明使可以指定x-max-priority最高的值，默认为0（这个时候优先级无效）&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@GetMapping(&quot;/send&quot;)
+public void send() {
+    MessagePostProcessor messagePostProcessor = message -&amp;gt; {
+        message.getMessageProperties().setPriority(4);
+        return message;
+    };
+    rabbitTemplate.convertAndSend(EXCHANGE_NAME, ROUTING_KEY, &quot;Hello Order!&quot;, messagePostProcessor);
+}
+&lt;/code&gt;&lt;/pre&gt;
+</content:encoded></item><item><title>LeetCode刷题（扔鸡蛋、最长的递增子序列个数）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E6%89%94%E9%B8%A1%E8%9B%8B%E6%9C%80%E9%95%BF%E7%9A%84%E9%80%92%E5%A2%9E%E5%AD%90%E5%BA%8F%E5%88%97%E4%B8%AA%E6%95%B0/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E6%89%94%E9%B8%A1%E8%9B%8B%E6%9C%80%E9%95%BF%E7%9A%84%E9%80%92%E5%A2%9E%E5%AD%90%E5%BA%8F%E5%88%97%E4%B8%AA%E6%95%B0/</guid><pubDate>Mon, 20 Oct 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;扔鸡蛋&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;给你 &lt;code&gt;k&lt;/code&gt; 枚相同的鸡蛋，并可以使用一栋从第 &lt;code&gt;1&lt;/code&gt; 层到第 &lt;code&gt;n&lt;/code&gt; 层共有 &lt;code&gt;n&lt;/code&gt; 层楼的建筑。&lt;/p&gt;
+&lt;p&gt;已知存在楼层 &lt;code&gt;f&lt;/code&gt; ，满足 &lt;code&gt;0 &amp;lt;= f &amp;lt;= n&lt;/code&gt; ，任何从 &lt;strong&gt;高于&lt;/strong&gt; &lt;code&gt;f&lt;/code&gt; 的楼层落下的鸡蛋都会碎，从 &lt;code&gt;f&lt;/code&gt; 楼层或比它低的楼层落下的鸡蛋都不会破。&lt;/p&gt;
+&lt;p&gt;每次操作，你可以取一枚没有碎的鸡蛋并把它从任一楼层 &lt;code&gt;x&lt;/code&gt; 扔下（满足 &lt;code&gt;1 &amp;lt;= x &amp;lt;= n&lt;/code&gt;）。如果鸡蛋碎了，你就不能再次使用它。如果某枚鸡蛋扔下后没有摔碎，则可以在之后的操作中 &lt;strong&gt;重复使用&lt;/strong&gt; 这枚鸡蛋。&lt;/p&gt;
+&lt;p&gt;请你计算并返回要确定 &lt;code&gt;f&lt;/code&gt; &lt;strong&gt;确切的值&lt;/strong&gt; 的 &lt;strong&gt;最小操作次数&lt;/strong&gt; 是多少？&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：k = 1, n = 2
+输出：2
+解释：
+鸡蛋从 1 楼掉落。如果它碎了，肯定能得出 f = 0 。 
+否则，鸡蛋从 2 楼掉落。如果它碎了，肯定能得出 f = 1 。 
+如果它没碎，那么肯定能得出 f = 2 。 
+因此，在最坏的情况下我们需要移动 2 次以确定 f 是多少。 
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：k = 2, n = 6
+输出：3
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 3：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：k = 3, n = 14
+输出：4
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;设置一个dp二维数组，下表为i，j代表，尝试i次，j个鸡蛋可以最多找到几层楼确切的临界值&lt;/p&gt;
+&lt;p&gt;从1次开始，依次计算i次j个鸡蛋可以选出最高几层楼的情况，直到最高的楼层大于等于目标楼层&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public int superEggDrop(int k, int n) {
+        int[][] dp = new int[n + 1][k + 1];
+        int i = 1;
+        while(true) {
+            for(int j = 1; j &amp;lt;= k; j++) {
+                dp[i][j] = dp[i - 1][j] + dp[i - 1][j - 1] + 1;
+            }
+            if(dp[i][k] &amp;gt;= n) {
+                return i;
+            }
+            i++;
+        }
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1&gt;最长递增子序列个数&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;给定一个未排序的整数数组 &lt;code&gt;nums&lt;/code&gt; ， &lt;em&gt;返回最长递增子序列的个数&lt;/em&gt; 。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;注意&lt;/strong&gt; 这个数列必须是 &lt;strong&gt;严格&lt;/strong&gt; 递增的。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 1:&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入: [1,3,5,4,7]
+输出: 2
+解释: 有两个最长递增子序列，分别是 [1, 3, 4, 7] 和[1, 3, 5, 7]。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2:&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入: [2,2,2,2,2]
+输出: 5
+解释: 最长递增子序列的长度是1，并且存在5个子序列的长度为1，因此输出5。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;之前做过一道关于寻找最长递增子序列长度的题目，在它的基础上维护一个count数组，代表包含当前数序列的数字个数，dp对应的max时加上其可能的情况&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public int findNumberOfLIS(int[] nums) {
+        int n = nums.length;
+        int[] dp = new int[n];
+        int[] count = new int[n];
+        Arrays.fill(dp, 1);
+        Arrays.fill(count, 1);
+        int max = 0;
+        for(int i = 0; i &amp;lt; n; i++) {
+            for(int j = 0; j &amp;lt; i; j++) {
+                if(nums[j] &amp;lt; nums[i]) {
+                    if(dp[j] + 1 &amp;gt; dp[i]) {
+                        dp[i] = dp[j] + 1;
+                        count[i] = count[j];
+                    } else if(dp[j] + 1 == dp[i]) {
+                        count[i] += count[j];
+                    }
+                }
+            }
+            max = Math.max(max, dp[i]);
+        }
+        int result = 0;
+        for(int i = 0; i &amp;lt; n; i++) {
+            if(dp[i] == max) {
+                result += count[i];
+            }
+        }
+        return result;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+</content:encoded></item><item><title>RabbitMQ笔记（入门使用、SpringBoot整合、可靠性传递）</title><link>https://thrinisty.github.io/posts/rabbitmq%E7%AC%94%E8%AE%B0%E5%85%A5%E9%97%A8%E4%BD%BF%E7%94%A8springboot%E6%95%B4%E5%90%88%E5%8F%AF%E9%9D%A0%E6%80%A7%E4%BC%A0%E9%80%92/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/rabbitmq%E7%AC%94%E8%AE%B0%E5%85%A5%E9%97%A8%E4%BD%BF%E7%94%A8springboot%E6%95%B4%E5%90%88%E5%8F%AF%E9%9D%A0%E6%80%A7%E4%BC%A0%E9%80%92/</guid><pubDate>Mon, 20 Oct 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;RabbitMQ笔记&lt;/h1&gt;
 &lt;h2&gt;消息队列&lt;/h2&gt;
 &lt;p&gt;我们在常规的访问通信是同步的，需要等到B返回响应后才可继续A的操作，而通过消息队列可以异步的继续远程的服务调用，不影响服务A的返回&lt;/p&gt;
 &lt;p&gt;&lt;img src=&quot;../images/311.png&quot; alt=&quot;311&quot; /&gt;&lt;/p&gt;
 &lt;p&gt;RabbitMQ结构&lt;/p&gt;
 &lt;p&gt;&lt;img src=&quot;../images/312.png&quot; alt=&quot;312&quot; /&gt;&lt;/p&gt;
 &lt;h2&gt;入门使用&lt;/h2&gt;
+&lt;p&gt;&lt;strong&gt;安装RM&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;使用Docker拉取镜像这里注意要下载的是带管理界面的management，默认的好像没有15672端口的管理界面&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;docker pull rabbitmq:management
 &lt;/code&gt;&lt;/pre&gt;
@@ -18,6 +1331,253 @@
   -e RABBITMQ_DEFAULT_USER=admin \
   -e RABBITMQ_DEFAULT_PASS=123456 \
   rabbitmq:management
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;HelloWorld&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;引入原生框架依赖&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;dependency&amp;gt;
+    &amp;lt;groupId&amp;gt;com.rabbitmq&amp;lt;/groupId&amp;gt;
+    &amp;lt;artifactId&amp;gt;amqp-client&amp;lt;/artifactId&amp;gt;
+    &amp;lt;version&amp;gt;5.16.0&amp;lt;/version&amp;gt;  &amp;lt;!-- 使用最新稳定版本 --&amp;gt;
+&amp;lt;/dependency&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;向交换机中发送消息&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class Main {
+    private final static String QUEUE_NAME = &quot;hello&quot;;
+    public static void main(String[] args) throws Exception {
+        // 1. 创建连接工厂
+        ConnectionFactory factory = new ConnectionFactory();
+        factory.setHost(&quot;115.190.182.149&quot;); // RabbitMQ服务器地址
+        factory.setPort(5672);
+        factory.setUsername(&quot;admin&quot;); // 默认用户名
+        factory.setPassword(&quot;123456&quot;); // 默认密码
+        // 2. 创建连接和通道
+        try (Connection connection = factory.newConnection();
+             Channel channel = connection.createChannel()) {
+
+            // 3. 声明队列（如果不存在则创建）
+            channel.queueDeclare(QUEUE_NAME, false, false, false, null);
+
+            // 4. 发送消息
+            String message = &quot;Hello RabbitMQ!&quot;;
+            channel.basicPublish(&quot;&quot;, QUEUE_NAME, null, message.getBytes());
+            System.out.println(&quot; [x] Sent &apos;&quot; + message + &quot;&apos;&quot;);
+        }
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;消费队列中的消息&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class Consumer {
+    private final static String QUEUE_NAME = &quot;hello&quot;;
+    public static void main(String[] args) throws Exception {
+        // 1. 创建连接工厂
+        ConnectionFactory factory = new ConnectionFactory();
+        factory.setHost(&quot;115.190.182.149&quot;);
+        factory.setPort(5672);
+        factory.setUsername(&quot;admin&quot;); // 默认用户名
+        factory.setPassword(&quot;123456&quot;); // 默认密码
+
+        // 2. 创建连接和通道
+        Connection connection = factory.newConnection();
+        Channel channel = connection.createChannel();
+
+        // 3. 声明队列（与生产者一致）
+        channel.queueDeclare(QUEUE_NAME, false, false, false, null);
+        System.out.println(&quot; [*] Waiting for messages...&quot;);
+        // 4. 创建消费者回调
+        DeliverCallback deliverCallback = (consumerTag, delivery) -&amp;gt; {
+            String message = new String(delivery.getBody(), &quot;UTF-8&quot;);
+            System.out.println(&quot; [x] Received &apos;&quot; + message + &quot;&apos;&quot;);
+        };
+
+        // 5. 监听队列
+        channel.basicConsume(QUEUE_NAME, true, deliverCallback, consumerTag -&amp;gt; {});
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;工作模式&lt;/h2&gt;
+&lt;p&gt;直接模式、工作队列、发布订阅、路由键&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/313.png&quot; alt=&quot;313&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;主题模式、RPC同步调用、消息可靠性投递&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/314.png&quot; alt=&quot;314&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;工作队列&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;当监听同一个队列的时候，消费端竞争消息，谁抢到就是谁消费，在底层创建了一个默认的交换机，发送到特定的队列供消费者竞争消费&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;发布订阅模式&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;发布订阅模式，指定一个（Fanout）类型交换机，可以绑定多个队列，对于绑定的所有队列发送收到的消息（广播），再由对应队列的各个消费者消费&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;路由模式&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;通过路由键绑定队列与交换机，在发送的时候指定路由键，根据路由键匹配发送到对应的队列&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;主题模式&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;经过统配符完成消息的转发，满足则转发到对应的队列&lt;/p&gt;
+&lt;h2&gt;SpringBoot整合&lt;/h2&gt;
+&lt;p&gt;引入依赖&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;dependency&amp;gt;
+    &amp;lt;groupId&amp;gt;org.springframework.boot&amp;lt;/groupId&amp;gt;
+    &amp;lt;artifactId&amp;gt;spring-boot-starter-amqp&amp;lt;/artifactId&amp;gt;
+&amp;lt;/dependency&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;创建消费者&lt;/h3&gt;
+&lt;p&gt;在其中运用@RabbitListener注解声明了一个消费者方法，并在注解中设定了队列名称，交换机，路由键，启动后会自动创建队列，交换机和路由键&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@Component
+@Slf4j
+public class MyMessageListener {
+    public static final String QUEUE_NAME = &quot;queue.order&quot;;
+    public static final String EXCHANGE_NAME = &quot;exchange.order&quot;;
+    public static final String ROUTING_KEY = &quot;order&quot;;
+
+    @RabbitListener(bindings = @QueueBinding(
+            value = @Queue(value = QUEUE_NAME, durable = &quot;true&quot;),
+            exchange = @Exchange(value = EXCHANGE_NAME),
+            key = {ROUTING_KEY}
+    ))
+    public void processMessage(
+            String dataString,
+            Message message,
+            Channel channel) {
+        System.out.println(&quot;消费端接收到消息： &quot; + dataString);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;如果建立关系，创建完成之后，只用指定队列名称即可&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@RabbitListener(queues = QUEUE_NAME)
+public void processMessage(
+        String dataString,
+        Message message,
+        Channel channel) {
+    System.out.println(&quot;消费端接收到消息： &quot; + dataString);
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;创建生产者&lt;/h3&gt;
+&lt;p&gt;利用RabbitTemplate指定交换机以及路由键，和发送的信息，将消息发送到队列中，由消费者完成消费&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@RestController
+public class SendController {
+//    public static final String QUEUE_NAME = &quot;queue.order&quot;;
+    public static final String EXCHANGE_NAME = &quot;exchange.order&quot;;
+    public static final String ROUTING_KEY = &quot;order&quot;;
+
+    @Autowired
+    private RabbitTemplate rabbitTemplate;
+
+    @GetMapping(&quot;/send&quot;)
+    public void send() {
+        rabbitTemplate.convertAndSend(EXCHANGE_NAME, ROUTING_KEY, &quot;Hello Order!&quot;);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;可靠性传递&lt;/h2&gt;
+&lt;h3&gt;可靠性问题&lt;/h3&gt;
+&lt;p&gt;&lt;img src=&quot;../images/316.png&quot; alt=&quot;316&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;在生产者端进行确认，分别对交换机和队列确认，指定备份交换机，投递失败的时候，把消息投递至备份交换机&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/317.png&quot; alt=&quot;317&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;将消息持久化到硬盘&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/318.png&quot; alt=&quot;318&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;消费端业务成功返回ACK确认消息，然后消息队列删除该消息&lt;/p&gt;
+&lt;p&gt;如果失败返回NACK，将消息恢复为待消费状态，这样就可以取回信息重试&lt;/p&gt;
+&lt;h3&gt;消息确认&lt;/h3&gt;
+&lt;p&gt;配置文件改写&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;spring:
+  application:
+    name: MQ
+  rabbitmq:
+    host: 115.190.182.149
+    port: 5672
+    username: admin
+    password: 123456
+    virtual-host: /
+    publisher-confirm-type: correlated #交换机确认
+    publisher-returns: true #队列确认
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;创建配置类&lt;/p&gt;
+&lt;p&gt;需要声明回调函数接受RabbitMQ服务器返回的确认消息，其中confirm方法确认消息是否发送到交换机上，returnedMessage确认消息是否发送到队列上&lt;/p&gt;
+&lt;p&gt;实现两个接口，再将类放入rabbitTemplate中，并通过@PostConstruct注解立即执行方法，配置后的rabbitTemplate就可以进行方法的回调&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@Configuration
+@Slf4j
+public class RabbitConfig implements RabbitTemplate.ConfirmCallback, RabbitTemplate.ReturnsCallback {
+    @Autowired
+    private RabbitTemplate rabbitTemplate;
+
+    @PostConstruct
+    public void initRabbitTemplate() {
+        this.rabbitTemplate.setConfirmCallback(this);
+        this.rabbitTemplate.setReturnsCallback(this);
+    }
+
+    @Override
+    public void confirm(CorrelationData correlationData, boolean b, String s) {
+        //消息发送后成功或失败都会调用该方法
+        System.out.println(&quot;confirm:&quot; + correlationData + &quot;, b:&quot; + b + &quot;, s:&quot; + s);
+    }
+
+    @Override
+    public void returnedMessage(ReturnedMessage returnedMessage) {
+        //只有失败的时候会调用
+        System.out.println(&quot;returnedMessage:&quot; + returnedMessage);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;备份交换机&lt;/h3&gt;
+&lt;p&gt;创建备份交换机（fanout，因为无法指定路由键），以及绑定的队列&lt;/p&gt;
+&lt;p&gt;在创建交换机的时候，指定备份交换机&lt;/p&gt;
+&lt;h3&gt;持久化&lt;/h3&gt;
+&lt;p&gt;消息队列中的消息起始默认持久化，重启后消息也不会丢失&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;/**
+ * Specifies if this queue should be durable.
+ * By default if queue name is provided it is durable.
+ * @return true if the queue is to be declared as durable.
+ * @see org.springframework.amqp.core.Queue#isDurable()
+ */
+String durable() default &quot;&quot;;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;手动确认&lt;/h3&gt;
+&lt;p&gt;配置文件使失败的时候进行手动处理，&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;spring:
+  application:
+    name: MQ
+  rabbitmq:
+    host: 115.190.182.149
+    port: 5672
+    username: admin
+    password: 123456
+    virtual-host: /
+    listener:
+      simple:
+        acknowledge-mode: manual #把消息确认模式改为手动确认模式
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&quot;../images/320.png&quot; alt=&quot;320&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;通过basicNack可以进行消息设置，是否放回队列，第二个参数是是否批量操作&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@Component
+@Slf4j
+public class MyMessageListener {
+    public static final String QUEUE_NAME = &quot;queue.order&quot;;
+    public static final String EXCHANGE_NAME = &quot;exchange.order&quot;;
+    public static final String ROUTING_KEY = &quot;order&quot;;
+
+//    @RabbitListener(bindings = @QueueBinding(
+//            value = @Queue(value = QUEUE_NAME, durable = &quot;true&quot;),
+//            exchange = @Exchange(value = EXCHANGE_NAME),
+//            key = {ROUTING_KEY}
+//    ))
+    @RabbitListener(queues = QUEUE_NAME)
+    public void processMessage(
+            String dataString,
+            Message message,
+            Channel channel) throws IOException {
+
+        try {
+            //核心操作
+            System.out.println(&quot;消费端接收到消息： &quot; + dataString);
+            //成功返回ACK
+            channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
+        } catch (Exception e) {
+            Boolean redelivered = message.getMessageProperties().getRedelivered();
+            //失败返回NACK
+            if (redelivered) {
+                //如果重复投递则不放回队列
+                channel.basicNack(message.getMessageProperties().getDeliveryTag(), false, false);
+            }
+            //如果不是重复投递则放回队列
+            channel.basicNack(message.getMessageProperties().getDeliveryTag(), false, true);
+        }
+    }
+}
 &lt;/code&gt;&lt;/pre&gt;
 </content:encoded></item><item><title>LeetCode刷题（LRU缓存、百度笔试）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98lru%E7%BC%93%E5%AD%98%E7%99%BE%E5%BA%A6%E7%AC%94%E8%AF%95/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98lru%E7%BC%93%E5%AD%98%E7%99%BE%E5%BA%A6%E7%AC%94%E8%AF%95/</guid><description>LRU缓存，平衡子串计数</description><pubDate>Sun, 19 Oct 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;LRU缓存&lt;/h1&gt;
 &lt;h2&gt;题目描述&lt;/h2&gt;
@@ -74,76 +1634,69 @@ lRUCache.get(4);    // 返回 4
 &lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;解法二：模拟底层的LinkedHashMap，通过LinkedNode存储活跃的双向链表，在对于添加，取出，修改的三种情况将节点放在头部并且添加进入HashMap中。而对于放入超出容量的情况下将尾部的节点移除并删除对应的缓存内容&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;class LRUCache {
-    class LinkedNode {
+    class Node {
         int key;
         int value;
-        LinkedNode prev;
-        LinkedNode next;
-        public LinkedNode(int key, int value) {
+        Node prev;
+        Node next;
+        public Node(int key, int value) {
             this.key = key;
             this.value = value;
         }
     }
 
-    private Map&amp;lt;Integer, LinkedNode&amp;gt; cache = new HashMap&amp;lt;&amp;gt;();
     private int size;
     private int capacity;
-    private LinkedNode head, tail;
-
+    private Node head, tail;
+    private Map&amp;lt;Integer, Node&amp;gt; cache = new HashMap&amp;lt;&amp;gt;();
     public LRUCache(int capacity) {
         this.size = 0;
         this.capacity = capacity;
-        head = new LinkedNode(-1, -1);
-        tail = new LinkedNode(-1, -1);
+        head = new Node(-1, -1);
+        tail = new Node(-1, -1);
         head.next = tail;
         tail.prev = head;
     }
     
     public int get(int key) {
-        LinkedNode node = cache.get(key);
+        Node node = cache.get(key);
         if(node == null) {
             return -1;
-        }
-        removeNode(node);
-        addToHead(node);
+        } 
+        remove(node);
+        addHead(node);
         return node.value;
     }
     
     public void put(int key, int value) {
-        LinkedNode node = cache.get(key);
+        Node node = cache.get(key);
         if(node == null) {
-            node = new LinkedNode(key, value);
+            node = new Node(key, value);
             cache.put(key, node);
-            addToHead(node);
+            addHead(node);
             size++;
-            if(size &amp;gt; capacity) {
-                LinkedNode target = tail.prev;
-                cache.remove(target.key);
-                removeTail();
+            if(capacity &amp;lt; size) {
+                Node removeNode = tail.prev;
+                cache.remove(removeNode.key);
+                remove(removeNode);
                 size--;
             }
-        } else {
-            node.value = value;
-            removeNode(node);
-            addToHead(node);
         }
+        node.value = value;
+        remove(node);
+        addHead(node);
     }
 
-    public void addToHead(LinkedNode node) {
-        node.prev = head;
-        node.next = head.next;
-        head.next.prev = node;
-        head.next = node;
-    }
-
-    public void removeNode(LinkedNode node) {
+    public void remove(Node node) {
         node.prev.next = node.next;
         node.next.prev = node.prev;
     }
 
-    private void removeTail() {
-        LinkedNode node = tail.prev;
-        removeNode(node);
+    public void addHead(Node node) {
+        node.next = head.next;
+        node.prev = head;
+        head.next = node;
+        node.next.prev = node;
     }
 }
 &lt;/code&gt;&lt;/pre&gt;
@@ -2292,7 +3845,7 @@ nginx: configuration file /etc/nginx/nginx.conf test is successful
 &lt;pre&gt;&lt;code&gt;docker pull redis
 &lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;运行redis容器，并且通过-p参数将容器端口映射到宿主机端口&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;docker run --name redis_name -p 6379:6379 -d redis
+&lt;pre&gt;&lt;code&gt;docker run --name redis -p 6379:6379 -d redis
 &lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;在宿主机连接docker运行中的redis容器对象&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;redis-cli -h 127.0.0.1 -p 6379

@@ -142,7 +142,7 @@ docker pull redis
 运行redis容器，并且通过-p参数将容器端口映射到宿主机端口
 
 ```
-docker run --name redis_name -p 6379:6379 -d redis
+docker run --name redis -p 6379:6379 -d redis
 ```
 
 在宿主机连接docker运行中的redis容器对象

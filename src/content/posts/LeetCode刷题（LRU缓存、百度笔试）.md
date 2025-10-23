@@ -81,76 +81,69 @@ class LRUCache extends LinkedHashMap<Integer, Integer>{
 
 ```java
 class LRUCache {
-    class LinkedNode {
+    class Node {
         int key;
         int value;
-        LinkedNode prev;
-        LinkedNode next;
-        public LinkedNode(int key, int value) {
+        Node prev;
+        Node next;
+        public Node(int key, int value) {
             this.key = key;
             this.value = value;
         }
     }
 
-    private Map<Integer, LinkedNode> cache = new HashMap<>();
     private int size;
     private int capacity;
-    private LinkedNode head, tail;
-
+    private Node head, tail;
+    private Map<Integer, Node> cache = new HashMap<>();
     public LRUCache(int capacity) {
         this.size = 0;
         this.capacity = capacity;
-        head = new LinkedNode(-1, -1);
-        tail = new LinkedNode(-1, -1);
+        head = new Node(-1, -1);
+        tail = new Node(-1, -1);
         head.next = tail;
         tail.prev = head;
     }
     
     public int get(int key) {
-        LinkedNode node = cache.get(key);
+        Node node = cache.get(key);
         if(node == null) {
             return -1;
-        }
-        removeNode(node);
-        addToHead(node);
+        } 
+        remove(node);
+        addHead(node);
         return node.value;
     }
     
     public void put(int key, int value) {
-        LinkedNode node = cache.get(key);
+        Node node = cache.get(key);
         if(node == null) {
-            node = new LinkedNode(key, value);
+            node = new Node(key, value);
             cache.put(key, node);
-            addToHead(node);
+            addHead(node);
             size++;
-            if(size > capacity) {
-                LinkedNode target = tail.prev;
-                cache.remove(target.key);
-                removeTail();
+            if(capacity < size) {
+                Node removeNode = tail.prev;
+                cache.remove(removeNode.key);
+                remove(removeNode);
                 size--;
             }
-        } else {
-            node.value = value;
-            removeNode(node);
-            addToHead(node);
         }
+        node.value = value;
+        remove(node);
+        addHead(node);
     }
 
-    public void addToHead(LinkedNode node) {
-        node.prev = head;
-        node.next = head.next;
-        head.next.prev = node;
-        head.next = node;
-    }
-
-    public void removeNode(LinkedNode node) {
+    public void remove(Node node) {
         node.prev.next = node.next;
         node.next.prev = node.prev;
     }
 
-    private void removeTail() {
-        LinkedNode node = tail.prev;
-        removeNode(node);
+    public void addHead(Node node) {
+        node.next = head.next;
+        node.prev = head;
+        head.next = node;
+        node.next.prev = node;
     }
 }
 ```
