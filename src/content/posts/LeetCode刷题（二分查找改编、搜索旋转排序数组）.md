@@ -51,9 +51,6 @@ public int search(int[] nums, int left, int right, int target) {
         if(left > right) {
             return -1;
         }
-        if(left == right) {
-            return nums[left] == target ? left : -1;
-        }
         int mid = (left + right) / 2;
         if(nums[mid] == target) {
             return mid;

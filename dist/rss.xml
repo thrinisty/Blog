@@ -1,4 +1,1119 @@
-<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Thrinisty&apos;s Blog</title><description>New Blog</description><link>https://thrinisty.github.io/</link><language>zh_CN</language><item><title>设计模式笔记（结构性模式、行为型模式）</title><link>https://thrinisty.github.io/posts/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E7%AC%94%E8%AE%B0%E7%BB%93%E6%9E%84%E6%80%A7%E6%A8%A1%E5%BC%8F%E8%A1%8C%E4%B8%BA%E5%9E%8B%E6%A8%A1%E5%BC%8F/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E7%AC%94%E8%AE%B0%E7%BB%93%E6%9E%84%E6%80%A7%E6%A8%A1%E5%BC%8F%E8%A1%8C%E4%B8%BA%E5%9E%8B%E6%A8%A1%E5%BC%8F/</guid><description>结构性模式、行为型模式</description><pubDate>Fri, 24 Oct 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;设计模式&lt;/h1&gt;
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Thrinisty&apos;s Blog</title><description>New Blog</description><link>https://thrinisty.github.io/</link><language>zh_CN</language><item><title>多线程并发编程笔记（基本概念）</title><link>https://thrinisty.github.io/posts/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E7%AC%94%E8%AE%B0%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E7%AC%94%E8%AE%B0%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5/</guid><pubDate>Sun, 26 Oct 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;多线程并发编程笔记&lt;/h1&gt;
+&lt;h2&gt;简本概念&lt;/h2&gt;
+&lt;p&gt;&lt;strong&gt;Amdahl定律&lt;/strong&gt; S = 1 / (a + (1 - a) / n)&lt;/p&gt;
+&lt;p&gt;采用并发可以提升的效率&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;并发和并行&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;并发（Concurrent）：值单核CPU多个程序同时运行，轮流抢占CPU时间片（幻觉自己独占CPU）&lt;/p&gt;
+&lt;p&gt;并行（Parallel）：多核CPU，在不同核心上一起执行（真正的一起执行）&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;线程与进程&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;进程是内存分配，资源调度的基本单位，是线程的容器&lt;/p&gt;
+&lt;p&gt;线程是执行任务的单位，独立子任务，享受进程分配的空间&lt;/p&gt;
+</content:encoded></item><item><title>LeetCode刷题（加油站、罗马数字转整数、最后一个单词长度）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E5%8A%A0%E6%B2%B9%E7%AB%99%E7%BD%97%E9%A9%AC%E6%95%B0%E5%AD%97%E8%BD%AC%E6%95%B4%E6%95%B0%E6%9C%80%E5%90%8E%E4%B8%80%E4%B8%AA%E5%8D%95%E8%AF%8D%E9%95%BF%E5%BA%A6/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E5%8A%A0%E6%B2%B9%E7%AB%99%E7%BD%97%E9%A9%AC%E6%95%B0%E5%AD%97%E8%BD%AC%E6%95%B4%E6%95%B0%E6%9C%80%E5%90%8E%E4%B8%80%E4%B8%AA%E5%8D%95%E8%AF%8D%E9%95%BF%E5%BA%A6/</guid><description>加油站、罗马数字转整数、最后一个单词长度</description><pubDate>Sat, 25 Oct 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;加油站&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;在一条环路上有 &lt;code&gt;n&lt;/code&gt; 个加油站，其中第 &lt;code&gt;i&lt;/code&gt; 个加油站有汽油 &lt;code&gt;gas[i]&lt;/code&gt; 升。&lt;/p&gt;
+&lt;p&gt;你有一辆油箱容量无限的的汽车，从第 &lt;code&gt;i&lt;/code&gt; 个加油站开往第 &lt;code&gt;i+1&lt;/code&gt; 个加油站需要消耗汽油 &lt;code&gt;cost[i]&lt;/code&gt; 升。你从其中的一个加油站出发，开始时油箱为空。&lt;/p&gt;
+&lt;p&gt;给定两个整数数组 &lt;code&gt;gas&lt;/code&gt; 和 &lt;code&gt;cost&lt;/code&gt; ，如果你可以按顺序绕环路行驶一周，则返回出发时加油站的编号，否则返回 &lt;code&gt;-1&lt;/code&gt; 。如果存在解，则 &lt;strong&gt;保证&lt;/strong&gt; 它是 &lt;strong&gt;唯一&lt;/strong&gt; 的。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 1:&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入: gas = [1,2,3,4,5], cost = [3,4,5,1,2]
+输出: 3
+解释:
+从 3 号加油站(索引为 3 处)出发，可获得 4 升汽油。此时油箱有 = 0 + 4 = 4 升汽油
+开往 4 号加油站，此时油箱有 4 - 1 + 5 = 8 升汽油
+开往 0 号加油站，此时油箱有 8 - 2 + 1 = 7 升汽油
+开往 1 号加油站，此时油箱有 7 - 3 + 2 = 6 升汽油
+开往 2 号加油站，此时油箱有 6 - 4 + 3 = 5 升汽油
+开往 3 号加油站，你需要消耗 5 升汽油，正好足够你返回到 3 号加油站。
+因此，3 可为起始索引。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2:&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入: gas = [2,3,4], cost = [3,4,3]
+输出: -1
+解释:
+你不能从 0 号或 1 号加油站出发，因为没有足够的汽油可以让你行驶到下一个加油站。
+我们从 2 号加油站出发，可以获得 4 升汽油。 此时油箱有 = 0 + 4 = 4 升汽油
+开往 0 号加油站，此时油箱有 4 - 3 + 2 = 3 升汽油
+开往 1 号加油站，此时油箱有 3 - 3 + 3 = 3 升汽油
+你无法返回 2 号加油站，因为返程需要消耗 4 升汽油，但是你的油箱只有 3 升汽油。
+因此，无论怎样，你都不可能绕环路行驶一周。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;解法一：暴力拆解（超时）&lt;/p&gt;
+&lt;p&gt;依次遍历数组元素作为起点，直到找到一个可以返回到起始位置的地方&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public int canCompleteCircuit(int[] gas, int[] cost) {
+        int n = gas.length;
+        for(int i = 0; i &amp;lt; n; i++) {
+            int res = gas[i];
+            for(int j = i; ; j = (j + 1) % n) {
+                if(res &amp;lt; cost[j]) {
+                    break;
+                }
+                if((j + 1) % n == i) {
+                    return i;
+                }
+                res = res - cost[j] + gas[(j + 1) % n];
+            } 
+        }
+        return -1;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;解法二：&lt;/p&gt;
+&lt;p&gt;贪心算法，维护total和current两个数，total代表总的汽油和需要消耗的汽油的差值，如果差值小于零则怎样都不可能开到原点。&lt;/p&gt;
+&lt;p&gt;而current代表从start开始剩余的油量，如果这个数小于零，则代表当前start是不能完成路程的，需要将start设置为下一个开始点，并将current重置&lt;/p&gt;
+&lt;p&gt;当total大于0的时候，我们的start开始积累的油量就一定可以覆盖0 - start-1 的消耗&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public int canCompleteCircuit(int[] gas, int[] cost) {
+        int n = gas.length;
+        int total = 0;
+        int current = 0;
+        int start = 0;
+        for(int i = 0; i &amp;lt; n; i++) {
+            total += gas[i] - cost[i];
+            current += gas[i] - cost[i];
+            if(current &amp;lt; 0) {
+                start = i + 1;
+                current = 0;
+            }
+        }
+        return total &amp;gt;= 0 ? start : -1;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1&gt;罗马数字转整数&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;罗马数字包含以下七种字符: &lt;code&gt;I&lt;/code&gt;， &lt;code&gt;V&lt;/code&gt;， &lt;code&gt;X&lt;/code&gt;， &lt;code&gt;L&lt;/code&gt;，&lt;code&gt;C&lt;/code&gt;，&lt;code&gt;D&lt;/code&gt; 和 &lt;code&gt;M&lt;/code&gt;。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;字符          数值
+I             1
+V             5
+X             10
+L             50
+C             100
+D             500
+M             1000
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;例如， 罗马数字 &lt;code&gt;2&lt;/code&gt; 写做 &lt;code&gt;II&lt;/code&gt; ，即为两个并列的 1 。&lt;code&gt;12&lt;/code&gt; 写做 &lt;code&gt;XII&lt;/code&gt; ，即为 &lt;code&gt;X&lt;/code&gt; + &lt;code&gt;II&lt;/code&gt; 。 &lt;code&gt;27&lt;/code&gt; 写做 &lt;code&gt;XXVII&lt;/code&gt;, 即为 &lt;code&gt;XX&lt;/code&gt; + &lt;code&gt;V&lt;/code&gt; + &lt;code&gt;II&lt;/code&gt; 。&lt;/p&gt;
+&lt;p&gt;通常情况下，罗马数字中小的数字在大的数字的右边。但也存在特例，例如 4 不写做 &lt;code&gt;IIII&lt;/code&gt;，而是 &lt;code&gt;IV&lt;/code&gt;。数字 1 在数字 5 的左边，所表示的数等于大数 5 减小数 1 得到的数值 4 。同样地，数字 9 表示为 &lt;code&gt;IX&lt;/code&gt;。这个特殊的规则只适用于以下六种情况：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;I&lt;/code&gt; 可以放在 &lt;code&gt;V&lt;/code&gt; (5) 和 &lt;code&gt;X&lt;/code&gt; (10) 的左边，来表示 4 和 9。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;X&lt;/code&gt; 可以放在 &lt;code&gt;L&lt;/code&gt; (50) 和 &lt;code&gt;C&lt;/code&gt; (100) 的左边，来表示 40 和 90。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;C&lt;/code&gt; 可以放在 &lt;code&gt;D&lt;/code&gt; (500) 和 &lt;code&gt;M&lt;/code&gt; (1000) 的左边，来表示 400 和 900。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;给定一个罗马数字，将其转换成整数。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 1:&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入: s = &quot;III&quot;
+输出: 3
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2:&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入: s = &quot;IV&quot;
+输出: 4
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 3:&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入: s = &quot;IX&quot;
+输出: 9
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 4:&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入: s = &quot;LVIII&quot;
+输出: 58
+解释: L = 50, V= 5, III = 3.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 5:&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入: s = &quot;MCMXCIV&quot;
+输出: 1994
+解释: M = 1000, CM = 900, XC = 90, IV = 4.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;解法一：存储所有存在的可能，优先选取更大的组合&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public int romanToInt(String s) {
+        Map&amp;lt;String, Integer&amp;gt; map = new HashMap&amp;lt;&amp;gt;();
+        map.put(&quot;I&quot;, 1);
+        map.put(&quot;IV&quot;, 4);
+        map.put(&quot;V&quot;, 5);
+        map.put(&quot;IX&quot;, 9);
+        map.put(&quot;X&quot;, 10);
+        map.put(&quot;XL&quot;, 40);
+        map.put(&quot;L&quot;, 50);
+        map.put(&quot;XC&quot;, 90);
+        map.put(&quot;C&quot;, 100);
+        map.put(&quot;CD&quot;, 400);
+        map.put(&quot;D&quot;, 500);
+        map.put(&quot;CM&quot;, 900);
+        map.put(&quot;M&quot;, 1000);
+        int result = 0;
+        for(int i = 0; i &amp;lt; s.length();) {
+            if(i + 1 &amp;lt; s.length() &amp;amp;&amp;amp; map.containsKey(s.substring(i, i + 2))) {
+                result += map.get(s.substring(i, i + 2));
+                i += 2;
+            } else {
+                result += map.get(s.substring(i, i + 1));
+                i++;
+            }
+        }
+        return result;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;解法二：&lt;/p&gt;
+&lt;p&gt;通常情况，假如左边的数字都比右边的大，则只需要将每个字符进行拆分相加即可，但是如果由更大的的数字再右侧，则这个数字应该被减去，而非相加&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public static Map&amp;lt;Character, Integer&amp;gt; map = new HashMap&amp;lt;&amp;gt;();
+    static {
+        map.put(&apos;I&apos;, 1);
+        map.put(&apos;V&apos;, 5);
+        map.put(&apos;X&apos;, 10);
+        map.put(&apos;L&apos;, 50);
+        map.put(&apos;C&apos;, 100);
+        map.put(&apos;D&apos;, 500);
+        map.put(&apos;M&apos;, 1000);
+    }
+    public int romanToInt(String s) {
+        int result = 0;
+        int n = s.length();
+        for(int i = 0; i &amp;lt; n; i++) {
+            int num = map.get(s.charAt(i));
+            if(i &amp;lt; n - 1 &amp;amp;&amp;amp; num &amp;lt; map.get(s.charAt(i + 1))) {
+                result -= num;
+            } else {
+                result += num;
+            }
+        }
+        return result;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1&gt;最后一个单词长度&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;给你一个字符串 &lt;code&gt;s&lt;/code&gt;，由若干单词组成，单词前后用一些空格字符隔开。返回字符串中 &lt;strong&gt;最后一个&lt;/strong&gt; 单词的长度。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;单词&lt;/strong&gt; 是指仅由字母组成、不包含任何空格字符的最大子字符串。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：s = &quot;Hello World&quot;
+输出：5
+解释：最后一个单词是“World”，长度为 5。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：s = &quot;   fly me   to   the moon  &quot;
+输出：4
+解释：最后一个单词是“moon”，长度为 4。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 3：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：s = &quot;luffy is still joyboy&quot;
+输出：6
+解释：最后一个单词是长度为 6 的“joyboy”。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;解法一：家等通知解法，用split拆分，取最后一个单词长度即可&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public int lengthOfLastWord(String s) {
+        String[] strs = s.split(&quot; &quot;);
+        int n = strs.length;
+        String target = strs[n - 1];
+        return target.length();
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;解法二：从后往前排除空格后计数直到再次遇到空格或者结束&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public int lengthOfLastWord(String s) {
+        char[] arr = s.toCharArray();
+        int n = arr.length;
+        int result = 0;
+        int i = n - 1;
+        while(i &amp;gt;= 0 &amp;amp;&amp;amp; arr[i] == &apos; &apos;) {
+           i--;
+        }
+        while(i &amp;gt;= 0 &amp;amp;&amp;amp; arr[i] != &apos; &apos;) {
+            result++;
+            i--;
+        }
+        return result;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+</content:encoded></item><item><title>设计模式笔记（行为型模式）</title><link>https://thrinisty.github.io/posts/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E7%AC%94%E8%AE%B0%E8%A1%8C%E4%B8%BA%E5%9E%8B%E6%A8%A1%E5%BC%8F/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E7%AC%94%E8%AE%B0%E8%A1%8C%E4%B8%BA%E5%9E%8B%E6%A8%A1%E5%BC%8F/</guid><description>行为型模式</description><pubDate>Sat, 25 Oct 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;设计模式&lt;/h1&gt;
+&lt;h2&gt;行为型模式&lt;/h2&gt;
+&lt;p&gt;重点关注对象之间是如何通信的&lt;/p&gt;
+&lt;h3&gt;模板方法模式&lt;/h3&gt;
+&lt;p&gt;定义了一个算法架构，允许子类为一个或者多个步骤实现&lt;/p&gt;
+&lt;p&gt;模板方法在子类不改变算法结构的情况下，重新定义算法某些步骤&lt;/p&gt;
+&lt;p&gt;实现算法的不变部分，并将可变的空间留给子类完成&lt;/p&gt;
+&lt;p&gt;子类中公共的行为抽出出来并封装到一个公共的父类中，避免代码重复&lt;/p&gt;
+&lt;p&gt;设计抽象类，其中约定一个流程，流程控制交由flag函数进行控制，实现的子类可以重写这个函数进行对于父类流程改变&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public abstract class AClass {
+    public final void makeClass() {
+        makePPT();
+        makeVideo();
+        if(flag()) {
+            makeJava();
+            doJava();
+        }
+    }
+    public final void makePPT() {
+        System.out.println(&quot;制作PPT&quot;);
+    }
+    public final void makeVideo() {
+        System.out.println(&quot;制作Video&quot;);
+    }
+    public final void makeJava() {
+        System.out.println(&quot;编写JAVA&quot;);
+    }
+    protected boolean flag() {
+        return false;
+    }
+    public abstract void doJava();
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;实现类，重写flag方法&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class JavaClass extends AClass{
+    private boolean flag;
+
+    public JavaClass(boolean flag) {
+        this.flag = flag;
+    }
+
+    @Override
+    protected boolean flag() {
+        return flag;
+    }
+
+    @Override
+    public void doJava() {
+        System.out.println(&quot;设计模式代码&quot;);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;实际调用传入true，那么在制作课程的时候执行java相关的业务&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class Main {
+    public static void main(String[] args) {
+        AClass javaClass = new JavaClass(true);
+        javaClass.makeClass();
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;这样我们实现子类的时候可以自定义父类模板流程，进行灵活增加删除一些流程&lt;/p&gt;
+&lt;h3&gt;迭代器模式&lt;/h3&gt;
+&lt;p&gt;提供方法，顺序访问集合中的各个元素，而不暴露对象的内部表示&lt;/p&gt;
+&lt;p&gt;为遍历不同的集合结构提供了统一的接口，分离了集合对象的遍历行为&lt;/p&gt;
+&lt;p&gt;迭代器接口，使用泛型作为拓展&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public interface Iterator&amp;lt;T&amp;gt; {
+    boolean hasNext();
+    T next();
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;书籍迭代器实现&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class BookIterator implements Iterator&amp;lt;Book&amp;gt;{
+    private Book[] books;
+    private int index = 0;
+    public BookIterator(Book[] books) {
+        this.books = books;
+    }
+
+    @Override
+    public boolean hasNext() {
+        return index &amp;lt; books.length &amp;amp;&amp;amp; books[index] != null;
+    }
+
+    @Override
+    public Book next() {
+        return books[index++];
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;通过创建和传入books数组，即可通过迭代器获取各个元素&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public interface Library {
+    Iterator&amp;lt;Book&amp;gt; createIterator();
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;public class BookLibrary implements Library {
+    private Book[] books;
+    public BookLibrary(Book[] books) {
+        this.books = books;
+    }
+
+    @Override
+    public Iterator&amp;lt;Book&amp;gt; createIterator() {
+        return new BookIterator(books);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;public class Main {
+    public static void main(String[] args) {
+        Book[] books = {new Book(), new Book(), new Book()};
+        Library library = new BookLibrary(books);
+        Iterator&amp;lt;Book&amp;gt; iterator = library.createIterator();
+        while (iterator.hasNext()) {
+            Book book = iterator.next();
+            System.out.println(book);
+        }
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;策略模式&lt;/h3&gt;
+&lt;p&gt;定义了算法，分别封装起来，他们之间可以相互替换，让算法的变化不会影响到使用算法的用户&lt;/p&gt;
+&lt;p&gt;如果有大量的if-else可以通过策略模式进行替换&lt;/p&gt;
+&lt;p&gt;提报算法的保密性&lt;/p&gt;
+&lt;p&gt;现有一个算法的接口，传入两个参数&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public interface Strategy {
+    int operator(int n1, int n2);
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;加法实现&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class Add implements Strategy {
+    @Override
+    public int operator(int n1, int n2) {
+        return n1 + n2;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;减法实现&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class Sub implements Strategy {
+    @Override
+    public int operator(int n1, int n2) {
+        return n1 - n2;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;策略类，其中有算法的接口对象&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class Operation {
+    private Strategy strategy;
+
+    public Operation(Strategy strategy) {
+        this.strategy = strategy;
+    }
+
+    public int execute(int n1, int n2) {
+        return strategy.operator(n1, n2);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;使用的时候传入对应算法实现即可&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class Main {
+    public static void main(String[] args) {
+        Operation operation = new Operation(new Add());
+        System.out.println(operation.execute(1, 2));
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;解释器模式&lt;/h3&gt;
+&lt;p&gt;通过给定的语言，定义它的语法和行为，并定义解释器，用这个解释器来解释语言中的句子&lt;/p&gt;
+&lt;p&gt;为解释一种语言，而为语言创建的解释器&lt;/p&gt;
+&lt;p&gt;某个类型的语言触发频次够高，比如处理日志和不同日志格式&lt;/p&gt;
+&lt;p&gt;解释器接口&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public interface Expression {
+    boolean interpret(String context);
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;解释器实现，传入带解释的数据，实现中实现解释逻辑&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class TerminalExpression implements Expression{
+    private String data;
+    public TerminalExpression(String data) {
+        this.data = data;
+    }
+    @Override
+    public boolean interpret(String context) {
+        return context.contains(data);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;public class Main {
+    public static void main(String[] args) {
+        Expression expression = new TerminalExpression(&quot;hello&quot;);
+        System.out.println(expression.interpret(&quot;hello world&quot;));
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;观察者模式&lt;/h3&gt;
+&lt;p&gt;当存在一对多关系的时候，可以使用观察者模式&lt;/p&gt;
+&lt;p&gt;比如，当一个对象被修改的时候，则会自动通知依赖他的对象&lt;/p&gt;
+&lt;p&gt;让对多个观察者对象同时监听某一个主题对象，当主题对象发生改变的时候，它所有依赖者（观察者）都会收到通知并更新&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;主题类&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;设计一个主题类，其中包含了观察者对象列表，观察对象state，以及绑定方法（将观察者添加到观察者列表中）&lt;/p&gt;
+&lt;p&gt;在state的set方法上设立通知的方法，当set观察对象被修改的时候，发出通知，去依次执行观察者中的方法&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class Subject {
+    private List&amp;lt;Observer&amp;gt; observerList = new ArrayList&amp;lt;&amp;gt;();
+    private int state;
+    public void bind(Observer observer) {
+        observerList.add(observer);
+    }
+
+    public int getState() {
+        return state;
+    }
+
+    public void setState(int state) {
+        this.state = state;
+        notifyObservers();
+    }
+
+    public void notifyObservers() {
+        for (Observer observer : observerList) {
+            observer.update();
+        }
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;观察者抽象类&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;由对应的抽象方法供通知方法调用，交由子类实现&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public abstract class Observer {
+    protected Subject subject;
+    public abstract void update();
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;观察者实现&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;在构造方法中传入主题对象，由主题对象进行对于观察者的绑定，实现主题通知观察者的方法&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class HexObserver extends Observer {
+    public HexObserver(Subject subject) {
+        this.subject = subject;
+        this.subject.bind(this);
+    }
+
+    @Override
+    public void update() {
+        System.out.println(&quot;转换为16进制:&quot; + Integer.toHexString(subject.getState()));
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;调用：创建主题对象，创建观察者并绑定到主题上，当主题监听字段发送改变的时候触发通知调用观察者更新方法&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class Main {
+    public static void main(String[] args) {
+        Subject subject = new Subject();
+        new HexObserver(subject);
+        System.out.println(&quot;状态值为:15&quot;);
+        subject.setState(15);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;备忘录模式&lt;/h3&gt;
+&lt;p&gt;在不破坏封装性的前提下，捕获一个对象的内部状态，并在该对象之外保存这个状态&lt;/p&gt;
+&lt;p&gt;现在有一个文本编辑器，可以编辑并提供撤销功能&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;// 1. Memento（存储编辑器状态）
+public class TextMemento {
+    private final String content;  // 状态保存的内容
+
+    public TextMemento(String content) {
+        this.content = content;
+    }
+
+    public String getContent() {
+        return content;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;// 2. Originator（需要保存状态的类）
+public class TextEditor {
+    private String content;
+
+    public void write(String text) {
+        this.content = text;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    // 创建备忘录（保存当前状态）
+    public TextMemento save() {
+        return new TextMemento(this.content);
+    }
+
+    // 恢复状态
+    public void restore(TextMemento memento) {
+        this.content = memento.getContent();
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;// 3. Caretaker（管理备忘录）
+public class HistoryManager {
+    private Stack&amp;lt;TextMemento&amp;gt; history = new Stack&amp;lt;&amp;gt;();
+
+    public void save(TextMemento memento) {
+        history.push(memento);
+    }
+
+    public TextMemento undo() {
+        if (!history.isEmpty()) {
+            return history.pop();  // 返回上一个状态
+        }
+        return null;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;客户端调用&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class Client {
+    public static void main(String[] args) {
+        // 初始化
+        TextEditor editor = new TextEditor();
+        HistoryManager history = new HistoryManager();
+
+        // 编辑并保存
+        editor.write(&quot;Hello&quot;);  // 第一次编辑
+        history.save(editor.save());  // 保存状态1
+
+        editor.write(&quot;Hello World&quot;);  // 第二次编辑
+        history.save(editor.save());  // 保存状态2
+
+        editor.write(&quot;Hello Java&quot;);   // 第三次编辑
+        System.out.println(&quot;Current Content: &quot; + editor.getContent());  // &quot;Hello Java&quot;
+
+        // 撤销一次（回到 &quot;Hello World&quot;）
+        editor.restore(history.undo());
+        System.out.println(&quot;After Undo: &quot; + editor.getContent());  // &quot;Hello World&quot;
+
+        // 再撤销一次（回到 &quot;Hello&quot;）
+        editor.restore(history.undo());
+        System.out.println(&quot;After 2nd Undo: &quot; + editor.getContent());  // &quot;Hello&quot;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;命令模式&lt;/h3&gt;
+&lt;p&gt;将一个请求封装为一个对象，从而可以用不同的请求对于客户进行参数化，解决了应用程序中对象的职责以及它们之间的通信方式&lt;/p&gt;
+&lt;p&gt;在软件系统中，行为请求者和行为实现者通常是一种紧耦合的关系，但在某些场合，比如需要对行为进行记录，撤销或者重做，事务等处理的时候，这种无法抵御变化的紧耦合的设计就不太合适&lt;/p&gt;
+&lt;p&gt;请求调用者和行为实现者需要解耦，使得调用者和行为实现者不直接交互&lt;/p&gt;
+&lt;p&gt;由一个类型的股票，可以买入卖出&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class Stock {
+    private String name;
+    private int count = 10;
+    public void buy() {
+        System.out.println(&quot;购买：&quot; + name +  &quot;股票-&quot; + count);
+    }
+    public void sell() {
+        System.out.println(&quot;卖出：&quot; + name +  &quot;股票-&quot; + count);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;现在有命令接口&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public interface Order {
+    void execute();
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;实现命令&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class BuyStock implements Order {
+    private Stock stock;
+
+    public BuyStock(Stock stock) {
+        this.stock = stock;
+    }
+
+    @Override
+    public void execute() {
+        stock.buy();
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;public class SellStock implements Order{
+    private Stock stock;
+
+    public SellStock(Stock stock) {
+        this.stock = stock;
+    }
+
+    @Override
+    public void execute() {
+        stock.sell();
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;中间的代理者，可以向其中传入命令，暴露方法统一执行&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class Broker {
+    List&amp;lt;Order&amp;gt; orders = new ArrayList&amp;lt;Order&amp;gt;();
+    public void takeOrder(Order order) {
+        orders.add(order);
+    }
+    public void placeOrder() {
+        for (Order order : orders) {
+            order.execute();
+        }
+        orders.clear();
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;public class Main {
+    public static void main(String[] args) {
+        Stock stock = new Stock();
+        Broker broker = new Broker();
+        broker.takeOrder(new BuyStock(stock));
+        broker.takeOrder(new SellStock(stock));
+        broker.placeOrder();
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;中介者模式&lt;/h3&gt;
+&lt;p&gt;用于降低多个对象之间通信的复杂性，提供一个中介类，通常处理不同类之间的通信，并支持松耦合，使代码易于维护&lt;/p&gt;
+&lt;p&gt;中介者类&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class Role {
+    public static void work(User user, String message) {
+        System.out.println(&quot;Role work&quot;);
+        System.out.println(&quot;User: &quot; + user.getName());
+        System.out.println(&quot;Message: &quot; + message);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;在User中调用中介者的方法&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class User {
+    private String name;
+
+    public User(String name) {
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
+    }
+    public void sendMessage(String message) {
+        Role.work(this, message);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;使用，通过用户调用中介者方法实现业务功能，中介者负责实际业务功能&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class Main {
+    public static void main(String[] args) {
+        User user = new User(&quot;张三&quot;);
+        User user01 = new User(&quot;李四&quot;);
+        user.sendMessage(&quot;睡觉&quot;);
+        user01.sendMessage(&quot;工作&quot;);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;责任链模式&lt;/h3&gt;
+&lt;p&gt;为请求创建一个接收者对象的链，对请求的发送者和接收者进行解耦&lt;/p&gt;
+&lt;p&gt;在这种模式中，通常每个接收者都包含另一个接受者的引用。如果一个对象不能处理该请求，那么它就会把相同的请求传给下一个接收者，以此类推。&lt;/p&gt;
+&lt;p&gt;避免请求者和请求者耦合在一起，让多个对象都有可能接收请求，将这些对象连接成为一条链，并沿着这条链传递请求，直到有对象处理它为止。&lt;/p&gt;
+&lt;p&gt;职责链上的处理者负责处理请求，客户只需要将请求发送到责任链上即可，无需关心请求的处理细节和请求的传递，所以职责链将请求的发送者和请求处理器解耦了。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;详细构思&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;这个部分我们后续的项目会用到，故好好学学&lt;/p&gt;
+&lt;p&gt;现在需要开发一个请假流程控制系统，请假一天以下只需要小组长同意即可，1-3天还需要部门经理同意，请求3-7天还需要总经理同意&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;/**
+ * 请假条类
+ */
+@Data
+public class LeaveRequest {
+    private String name;
+    private int day;
+    private String content;
+    public LeaveRequest(String name, int day, String content) {
+        this.name = name;
+        this.day = day;
+        this.content = content;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;/**
+ * 抽象处理者类
+ */
+public abstract class Handler {
+    protected final static int NUM_ONE = 1;
+    protected final static int NUM_THREE = 3;
+    protected final static int NUM_SEVEN = 7;
+
+    //该领导的处理天数区间
+    private int numStart;
+    private int numEnd;
+
+    //声明后继者（上级领导）
+    private Handler nextHandler;
+    
+    public Handler(int numStart, int numEnd) {
+        this.numStart = numStart;
+        this.numEnd = numEnd;
+    }
+
+    //设置上级领导对象
+    public void setNextHandler(Handler nextHandler) {
+        this.nextHandler = nextHandler;
+    }
+
+    //各级领导处理请假条的方法
+    protected abstract void handleLeave(LeaveRequest leave);
+
+    //提交请假条
+    public final void submit(LeaveRequest leave) {
+        //先进行审批
+        this.handleLeave(leave);
+        if (leave.getDay() &amp;gt;= numStart &amp;amp;&amp;amp; leave.getDay() &amp;lt;= this.numEnd) {
+            System.out.println(&quot;流程成功&quot;);
+        } else if (this.nextHandler != null) {
+            this.nextHandler.handleLeave(leave);
+        } else {
+            System.out.println(&quot;流程失败&quot;);
+        }
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;/**
+ * 小组长类
+ */
+public class GroupLeader extends Handler{
+    public GroupLeader() {
+        super(0, Handler.NUM_ONE);
+    }
+
+    @Override
+    protected void handleLeave(LeaveRequest leave) {
+        System.out.println(leave.getName() + &quot;请假&quot; + leave.getDay() + &quot;天&quot; + leave.getContent() + &quot;请假原因&quot;);
+        System.out.println(&quot;小组长审批，同意&quot;);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;public class Main {
+    public static void main(String[] args) {
+        LeaveRequest leave = new LeaveRequest(&quot;产假&quot;, 5, &quot;回家修养&quot;);
+        //创建各个节点处理
+        GroupLeader group = new GroupLeader();
+        Manager manager = new Manager();
+        GeneralManage generalManage = new GeneralManage();
+
+        //设置链
+        group.setNextHandler(manager);
+        group.setNextHandler(generalManage);
+        group.submit(leave);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;这个设计模式在Filter链中也有使用，在进行处理的时候先进行前置处理，然后调用责任链的下一个处理器的处理，在结束后进行一开始的后置处理&lt;/p&gt;
+&lt;h3&gt;访问者模式&lt;/h3&gt;
+&lt;p&gt;使用一个访问类，改变了元素类的执行算法&lt;/p&gt;
+&lt;p&gt;通过这种方式，元素的执行算法可以随着访问者改变而改变，这种类型的设计模式属于行为型模式&lt;/p&gt;
+&lt;p&gt;根据模式，元素对象已接受访问者对象，这样访问者对象就可以处理元素对象上的操作&lt;/p&gt;
+&lt;p&gt;主要讲数据结构与数据操作分离，稳定的数据结构和易变的操作耦合问题&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;// Element 接口：所有元素必须实现 accept(Visitor)
+interface DocumentElement {
+    void accept(DocumentVisitor visitor);
+}
+
+// Visitor 接口：定义对不同元素的操作
+interface DocumentVisitor {
+    void visit(TextElement text);
+    void visit(ImageElement image);
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;// 具体元素：文本
+class TextElement implements DocumentElement {
+    private String content;
+
+    public TextElement(String content) {
+        this.content = content;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    @Override
+    public void accept(DocumentVisitor visitor) {
+        visitor.visit(this); // 调用访问者的 visit(TextElement)
+    }
+}
+
+// 具体元素：图片
+class ImageElement implements DocumentElement {
+    private String src;
+
+    public ImageElement(String src) {
+        this.src = src;
+    }
+
+    public String getSrc() {
+        return src;
+    }
+
+    @Override
+    public void accept(DocumentVisitor visitor) {
+        visitor.visit(this); // 调用访问者的 visit(ImageElement)
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;// 访问者1：导出HTML
+class HtmlExportVisitor implements DocumentVisitor {
+    @Override
+    public void visit(TextElement text) {
+        System.out.println(&quot;&amp;lt;p&amp;gt;&quot; + text.getContent() + &quot;&amp;lt;/p&amp;gt;&quot;);
+    }
+
+    @Override
+    public void visit(ImageElement image) {
+        System.out.println(&quot;&amp;lt;img src=\&quot;&quot; + image.getSrc() + &quot;\&quot;/&amp;gt;&quot;);
+    }
+}
+
+// 访问者2：统计字数
+class WordCountVisitor implements DocumentVisitor {
+    private int wordCount = 0;
+
+    @Override
+    public void visit(TextElement text) {
+        wordCount += text.getContent().split(&quot; &quot;).length;
+    }
+
+    @Override
+    public void visit(ImageElement image) {
+        // 图片不参与字数统计
+    }
+
+    public int getWordCount() {
+        return wordCount;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;class Document {
+    private List&amp;lt;DocumentElement&amp;gt; elements = new ArrayList&amp;lt;&amp;gt;();
+
+    public void addElement(DocumentElement element) {
+        elements.add(element);
+    }
+
+    // 遍历所有元素，接受访问者操作
+    public void accept(DocumentVisitor visitor) {
+        for (DocumentElement element : elements) {
+            element.accept(visitor);
+        }
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;public class Client {
+    public static void main(String[] args) {
+        Document document = new Document();
+        document.addElement(new TextElement(&quot;Hello World&quot;));
+        document.addElement(new ImageElement(&quot;photo.jpg&quot;));
+        document.addElement(new TextElement(&quot;Visitor Pattern Example&quot;));
+
+        // 导出HTML
+        System.out.println(&quot;HTML Export:&quot;);
+        document.accept(new HtmlExportVisitor());
+
+        // 统计字数
+        WordCountVisitor wordCounter = new WordCountVisitor();
+        document.accept(wordCounter);
+        System.out.println(&quot;Word Count: &quot; + wordCounter.getWordCount());
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;状态模式&lt;/h3&gt;
+&lt;p&gt;在状态模式中，类的行为是基于它的状态改变的&lt;/p&gt;
+&lt;p&gt;允许对象在内部状态改变时改变它的行为，对象看起来好像修改了它的类&lt;/p&gt;
+&lt;p&gt;对象的行为依赖于它的属性，并且可以根据它的状态改变而改变它的相关行为&lt;/p&gt;
+&lt;p&gt;内容类&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class Context {
+    private State state;
+    public Context() {
+        state = null;
+    }
+
+    public State getState() {
+        return state;
+    }
+
+    public void setState(State state) {
+        this.state = state;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;状态接口，其中传入Context类&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public interface State {
+    public void operator(Context context);
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;实现状态接口&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class StartState implements State {
+    @Override
+    public void operator(Context context) {
+        System.out.println(&quot;开启&quot;);
+        context.setState(this);
+    }
+
+    @Override
+    public String toString() {
+        return &quot;正在进行...&quot;;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;public class StopState implements State {
+    @Override
+    public void operator(Context context) {
+        context.setState(this);
+    }
+
+    @Override
+    public String toString() {
+        return &quot;已结束...&quot;;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;调用&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class Main {
+    public static void main(String[] args) {
+        Context context = new Context();
+        State start = new StartState();
+        start.operator(context);
+        System.out.println(start.toString());
+        State stop = new StopState();
+        stop.operator(context);
+        System.out.println(stop.toString());
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+</content:encoded></item><item><title>LeetCode刷题（H指数、O1时间插入删除随机获取）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98h%E6%8C%87%E6%95%B0o1%E6%97%B6%E9%97%B4%E6%8F%92%E5%85%A5%E5%88%A0%E9%99%A4%E9%9A%8F%E6%9C%BA%E8%8E%B7%E5%8F%96/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98h%E6%8C%87%E6%95%B0o1%E6%97%B6%E9%97%B4%E6%8F%92%E5%85%A5%E5%88%A0%E9%99%A4%E9%9A%8F%E6%9C%BA%E8%8E%B7%E5%8F%96/</guid><description>H指数、二分查找H指数、O1时间插入删除随机获取</description><pubDate>Fri, 24 Oct 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;H指数&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;给你一个整数数组 &lt;code&gt;citations&lt;/code&gt; ，其中 &lt;code&gt;citations[i]&lt;/code&gt; 表示研究者的第 &lt;code&gt;i&lt;/code&gt; 篇论文被引用的次数。计算并返回该研究者的 &lt;strong&gt;&lt;code&gt;h&lt;/code&gt; 指数&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;根据维基百科上 &lt;a href=&quot;https://baike.baidu.com/item/h-index/3991452?fr=aladdin&quot;&gt;h 指数的定义&lt;/a&gt;：&lt;code&gt;h&lt;/code&gt; 代表“高引用次数” ，一名科研人员的 &lt;code&gt;h&lt;/code&gt; &lt;strong&gt;指数&lt;/strong&gt; 是指他（她）至少发表了 &lt;code&gt;h&lt;/code&gt; 篇论文，并且 &lt;strong&gt;至少&lt;/strong&gt; 有 &lt;code&gt;h&lt;/code&gt; 篇论文被引用次数大于等于 &lt;code&gt;h&lt;/code&gt; 。如果 &lt;code&gt;h&lt;/code&gt; 有多种可能的值，&lt;strong&gt;&lt;code&gt;h&lt;/code&gt; 指数&lt;/strong&gt; 是其中最大的那个。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：citations = [3,0,6,1,5]
+输出：3 
+解释：给定数组表示研究者总共有 5 篇论文，每篇论文相应的被引用了 3, 0, 6, 1, 5 次。
+     由于研究者有 3 篇论文每篇 至少 被引用了 3 次，其余两篇论文每篇被引用 不多于 3 次，所以她的 h 指数是 3。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：citations = [1,3,1]
+输出：1
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;解法一：（穷举法）从设置h为文章数量开始，向下依次判断，如果满足有h篇索引高于h的则返回当前h&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public int hIndex(int[] citations) {
+        int n = citations.length;
+        for(int h = n; h &amp;gt; 0; h--) {
+            int count = 0;
+            for(int i = 0; i &amp;lt; n; i++) {
+                if(citations[i] &amp;gt;= h) {
+                    count++;
+                }
+                if(count &amp;gt;= h) {
+                    return h;
+                }
+            }
+        }
+        return 0;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;解法二：先进行排序，然后从大到小遍历，看当前数是否满足大于下一个目标数，如果符合则，将h置为目标&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public int hIndex(int[] citations) {
+        int n = citations.length;
+        int h = 0;
+        for(int i = n - 1; i &amp;gt;= 0; i--) {
+            if(citations[i] &amp;gt;= h + 1) {
+                h++;
+            } else {
+                break;
+            }
+        }
+        return h;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;解法三：如果数组是有序的后，我们还可以通过二分查找的方式对于后续的过程进行进一步的优化&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public int hIndex(int[] citations) {
+        int n = citations.length;
+        if (n == 0) return 0;
+        return binarySearch(citations, 0, n - 1);
+    }
+    
+    private int binarySearch(int[] citations, int left, int right) {
+        int n = citations.length;
+        if (left == right) {
+            return citations[right] &amp;gt;= n - right ? n - right : 0;
+        }
+        
+        int mid = left + (right - left) / 2;
+        if (citations[mid] &amp;gt;= n - mid) {
+            return binarySearch(citations, left, mid);
+        } else {
+            return binarySearch(citations, mid + 1, right);
+        }
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1&gt;O1时间插入删除随机获取&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;实现&lt;code&gt;RandomizedSet&lt;/code&gt; 类：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;RandomizedSet()&lt;/code&gt; 初始化 &lt;code&gt;RandomizedSet&lt;/code&gt; 对象&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;bool insert(int val)&lt;/code&gt; 当元素 &lt;code&gt;val&lt;/code&gt; 不存在时，向集合中插入该项，并返回 &lt;code&gt;true&lt;/code&gt; ；否则，返回 &lt;code&gt;false&lt;/code&gt; 。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;bool remove(int val)&lt;/code&gt; 当元素 &lt;code&gt;val&lt;/code&gt; 存在时，从集合中移除该项，并返回 &lt;code&gt;true&lt;/code&gt; ；否则，返回 &lt;code&gt;false&lt;/code&gt; 。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;int getRandom()&lt;/code&gt; 随机返回现有集合中的一项（测试用例保证调用此方法时集合中至少存在一个元素）。每个元素应该有 &lt;strong&gt;相同的概率&lt;/strong&gt; 被返回。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;你必须实现类的所有函数，并满足每个函数的 &lt;strong&gt;平均&lt;/strong&gt; 时间复杂度为 &lt;code&gt;O(1)&lt;/code&gt; 。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入
+[&quot;RandomizedSet&quot;, &quot;insert&quot;, &quot;remove&quot;, &quot;insert&quot;, &quot;getRandom&quot;, &quot;remove&quot;, &quot;insert&quot;, &quot;getRandom&quot;]
+[[], [1], [2], [2], [], [1], [2], []]
+输出
+[null, true, false, true, 2, true, false, 2]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;解法一：复用一下Set集合，面试应该不会让用这种方式&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class RandomizedSet {
+    Set&amp;lt;Integer&amp;gt; set = new HashSet&amp;lt;&amp;gt;();
+    public RandomizedSet() {
+        
+    }
+    
+    public boolean insert(int val) {
+        if(set.contains(val)) {
+            return false;
+        } else {
+            set.add(val);
+            return true;
+        }
+    }
+    
+    public boolean remove(int val) {
+        if(set.contains(val)) {
+            set.remove(val);
+            return true;
+        } else {
+            return false;
+        }
+    }
+    
+    public int getRandom() {
+        int n = set.size();
+        return (int)set.toArray()[(int)(Math.random() * n)];
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;解法二：通过ArrayList数组存储元素，由HashMap存放元素以及其对应下表，在加入和删除时用HashMap进行快速判断存在性&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class RandomizedSet {
+    List&amp;lt;Integer&amp;gt; nums;
+    Map&amp;lt;Integer, Integer&amp;gt; indices;
+    Random random;
+    public RandomizedSet() {
+        nums = new ArrayList&amp;lt;&amp;gt;();
+        indices = new HashMap&amp;lt;&amp;gt;();
+        random = new Random();
+    }
+    
+    public boolean insert(int val) {
+        if(indices.containsKey(val)) {
+            return false;
+        }
+        int index = nums.size();
+        nums.add(val);
+        indices.put(val, index);
+        return true;
+    }
+    
+    public boolean remove(int val) {
+        if(!indices.containsKey(val)) {
+            return false;
+        }
+        int index = indices.get(val);
+        int last = nums.get(nums.size() - 1);
+        nums.set(index, last);
+        indices.put(last, index);
+        nums.remove(nums.size() - 1);
+        indices.remove(val);
+        return true;
+    }
+    
+    public int getRandom() {
+        int randonNum = random.nextInt(nums.size());
+        return nums.get(randonNum);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+</content:encoded></item><item><title>设计模式笔记（结构性模式）</title><link>https://thrinisty.github.io/posts/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E7%AC%94%E8%AE%B0%E7%BB%93%E6%9E%84%E6%80%A7%E6%A8%A1%E5%BC%8F/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E7%AC%94%E8%AE%B0%E7%BB%93%E6%9E%84%E6%80%A7%E6%A8%A1%E5%BC%8F/</guid><description>结构性模式</description><pubDate>Fri, 24 Oct 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;设计模式&lt;/h1&gt;
 &lt;h2&gt;结构性模式&lt;/h2&gt;
 &lt;p&gt;主要关注类和对象的组合模式&lt;/p&gt;
 &lt;h3&gt;外观模式&lt;/h3&gt;
@@ -280,6 +1395,271 @@ public class Employee {
 Employee(name=李四, dept=2, salary=150, employeeList=[Employee(name=王五, dept=3, salary=100, employeeList=[]), Employee(name=赵六, dept=4, salary=50, employeeList=[])])
 Employee(name=王五, dept=3, salary=100, employeeList=[])
 Employee(name=赵六, dept=4, salary=50, employeeList=[])
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;代理模式&lt;/h3&gt;
+&lt;p&gt;可以将代理对象和目标对象相分离，降低耦合度，拥有更好的扩展性&lt;/p&gt;
+&lt;p&gt;是AOP面向切面编程中的核心&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;静态代理&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;有一个接口以及接口方法的实现类&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public interface OrderService {
+    void generate();
+    void modify();
+    void detail();
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;public class OrderServiceImpl implements OrderService {
+    @Override
+    public void generate() {
+        System.out.println(&quot;订单生成&quot;);
+    }
+
+    @Override
+    public void modify() {
+        System.out.println(&quot;订单修改&quot;);
+    }
+
+    @Override
+    public void detail() {
+        System.out.println(&quot;订单详情&quot;);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;我们现在需要增添功能：对每个业务接口中业务方法的解决耗时，可以在每个业务的前后取时间相减，但是违背了OCP原则，且没有复用代码&lt;/p&gt;
+&lt;p&gt;我们使用代理模式处理，写一个OrderService的代理对象&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class OrderServiceProxy implements OrderService{
+    //写入公共接口，耦合度低
+    private OrderService orderService;
+
+    public OrderServiceProxy(OrderService orderService) {
+        this.orderService = orderService;
+    }
+
+    @Override
+    public void generate() {
+        long begin = System.currentTimeMillis();
+        orderService.generate();
+        long end = System.currentTimeMillis();
+        System.out.println(&quot;Generate Order Time: &quot; + (end - begin));
+    }
+
+    @Override
+    public void modify() {
+        long begin = System.currentTimeMillis();
+        orderService.modify();
+        long end = System.currentTimeMillis();
+        System.out.println(&quot;Modify Order Time: &quot; + (end - begin));
+    }
+
+    @Override
+    public void detail() {
+        long begin = System.currentTimeMillis();
+        orderService.detail();
+        long end = System.currentTimeMillis();
+        System.out.println(&quot;Detail Order Time: &quot; + (end - begin));
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;在主函数中调用代理对象的方法即可完成功能的增强&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class Main {
+    public static void main(String[] args) {
+        OrderService orderService = new OrderServiceImpl();
+        OrderService proxy = new OrderServiceProxy(orderService);
+        proxy.generate();
+        proxy.modify();
+        proxy.detail();
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;订单生成
+Generate Order Time: 0
+订单修改
+Modify Order Time: 0
+订单详情
+Detail Order Time: 0
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;虽然解决了OCP的开闭问题，但是每个接口需要实现一个代理类，会导致类的数量急剧增多，我们在实际会使用到动态代理&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;动态代理&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;JDK动态代理技术：只能代理接口&lt;/p&gt;
+&lt;p&gt;CGLIB：开源项目，高性能Code生成类库，底层通过继承的方式实现，可以代理类&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public interface OrderService {
+    void generate();
+    void modify();
+    void detail();
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;实现类&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class OrderServiceImpl implements OrderService {
+    @Override
+    public void generate() {
+        System.out.println(&quot;订单生成&quot;);
+    }
+
+    @Override
+    public void modify() {
+        System.out.println(&quot;订单修改&quot;);
+    }
+
+    @Override
+    public void detail() {
+        System.out.println(&quot;订单详情&quot;);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;动态代理处理器&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class TimerInvocationHandler implements InvocationHandler {
+    private Object target;
+
+    public TimerInvocationHandler(Object target) {
+        this.target = target;
+    }
+
+    @Override
+    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+        long begin = System.currentTimeMillis();
+        Object object = method.invoke(target, args);
+        long end = System.currentTimeMillis();
+        System.out.println(&quot;Time: &quot; + (end - begin));
+        return object;//返回方法调用的返回值
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;使用&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class ProxyTest {
+    public static void main(String[] args) {
+        //创建目标对象
+        OrderService target = new OrderServiceImpl();
+        //创建代理类，借助jdk中的类
+        //1.类加载器 2.代理类实现的接口 3.调用处理器
+        Object proxyObj = Proxy.newProxyInstance(
+                target.getClass().getClassLoader(),
+                //为了创建代理类，需要获取目标类的类加载器
+                target.getClass().getInterfaces(),
+                //为了实现接口方法，需要获取类的所有接口对象
+                new TimerInvocationHandler(target)
+                //传入实现了处理接口的实例对象
+                );
+        OrderService proxy = (OrderService) proxyObj;
+        //调用代理类
+        proxy.generate();
+        proxy.modify();
+        proxy.detail();
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;装饰模式&lt;/h3&gt;
+&lt;p&gt;在原有对象不改变的基础上，将对象的功能添加&lt;/p&gt;
+&lt;p&gt;扩展一个类的功能或给一个类添加附加职责&lt;/p&gt;
+&lt;p&gt;被装饰的抽象类&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;abstract class ABatterCake {
+    protected abstract String getDesc();
+    protected abstract int cost();
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;被装饰的实现类&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class BatterCake extends ABatterCake{
+    @Override
+    protected String getDesc() {
+        return &quot;煎饼&quot;;
+    }
+
+    @Override
+    protected int cost() {
+        return 6;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;拓展的装饰抽象类：加了个another方法，可以让实现类继承实现&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;package com;
+
+abstract class ADecorator extends ABatterCake{
+    private ABatterCake batterCake;
+
+    public ADecorator(ABatterCake batterCake) {
+        this.batterCake = batterCake;
+    }
+
+    @Override
+    protected String getDesc() {
+        return this.batterCake.getDesc();
+    }
+
+    @Override
+    protected int cost() {
+        return this.batterCake.cost();
+    }
+
+    protected abstract void another();
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;实现具体装饰类&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class EggBatterCake extends ADecorator{
+    public EggBatterCake(ABatterCake batterCake) {
+        super(batterCake);
+    }
+
+    @Override
+    protected void another() {
+        System.out.println(&quot;加蛋&quot;);
+
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;使用&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class Main {
+    public static void main(String[] args) {
+        ADecorator eggCake = new EggBatterCake(new BatterCake());
+        System.out.println(eggCake.getDesc());
+        System.out.println(eggCake.cost());
+        eggCake.another();
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;享元模式&lt;/h3&gt;
+&lt;p&gt;提供了减少对象数量，从而改善应用所需的对象结构方式&lt;/p&gt;
+&lt;p&gt;员工接口&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public interface Employee {
+    void report();
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;经理实现&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@Data
+public class Manager implements Employee{
+    private String department;
+    private String noteContent;
+
+    public Manager(String department) {
+        this.department = department;
+    }
+
+    @Override
+    public void report() {
+        System.out.println(department + &quot; &quot; + noteContent);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;通过ManagementFactory获取对应的经理，减少资源开销，创建过的经理会被放入EMPLOYEE_MAP中，避免了重复放入&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class ManagementFactory {
+    private static final Map&amp;lt;String, Employee&amp;gt; EMPLOYEE_MAP = new HashMap&amp;lt;String, Employee&amp;gt;();
+
+    public static Employee getEmployee(String department) {
+        Manager manager = (Manager) EMPLOYEE_MAP.get(department);
+        if (manager == null) {
+            manager = new Manager(department);
+            System.out.println(&quot;创建部门经理&quot; + department);
+            manager.setNoteContent(&quot;经济相关的内容&quot;);
+            EMPLOYEE_MAP.put(department, manager);
+        }
+        return manager;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;使用&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class Main {
+    public static void main(String[] args) {
+        Employee manager = ManagementFactory.getEmployee(&quot;金融部门&quot;);
+        manager.report();
+    }
+}
 &lt;/code&gt;&lt;/pre&gt;
 </content:encoded></item><item><title>LeetCode刷题（删除有序数组中的重复项、轮转数组）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E5%88%A0%E9%99%A4%E6%9C%89%E5%BA%8F%E6%95%B0%E7%BB%84%E4%B8%AD%E7%9A%84%E9%87%8D%E5%A4%8D%E9%A1%B9/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E5%88%A0%E9%99%A4%E6%9C%89%E5%BA%8F%E6%95%B0%E7%BB%84%E4%B8%AD%E7%9A%84%E9%87%8D%E5%A4%8D%E9%A1%B9/</guid><description>删除有序数组中的重复项、允许重复变种、轮转数组</description><pubDate>Thu, 23 Oct 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;删除有序数组中的重复项&lt;/h1&gt;
 &lt;h2&gt;题目描述&lt;/h2&gt;
@@ -6112,131 +7492,7 @@ tcp        0      0 192.168.95.8:39136      100.64.205.163:80       ESTABLISHED
 &lt;/code&gt;&lt;/pre&gt;
 </content:encoded></item><item><title>Redis笔记（）</title><link>https://thrinisty.github.io/posts/redis%E7%AC%94%E8%AE%B0%E6%A8%A1%E6%9D%BF/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/redis%E7%AC%94%E8%AE%B0%E6%A8%A1%E6%9D%BF/</guid><pubDate>Wed, 01 Oct 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;Redis笔记&lt;/h1&gt;
 </content:encoded></item><item><title>开发项目（）</title><link>https://thrinisty.github.io/posts/%E5%BC%80%E5%8F%91%E9%A1%B9%E7%9B%AE%E6%A8%A1%E6%9D%BF/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/%E5%BC%80%E5%8F%91%E9%A1%B9%E7%9B%AE%E6%A8%A1%E6%9D%BF/</guid><pubDate>Wed, 01 Oct 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;项目&lt;/h1&gt;
-</content:encoded></item><item><title>LeetCode刷题（二分查找改编、搜索旋转排序数组）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E4%BA%8C%E5%88%86%E6%9F%A5%E6%89%BE%E6%94%B9%E7%BC%96/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E4%BA%8C%E5%88%86%E6%9F%A5%E6%89%BE%E6%94%B9%E7%BC%96/</guid><description>在排序数组中查找元素第一个位置和最后一个位置、搜索旋转排序数组</description><pubDate>Tue, 30 Sep 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;查找元素第一个和最后一个位置&lt;/h1&gt;
-&lt;h2&gt;题目描述&lt;/h2&gt;
-&lt;p&gt;给你一个按照非递减顺序排列的整数数组 &lt;code&gt;nums&lt;/code&gt;，和一个目标值 &lt;code&gt;target&lt;/code&gt;。请你找出给定目标值在数组中的开始位置和结束位置。&lt;/p&gt;
-&lt;p&gt;如果数组中不存在目标值 &lt;code&gt;target&lt;/code&gt;，返回 &lt;code&gt;[-1, -1]&lt;/code&gt;。&lt;/p&gt;
-&lt;p&gt;你必须设计并实现时间复杂度为 &lt;code&gt;O(log n)&lt;/code&gt; 的算法解决此问题。&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;输入：nums = [5,7,7,8,8,10], target = 8
-输出：[3,4]
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;输入：nums = [5,7,7,8,8,10], target = 6
-输出：[-1,-1]
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;strong&gt;示例 3：&lt;/strong&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;输入：nums = [], target = 0
-输出：[-1,-1]
-&lt;/code&gt;&lt;/pre&gt;
-&lt;h2&gt;题解&lt;/h2&gt;
-&lt;p&gt;基础的二分查找&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;public int search(int[] nums, int left, int right, int target) {
-        if(left &amp;gt; right) {
-            return -1;
-        }
-        if(left == right) {
-            return nums[left] == target ? left : -1;
-        }
-        int mid = (left + right) / 2;
-        if(nums[mid] == target) {
-            return mid;
-        } else if(target &amp;lt; nums[mid]) {
-            return search(nums, left, mid - 1, target);
-        } else {
-            return search(nums, mid + 1, right, target);
-        }
-    }
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;在基础的二分查找法上修改，找到结果后再次排除该结果，对于最小下表，再查其左边的数组看是否有更小的，右侧反之。&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;class Solution {
-    public int[] searchRange(int[] nums, int target) {
-        int left = searchLeft(nums, 0, nums.length - 1, target);
-        if(left == -1) {return new int[]{-1, -1};}
-        int right = searchRight(nums, 0, nums.length - 1, target);
-        return new int[]{left, right};
-    }
-
-    public int searchLeft(int[] nums, int left, int right, int target) {
-        if(left &amp;gt; right) {
-            return -1;
-        }
-        int mid = (left + right) / 2;
-        if(nums[mid] == target) {
-            int leftResult = searchLeft(nums, left, mid - 1, target);
-            return leftResult == -1 ? mid : leftResult;
-        } else if(target &amp;lt; nums[mid]) {
-            return searchLeft(nums, left, mid - 1, target);
-        } else {
-            return searchLeft(nums, mid + 1, right, target);
-        }
-    }
-
-    public int searchRight(int[] nums, int left, int right, int target) {
-        if(left &amp;gt; right) {
-            return -1;
-        }
-        int mid = (left + right) / 2;
-        if(nums[mid] == target) {
-            int rightResult = searchRight(nums, mid + 1, right, target);
-            return rightResult == -1 ? mid : rightResult;
-        } else if(target &amp;lt; nums[mid]) {
-            return searchRight(nums, left, mid - 1, target);
-        } else {
-            return searchRight(nums, mid + 1, right, target);
-        }
-    }
-}
-&lt;/code&gt;&lt;/pre&gt;
-&lt;h1&gt;搜索旋转排序数组&lt;/h1&gt;
-&lt;h2&gt;题目描述&lt;/h2&gt;
-&lt;p&gt;整数数组 &lt;code&gt;nums&lt;/code&gt; 按升序排列，数组中的值 &lt;strong&gt;互不相同&lt;/strong&gt; 。&lt;/p&gt;
-&lt;p&gt;在传递给函数之前，&lt;code&gt;nums&lt;/code&gt; 在预先未知的某个下标 &lt;code&gt;k&lt;/code&gt;（&lt;code&gt;0 &amp;lt;= k &amp;lt; nums.length&lt;/code&gt;）上进行了 &lt;strong&gt;向左旋转&lt;/strong&gt;，使数组变为 &lt;code&gt;[nums[k], nums[k+1], ..., nums[n-1], nums[0], nums[1], ..., nums[k-1]]&lt;/code&gt;（下标 &lt;strong&gt;从 0 开始&lt;/strong&gt; 计数）。例如， &lt;code&gt;[0,1,2,4,5,6,7]&lt;/code&gt; 下标 &lt;code&gt;3&lt;/code&gt; 上向左旋转后可能变为 &lt;code&gt;[4,5,6,7,0,1,2]&lt;/code&gt; 。&lt;/p&gt;
-&lt;p&gt;给你 &lt;strong&gt;旋转后&lt;/strong&gt; 的数组 &lt;code&gt;nums&lt;/code&gt; 和一个整数 &lt;code&gt;target&lt;/code&gt; ，如果 &lt;code&gt;nums&lt;/code&gt; 中存在这个目标值 &lt;code&gt;target&lt;/code&gt; ，则返回它的下标，否则返回 &lt;code&gt;-1&lt;/code&gt; 。&lt;/p&gt;
-&lt;p&gt;你必须设计一个时间复杂度为 &lt;code&gt;O(log n)&lt;/code&gt; 的算法解决此问题。&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;输入：nums = [4,5,6,7,0,1,2], target = 0
-输出：4
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;输入：nums = [4,5,6,7,0,1,2], target = 3
-输出：-1
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;strong&gt;示例 3：&lt;/strong&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;输入：nums = [1], target = 0
-输出：-1
-&lt;/code&gt;&lt;/pre&gt;
-&lt;h2&gt;题解&lt;/h2&gt;
-&lt;p&gt;二分数组，总有一个子数组是单调的，先判断出哪个部分单调，&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;class Solution {
-    public int search(int[] nums, int target) {
-        return searchFunc(nums, 0, nums.length - 1, target);
-    }
-
-    public int searchFunc(int[] nums, int left, int right, int target) {
-        if(left &amp;gt; right) {
-            return -1;
-        }
-        int mid = left + (right - left) / 2;
-        if(nums[mid] == target) {
-            return mid;
-        }
-        if(nums[left] &amp;lt;= nums[mid]) {
-            if(target &amp;gt;= nums[left] &amp;amp;&amp;amp; target &amp;lt; nums[mid]) {
-                return searchFunc(nums, left, mid - 1, target);
-            } else {
-                return searchFunc(nums, mid + 1, right, target);
-            }
-        } else {
-            if(target &amp;gt; nums[mid] &amp;amp;&amp;amp; target &amp;lt;= nums[right]) {
-                return searchFunc(nums, mid + 1, right, target);
-            } else {
-                return searchFunc(nums, left, mid - 1, target);
-            }
-       }
-    }
-}
-&lt;/code&gt;&lt;/pre&gt;
+</content:encoded></item><item><title>多线程并发编程笔记（）</title><link>https://thrinisty.github.io/posts/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E7%AC%94%E8%AE%B0%E6%A8%A1%E6%9D%BF/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E7%AC%94%E8%AE%B0%E6%A8%A1%E6%9D%BF/</guid><pubDate>Wed, 01 Oct 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;多线程并发编程笔记&lt;/h1&gt;
 </content:encoded></item><item><title>Linux笔记（软件包管理、Shell编程）</title><link>https://thrinisty.github.io/posts/linux%E7%AC%94%E8%AE%B0%E8%BD%AF%E4%BB%B6%E5%8C%85%E7%AE%A1%E7%90%86shell%E7%BC%96%E7%A8%8B/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/linux%E7%AC%94%E8%AE%B0%E8%BD%AF%E4%BB%B6%E5%8C%85%E7%AE%A1%E7%90%86shell%E7%BC%96%E7%A8%8B/</guid><description>rpm包管理、Shell编程快速入门</description><pubDate>Tue, 30 Sep 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;Linux笔记&lt;/h1&gt;
 &lt;h2&gt;软件包管理&lt;/h2&gt;
 &lt;h3&gt;rpm指令&lt;/h3&gt;
@@ -6450,6 +7706,128 @@ funname [值]
 n1=10
 n2=20
 getSum $n1 $n2
+&lt;/code&gt;&lt;/pre&gt;
+</content:encoded></item><item><title>LeetCode刷题（二分查找改编、搜索旋转排序数组）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E4%BA%8C%E5%88%86%E6%9F%A5%E6%89%BE%E6%94%B9%E7%BC%96%E6%90%9C%E7%B4%A2%E6%97%8B%E8%BD%AC%E6%8E%92%E5%BA%8F%E6%95%B0%E7%BB%84/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E4%BA%8C%E5%88%86%E6%9F%A5%E6%89%BE%E6%94%B9%E7%BC%96%E6%90%9C%E7%B4%A2%E6%97%8B%E8%BD%AC%E6%8E%92%E5%BA%8F%E6%95%B0%E7%BB%84/</guid><description>在排序数组中查找元素第一个位置和最后一个位置、搜索旋转排序数组</description><pubDate>Tue, 30 Sep 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;查找元素第一个和最后一个位置&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;给你一个按照非递减顺序排列的整数数组 &lt;code&gt;nums&lt;/code&gt;，和一个目标值 &lt;code&gt;target&lt;/code&gt;。请你找出给定目标值在数组中的开始位置和结束位置。&lt;/p&gt;
+&lt;p&gt;如果数组中不存在目标值 &lt;code&gt;target&lt;/code&gt;，返回 &lt;code&gt;[-1, -1]&lt;/code&gt;。&lt;/p&gt;
+&lt;p&gt;你必须设计并实现时间复杂度为 &lt;code&gt;O(log n)&lt;/code&gt; 的算法解决此问题。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：nums = [5,7,7,8,8,10], target = 8
+输出：[3,4]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：nums = [5,7,7,8,8,10], target = 6
+输出：[-1,-1]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 3：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：nums = [], target = 0
+输出：[-1,-1]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;基础的二分查找&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public int search(int[] nums, int left, int right, int target) {
+        if(left &amp;gt; right) {
+            return -1;
+        }
+        int mid = (left + right) / 2;
+        if(nums[mid] == target) {
+            return mid;
+        } else if(target &amp;lt; nums[mid]) {
+            return search(nums, left, mid - 1, target);
+        } else {
+            return search(nums, mid + 1, right, target);
+        }
+    }
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;在基础的二分查找法上修改，找到结果后再次排除该结果，对于最小下表，再查其左边的数组看是否有更小的，右侧反之。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public int[] searchRange(int[] nums, int target) {
+        int left = searchLeft(nums, 0, nums.length - 1, target);
+        if(left == -1) {return new int[]{-1, -1};}
+        int right = searchRight(nums, 0, nums.length - 1, target);
+        return new int[]{left, right};
+    }
+
+    public int searchLeft(int[] nums, int left, int right, int target) {
+        if(left &amp;gt; right) {
+            return -1;
+        }
+        int mid = (left + right) / 2;
+        if(nums[mid] == target) {
+            int leftResult = searchLeft(nums, left, mid - 1, target);
+            return leftResult == -1 ? mid : leftResult;
+        } else if(target &amp;lt; nums[mid]) {
+            return searchLeft(nums, left, mid - 1, target);
+        } else {
+            return searchLeft(nums, mid + 1, right, target);
+        }
+    }
+
+    public int searchRight(int[] nums, int left, int right, int target) {
+        if(left &amp;gt; right) {
+            return -1;
+        }
+        int mid = (left + right) / 2;
+        if(nums[mid] == target) {
+            int rightResult = searchRight(nums, mid + 1, right, target);
+            return rightResult == -1 ? mid : rightResult;
+        } else if(target &amp;lt; nums[mid]) {
+            return searchRight(nums, left, mid - 1, target);
+        } else {
+            return searchRight(nums, mid + 1, right, target);
+        }
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1&gt;搜索旋转排序数组&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;整数数组 &lt;code&gt;nums&lt;/code&gt; 按升序排列，数组中的值 &lt;strong&gt;互不相同&lt;/strong&gt; 。&lt;/p&gt;
+&lt;p&gt;在传递给函数之前，&lt;code&gt;nums&lt;/code&gt; 在预先未知的某个下标 &lt;code&gt;k&lt;/code&gt;（&lt;code&gt;0 &amp;lt;= k &amp;lt; nums.length&lt;/code&gt;）上进行了 &lt;strong&gt;向左旋转&lt;/strong&gt;，使数组变为 &lt;code&gt;[nums[k], nums[k+1], ..., nums[n-1], nums[0], nums[1], ..., nums[k-1]]&lt;/code&gt;（下标 &lt;strong&gt;从 0 开始&lt;/strong&gt; 计数）。例如， &lt;code&gt;[0,1,2,4,5,6,7]&lt;/code&gt; 下标 &lt;code&gt;3&lt;/code&gt; 上向左旋转后可能变为 &lt;code&gt;[4,5,6,7,0,1,2]&lt;/code&gt; 。&lt;/p&gt;
+&lt;p&gt;给你 &lt;strong&gt;旋转后&lt;/strong&gt; 的数组 &lt;code&gt;nums&lt;/code&gt; 和一个整数 &lt;code&gt;target&lt;/code&gt; ，如果 &lt;code&gt;nums&lt;/code&gt; 中存在这个目标值 &lt;code&gt;target&lt;/code&gt; ，则返回它的下标，否则返回 &lt;code&gt;-1&lt;/code&gt; 。&lt;/p&gt;
+&lt;p&gt;你必须设计一个时间复杂度为 &lt;code&gt;O(log n)&lt;/code&gt; 的算法解决此问题。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：nums = [4,5,6,7,0,1,2], target = 0
+输出：4
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：nums = [4,5,6,7,0,1,2], target = 3
+输出：-1
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 3：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：nums = [1], target = 0
+输出：-1
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;二分数组，总有一个子数组是单调的，先判断出哪个部分单调，&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public int search(int[] nums, int target) {
+        return searchFunc(nums, 0, nums.length - 1, target);
+    }
+
+    public int searchFunc(int[] nums, int left, int right, int target) {
+        if(left &amp;gt; right) {
+            return -1;
+        }
+        int mid = left + (right - left) / 2;
+        if(nums[mid] == target) {
+            return mid;
+        }
+        if(nums[left] &amp;lt;= nums[mid]) {
+            if(target &amp;gt;= nums[left] &amp;amp;&amp;amp; target &amp;lt; nums[mid]) {
+                return searchFunc(nums, left, mid - 1, target);
+            } else {
+                return searchFunc(nums, mid + 1, right, target);
+            }
+        } else {
+            if(target &amp;gt; nums[mid] &amp;amp;&amp;amp; target &amp;lt;= nums[right]) {
+                return searchFunc(nums, mid + 1, right, target);
+            } else {
+                return searchFunc(nums, left, mid - 1, target);
+            }
+       }
+    }
+}
 &lt;/code&gt;&lt;/pre&gt;
 </content:encoded></item><item><title>LeetCode刷题（两数相加、搜索二维矩阵）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E9%93%BE%E8%A1%A8%E4%B8%A4%E6%95%B0%E7%9B%B8%E5%8A%A0%E6%90%9C%E7%B4%A2%E4%BA%8C%E7%BB%B4%E7%9F%A9%E9%98%B5/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E9%93%BE%E8%A1%A8%E4%B8%A4%E6%95%B0%E7%9B%B8%E5%8A%A0%E6%90%9C%E7%B4%A2%E4%BA%8C%E7%BB%B4%E7%9F%A9%E9%98%B5/</guid><description>链表两数相加、搜索二维矩阵</description><pubDate>Mon, 29 Sep 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;两数相加&lt;/h1&gt;
 &lt;h2&gt;题目描述&lt;/h2&gt;
@@ -9251,7 +10629,6 @@ public class UserController {
     }
 }
 &lt;/code&gt;&lt;/pre&gt;
-</content:encoded></item><item><title>用户中心项目笔记（）</title><link>https://thrinisty.github.io/posts/%E7%94%A8%E6%88%B7%E4%B8%AD%E5%BF%83%E9%A1%B9%E7%9B%AE%E7%AC%94%E8%AE%B0%E6%A8%A1%E6%9D%BF/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/%E7%94%A8%E6%88%B7%E4%B8%AD%E5%BF%83%E9%A1%B9%E7%9B%AE%E7%AC%94%E8%AE%B0%E6%A8%A1%E6%9D%BF/</guid><description>用户中心</description><pubDate>Tue, 01 Jul 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;用户中心笔记&lt;/h1&gt;
 </content:encoded></item><item><title>自学第四月份总结</title><link>https://thrinisty.github.io/posts/%E8%87%AA%E5%AD%A6%E7%AC%AC%E5%9B%9B%E6%9C%88%E4%BB%BD%E6%80%BB%E7%BB%93/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/%E8%87%AA%E5%AD%A6%E7%AC%AC%E5%9B%9B%E6%9C%88%E4%BB%BD%E6%80%BB%E7%BB%93/</guid><description>LeetCode继续刷题，Spring学习完成，Spring MVC、Spring Boot、Spring AI初步上手</description><pubDate>Tue, 01 Jul 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;自学第四月份总结&lt;/h1&gt;
 &lt;h2&gt;关于LeetCode刷题&lt;/h2&gt;
 &lt;p&gt;在六月份的上旬和中旬还是有在继续刷题，加上之前的积累总计有63道了，但是到公司之后每天需要学习新的知识点就没有把刷题的习惯继续保留下去了，我觉得基本的底子搭起来了，之后准备每天抽时间回顾一下，使得自己不至于忘了，等实习完毕后把剩余的37道也给完成&lt;/p&gt;
