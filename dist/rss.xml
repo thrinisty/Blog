@@ -1,4 +1,1327 @@
-<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Thrinisty&apos;s Blog</title><description>New Blog</description><link>https://thrinisty.github.io/</link><language>zh_CN</language><item><title>LeetCode刷题（正则表达式、课程表）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F%E8%AF%BE%E7%A8%8B%E8%A1%A8/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F%E8%AF%BE%E7%A8%8B%E8%A1%A8/</guid><description>正则表达式匹配、课程表</description><pubDate>Mon, 27 Oct 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;正则表达式匹配&lt;/h1&gt;
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Thrinisty&apos;s Blog</title><description>New Blog</description><link>https://thrinisty.github.io/</link><language>zh_CN</language><item><title>LeetCode刷题（快乐数、存在重复元素Ⅱ）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E5%BF%AB%E4%B9%90%E6%95%B0%E5%AD%98%E5%9C%A8%E9%87%8D%E5%A4%8D%E5%85%83%E7%B4%A0%E2%85%B1/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E5%BF%AB%E4%B9%90%E6%95%B0%E5%AD%98%E5%9C%A8%E9%87%8D%E5%A4%8D%E5%85%83%E7%B4%A0%E2%85%B1/</guid><description>快乐数、存在重复元素Ⅱ</description><pubDate>Mon, 03 Nov 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;快乐数&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;编写一个算法来判断一个数 &lt;code&gt;n&lt;/code&gt; 是不是快乐数。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;「快乐数」&lt;/strong&gt; 定义为：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;对于一个正整数，每一次将该数替换为它每个位置上的数字的平方和。&lt;/li&gt;
+&lt;li&gt;然后重复这个过程直到这个数变为 1，也可能是 &lt;strong&gt;无限循环&lt;/strong&gt; 但始终变不到 1。&lt;/li&gt;
+&lt;li&gt;如果这个过程 &lt;strong&gt;结果为&lt;/strong&gt; 1，那么这个数就是快乐数。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;如果 &lt;code&gt;n&lt;/code&gt; 是 &lt;em&gt;快乐数&lt;/em&gt; 就返回 &lt;code&gt;true&lt;/code&gt; ；不是，则返回 &lt;code&gt;false&lt;/code&gt; 。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：n = 19
+输出：true
+解释：
+12 + 92 = 82
+82 + 22 = 68
+62 + 82 = 100
+12 + 02 + 02 = 1
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：n = 2
+输出：false
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;解法一：通过快慢指针进行求解&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public boolean isHappy(int n) {
+        int slow = n, fast = getNext(n);
+        while(true) {
+            slow = getNext(slow);
+            fast = getNext(getNext(fast));
+            if(fast == slow) {
+                break;
+            }
+        }
+        return fast == 1;
+    }
+
+    public int getNext(int n) {
+        int sum = 0;
+        while(n != 0) {
+            int dev = n % 10;
+            n /= 10;
+            sum += dev * dev;
+        }
+        return sum;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;解法二：通过Set进行判断是否有重复元素，有则停止，判断当前数是否为1&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public boolean isHappy(int n) {
+        Set&amp;lt;Integer&amp;gt; set = new HashSet&amp;lt;&amp;gt;();
+        while(!set.contains(n)) {
+            set.add(n);
+            n = getNext(n);
+        }
+        return n == 1;
+    }
+
+    public int getNext(int n) {
+        int sum = 0;
+        while(n != 0) {
+            int dev = n % 10;
+            n /= 10;
+            sum += dev * dev;
+        }
+        return sum;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1&gt;存在重复元素Ⅱ&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;给你一个整数数组 &lt;code&gt;nums&lt;/code&gt; 和一个整数 &lt;code&gt;k&lt;/code&gt; ，判断数组中是否存在两个 &lt;strong&gt;不同的索引&lt;/strong&gt; &lt;code&gt;i&lt;/code&gt; 和 &lt;code&gt;j&lt;/code&gt; ，满足 &lt;code&gt;nums[i] == nums[j]&lt;/code&gt; 且 &lt;code&gt;abs(i - j) &amp;lt;= k&lt;/code&gt; 。如果存在，返回 &lt;code&gt;true&lt;/code&gt; ；否则，返回 &lt;code&gt;false&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：nums = [1,2,3,1], k = 3
+输出：true
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：nums = [1,0,1,1], k = 1
+输出：true
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 3：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：nums = [1,2,3,1,2,3], k = 2
+输出：false
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;通过哈希表进行求解，思路和两数之和大差不差&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public boolean containsNearbyDuplicate(int[] nums, int k) {
+        Map&amp;lt;Integer, Integer&amp;gt; map = new HashMap&amp;lt;&amp;gt;();
+        for(int i = 0; i &amp;lt; nums.length; i++) {
+            if(map.containsKey(nums[i])) {
+                if(Math.abs(map.get(nums[i]) - i) &amp;lt;= k) {
+                    return true;
+                }
+            }
+            map.put(nums[i], i);
+        }
+        return false;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+</content:encoded></item><item><title>LeetCode刷题（同构字符串、单词规律、有效的字母异位词）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E5%90%8C%E6%9E%84%E5%AD%97%E7%AC%A6%E4%B8%B2%E5%8D%95%E8%AF%8D%E8%A7%84%E5%BE%8B%E6%9C%89%E6%95%88%E7%9A%84%E5%AD%97%E6%AF%8D%E5%BC%82%E4%BD%8D%E8%AF%8D/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E5%90%8C%E6%9E%84%E5%AD%97%E7%AC%A6%E4%B8%B2%E5%8D%95%E8%AF%8D%E8%A7%84%E5%BE%8B%E6%9C%89%E6%95%88%E7%9A%84%E5%AD%97%E6%AF%8D%E5%BC%82%E4%BD%8D%E8%AF%8D/</guid><description>同构字符串、单词规律、有效的字母异位词</description><pubDate>Sun, 02 Nov 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;同构字符串&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;给定两个字符串 &lt;code&gt;s&lt;/code&gt; 和 &lt;code&gt;t&lt;/code&gt; ，判断它们是否是同构的。&lt;/p&gt;
+&lt;p&gt;如果 &lt;code&gt;s&lt;/code&gt; 中的字符可以按某种映射关系替换得到 &lt;code&gt;t&lt;/code&gt; ，那么这两个字符串是同构的。&lt;/p&gt;
+&lt;p&gt;每个出现的字符都应当映射到另一个字符，同时不改变字符的顺序。不同字符不能映射到同一个字符上，相同字符只能映射到同一个字符上，字符可以映射到自己本身。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 1:&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：s = &quot;egg&quot;, t = &quot;add&quot;
+输出：true
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：s = &quot;foo&quot;, t = &quot;bar&quot;
+输出：false
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 3：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：s = &quot;paper&quot;, t = &quot;title&quot;
+输出：true
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;要保证不同的字符不能映射到同一字符上需要维护反向的映射关系&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public boolean isIsomorphic(String s, String t) {
+        HashMap&amp;lt;Character, Character&amp;gt; smapt = new HashMap&amp;lt;&amp;gt;();
+        HashMap&amp;lt;Character, Character&amp;gt; tmaps = new HashMap&amp;lt;&amp;gt;();
+        int n = s.length();
+        int m = t.length();
+        if(n != m) {
+            return false;
+        }
+        for(int i = 0; i &amp;lt; n; i++) {
+            char c1 = s.charAt(i);
+            char c2 = t.charAt(i);
+            if(smapt.containsKey(c1)) {
+                char target = smapt.get(c1);
+                if(target != c2) {
+                    return false;
+                }
+            } else {
+                smapt.put(c1, c2);
+            }
+            if(tmaps.containsKey(c2)) {
+                char target = tmaps.get(c2);
+                if(target != c1) {
+                    return false;
+                }
+            } else {
+                tmaps.put(c2, c1);
+            }
+        }
+        return true;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1&gt;单词规律&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;给定一种规律 &lt;code&gt;pattern&lt;/code&gt; 和一个字符串 &lt;code&gt;s&lt;/code&gt; ，判断 &lt;code&gt;s&lt;/code&gt; 是否遵循相同的规律。&lt;/p&gt;
+&lt;p&gt;这里的 &lt;strong&gt;遵循&lt;/strong&gt; 指完全匹配，例如， &lt;code&gt;pattern&lt;/code&gt; 里的每个字母和字符串 &lt;code&gt;s&lt;/code&gt; 中的每个非空单词之间存在着双向连接的对应规律。具体来说：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;pattern&lt;/code&gt; 中的每个字母都 &lt;strong&gt;恰好&lt;/strong&gt; 映射到 &lt;code&gt;s&lt;/code&gt; 中的一个唯一单词。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;s&lt;/code&gt; 中的每个唯一单词都 &lt;strong&gt;恰好&lt;/strong&gt; 映射到 &lt;code&gt;pattern&lt;/code&gt; 中的一个字母。&lt;/li&gt;
+&lt;li&gt;没有两个字母映射到同一个单词，也没有两个单词映射到同一个字母。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;示例1:&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入: pattern = &quot;abba&quot;, s = &quot;dog cat cat dog&quot;
+输出: true
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2:&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入:pattern = &quot;abba&quot;, s = &quot;dog cat cat fish&quot;
+输出: false
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 3:&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入: pattern = &quot;aaaa&quot;, s = &quot;dog cat cat dog&quot;
+输出: false
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;和上一题思路一致，只不过映射结构换为了Character to String的形式&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public boolean wordPattern(String pattern, String s) {
+        Map&amp;lt;Character, String&amp;gt; ctos = new HashMap&amp;lt;&amp;gt;();
+        Map&amp;lt;String, Character&amp;gt; stoc = new HashMap&amp;lt;&amp;gt;();
+        String[] strs = s.split(&quot; &quot;);
+        int m = pattern.length();
+        int n = strs.length;
+        if(m != n) return false;
+        for(int i = 0; i &amp;lt; m; i++) {
+            char c = pattern.charAt(i);
+            String str = strs[i];
+            if(ctos.containsKey(c)) {
+                String target = ctos.get(c);
+                if(!str.equals(target)) return false;
+            } else {
+                ctos.put(c, str);
+            }
+            if(stoc.containsKey(str)) {
+                char target = stoc.get(str);
+                if(c != target) return false;
+            } else {
+                stoc.put(str, c);
+            }
+        }
+        return true;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1&gt;有效的字母异位词&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;给定两个字符串 &lt;code&gt;s&lt;/code&gt; 和 &lt;code&gt;t&lt;/code&gt; ，编写一个函数来判断 &lt;code&gt;t&lt;/code&gt; 是否是 &lt;code&gt;s&lt;/code&gt; 的 字母异位词。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 1:&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入: s = &quot;anagram&quot;, t = &quot;nagaram&quot;
+输出: true
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2:&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入: s = &quot;rat&quot;, t = &quot;car&quot;
+输出: false
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;通过count计数，将出现的字符以及其数量放入map集合，匹配另一个字符串注意及时没有匹配对应字符时返回false，最后看字符是否全部被匹配完成&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public boolean isAnagram(String s, String t) {
+        Map&amp;lt;Character, Integer&amp;gt; map = new HashMap&amp;lt;&amp;gt;();
+        int n = s.length();
+        int m = t.length();
+        if(n != m) return false;
+        int count = 0;
+        for(char c : s.toCharArray()) {
+            if(map.containsKey(c)) {
+                map.put(c, map.get(c) + 1);
+            } else {
+                count++;
+                map.put(c, 1);
+            }
+        }
+        for(char c : t.toCharArray()) {
+            if(map.containsKey(c)) {
+                int num = map.get(c);
+                if(num == 1) {
+                    count--;
+                    map.remove(c);
+                } else {
+                    map.put(c, map.get(c) - 1);
+                }
+            } else {
+                return false;
+            }
+        }
+        return count == 0;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+</content:encoded></item><item><title>LeetCode刷题（）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E6%A8%A1%E6%9D%BF/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E6%A8%A1%E6%9D%BF/</guid><pubDate>Sat, 01 Nov 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;（题目）&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+</content:encoded></item><item><title>LeetCode刷题（赎金信、生命游戏）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E8%B5%8E%E9%87%91%E4%BF%A1%E7%94%9F%E5%91%BD%E6%B8%B8%E6%88%8F/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E8%B5%8E%E9%87%91%E4%BF%A1%E7%94%9F%E5%91%BD%E6%B8%B8%E6%88%8F/</guid><description>赎金信、生命游戏</description><pubDate>Sat, 01 Nov 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;赎金信&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;给你两个字符串：&lt;code&gt;ransomNote&lt;/code&gt; 和 &lt;code&gt;magazine&lt;/code&gt; ，判断 &lt;code&gt;ransomNote&lt;/code&gt; 能不能由 &lt;code&gt;magazine&lt;/code&gt; 里面的字符构成。&lt;/p&gt;
+&lt;p&gt;如果可以，返回 &lt;code&gt;true&lt;/code&gt; ；否则返回 &lt;code&gt;false&lt;/code&gt; 。&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;magazine&lt;/code&gt; 中的每个字符只能在 &lt;code&gt;ransomNote&lt;/code&gt; 中使用一次。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：ransomNote = &quot;a&quot;, magazine = &quot;b&quot;
+输出：false
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：ransomNote = &quot;aa&quot;, magazine = &quot;ab&quot;
+输出：false
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 3：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：ransomNote = &quot;aa&quot;, magazine = &quot;aab&quot;
+输出：true
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;是之前最小覆盖字串的mini版本，也是用同样的思路用count计数&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public boolean canConstruct(String ransomNote, String magazine) {
+        Map&amp;lt;Character, Integer&amp;gt; map = new HashMap&amp;lt;&amp;gt;();
+        int count = 0;
+        for(char c : ransomNote.toCharArray()) {
+            if(map.containsKey(c)) {
+                map.put(c, map.get(c) + 1);
+            } else {
+                map.put(c, 1);
+                count++;
+            }
+        }
+        for(char c : magazine.toCharArray()) {
+            if(map.containsKey(c)) {
+                if(map.get(c) == 1) {
+                    count--;
+                    map.remove(c);
+                } else {
+                    map.put(c, map.get(c) - 1);
+                }
+            }
+        }
+        return count == 0;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1&gt;生命游戏&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;根据 &lt;a href=&quot;https://baike.baidu.com/item/%E7%94%9F%E5%91%BD%E6%B8%B8%E6%88%8F/2926434?fr=aladdin&quot;&gt;百度百科&lt;/a&gt; ， &lt;strong&gt;生命游戏&lt;/strong&gt; ，简称为 &lt;strong&gt;生命&lt;/strong&gt; ，是英国数学家约翰·何顿·康威在 1970 年发明的细胞自动机。&lt;/p&gt;
+&lt;p&gt;给定一个包含 &lt;code&gt;m × n&lt;/code&gt; 个格子的面板，每一个格子都可以看成是一个细胞。每个细胞都具有一个初始状态： &lt;code&gt;1&lt;/code&gt; 即为 &lt;strong&gt;活细胞&lt;/strong&gt; （live），或 &lt;code&gt;0&lt;/code&gt; 即为 &lt;strong&gt;死细胞&lt;/strong&gt; （dead）。每个细胞与其八个相邻位置（水平，垂直，对角线）的细胞都遵循以下四条生存定律：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;如果活细胞周围八个位置的活细胞数少于两个，则该位置活细胞死亡；&lt;/li&gt;
+&lt;li&gt;如果活细胞周围八个位置有两个或三个活细胞，则该位置活细胞仍然存活；&lt;/li&gt;
+&lt;li&gt;如果活细胞周围八个位置有超过三个活细胞，则该位置活细胞死亡；&lt;/li&gt;
+&lt;li&gt;如果死细胞周围正好有三个活细胞，则该位置死细胞复活；&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;下一个状态是通过将上述规则同时应用于当前状态下的每个细胞所形成的，其中细胞的出生和死亡是 &lt;strong&gt;同时&lt;/strong&gt; 发生的。给你 &lt;code&gt;m x n&lt;/code&gt; 网格面板 &lt;code&gt;board&lt;/code&gt; 的当前状态，返回下一个状态。&lt;/p&gt;
+&lt;p&gt;给定当前 &lt;code&gt;board&lt;/code&gt; 的状态，&lt;strong&gt;更新&lt;/strong&gt; &lt;code&gt;board&lt;/code&gt; 到下一个状态。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;注意&lt;/strong&gt; 你不需要返回任何东西。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/339.jpg&quot; alt=&quot;339&quot; /&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：board = [[0,1,0],[0,0,1],[1,1,1],[0,0,0]]
+输出：[[0,0,0],[1,0,1],[0,1,1],[0,1,0]]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/340.jpg&quot; alt=&quot;340&quot; /&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：board = [[1,1],[1,0]]
+输出：[[1,1],[1,1]]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;八个方向计数，依次判断&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public void gameOfLife(int[][] board) {
+        int row = board.length;
+        int col = board[0].length;
+        int[][] result = new int[row][col];
+        for (int i = 0; i &amp;lt; row; i++) {
+            for (int j = 0; j &amp;lt; col; j++) {
+                if (judgeCode(board, i, j, row, col)) {
+                    result[i][j] = 1;
+                } else {
+                    result[i][j] = 0;
+                }
+            }
+        }
+        for (int i = 0; i &amp;lt; row; i++) {
+            for (int j = 0; j &amp;lt; col; j++) {
+                board[i][j] = result[i][j];
+            }
+        }
+    }
+
+    public boolean judgeCode(int[][] board, int i, int j, int row, int col) {
+        int count = 0;
+        if (i - 1 &amp;gt;= 0 &amp;amp;&amp;amp; j - 1 &amp;gt;= 0)
+            count += board[i - 1][j - 1];
+        if (i - 1 &amp;gt;= 0)
+            count += board[i - 1][j];
+        if (i - 1 &amp;gt;= 0 &amp;amp;&amp;amp; j + 1 &amp;lt; col)
+            count += board[i - 1][j + 1];
+        if (j + 1 &amp;lt; col)
+            count += board[i][j + 1];
+        if (i + 1 &amp;lt; row &amp;amp;&amp;amp; j + 1 &amp;lt; col)
+            count += board[i + 1][j + 1];
+        if (i + 1 &amp;lt; row)
+            count += board[i + 1][j];
+        if (i + 1 &amp;lt; row &amp;amp;&amp;amp; j - 1 &amp;gt;= 0)
+            count += board[i + 1][j - 1];
+        if (j - 1 &amp;gt;= 0)
+            count += board[i][j - 1];
+        if (board[i][j] == 1) {
+            if (count == 2 || count == 3) {
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            if (count == 3) {
+                return true;
+            }
+        }
+        return false;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+</content:encoded></item><item><title>自学第八月份总结</title><link>https://thrinisty.github.io/posts/%E8%87%AA%E5%AD%A6%E7%AC%AC%E5%85%AB%E6%9C%88%E4%BB%BD%E6%80%BB%E7%BB%93/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/%E8%87%AA%E5%AD%A6%E7%AC%AC%E5%85%AB%E6%9C%88%E4%BB%BD%E6%80%BB%E7%BB%93/</guid><description>学习新的技术框架，刷新的算法，复习面试知识</description><pubDate>Sat, 01 Nov 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;自学第八月份总结&lt;/h1&gt;
+&lt;h2&gt;秋招投递&lt;/h2&gt;
+&lt;p&gt;整个十月份都在高强度的学习，投了不少简历，做了不少笔试，不知道是笔试做的太烂了还是简历不够特别完善，大厂方向基本都没有什么消息，相反参加线下招聘会还有约面还挺顺利的&lt;/p&gt;
+&lt;p&gt;反正从一开始就是计划着要奔着春招去的，这段时间也一直在补充自己缺失的知识点，自己的项目也在跟着教程在做，同步的看看有没有什么机会可以捡漏的吧，原本想着先保留一部分优秀的公司留到春招在进行投递，但是就少了不少机会&lt;/p&gt;
+&lt;p&gt;其实不应该等到全部准备好了再进行投递的，于是再10月末的时候陆续投递了一些原本没有投递的公司，笔试集中在了11月份前期，随着算法刷的越多感觉笔试也从一开始的一点思路都没有到后来的能A出来部分情况，算法能力也算在同步提升&lt;/p&gt;
+&lt;h2&gt;技术学习&lt;/h2&gt;
+&lt;p&gt;10月份完成的技术栈学习如下：Linux操作系统学习，Redis的前半部分内容（包括了分布式锁，缓存，以及项目中的具体运用），MyBatisPlus学习，SpringCould一些常用服务（打算在接下来的项目中把这部分运用进去），Docker容器，23中设计模式，JUC多线程前半部分&lt;/p&gt;
+&lt;p&gt;算法方面：每天都在以两道题目的节奏进行题目的刷，Hot 100快刷完了刷了90道，同步开启了Top 150，目前大概有30道左右（和Hot 100重复的没算进去），还有基础SQL每天1道&lt;/p&gt;
+&lt;h2&gt;总结&lt;/h2&gt;
+&lt;p&gt;总的来说，10月份挫败感还是很强的，投了挺多简历结果就没声了，调整好心态还得再慢慢学，看下秋招补录能不能补点好的岗位&lt;/p&gt;
+</content:encoded></item><item><title>LeetCode刷题（螺旋矩阵、矩阵置零）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E8%9E%BA%E6%97%8B%E7%9F%A9%E9%98%B5%E7%9F%A9%E9%98%B5%E7%BD%AE%E9%9B%B6/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E8%9E%BA%E6%97%8B%E7%9F%A9%E9%98%B5%E7%9F%A9%E9%98%B5%E7%BD%AE%E9%9B%B6/</guid><description>螺旋矩阵、矩阵置零</description><pubDate>Fri, 31 Oct 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;螺旋矩阵&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;给你一个 &lt;code&gt;m&lt;/code&gt; 行 &lt;code&gt;n&lt;/code&gt; 列的矩阵 &lt;code&gt;matrix&lt;/code&gt; ，请按照 &lt;strong&gt;顺时针螺旋顺序&lt;/strong&gt; ，返回矩阵中的所有元素。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/335.jpg&quot; alt=&quot;335&quot; /&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：matrix = [[1,2,3],[4,5,6],[7,8,9]]
+输出：[1,2,3,6,9,8,7,4,5]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/336.jpg&quot; alt=&quot;336&quot; /&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：matrix = [[1,2,3,4],[5,6,7,8],[9,10,11,12]]
+输出：[1,2,3,4,8,12,11,10,9,5,6,7]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;通过设置四个边界，依次循环四条边界并迭代边界，直至边界冲突&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public List&amp;lt;Integer&amp;gt; spiralOrder(int[][] matrix) {
+        int row = matrix.length;
+        int col = matrix[0].length;
+        List&amp;lt;Integer&amp;gt; result = new ArrayList&amp;lt;&amp;gt;();
+        int left = 0;
+        int right = col - 1;
+        int up = 0;
+        int down = row - 1;
+        while(true) {
+            for(int i = left; i &amp;lt;= right; i++) result.add(matrix[up][i]);
+            if(++up &amp;gt; down) break;
+            for(int i = up; i &amp;lt;= down; i++) result.add(matrix[i][right]);
+            if(left &amp;gt; --right) break;
+            for(int i = right; i &amp;gt;= left; i--) result.add(matrix[down][i]);
+            if(up &amp;gt; --down) break;
+            for(int i = down; i &amp;gt;= up; i--) result.add(matrix[i][left]);
+            if(++left &amp;gt; right) break;
+        }
+        return result;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1&gt;矩阵置零&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;给定一个 &lt;code&gt;*m* x *n*&lt;/code&gt; 的矩阵，如果一个元素为 &lt;strong&gt;0&lt;/strong&gt; ，则将其所在行和列的所有元素都设为 &lt;strong&gt;0&lt;/strong&gt; 。请使用 &lt;strong&gt;&lt;a href=&quot;http://baike.baidu.com/item/%E5%8E%9F%E5%9C%B0%E7%AE%97%E6%B3%95&quot;&gt;原地&lt;/a&gt;&lt;/strong&gt; 算法**。**&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/337.jpg&quot; alt=&quot;337&quot; /&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：matrix = [[1,1,1],[1,0,1],[1,1,1]]
+输出：[[1,0,1],[0,0,0],[1,0,1]]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/338.jpg&quot; alt=&quot;338&quot; /&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：matrix = [[0,1,2,0],[3,4,5,2],[1,3,1,5]]
+输出：[[0,0,0,0],[0,4,5,0],[0,3,1,0]]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;使用行Set和列Set存储需要清零的行列，将两个Set中的对应行/列置为0，空间消耗为O(m + n)&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public void setZeroes(int[][] matrix) {
+        Set&amp;lt;Integer&amp;gt; zeroRow = new HashSet&amp;lt;&amp;gt;();
+        Set&amp;lt;Integer&amp;gt; zeroCol = new HashSet&amp;lt;&amp;gt;();
+        int row = matrix.length;
+        int col = matrix[0].length;
+        for(int i = 0; i &amp;lt; row; i++) {
+            for(int j = 0; j &amp;lt; col; j++) {
+                if(matrix[i][j] == 0) {
+                    zeroRow.add(i);
+                    zeroCol.add(j);
+                }
+            }
+        }
+        for(Integer r : zeroRow) {
+            for(int j = 0; j &amp;lt; col; j++) {
+                matrix[r][j] = 0;
+            }
+        }
+        for(Integer c : zeroCol) {
+            for(int i = 0; i &amp;lt; row; i++) {
+                matrix[i][c] = 0;
+            }
+        }
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+</content:encoded></item><item><title>微服务OJ在线判题（开发中值得记录的思路）</title><link>https://thrinisty.github.io/posts/%E5%BE%AE%E6%9C%8D%E5%8A%A1oj%E5%9C%A8%E7%BA%BF%E5%88%A4%E9%A2%98%E5%BC%80%E5%8F%91%E4%B8%AD%E5%80%BC%E5%BE%97%E8%AE%B0%E5%BD%95%E7%9A%84%E6%80%9D%E8%B7%AF/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/%E5%BE%AE%E6%9C%8D%E5%8A%A1oj%E5%9C%A8%E7%BA%BF%E5%88%A4%E9%A2%98%E5%BC%80%E5%8F%91%E4%B8%AD%E5%80%BC%E5%BE%97%E8%AE%B0%E5%BD%95%E7%9A%84%E6%80%9D%E8%B7%AF/</guid><pubDate>Thu, 30 Oct 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;微服务OJ在线判题&lt;/h1&gt;
+&lt;p&gt;OJ常见概念：题目内存时间限制，题目描述，题目输入，题目输出，输入用例，测试用例&lt;/p&gt;
+&lt;p&gt;判题过程异步，提交之后，生成提交记录，有运行的结果&lt;/p&gt;
+&lt;p&gt;目的：用于在线评测编程题目代码的系统，能够根据用户提交代码，出题人预先设置的题目输入输出用例，编译代码，运行代码，判断代码运行结果是否正确&lt;/p&gt;
+&lt;p&gt;判题系统作为API开放，便于开发者制作自己的系统&lt;/p&gt;
+&lt;p&gt;功能：&lt;/p&gt;
+&lt;p&gt;题目模块：创建、删除、修改题目，搜索用户，在线做题，提交代码模块&lt;/p&gt;
+&lt;p&gt;用户模块：登陆注册&lt;/p&gt;
+&lt;p&gt;判题模块：提交判题、错误处理、自主实现代码沙箱、开放接口&lt;/p&gt;
+&lt;p&gt;在线做题：在线提交&lt;/p&gt;
+&lt;p&gt;拓展思路：支持多种语言、Remote Judge、普通评测、特殊评测、交互评测、在线自测&lt;/p&gt;
+&lt;p&gt;统计分析用户记录、权限校验、子任务分组评测、文件IO&lt;/p&gt;
+&lt;h2&gt;层级划分&lt;/h2&gt;
+&lt;p&gt;用户层：PC端网页&lt;/p&gt;
+&lt;p&gt;接入层：Nginx、API网关、负载均衡&lt;/p&gt;
+&lt;p&gt;业务层：项目模块、判题模块、用户模块&lt;/p&gt;
+&lt;p&gt;服务层：判题服务（代码沙箱） 用户鉴权服务、配置服务、通知服务&lt;/p&gt;
+&lt;p&gt;存储层：MySQL、Redis、RabbitMQ&lt;/p&gt;
+&lt;p&gt;资源层：Linux、Docker、K8S&lt;/p&gt;
+&lt;h2&gt;后端模板&lt;/h2&gt;
+&lt;p&gt;aop：用于全局权限校验，全局日志记录&lt;/p&gt;
+&lt;p&gt;common：万用的类，比如通用响应&lt;/p&gt;
+&lt;p&gt;config：用于接收application.yaml中的参数，初始化一些客户端的配置&lt;/p&gt;
+&lt;p&gt;constant：定义常量&lt;/p&gt;
+&lt;p&gt;job：任务相关、定时任务、单次任务&lt;/p&gt;
+&lt;p&gt;manager：服务层，包括 判题服务（代码沙箱） 用户鉴权服务、配置服务、通知服务&lt;/p&gt;
+&lt;h2&gt;数据库表&lt;/h2&gt;
+&lt;p&gt;题目表&lt;/p&gt;
+&lt;p&gt;题目标题&lt;/p&gt;
+&lt;p&gt;内容&lt;/p&gt;
+&lt;p&gt;标签&lt;/p&gt;
+&lt;p&gt;答案&lt;/p&gt;
+&lt;p&gt;提交数&lt;/p&gt;
+&lt;p&gt;通过数&lt;/p&gt;
+&lt;p&gt;judgeConfig ：存储判题配置&lt;/p&gt;
+&lt;p&gt;judgeCase ：judgeCase判题用例&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;CREATE TABLE `my_db`.`question` (
+  `id` int NOT NULL AUTO_INCREMENT COMMENT &apos;主键ID&apos;,
+  `title` varchar(255) NOT NULL COMMENT &apos;问题标题&apos;,
+  `content` text NOT NULL COMMENT &apos;问题内容&apos;,
+  `tags` varchar(200) DEFAULT NULL COMMENT &apos;标签列表，JSON格式&apos;,
+  `answer` text DEFAULT NULL COMMENT &apos;参考答案&apos;,
+  `submit_count` int DEFAULT 0 COMMENT &apos;提交次数&apos;,
+  `accepted_count` int DEFAULT 0 COMMENT &apos;通过次数&apos;,
+  `judge_case` text DEFAULT NULL COMMENT &apos;判题用例(JSON数组)&apos;,
+  `judge_config` text DEFAULT NULL COMMENT &apos;判题配置(JSON对象)&apos;,
+  `user_id` int NOT NULL COMMENT &apos;创建用户ID&apos;,
+  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT &apos;创建时间&apos;,
+  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT &apos;更新时间&apos;,
+  `is_delete` tinyint DEFAULT 0 COMMENT &apos;逻辑删除标记(0-未删除,1-已删除)&apos;,
+  PRIMARY KEY (`id`),
+  KEY `idx_user_id` (`user_id`),
+  KEY `idx_create_time` (`create_time`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT=&apos;问题表&apos;;
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;题目提交表&lt;/p&gt;
+&lt;p&gt;提交用户id&lt;/p&gt;
+&lt;p&gt;题目id&lt;/p&gt;
+&lt;p&gt;提交语言&lt;/p&gt;
+&lt;p&gt;用户提交代码&lt;/p&gt;
+&lt;p&gt;判题状态：判题中、带判题、成功、失败&lt;/p&gt;
+&lt;p&gt;判题信息：判题过程中得到的一些信息，例如程序失败的原因、程序执行消耗的空间、时间&lt;/p&gt;
+&lt;p&gt;判题信息枚举值：Accept 成功、Wrong Answer 答案错误、Compile Error编译错误、Memory Limit 空间不足、Time Out 超时、Waitting 等待中、Runtime Error 运行错误、System Error 系统错误&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;CREATE TABLE `my_db`.`submission` (
+  `id` bigint NOT NULL AUTO_INCREMENT COMMENT &apos;提交ID&apos;,
+  `question_id` bigint NOT NULL COMMENT &apos;关联的题目ID&apos;,
+  `user_id` bigint NOT NULL COMMENT &apos;提交用户ID&apos;,
+  `language` varchar(20) NOT NULL COMMENT &apos;编程语言(java/python/cpp...)&apos;,
+  `code` text NOT NULL COMMENT &apos;提交的代码&apos;,
+  `status` varchar(30) NOT NULL DEFAULT &apos;waiting&apos; COMMENT &apos;判题状态(waiting/running/success/failed)&apos;,
+  `judge_info` json DEFAULT NULL COMMENT &apos;判题信息(JSON格式)&apos;,
+  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT &apos;提交时间&apos;,
+  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT &apos;更新时间&apos;,
+  `is_delete` tinyint NOT NULL DEFAULT 0 COMMENT &apos;逻辑删除(0-正常,1-删除)&apos;,
+  PRIMARY KEY (`id`),
+  KEY `idx_question_id` (`question_id`),
+  KEY `idx_user_id` (`user_id`),
+  KEY `idx_create_time` (`create_time`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT=&apos;用户题目提交记录表&apos;;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;后端开发流程&lt;/p&gt;
+&lt;p&gt;1.根据功能设计表&lt;/p&gt;
+&lt;p&gt;2.自动生成对数据库的基本增删改查&lt;/p&gt;
+&lt;p&gt;3.编写Controller层，实现基本的增删改查和权限校验&lt;/p&gt;
+&lt;p&gt;4.去根据业务定制开发新的功能/编写新的代码&lt;/p&gt;
+&lt;p&gt;为了方便的处理json字段的某个对象，需要给对应的json字段配置独立的类&lt;/p&gt;
+&lt;p&gt;之所以这样是因为要方便前端进行数据的格式化，而不是整一个json字符串&lt;/p&gt;
+&lt;p&gt;分类VO DTO TO&lt;/p&gt;
+&lt;p&gt;基础的增删改查略&lt;/p&gt;
+&lt;h2&gt;判题机&lt;/h2&gt;
+&lt;p&gt;&lt;img src=&quot;../images/334.png&quot; alt=&quot;334&quot; /&gt;&lt;/p&gt;
+&lt;h3&gt;判题模块&lt;/h3&gt;
+&lt;p&gt;调用代码沙箱，把代码和输入交给沙箱处理&lt;/p&gt;
+&lt;p&gt;代码沙箱：只负责接受代码和输入，返回编译运行的结果，不负责判题（可以作为独立的项目/服务，提供给其他的代码使用）&lt;/p&gt;
+&lt;p&gt;代码沙箱接受一组运行用例&lt;/p&gt;
+&lt;p&gt;如果是每个用例单独调用一次代码沙箱，会调用多次接口，需要多次网络传输、程序多次编译，记录程序状态&lt;/p&gt;
+&lt;h3&gt;代码沙箱&lt;/h3&gt;
+&lt;p&gt;定义代码沙箱接口，提高通用性&lt;/p&gt;
+&lt;p&gt;之后我们的项目只调用接口，不调用具体的实现类&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;/**
+ * 执行代码，获取编译运行结果
+ */
+public interface CodeSandBox {
+    ExecuteCodeResponse executeCode(ExecuteCodeRequest executeCodeRequest);
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;分为了实例实现、第三方沙箱、自主实现沙箱&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@Test
+void contextLoads() {
+    String code = &quot;int main() { }&quot;;
+    String language = &quot;Java&quot;;
+    List&amp;lt;String&amp;gt; inputList = Arrays.asList(&quot;1 2&quot;, &quot;3 4&quot;);
+
+    CodeSandBox sandbox = new ExampleCodeSandBox();
+    ExecuteCodeRequest request = ExecuteCodeRequest.builder().
+            code(code).
+            language(language).
+            inputList(inputList).
+            build();
+    ExecuteCodeResponse executeCodeResponse = sandbox.executeCode(request);
+    System.out.println(executeCodeResponse);
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;还可以通过工厂模式进行对于new的替换，可以灵活调用传入参数进行使用不同的沙箱实现&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class CodeSandBoxFactory {
+    public CodeSandBox newInstance (String codeSandBoxName) {
+        switch (codeSandBoxName) {
+            case &quot;example&quot;:
+                return new ExampleCodeSandBox();
+            case &quot;remote&quot;:
+                return new RemoteCodeSandBox();
+            case &quot;third&quot;:
+                return new ThirdPartyCodeSandBox();
+            default:
+                return null;
+        }
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;@Test
+void contextLoads() {
+    String code = &quot;int main() { }&quot;;
+    String language = &quot;Java&quot;;
+    List&amp;lt;String&amp;gt; inputList = Arrays.asList(&quot;1 2&quot;, &quot;3 4&quot;);
+
+    CodeSandBox sandbox = new CodeSandBoxFactory().newInstance(&quot;example&quot;);
+    ExecuteCodeRequest request = ExecuteCodeRequest.builder().
+            code(code).
+            language(language).
+            inputList(inputList).
+            build();
+    ExecuteCodeResponse executeCodeResponse = sandbox.executeCode(request);
+    System.out.println(executeCodeResponse);
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;参数配置化，将一些可选项交给用户自定义在配置文件中修改&lt;/p&gt;
+&lt;p&gt;配置在application中，通过Value注解取出类型&lt;/p&gt;
+&lt;h3&gt;沙箱日志管理&lt;/h3&gt;
+&lt;p&gt;通过静态代理实现，增添能力&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@Slf4j
+@AllArgsConstructor
+public class CodeSandBoxProxy implements CodeSandBox {
+    private CodeSandBox codeSandBox;
+
+    @Override
+    public ExecuteCodeResponse executeCode(ExecuteCodeRequest executeCodeRequest) {
+        log.info(&quot;代码沙箱日志记录：----&quot;);
+        ExecuteCodeResponse executeCodeResponse = codeSandBox.executeCode(executeCodeRequest);
+        log.info(&quot;代码返回结果记录：----&quot;);
+        return executeCodeResponse;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;用代理类进行调用&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public static void main(String[] args) {
+    String code = &quot;int main() { }&quot;;
+    String language = &quot;Java&quot;;
+    List&amp;lt;String&amp;gt; inputList = Arrays.asList(&quot;1 2&quot;, &quot;3 4&quot;);
+
+    CodeSandBox sandbox = new CodeSandBoxFactory().newInstance(&quot;example&quot;);
+    ExecuteCodeRequest request = ExecuteCodeRequest.builder().
+            code(code).
+            language(language).
+            inputList(inputList).
+            build();
+    CodeSandBoxProxy proxy = new CodeSandBoxProxy(sandbox);
+    ExecuteCodeResponse executeCodeResponse = proxy.executeCode(request);
+    System.out.println(executeCodeResponse);
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;判题服务&lt;/h3&gt;
+&lt;p&gt;1.获取题目提交Id，获取到对应的题目，提交信息&lt;/p&gt;
+&lt;p&gt;2.更改题目状态，改为已提交&lt;/p&gt;
+&lt;p&gt;3.异步使用判断逻辑，调用沙箱，获取执行结果，之后根据沙箱的执行结果，设置题目的判题状态和信息&lt;/p&gt;
+&lt;p&gt;4.异步操作的时候，直接返回题目Id&lt;/p&gt;
+&lt;h3&gt;判断逻辑&lt;/h3&gt;
+&lt;p&gt;1.判断沙箱执行结果输出数量是否和预期输出数量相等（outlist.size() == inputlist.size()）&lt;/p&gt;
+&lt;p&gt;2.依次每一项输出和预期输出是否相等&lt;/p&gt;
+&lt;p&gt;3.判题题目的限制是否符合要求&lt;/p&gt;
+&lt;p&gt;4.如果有异常情况进行额外处理&lt;/p&gt;
+&lt;p&gt;思考：如果我的盘体策略可能会有很多种，比如：我们的代码沙箱本身执行程序需要消耗时间，这个时间可能不同的编程语言是不同的，例如沙箱执行Java代码需要额外花10s，可以通过策略模式进行优化&lt;/p&gt;
+&lt;p&gt;我们对于不同的语言有不同的可定制化的判题策略，定义JudgeManager通过接口进行策略的使用，而策略的选择放在JudgeManager中传入language进行if-else的策略实现类的建立&lt;/p&gt;
+&lt;h2&gt;代码沙箱&lt;/h2&gt;
+&lt;p&gt;只负责接受代码和输入，返回编译运行的结果，不负责判题&lt;/p&gt;
+&lt;h3&gt;原生实现&lt;/h3&gt;
+&lt;p&gt;不借助第三方库，用最干净的方式实现代码沙箱&lt;/p&gt;
+&lt;p&gt;代码沙箱需要：接受代码-&amp;gt;编译代码javac-&amp;gt;执行代码java&lt;/p&gt;
+&lt;p&gt;一段代码示例，将其放在resource目录下&lt;/p&gt;
+&lt;p&gt;统一类名，对于用户代码有要求，限制类名为Main，且不用从用户代码中提取类名&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class Main {
+    public static void main(String[] args) {
+        int a = Integer.parseInt(args[0]);
+        int b = Integer.parseInt(args[1]);
+        System.out.println(&quot;结果是：&quot; + (a + b));
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;通过javac进行编译，java运行来执行&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;javac -encoding UTF-8 Main.java
+java Main 4 6
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;打印出结果&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;结果是：10
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;核心流程&lt;/h3&gt;
+&lt;p&gt;核心实现思路：用程序代替人工，用程序执行命令，编译执行代码&lt;/p&gt;
+&lt;p&gt;Java进程执行管理类：Process&lt;/p&gt;
+&lt;p&gt;1.保存用户代码为文件&lt;/p&gt;
+&lt;p&gt;2.编译代码得到class文件&lt;/p&gt;
+&lt;p&gt;3.执行代码，得到输出结果&lt;/p&gt;
+&lt;p&gt;4.收集整理输出结果&lt;/p&gt;
+&lt;p&gt;5.文件清理&lt;/p&gt;
+&lt;p&gt;6.错误处理，提升程序健壮性&lt;/p&gt;
+&lt;p&gt;新建目录：将用户代码放到一个独立的文件夹中&lt;/p&gt;
+&lt;p&gt;完成一个执行进程的工具类&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;package com.sandbox.utils;
+
+import com.sandbox.model.ExecuteMessage;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+
+/**
+ * 进程工具类
+ */
+public class ProcessUtils {
+    public static ExecuteMessage runProcess(String command) throws InterruptedException, IOException {
+        Process process = Runtime.getRuntime().exec(command);
+        StringBuilder message = new StringBuilder();
+        StringBuilder error = new StringBuilder();
+        int exitCode = process.waitFor();
+        if (exitCode == 0) {
+            System.out.println(&quot;Success...&quot;);
+            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+            String compileMessage;
+            while((compileMessage = reader.readLine()) != null) {
+                message.append(compileMessage);
+            }
+            System.out.println(message);
+        } else {
+            System.out.println(&quot;Fail!! &quot; + &quot;exitCode:&quot; + exitCode);
+            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
+            String compileMessage;
+            while((compileMessage = reader.readLine()) != null) {
+                error.append(compileMessage);
+            }
+            System.out.println(error);
+        }
+        ExecuteMessage executeMessage = new ExecuteMessage();
+        executeMessage.setExitCode(exitCode);
+        executeMessage.setMessage(message.toString());
+        executeMessage.setErrorMessage(error.toString());
+        return executeMessage;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;package com.sandbox.service;
+
+import cn.hutool.core.io.FileUtil;
+import com.sandbox.model.ExecuteCodeRequest;
+import com.sandbox.model.ExecuteCodeResponse;
+import com.sandbox.model.ExecuteMessage;
+import com.sandbox.utils.ProcessUtils;
+
+import java.io.*;
+import java.util.*;
+import java.util.stream.Collectors;
+
+public class JavaNativeCodeSandBox implements CodeSandBox {
+    private static final String GLOBAL_CODE_DIR_NAME = &quot;tmpCode&quot;;
+    private static final String GLOBAL_JAVA_CLASS_NAME = &quot;Main.java&quot;;
+
+    @Override
+    public ExecuteCodeResponse execute(ExecuteCodeRequest request) {
+        List&amp;lt;String&amp;gt; inputList = request.getInputList();
+        String code = request.getCode();
+        String language = request.getLanguage();
+        String userDir = System.getProperty(&quot;user.dir&quot;);
+        String globalCodePath = userDir + File.separator + GLOBAL_CODE_DIR_NAME;
+        System.out.println(globalCodePath);
+        if (!FileUtil.exist(globalCodePath)) {
+            FileUtil.mkdir(globalCodePath);
+        }
+        //把用户的代码分级隔离存放
+        String userCodeParentPath = globalCodePath + File.separator + UUID.randomUUID();
+        String userCodePath = userCodeParentPath + File.separator + GLOBAL_JAVA_CLASS_NAME;
+        System.out.println(userCodePath);
+        File userCodeFile = FileUtil.writeString(code, userCodePath, &quot;UTF-8&quot;);
+
+        String compileCmd = String.format(&quot;javac -encoding UTF-8 %s&quot;, userCodeFile.getAbsoluteFile());
+        ExecuteMessage executeCompileMessage;
+        try {
+            executeCompileMessage = ProcessUtils.runProcess(compileCmd);
+        } catch (IOException | InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        //运行指令执行
+        List&amp;lt;String&amp;gt; result = new ArrayList&amp;lt;&amp;gt;();
+        for(String input: inputList) {
+            String runCmd = String.format(&quot;java -Dfile.encoding=UTF-8 -cp %s Main %s&quot;, userCodeParentPath, input);
+            try {
+                Process process = Runtime.getRuntime().exec(runCmd);
+                int exitCode = process.waitFor();
+                if (exitCode == 0) {
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+                    String line;
+                    while ((line = reader.readLine()) != null) {
+                        result.add(line);
+                    }
+                }
+            } catch (InterruptedException | IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+//        for(String ans : result) {
+//            System.out.println(ans);
+//        }
+        ExecuteCodeResponse response = new ExecuteCodeResponse();
+//        response.setMessage(&quot;编译信息：&quot; + executeCompileMessage.toString() + &quot;\n运行信息： &quot; +runExecuteMessage.toString());
+        response.setOutputList(result);
+        return response;
+    }
+
+    public static void main(String[] args) {
+        JavaNativeCodeSandBox sandBox = new JavaNativeCodeSandBox();
+        ExecuteCodeResponse response = sandBox.execute(ExecuteCodeRequest.builder().
+                language(&quot;java&quot;).
+                code(&quot;public class Main {\n&quot; +
+                        &quot;    public static void main(String[] args) {\n&quot; +
+                        &quot;        int a = Integer.parseInt(args[0]);\n&quot; +
+                        &quot;        int b = Integer.parseInt(args[1]);\n&quot; +
+                        &quot;        System.out.println(\&quot;结果是：\&quot; + (a + b));\n&quot; +
+                        &quot;    }\n&quot; +
+                        &quot;}&quot;).
+                inputList(Arrays.asList(&quot;1 3&quot;, &quot;5 7&quot;)).
+                build());
+        System.out.println(response);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;在结束后将生成的字节码文件和写入源文件删除&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;if(userCodeFile.getParentFile() != null) {
+    boolean del = FileUtil.del(userCodeParentPath);
+    System.out.println(&quot;删除&quot; + (del ? &quot;成功&quot; : &quot;失败&quot;));
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;安全风险&lt;/h3&gt;
+&lt;h4&gt;用户提交恶意代码&lt;/h4&gt;
+&lt;p&gt;1.时间：提交无限睡眠代码，例如sleep&lt;/p&gt;
+&lt;p&gt;2.空间：占用空间不释放，例如递归&lt;/p&gt;
+&lt;p&gt;JVisualVM可以连接到JVM虚拟机监控虚拟机&lt;/p&gt;
+&lt;p&gt;3.通过读取文件得到配置文件获取其中的配置信息&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.List;
+
+public class Main {
+    public static void main(String[] args) throws IOException {
+        String userDirectory = System.getProperty(&quot;user.dir&quot;);
+        String filePath = userDirectory + &quot;/src/main/resources/application.yaml&quot;;
+        List&amp;lt;String&amp;gt; allLines = Files.readAllLines(Paths.get(filePath));
+        for (String line : allLines) {
+            System.out.println(line);
+        }
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;返回的结果中存在结果，加入敏感信息放在这里面就会有泄露风险&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;ExecuteCodeResponse(outputList=[spring:,   application:,     name: sandbox, server:,   port: 8080, spring:,   application:,     name: sandbox, server:,   port: 8080], message=null, status=0, judgeInfo=null)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;4.将恶意程序写入服务器目录&lt;/p&gt;
+&lt;p&gt;之后将写入的程序通过服务器环境进行执行，这样就非常的危险了&lt;/p&gt;
+&lt;p&gt;5.执行高位命令&lt;/p&gt;
+&lt;p&gt;例如rm -rf /* 等&lt;/p&gt;
+&lt;h4&gt;解决方式&lt;/h4&gt;
+&lt;p&gt;1.超时控制	2.限制给用户的资源	3.禁用用户的读写权限（黑白名单/文件、网络、执行）	4.对于整个环境进行隔离&lt;/p&gt;
+&lt;p&gt;超时控制：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class Main {
+    public static void main(String[] args) throws InterruptedException {
+        Thread.sleep(20000);
+        System.out.println(&quot;睡眠完毕&quot;);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;Process process = Runtime.getRuntime().exec(runCmd);
+new Thread(() -&amp;gt; {
+    try {
+        Thread.sleep(5000);
+        process.destroy();
+    } catch (InterruptedException e) {
+        throw new RuntimeException(e);
+    }
+}).start();
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;资源分配：&lt;/p&gt;
+&lt;p&gt;在启动Java的时候可以指定JVM参数 ：-Xmx256m&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;import java.util.ArrayList;
+import java.util.List;
+
+public class Main {
+    public static void main(String[] args) {
+        List&amp;lt;byte[]&amp;gt; list = new ArrayList&amp;lt;byte[]&amp;gt;();
+        while(true) {
+            list.add(new byte[0]);
+        }
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;String runCmd = String.format(&quot;java -Xmx256M -Dfile.encoding=UTF-8 -cp %s Main %s&quot;, userCodeParentPath, input);
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;操作限制&lt;/h4&gt;
+&lt;p&gt;运用字典树，对于代码中的读写，执行等关键词进行限制&lt;/p&gt;
+&lt;p&gt;Java安全管理器是Java提供保护JVM，java程序的&lt;/p&gt;
+&lt;h2&gt;Docker代码沙箱&lt;/h2&gt;
+&lt;p&gt;Docker基本用法，命令行，Java客户端&lt;/p&gt;
+&lt;p&gt;Docker实现代码沙箱&lt;/p&gt;
+&lt;p&gt;提升Docker沙箱的安全性&lt;/p&gt;
+&lt;p&gt;实现原理：&lt;/p&gt;
+&lt;p&gt;1.Docker运行在Linux内核上&lt;/p&gt;
+&lt;p&gt;2.CGroups：实现了容器的资源隔离，底层是Linux CGroup，能够控制进程使用的资源&lt;/p&gt;
+&lt;p&gt;3.Network网络：实现容器的网络隔离，docker容器内部的网络互不影响&lt;/p&gt;
+&lt;p&gt;4.Namespaces命名空间：可以把进程隔离在不同的命名空间下，每个容器都有自己的命名空间，不同的命名空间下的进程互不影响&lt;/p&gt;
+&lt;p&gt;5.Storage存储空间：容器内的文件相互隔离&lt;/p&gt;
+</content:encoded></item><item><title>LeetCode刷题（长度最小的子数组、有效的数独）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E9%95%BF%E5%BA%A6%E6%9C%80%E5%B0%8F%E7%9A%84%E5%AD%90%E6%95%B0%E7%BB%84%E6%9C%89%E6%95%88%E7%9A%84%E6%95%B0%E7%8B%AC/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E9%95%BF%E5%BA%A6%E6%9C%80%E5%B0%8F%E7%9A%84%E5%AD%90%E6%95%B0%E7%BB%84%E6%9C%89%E6%95%88%E7%9A%84%E6%95%B0%E7%8B%AC/</guid><description>长度最小的子数组、有效的数独</description><pubDate>Thu, 30 Oct 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;长度最小的子数组&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;给定一个含有 &lt;code&gt;n&lt;/code&gt; 个正整数的数组和一个正整数 &lt;code&gt;target&lt;/code&gt; &lt;strong&gt;。&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;找出该数组中满足其总和大于等于 &lt;code&gt;target&lt;/code&gt; 的长度最小的 &lt;strong&gt;子数组&lt;/strong&gt; &lt;code&gt;[numsl, numsl+1, ..., numsr-1, numsr]&lt;/code&gt; ，并返回其长度**。**如果不存在符合条件的子数组，返回 &lt;code&gt;0&lt;/code&gt; 。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：target = 7, nums = [2,3,1,2,4,3]
+输出：2
+解释：子数组 [4,3] 是该条件下的长度最小的子数组。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：target = 4, nums = [1,4,4]
+输出：1
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 3：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：target = 11, nums = [1,1,1,1,1,1,1,1]
+输出：0
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;建立双指针，右边的指针一直向右遍历，当和大于目标的时候循环移动左边的指针，当大于目标的时候迭代长度，知道不满足大于target&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public int minSubArrayLen(int target, int[] nums) {
+        int sum = 0;
+        int result = Integer.MAX_VALUE;
+        int left = 0;
+        for(int right = 0; right &amp;lt; nums.length; right++) {
+            sum += nums[right];
+            if(sum &amp;gt;= target) {
+                while(sum &amp;gt;= target) {
+                    result = Math.min(result, right - left + 1);
+                    sum -= nums[left++];
+                }
+            }
+        }
+        return result == Integer.MAX_VALUE ? 0 : result;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1&gt;有效的数独&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;请你判断一个 &lt;code&gt;9 x 9&lt;/code&gt; 的数独是否有效。只需要 &lt;strong&gt;根据以下规则&lt;/strong&gt; ，验证已经填入的数字是否有效即可。&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;数字 &lt;code&gt;1-9&lt;/code&gt; 在每一行只能出现一次。&lt;/li&gt;
+&lt;li&gt;数字 &lt;code&gt;1-9&lt;/code&gt; 在每一列只能出现一次。&lt;/li&gt;
+&lt;li&gt;数字 &lt;code&gt;1-9&lt;/code&gt; 在每一个以粗实线分隔的 &lt;code&gt;3x3&lt;/code&gt; 宫内只能出现一次。（请参考示例图）&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;&lt;strong&gt;注意：&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;一个有效的数独（部分已被填充）不一定是可解的。&lt;/li&gt;
+&lt;li&gt;只需要根据以上规则，验证已经填入的数字是否有效即可。&lt;/li&gt;
+&lt;li&gt;空白格用 &lt;code&gt;&apos;.&apos;&lt;/code&gt; 表示。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/333.png&quot; alt=&quot;333&quot; /&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：board = 
+[[&quot;5&quot;,&quot;3&quot;,&quot;.&quot;,&quot;.&quot;,&quot;7&quot;,&quot;.&quot;,&quot;.&quot;,&quot;.&quot;,&quot;.&quot;]
+,[&quot;6&quot;,&quot;.&quot;,&quot;.&quot;,&quot;1&quot;,&quot;9&quot;,&quot;5&quot;,&quot;.&quot;,&quot;.&quot;,&quot;.&quot;]
+,[&quot;.&quot;,&quot;9&quot;,&quot;8&quot;,&quot;.&quot;,&quot;.&quot;,&quot;.&quot;,&quot;.&quot;,&quot;6&quot;,&quot;.&quot;]
+,[&quot;8&quot;,&quot;.&quot;,&quot;.&quot;,&quot;.&quot;,&quot;6&quot;,&quot;.&quot;,&quot;.&quot;,&quot;.&quot;,&quot;3&quot;]
+,[&quot;4&quot;,&quot;.&quot;,&quot;.&quot;,&quot;8&quot;,&quot;.&quot;,&quot;3&quot;,&quot;.&quot;,&quot;.&quot;,&quot;1&quot;]
+,[&quot;7&quot;,&quot;.&quot;,&quot;.&quot;,&quot;.&quot;,&quot;2&quot;,&quot;.&quot;,&quot;.&quot;,&quot;.&quot;,&quot;6&quot;]
+,[&quot;.&quot;,&quot;6&quot;,&quot;.&quot;,&quot;.&quot;,&quot;.&quot;,&quot;.&quot;,&quot;2&quot;,&quot;8&quot;,&quot;.&quot;]
+,[&quot;.&quot;,&quot;.&quot;,&quot;.&quot;,&quot;4&quot;,&quot;1&quot;,&quot;9&quot;,&quot;.&quot;,&quot;.&quot;,&quot;5&quot;]
+,[&quot;.&quot;,&quot;.&quot;,&quot;.&quot;,&quot;.&quot;,&quot;8&quot;,&quot;.&quot;,&quot;.&quot;,&quot;7&quot;,&quot;9&quot;]]
+输出：true
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：board = 
+[[&quot;8&quot;,&quot;3&quot;,&quot;.&quot;,&quot;.&quot;,&quot;7&quot;,&quot;.&quot;,&quot;.&quot;,&quot;.&quot;,&quot;.&quot;]
+,[&quot;6&quot;,&quot;.&quot;,&quot;.&quot;,&quot;1&quot;,&quot;9&quot;,&quot;5&quot;,&quot;.&quot;,&quot;.&quot;,&quot;.&quot;]
+,[&quot;.&quot;,&quot;9&quot;,&quot;8&quot;,&quot;.&quot;,&quot;.&quot;,&quot;.&quot;,&quot;.&quot;,&quot;6&quot;,&quot;.&quot;]
+,[&quot;8&quot;,&quot;.&quot;,&quot;.&quot;,&quot;.&quot;,&quot;6&quot;,&quot;.&quot;,&quot;.&quot;,&quot;.&quot;,&quot;3&quot;]
+,[&quot;4&quot;,&quot;.&quot;,&quot;.&quot;,&quot;8&quot;,&quot;.&quot;,&quot;3&quot;,&quot;.&quot;,&quot;.&quot;,&quot;1&quot;]
+,[&quot;7&quot;,&quot;.&quot;,&quot;.&quot;,&quot;.&quot;,&quot;2&quot;,&quot;.&quot;,&quot;.&quot;,&quot;.&quot;,&quot;6&quot;]
+,[&quot;.&quot;,&quot;6&quot;,&quot;.&quot;,&quot;.&quot;,&quot;.&quot;,&quot;.&quot;,&quot;2&quot;,&quot;8&quot;,&quot;.&quot;]
+,[&quot;.&quot;,&quot;.&quot;,&quot;.&quot;,&quot;4&quot;,&quot;1&quot;,&quot;9&quot;,&quot;.&quot;,&quot;.&quot;,&quot;5&quot;]
+,[&quot;.&quot;,&quot;.&quot;,&quot;.&quot;,&quot;.&quot;,&quot;8&quot;,&quot;.&quot;,&quot;.&quot;,&quot;7&quot;,&quot;9&quot;]]
+输出：false
+解释：除了第一行的第一个数字从 5 改为 8 以外，空格内其他数字均与 示例1 相同。 但由于位于左上角的 3x3 宫内有两个 8 存在, 因此这个数独是无效的。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;不知道还有没有其他的方法，我的解法比较复杂&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public boolean isValidSudoku(char[][] board) {
+        Set&amp;lt;Character&amp;gt; set = new HashSet&amp;lt;&amp;gt;();
+        for (int i = 0; i &amp;lt; 9; i++) {
+            set.clear();
+            for (int j = 0; j &amp;lt; 9; j++) {
+                char c = board[i][j];
+                if (c != &apos;.&apos;) {
+                    if (set.contains(c)) {
+                        return false;
+                    }
+                    set.add(c);
+                }
+            }
+        }
+        for (int j = 0; j &amp;lt; 9; j++) {
+            set.clear();
+            for (int i = 0; i &amp;lt; 9; i++) {
+                char c = board[i][j];
+                if (c != &apos;.&apos;) {
+                    if (set.contains(c)) {
+                        return false;
+                    }
+                    set.add(c);
+                }
+            }
+        }
+        for (int cow_num = 0; cow_num &amp;lt; 3; cow_num++) {
+            for (int rol_num = 0; rol_num &amp;lt; 3; rol_num++) {
+                int i_idx = cow_num * 3;
+                int j_idx = rol_num * 3;
+                set.clear();
+                for (int i = i_idx; i &amp;lt; i_idx + 3; i++) {
+                    for (int j = j_idx; j &amp;lt; j_idx + 3; j++) {
+                        char c = board[i][j];
+                        if (c != &apos;.&apos;) {
+                            if (set.contains(c)) {
+                                return false;
+                            }
+                            set.add(c);
+                        }
+                    }
+                }
+            }
+        }
+        return true;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+</content:encoded></item><item><title>LeetCode刷题（判断子序列、两数之和Ⅱ）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E5%88%A4%E6%96%AD%E5%AD%90%E5%BA%8F%E5%88%97%E4%B8%A4%E6%95%B0%E4%B9%8B%E5%92%8C%E2%85%B1/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E5%88%A4%E6%96%AD%E5%AD%90%E5%BA%8F%E5%88%97%E4%B8%A4%E6%95%B0%E4%B9%8B%E5%92%8C%E2%85%B1/</guid><description>判断子序列、两数之和Ⅱ</description><pubDate>Wed, 29 Oct 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;判断子序列&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;给定字符串 &lt;strong&gt;s&lt;/strong&gt; 和 &lt;strong&gt;t&lt;/strong&gt; ，判断 &lt;strong&gt;s&lt;/strong&gt; 是否为 &lt;strong&gt;t&lt;/strong&gt; 的子序列。&lt;/p&gt;
+&lt;p&gt;字符串的一个子序列是原始字符串删除一些（也可以不删除）字符而不改变剩余字符相对位置形成的新字符串。（例如，&lt;code&gt;&quot;ace&quot;&lt;/code&gt;是&lt;code&gt;&quot;abcde&quot;&lt;/code&gt;的一个子序列，而&lt;code&gt;&quot;aec&quot;&lt;/code&gt;不是）。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;进阶：&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;如果有大量输入的 S，称作 S1, S2, ... , Sk 其中 k &amp;gt;= 10亿，你需要依次检查它们是否为 T 的子序列。在这种情况下，你会怎样改变代码？&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：s = &quot;abc&quot;, t = &quot;ahbgdc&quot;
+输出：true
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：s = &quot;axc&quot;, t = &quot;ahbgdc&quot;
+输出：false
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;两个指针，依次遍历，有匹配元素则被匹配元素指针++，最后判断是否完全匹配&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public boolean isSubsequence(String s, String t) {
+        int n1 = s.length();
+        int n2 = t.length();
+        int i = 0;
+        int j = 0;
+        while(i &amp;lt; n1 &amp;amp;&amp;amp; j &amp;lt; n2) {
+            char c1 = s.charAt(i);
+            char c2 = t.charAt(j);
+            if(c1 == c2) {
+                i++;
+            }
+            j++;
+        }
+        return i == n1;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1&gt;两数之和&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;给你一个下标从 &lt;strong&gt;1&lt;/strong&gt; 开始的整数数组 &lt;code&gt;numbers&lt;/code&gt; ，该数组已按 &lt;strong&gt;非递减顺序排列&lt;/strong&gt; ，请你从数组中找出满足相加之和等于目标数 &lt;code&gt;target&lt;/code&gt; 的两个数。如果设这两个数分别是 &lt;code&gt;numbers[index1]&lt;/code&gt; 和 &lt;code&gt;numbers[index2]&lt;/code&gt; ，则 &lt;code&gt;1 &amp;lt;= index1 &amp;lt; index2 &amp;lt;= numbers.length&lt;/code&gt; 。&lt;/p&gt;
+&lt;p&gt;以长度为 2 的整数数组 &lt;code&gt;[index1, index2]&lt;/code&gt; 的形式返回这两个整数的下标 &lt;code&gt;index1&lt;/code&gt; 和 &lt;code&gt;index2&lt;/code&gt;。&lt;/p&gt;
+&lt;p&gt;你可以假设每个输入 &lt;strong&gt;只对应唯一的答案&lt;/strong&gt; ，而且你 &lt;strong&gt;不可以&lt;/strong&gt; 重复使用相同的元素。&lt;/p&gt;
+&lt;p&gt;你所设计的解决方案必须只使用常量级的额外空间。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：numbers = [2,7,11,15], target = 9
+输出：[1,2]
+解释：2 与 7 之和等于目标数 9 。因此 index1 = 1, index2 = 2 。返回 [1, 2] 。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：numbers = [2,3,4], target = 6
+输出：[1,3]
+解释：2 与 4 之和等于目标数 6 。因此 index1 = 1, index2 = 3 。返回 [1, 3] 。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 3：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：numbers = [-1,0], target = -1
+输出：[1,2]
+解释：-1 与 0 之和等于目标数 -1 。因此 index1 = 1, index2 = 2 。返回 [1, 2] 。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public int[] twoSum(int[] numbers, int target) {
+        int left = 0;
+        int right = numbers.length - 1;
+        while(left &amp;lt; right) {
+            int count = numbers[left] + numbers[right];
+            if (count == target) {
+                return new int[]{left + 1, right + 1};
+            } else if (count &amp;lt; 0) {
+                left++;
+            } else {
+                right--;
+            }
+        }
+        return new int[2];
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+</content:encoded></item><item><title>多线程并发编程笔记（多线程设计模式）</title><link>https://thrinisty.github.io/posts/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E7%AC%94%E8%AE%B0%E5%A4%9A%E7%BA%BF%E7%A8%8B%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E7%AC%94%E8%AE%B0%E5%A4%9A%E7%BA%BF%E7%A8%8B%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/</guid><description>多线程设计模式</description><pubDate>Wed, 29 Oct 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;多线程并发编程笔记&lt;/h1&gt;
+&lt;h2&gt;多线程设计模式&lt;/h2&gt;
+&lt;h3&gt;保护性暂停&lt;/h3&gt;
+&lt;p&gt;有一个结果需要从一个线程传递到另一个线程，让他们关联同一个GuardedObject，如果有结果不断从一个线程到另一个线程那么可以使用消息队列（生产者消费者）&lt;/p&gt;
+&lt;p&gt;JDK中join实现、Future实现采用的就是这种模式，因为要等待另一方的结果，因此归类到同步模式&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class GuardedObject {
+    public Object response;
+
+    public Object get() {
+        synchronized (this) {
+            while (response == null) {
+                try{
+                    this.wait();
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            return response;
+        }
+    }
+
+    public void complete(Object response) {
+        synchronized (this) {
+            this.response = response;
+            this.notifyAll();
+        }
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;join在底层就是使用到的保护性暂停的设计模式&lt;/p&gt;
+&lt;h3&gt;生产者消费者&lt;/h3&gt;
+&lt;p&gt;消费队列可以用来平衡生产和消费的线程资源&lt;/p&gt;
+&lt;p&gt;生产者只负责生产结果数据，不关心数据该如何处理，而消费者专心处理结果数据&lt;/p&gt;
+&lt;p&gt;消息队列是有容量限制的，满时不会再加入数据，空的时候消耗数据&lt;/p&gt;
+&lt;p&gt;JDK中的阻塞队列使用的就是这种模式&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;package com.procus;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+
+import java.util.LinkedList;
+import java.util.Queue;
+
+
+@AllArgsConstructor
+public class MessageQueue {
+    //消息队列集合
+    private Queue&amp;lt;Message&amp;gt; queue = new LinkedList&amp;lt;&amp;gt;();
+    //容量
+    private int capacity;
+    //获取消息方法
+    public Message take() throws InterruptedException {
+        synchronized (queue) {
+            while (!queue.isEmpty()) {
+                queue.wait();
+            }
+
+            Message message = queue.poll();
+            queue.notifyAll();
+            return message;
+        }
+    }
+
+    public void put(Message message) throws InterruptedException {
+        synchronized (queue) {
+            while (queue.size() == capacity) {
+                queue.wait();
+            }
+            queue.add(message);
+            queue.notifyAll();
+        }
+    }
+}
+
+@Data
+@AllArgsConstructor
+class Message {
+    private int id;
+    private Object value;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;park/unpark&lt;/h3&gt;
+&lt;p&gt;用于暂停和恢复线程，都是LockSupport类中的方法&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;特性&lt;/th&gt;
+&lt;th&gt;Wait/Notify&lt;/th&gt;
+&lt;th&gt;Park/Unpark&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;同步要求&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;必须在同步块(synchronized)中使用&lt;/td&gt;
+&lt;td&gt;不需要任何同步机制&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;精确唤醒&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;notify()随机唤醒一个，notifyAll()唤醒所有&lt;/td&gt;
+&lt;td&gt;可以精确唤醒指定线程&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;顺序依赖性&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;必须先wait后notify，否则notify会丢失&lt;/td&gt;
+&lt;td&gt;可以先unpark后park，不会丢失信号&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;中断处理&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;被中断会抛出InterruptedException&lt;/td&gt;
+&lt;td&gt;被中断不会抛出异常，但会立即返回&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;关联条件&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;通常与条件谓词一起使用&lt;/td&gt;
+&lt;td&gt;不关联任何条件，更底层&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;许可机制&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;无&lt;/td&gt;
+&lt;td&gt;基于许可(permit)的二进制信号量机制&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;锁释放&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;wait()会自动释放锁&lt;/td&gt;
+&lt;td&gt;park()不会释放任何锁&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+</content:encoded></item><item><title>LeetCode刷题（找出匹配项、验证回文串）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E6%89%BE%E5%87%BA%E5%8C%B9%E9%85%8D%E9%A1%B9%E9%AA%8C%E8%AF%81%E5%9B%9E%E6%96%87%E4%B8%B2/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E6%89%BE%E5%87%BA%E5%8C%B9%E9%85%8D%E9%A1%B9%E9%AA%8C%E8%AF%81%E5%9B%9E%E6%96%87%E4%B8%B2/</guid><description>找出字符串中第一个匹配项下表、验证回文串</description><pubDate>Tue, 28 Oct 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;找出匹配项&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;给你两个字符串 &lt;code&gt;haystack&lt;/code&gt; 和 &lt;code&gt;needle&lt;/code&gt; ，请你在 &lt;code&gt;haystack&lt;/code&gt; 字符串中找出 &lt;code&gt;needle&lt;/code&gt; 字符串的第一个匹配项的下标（下标从 0 开始）。如果 &lt;code&gt;needle&lt;/code&gt; 不是 &lt;code&gt;haystack&lt;/code&gt; 的一部分，则返回 &lt;code&gt;-1&lt;/code&gt; 。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：haystack = &quot;sadbutsad&quot;, needle = &quot;sad&quot;
+输出：0
+解释：&quot;sad&quot; 在下标 0 和 6 处匹配。
+第一个匹配项的下标是 0 ，所以返回 0 。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：haystack = &quot;leetcode&quot;, needle = &quot;leeto&quot;
+输出：-1
+解释：&quot;leeto&quot; 没有在 &quot;leetcode&quot; 中出现，所以返回 -1 。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;取出对应长度的区间依次比较即可&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public int strStr(String haystack, String needle) {
+        int length = needle.length();
+        for(int i = 0; i &amp;lt; haystack.length() - length + 1; i++) {
+            String target = haystack.substring(i, i + length);
+            if(target.equals(needle)) {
+                return i;
+            }
+        }
+        return -1;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1&gt;验证回文串&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;如果在将所有大写字符转换为小写字符、并移除所有非字母数字字符之后，短语正着读和反着读都一样。则可以认为该短语是一个 &lt;strong&gt;回文串&lt;/strong&gt; 。&lt;/p&gt;
+&lt;p&gt;字母和数字都属于字母数字字符。&lt;/p&gt;
+&lt;p&gt;给你一个字符串 &lt;code&gt;s&lt;/code&gt;，如果它是 &lt;strong&gt;回文串&lt;/strong&gt; ，返回 &lt;code&gt;true&lt;/code&gt; ；否则，返回 &lt;code&gt;false&lt;/code&gt; 。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入: s = &quot;A man, a plan, a canal: Panama&quot;
+输出：true
+解释：&quot;amanaplanacanalpanama&quot; 是回文串。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：s = &quot;race a car&quot;
+输出：false
+解释：&quot;raceacar&quot; 不是回文串。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 3：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：s = &quot; &quot;
+输出：true
+解释：在移除非字母数字字符之后，s 是一个空字符串 &quot;&quot; 。
+由于空字符串正着反着读都一样，所以是回文串。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public boolean isPalindrome(String s) {
+        List&amp;lt;Character&amp;gt; list = new ArrayList&amp;lt;&amp;gt;();
+        for(char c : s.toCharArray()) {
+            if(c &amp;gt;= &apos;A&apos; &amp;amp;&amp;amp; c &amp;lt;= &apos;Z&apos;) {
+                list.add((char)(c + 32));
+            }else if(c &amp;gt;= &apos;a&apos; &amp;amp;&amp;amp; c &amp;lt;= &apos;z&apos;) {
+                list.add(c);
+            }else if(c &amp;gt;= &apos;0&apos; &amp;amp;&amp;amp; c &amp;lt;= &apos;9&apos;) {
+                list.add(c);
+            }
+        }
+        int i = 0;
+        int j = list.size() - 1;
+        while(i &amp;lt; j) {
+            if(list.get(i) != list.get(j)) {
+                return false;
+            }
+            i++;
+            j--;
+        }
+        return true;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+</content:encoded></item><item><title>LeetCode刷题（正则表达式、课程表）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F%E8%AF%BE%E7%A8%8B%E8%A1%A8/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F%E8%AF%BE%E7%A8%8B%E8%A1%A8/</guid><description>正则表达式匹配、课程表</description><pubDate>Mon, 27 Oct 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;正则表达式匹配&lt;/h1&gt;
 &lt;h2&gt;题目描述&lt;/h2&gt;
 &lt;p&gt;给你一个字符串 &lt;code&gt;s&lt;/code&gt; 和一个字符规律 &lt;code&gt;p&lt;/code&gt;，请你来实现一个支持 &lt;code&gt;&apos;.&apos;&lt;/code&gt; 和 &lt;code&gt;&apos;*&apos;&lt;/code&gt; 的正则表达式匹配。&lt;/p&gt;
 &lt;ul&gt;
@@ -2990,18 +4313,6 @@ Person p2 = p1.clone();  // ❌ 创建新对象，破坏单例
     }
 }
 &lt;/code&gt;&lt;/pre&gt;
-</content:encoded></item><item><title>微服务OJ在线判题（开发中值得记录的思路）</title><link>https://thrinisty.github.io/posts/%E5%BE%AE%E6%9C%8D%E5%8A%A1oj%E5%9C%A8%E7%BA%BF%E5%88%A4%E9%A2%98%E5%BC%80%E5%8F%91%E4%B8%AD%E5%80%BC%E5%BE%97%E8%AE%B0%E5%BD%95%E7%9A%84%E6%80%9D%E8%B7%AF/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/%E5%BE%AE%E6%9C%8D%E5%8A%A1oj%E5%9C%A8%E7%BA%BF%E5%88%A4%E9%A2%98%E5%BC%80%E5%8F%91%E4%B8%AD%E5%80%BC%E5%BE%97%E8%AE%B0%E5%BD%95%E7%9A%84%E6%80%9D%E8%B7%AF/</guid><pubDate>Wed, 22 Oct 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;微服务OJ在线判题&lt;/h1&gt;
-&lt;p&gt;OJ常见概念：题目内存时间限制，题目描述，题目输入，题目输出，输入用例，测试用例&lt;/p&gt;
-&lt;p&gt;判题过程异步，提交之后，生成提交记录，有运行的结果&lt;/p&gt;
-&lt;p&gt;目的：用于在线评测编程题目代码的系统，能够根据用户提交代码，出题人预先设置的题目输入输出用例，编译代码，运行代码，判断代码运行结果是否正确&lt;/p&gt;
-&lt;p&gt;判题系统作为API开放，便于开发者制作自己的系统&lt;/p&gt;
-&lt;p&gt;功能：&lt;/p&gt;
-&lt;p&gt;题目模块：创建、删除、修改题目，搜索用户，在线做题，提交代码模块&lt;/p&gt;
-&lt;p&gt;用户模块：登陆注册&lt;/p&gt;
-&lt;p&gt;判题模块：提交判题、错误处理、自主实现代码沙箱、开放接口&lt;/p&gt;
-&lt;p&gt;在线做题：在线提交&lt;/p&gt;
-&lt;p&gt;拓展思路：支持多种语言、Remote Judge、普通评测、特殊评测、交互评测、在线自测&lt;/p&gt;
-&lt;p&gt;统计分析用户记录、权限校验、子任务分组评测、文件IO&lt;/p&gt;
 </content:encoded></item><item><title>LeetCode刷题（合并区间、解码方法）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E5%90%88%E5%B9%B6%E5%8C%BA%E9%97%B4%E8%A7%A3%E7%A0%81%E6%96%B9%E6%B3%95/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E5%90%88%E5%B9%B6%E5%8C%BA%E9%97%B4%E8%A7%A3%E7%A0%81%E6%96%B9%E6%B3%95/</guid><pubDate>Tue, 21 Oct 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;合并区间&lt;/h1&gt;
 &lt;h2&gt;题目描述&lt;/h2&gt;
 &lt;p&gt;以数组 &lt;code&gt;intervals&lt;/code&gt; 表示若干个区间的集合，其中单个区间为 &lt;code&gt;intervals[i] = [starti, endi]&lt;/code&gt; 。请你合并所有重叠的区间，并返回 &lt;em&gt;一个不重叠的区间数组，该数组需恰好覆盖输入中的所有区间&lt;/em&gt; 。&lt;/p&gt;
@@ -7902,9 +9213,6 @@ SADD set2 a b
     }
 }
 &lt;/code&gt;&lt;/pre&gt;
-</content:encoded></item><item><title>LeetCode刷题（）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E6%A8%A1%E6%9D%BF/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E6%A8%A1%E6%9D%BF/</guid><pubDate>Wed, 01 Oct 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;（题目）&lt;/h1&gt;
-&lt;h2&gt;题目描述&lt;/h2&gt;
-&lt;h2&gt;题解&lt;/h2&gt;
 </content:encoded></item><item><title>LeetCode刷题（和为K的子数组、二叉树中最大路径和）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E5%92%8C%E4%B8%BAk%E7%9A%84%E5%AD%90%E6%95%B0%E7%BB%84%E4%BA%8C%E5%8F%89%E6%A0%91%E4%B8%AD%E6%9C%80%E5%A4%A7%E8%B7%AF%E5%BE%84%E5%92%8C/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E5%92%8C%E4%B8%BAk%E7%9A%84%E5%AD%90%E6%95%B0%E7%BB%84%E4%BA%8C%E5%8F%89%E6%A0%91%E4%B8%AD%E6%9C%80%E5%A4%A7%E8%B7%AF%E5%BE%84%E5%92%8C/</guid><description>和为K的子数组、二叉树中最大路径和</description><pubDate>Wed, 01 Oct 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;和为K的子数组&lt;/h1&gt;
 &lt;h2&gt;题目描述&lt;/h2&gt;
 &lt;p&gt;给你一个整数数组 &lt;code&gt;nums&lt;/code&gt; 和一个整数 &lt;code&gt;k&lt;/code&gt; ，请你统计并返回 &lt;em&gt;该数组中和为 &lt;code&gt;k&lt;/code&gt; 的子数组的个数&lt;/em&gt; 。&lt;/p&gt;
