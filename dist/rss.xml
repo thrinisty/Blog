@@ -1,4 +1,1505 @@
-<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Thrinisty&apos;s Blog</title><description>New Blog</description><link>https://thrinisty.github.io/</link><language>zh_CN</language><item><title>LeetCode刷题（快乐数、存在重复元素Ⅱ）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E5%BF%AB%E4%B9%90%E6%95%B0%E5%AD%98%E5%9C%A8%E9%87%8D%E5%A4%8D%E5%85%83%E7%B4%A0%E2%85%B1/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E5%BF%AB%E4%B9%90%E6%95%B0%E5%AD%98%E5%9C%A8%E9%87%8D%E5%A4%8D%E5%85%83%E7%B4%A0%E2%85%B1/</guid><description>快乐数、存在重复元素Ⅱ</description><pubDate>Mon, 03 Nov 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;快乐数&lt;/h1&gt;
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Thrinisty&apos;s Blog</title><description>New Blog</description><link>https://thrinisty.github.io/</link><language>zh_CN</language><item><title>多线程并发编程笔记（线程池、JUC工具）</title><link>https://thrinisty.github.io/posts/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E7%AC%94%E8%AE%B0%E7%BA%BF%E7%A8%8B%E6%B1%A0juc%E5%B7%A5%E5%85%B7/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E7%AC%94%E8%AE%B0%E7%BA%BF%E7%A8%8B%E6%B1%A0juc%E5%B7%A5%E5%85%B7/</guid><description>线程池、JUC工具</description><pubDate>Sun, 09 Nov 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;多线程并发编程笔记&lt;/h1&gt;
+&lt;h2&gt;线程池&lt;/h2&gt;
+&lt;p&gt;阻塞队列实现&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class BlockingQueue&amp;lt;T&amp;gt; {
+    //任务队列
+    private Deque&amp;lt;T&amp;gt; deque = new ArrayDeque&amp;lt;&amp;gt;();
+    //锁：防止线程竞争获取线程
+    ReentrantLock lock = new ReentrantLock();
+    //生产者条件变量
+    private Condition fullWaitSet = lock.newCondition();
+    //消费者条件变量
+    private Condition emptyWaitSet = lock.newCondition();
+    //容量
+    private int capacity;
+
+    public T take() {
+        lock.lock();
+        try {
+            while (deque.isEmpty()) {
+                try {
+                    emptyWaitSet.await();
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            fullWaitSet.signal();
+            return deque.removeFirst();
+        } finally {
+            lock.unlock();
+        }
+    }
+
+    public void put(T t) {
+        lock.lock();
+        try {
+            while (capacity == deque.size()) {
+                try {
+                    fullWaitSet.await();
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            deque.addLast(t);
+            emptyWaitSet.signal();
+        } finally {
+            lock.unlock();
+        }
+    }
+
+    public int size() {
+        lock.lock();
+        try {
+            return deque.size();
+        } finally {
+            lock.unlock();
+        }
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+</content:encoded></item><item><title>LeetCode刷题（删除链表中的重复元素、K个一组反转链表）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E5%88%A0%E9%99%A4%E9%93%BE%E8%A1%A8%E4%B8%AD%E7%9A%84%E9%87%8D%E5%A4%8D%E5%85%83%E7%B4%A0k%E4%B8%AA%E4%B8%80%E7%BB%84%E5%8F%8D%E8%BD%AC%E9%93%BE%E8%A1%A8/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E5%88%A0%E9%99%A4%E9%93%BE%E8%A1%A8%E4%B8%AD%E7%9A%84%E9%87%8D%E5%A4%8D%E5%85%83%E7%B4%A0k%E4%B8%AA%E4%B8%80%E7%BB%84%E5%8F%8D%E8%BD%AC%E9%93%BE%E8%A1%A8/</guid><description>删除链表中的重复元素、K个一组反转链表</description><pubDate>Sat, 08 Nov 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;删除链表中的重复元素&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;给定一个已排序的链表的头 &lt;code&gt;head&lt;/code&gt; ， &lt;em&gt;删除所有重复的元素，使每个元素只出现一次&lt;/em&gt; 。返回 &lt;em&gt;已排序的链表&lt;/em&gt; 。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：head = [1,1,2]
+输出：[1,2]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：head = [1,1,2,3,3]
+输出：[1,2,3]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;当p的下一个节点不为空的时候比较当前节点和下一节点的数值，如果相同则将当前指针指向下一个的下一个节点（移除当前节点的后一节点），如果不同则将当前指针指向下一节点等待下一次判断&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public ListNode deleteDuplicates(ListNode head) {
+        if(head == null) return null;
+        ListNode p = head;
+        while(p.next != null) {
+            if(p.val == p.next.val) {
+                p.next = p.next.next;
+            } else {
+                p = p.next;
+            }
+        }
+        return head;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1&gt;删除链表中的重复元素Ⅱ&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;定一个已排序的链表的头 &lt;code&gt;head&lt;/code&gt; ， &lt;em&gt;删除原始链表中所有重复数字的节点，只留下不同的数字&lt;/em&gt; 。返回 &lt;em&gt;已排序的链表&lt;/em&gt; 。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：head = [1,2,3,3,4,4,5]
+输出：[1,2,5]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：head = [1,1,1,2,3]
+输出：[2,3]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;这一道题是上一道题的拓展，将重复的元素给完全删除不保留其单一节点&lt;/p&gt;
+&lt;p&gt;思路有些改变，因为需要删除重复的所有节点包括起始的节点，我们需要一个记录节点的前一节点，选取该节点后的第一个数作为基准，依次删除值相同的节点&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public ListNode deleteDuplicates(ListNode head) {
+        if(head == null) return null;
+        ListNode result = new ListNode();
+        result.next = head;
+        ListNode p = result;
+        while(p.next != null &amp;amp;&amp;amp; p.next.next != null) {
+            if(p.next.val == p.next.next.val) {
+                int value = p.next.val;
+                while(p.next != null &amp;amp;&amp;amp; p.next.val == value) {
+                    p.next = p.next.next;
+                }
+            } else {
+                p = p.next;
+            }
+        }
+        return result.next;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1&gt;K个一组反转链表&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;给你链表的头节点 &lt;code&gt;head&lt;/code&gt; ，每 &lt;code&gt;k&lt;/code&gt; 个节点一组进行翻转，请你返回修改后的链表。&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;k&lt;/code&gt; 是一个正整数，它的值小于或等于链表的长度。如果节点总数不是 &lt;code&gt;k&lt;/code&gt; 的整数倍，那么请将最后剩余的节点保持原有顺序。&lt;/p&gt;
+&lt;p&gt;你不能只是单纯的改变节点内部的值，而是需要实际进行节点交换。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/343.jpg&quot; alt=&quot;343&quot; /&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：head = [1,2,3,4,5], k = 2
+输出：[2,1,4,3,5]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/344.jpg&quot; alt=&quot;344&quot; /&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：head = [1,2,3,4,5], k = 3
+输出：[3,2,1,4,5]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;提示：&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;链表中的节点数目为 &lt;code&gt;n&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;1 &amp;lt;= k &amp;lt;= n &amp;lt;= 5000&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;0 &amp;lt;= Node.val &amp;lt;= 1000&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;这是我写的方法：一次运用之前的部分反转的思路进行反转每个k区间，直到next为空的时候停止，这种方式如果最后的区间不满足k个也会进行反转&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public ListNode reverseKGroup(ListNode head, int k) {
+        ListNode result = new ListNode();
+        result.next = head;
+        ListNode last = result;
+        ListNode cur = last.next;
+        while(true) {
+            if(cur == null) break;
+            for(int i = 1; i &amp;lt; k; i++) {
+                ListNode next = cur.next;
+                if(next == null) break;
+                cur.next = next.next;
+                next.next = last.next;
+                last.next = next;
+            }
+            last = cur;
+            cur = last.next;
+        }
+        return result.next;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;应该在进行数量的判断，如果不满足K个数则提前返回&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public ListNode reverseKGroup(ListNode head, int k) {
+        ListNode result = new ListNode();
+        result.next = head;
+        ListNode last = result;
+        ListNode cur = last.next;
+        while(true) {
+            if(cur == null) break;
+            int count = 0;
+            ListNode p = cur;
+            for(int i = 0; i &amp;lt; k; i++) {
+                if(p == null) {
+                    break;
+                }
+                count++;
+                p = p.next;
+            }
+            if(count != k) break;
+            for(int i = 1; i &amp;lt; k; i++) {
+                ListNode next = cur.next;
+                cur.next = next.next;
+                next.next = last.next;
+                last.next = next;
+            }
+            last = cur;
+            cur = last.next;
+        }
+        return result.next;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+</content:encoded></item><item><title>LeetCode刷题（反转链表Ⅱ、随机链表的复制）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E5%8F%8D%E8%BD%AC%E9%93%BE%E8%A1%A8%E2%85%B1%E9%9A%8F%E6%9C%BA%E9%93%BE%E8%A1%A8%E7%9A%84%E5%A4%8D%E5%88%B6/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E5%8F%8D%E8%BD%AC%E9%93%BE%E8%A1%A8%E2%85%B1%E9%9A%8F%E6%9C%BA%E9%93%BE%E8%A1%A8%E7%9A%84%E5%A4%8D%E5%88%B6/</guid><description>反转链表Ⅱ、随机链表的复制</description><pubDate>Fri, 07 Nov 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;反转链表Ⅱ&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;给你单链表的头指针 &lt;code&gt;head&lt;/code&gt; 和两个整数 &lt;code&gt;left&lt;/code&gt; 和 &lt;code&gt;right&lt;/code&gt; ，其中 &lt;code&gt;left &amp;lt;= right&lt;/code&gt; 。请你反转从位置 &lt;code&gt;left&lt;/code&gt; 到位置 &lt;code&gt;right&lt;/code&gt; 的链表节点，返回 &lt;strong&gt;反转后的链表&lt;/strong&gt; 。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/341.jpg&quot; alt=&quot;341&quot; /&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：head = [1,2,3,4,5], left = 2, right = 4
+输出：[1,4,3,2,5]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：head = [5], left = 1, right = 1
+输出：[5]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;先遍历left-1，找到要交换链表起始节点的上一个节点lastNode，用cur指针指向交换的起始节点&lt;/p&gt;
+&lt;p&gt;每次将元素提前算法：用next指向要放入点前面的节点，cur指向交换结点的下一个节点等待下次交换，将next节点放入lastNode节点的下一位，依次交换right-left次即可&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public ListNode reverseBetween(ListNode head, int left, int right) {
+        ListNode result = new ListNode();
+        result.next = head;
+        ListNode lastNode = result;
+        for(int i = 1; i &amp;lt; left; i++) {
+            lastNode = lastNode.next;
+        }
+        ListNode cur = lastNode.next;
+        ListNode next;
+        for(int i = 0; i &amp;lt; right - left; i++) {
+            next = cur.next;
+            cur.next = next.next;
+            next.next = lastNode.next;
+            lastNode.next = next;
+        }
+        return result.next;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1&gt;随机链表的复制&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;你一个长度为 &lt;code&gt;n&lt;/code&gt; 的链表，每个节点包含一个额外增加的随机指针 &lt;code&gt;random&lt;/code&gt; ，该指针可以指向链表中的任何节点或空节点。&lt;/p&gt;
+&lt;p&gt;构造这个链表的 &lt;strong&gt;&lt;a href=&quot;https://baike.baidu.com/item/%E6%B7%B1%E6%8B%B7%E8%B4%9D/22785317?fr=aladdin&quot;&gt;深拷贝&lt;/a&gt;&lt;/strong&gt;。 深拷贝应该正好由 &lt;code&gt;n&lt;/code&gt; 个 &lt;strong&gt;全新&lt;/strong&gt; 节点组成，其中每个新节点的值都设为其对应的原节点的值。新节点的 &lt;code&gt;next&lt;/code&gt; 指针和 &lt;code&gt;random&lt;/code&gt; 指针也都应指向复制链表中的新节点，并使原链表和复制链表中的这些指针能够表示相同的链表状态。&lt;strong&gt;复制链表中的指针都不应指向原链表中的节点&lt;/strong&gt; 。&lt;/p&gt;
+&lt;p&gt;例如，如果原链表中有 &lt;code&gt;X&lt;/code&gt; 和 &lt;code&gt;Y&lt;/code&gt; 两个节点，其中 &lt;code&gt;X.random --&amp;gt; Y&lt;/code&gt; 。那么在复制链表中对应的两个节点 &lt;code&gt;x&lt;/code&gt; 和 &lt;code&gt;y&lt;/code&gt; ，同样有 &lt;code&gt;x.random --&amp;gt; y&lt;/code&gt; 。&lt;/p&gt;
+&lt;p&gt;返回复制链表的头节点。&lt;/p&gt;
+&lt;p&gt;用一个由 &lt;code&gt;n&lt;/code&gt; 个节点组成的链表来表示输入/输出中的链表。每个节点用一个 &lt;code&gt;[val, random_index]&lt;/code&gt; 表示：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;val&lt;/code&gt;：一个表示 &lt;code&gt;Node.val&lt;/code&gt; 的整数。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;random_index&lt;/code&gt;：随机指针指向的节点索引（范围从 &lt;code&gt;0&lt;/code&gt; 到 &lt;code&gt;n-1&lt;/code&gt;）；如果不指向任何节点，则为 &lt;code&gt;null&lt;/code&gt; 。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;你的代码 &lt;strong&gt;只&lt;/strong&gt; 接受原链表的头节点 &lt;code&gt;head&lt;/code&gt; 作为传入参数。&lt;/p&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;合并+分离，分三次循环，第一次循环创建后置节点，第二次跨格将指针指向对应的后置节点，第三次将合并的链表拆分&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public Node copyRandomList(Node head) {
+        if(head == null) {
+            return null;
+        }
+        Node p = head;
+        while(p != null) {
+            Node node = new Node(p.val);
+            node.next = p.next;
+            p.next = node;
+            p = node.next;
+        }
+        p = head;
+        while(p != null) {
+            if(p.random != null) {
+                p.next.random = p.random.next;
+            }
+            p = p.next.next;
+        }
+        Node result = new Node(-1);
+        p = head;
+        Node cur = result;
+        while(p != null) {
+            cur.next = p.next;
+            cur = cur.next;
+            p.next = p.next.next;
+            p = p.next;
+        }
+        return result.next;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+</content:encoded></item><item><title>多线程并发编程笔记（可见性、有序性、无锁并发）</title><link>https://thrinisty.github.io/posts/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E7%AC%94%E8%AE%B0%E5%8F%AF%E8%A7%81%E6%80%A7%E6%9C%89%E5%BA%8F%E6%80%A7%E6%97%A0%E9%94%81%E5%B9%B6%E5%8F%91/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E7%AC%94%E8%AE%B0%E5%8F%AF%E8%A7%81%E6%80%A7%E6%9C%89%E5%BA%8F%E6%80%A7%E6%97%A0%E9%94%81%E5%B9%B6%E5%8F%91/</guid><description>可见性、有序性、无锁并发</description><pubDate>Fri, 07 Nov 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;多线程并发编程笔记&lt;/h1&gt;
+&lt;h2&gt;可见性与有序性&lt;/h2&gt;
+&lt;p&gt;JMM 即 Java Memory Model，定义了主存，工作内存抽象概念，底层对应着CPU寄存器，缓存、硬件内存、CPU指令优化等&lt;/p&gt;
+&lt;p&gt;JMM体现在以下几个方面&lt;/p&gt;
+&lt;p&gt;1.原子性：保证指令不会受到线程上下文切换的影响&lt;/p&gt;
+&lt;p&gt;2.可见性：保证指令不会受到CPU缓存影响&lt;/p&gt;
+&lt;p&gt;3.有序性：保证指令不会受到CPU指令并行优化影响&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;可见性&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;场景：无限运行不会停止&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class jmm {
+    private static boolean run = true;
+    public static void main(String[] args) throws InterruptedException {
+        Thread t = new Thread(() -&amp;gt; {
+            while (run) {
+
+            }
+        });
+        t.start();
+        Thread.sleep(1000);
+        run = false;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;这是由于t线程由于频繁度run变量，JMM进行了优化，将run缓存（或者还有可能JIT编译优化为true），后续修改run后run对于t任然是true，因为使用的缓存&lt;/p&gt;
+&lt;p&gt;解决方式：加上volatile修饰&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class jmm {
+    private static volatile boolean run = true;
+    public static void main(String[] args) throws InterruptedException {
+        Thread t1 = new Thread(() -&amp;gt; {
+            while (run) {
+                
+            }
+        });
+        t1.start();
+        Thread.sleep(1000);
+        run = false;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;有序性&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;JVM在不影响正确性的前提下，可以调整语句的执行顺序&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;i=1;
+j=2;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;JVM可以将其调整为，不影响结果&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;j=2;
+i=1;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;指令重排用于优化性能&lt;/p&gt;
+&lt;h2&gt;volatile&lt;/h2&gt;
+&lt;p&gt;底层原理是内存屏障，Memory Barrier&lt;/p&gt;
+&lt;p&gt;对于volatile变量的写指令后会加入写屏障&lt;/p&gt;
+&lt;p&gt;对于volatile变量的读指令后会加入读屏障&lt;/p&gt;
+&lt;p&gt;写屏障：保证在该屏障之前的时候，对于共享变量的改动，都同步到主存中&lt;/p&gt;
+&lt;p&gt;读屏障：保证在该屏障之后，对共享变量的读取，加载的是主存中的最新数据&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/332.png&quot; alt=&quot;332&quot; /&gt;&lt;/p&gt;
+&lt;h2&gt;无锁并发&lt;/h2&gt;
+&lt;p&gt;使用场景&lt;/p&gt;
+&lt;p&gt;使用AtomicInteger原子无所实现账户余额扣除&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;package com;
+
+import java.util.concurrent.atomic.AtomicInteger;
+
+public class CAS {
+    public static void main(String[] args) throws InterruptedException {
+        Account account = new Account(100);
+        Thread t1 = new Thread(() -&amp;gt; {
+           for (int i = 0; i &amp;lt; 5; i++) {
+               account.withdraw(10);
+           }
+        });
+        t1.start();
+        for (int i = 0; i &amp;lt; 5; i++) {
+            account.withdraw(10);
+        }
+        t1.join();
+        System.out.println(account.getBalance());
+    }
+}
+
+class Account {
+    private AtomicInteger balance;
+    public Account(int balance) {
+        this.balance = new AtomicInteger(balance);
+    }
+    public int getBalance() {
+        return balance.get();
+    }
+    public void withdraw(int amount) {
+        while (true) {
+            int prev = balance.get();
+            int target = prev - amount;
+            if(balance.compareAndSet(prev, target)) {
+                break;
+            }
+        }
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;其中的关键是compareAndSet，在CPU底层实现原子性&lt;/p&gt;
+&lt;h3&gt;原子整数&lt;/h3&gt;
+&lt;p&gt;AtomicInteger&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class Auto {
+    public static void main(String[] args) {
+        AtomicInteger i = new AtomicInteger(100);
+        i.incrementAndGet();//自增并且获取值++i
+        i.getAndIncrement();//返回结果再自增i++
+        i.addAndGet(10);//自增10再获取
+        i.getAndAdd(10);//先获取再加10
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;改造一下原先的CAS实现，使用getAndAdd再次封装的类&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public void withdraw(int amount) {
+    balance.getAndAdd(amount);
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;自定义原子操作&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class Auto {
+    public static void main(String[] args) {
+        AtomicInteger i = new AtomicInteger(100);
+        i.updateAndGet(x -&amp;gt; 5 * x);
+        System.out.println(i);//500
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;源自引用&lt;/h3&gt;
+&lt;p&gt;AtomicReference、AtomicMarkableReference、AtomicStampedReference&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class Auto {
+    public static void main(String[] args) {
+        AtomicAccount balance = new AtomicAccount(new BigDecimal(&quot;100.00&quot;));
+        balance.withdraw(new BigDecimal(&quot;50&quot;));
+        System.out.println(balance.getBalance());
+    }
+}
+
+class AtomicAccount {
+    private AtomicReference&amp;lt;BigDecimal&amp;gt; balance;
+
+    public AtomicAccount(BigDecimal balance) {
+        this.balance = new AtomicReference&amp;lt;&amp;gt;(balance);
+    }
+    public BigDecimal getBalance() {
+        return balance.get();
+    }
+    public void withdraw(BigDecimal amount) {
+        while (true) {
+            BigDecimal prev = balance.get();
+            BigDecimal next = prev.subtract(amount);
+            if (balance.compareAndSet(prev, next)) {
+                break;
+            }
+        }
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;ABA问题：在查询和修改之间如果另外一个线程修改过A，又修改过为B，则对于compareAndSet是没有办法直到其中有没有修改的，在大多数业务是没有问题的，但是主线程没法感知修改，我们要做到这一步需要使用AtomicStampedReference，设置版本号&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class Auto {
+    public static void main(String[] args) {
+        AtomicAccount balance = new AtomicAccount(new BigDecimal(&quot;100.00&quot;));
+        balance.withdraw(new BigDecimal(&quot;50&quot;));
+        System.out.println(balance.getBalance());
+    }
+}
+
+class AtomicAccount {
+    private AtomicStampedReference&amp;lt;BigDecimal&amp;gt; balance;
+
+    public AtomicAccount(BigDecimal balance) {
+        this.balance = new AtomicStampedReference&amp;lt;&amp;gt;(balance, 0);
+    }
+    public BigDecimal getBalance() {
+        return balance.getReference();
+    }
+    public void withdraw(BigDecimal amount) {
+        while (true) {
+            BigDecimal prev = balance.getReference();
+            int stamp = balance.getStamp();
+            BigDecimal next = prev.subtract(amount);
+            if (balance.compareAndSet(prev, next, stamp, stamp + 1)) {
+                break;
+            }
+        }
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;AtomicMarkableReference不关心更改了几次，而是关心是否更改过&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class AtomicAccount {
+    private AtomicMarkableReference&amp;lt;BigDecimal&amp;gt; balance;
+
+    public AtomicAccount(BigDecimal balance) {
+        this.balance = new AtomicMarkableReference&amp;lt;&amp;gt;(balance, false);
+    }
+    public BigDecimal getBalance() {
+        return balance.getReference();
+    }
+    public void withdraw(BigDecimal amount) {
+        while (true) {
+            BigDecimal prev = balance.getReference();
+            boolean marked = balance.isMarked();
+            BigDecimal next = prev.subtract(amount);
+            if (balance.compareAndSet(prev, next, marked, true)) {
+                break;
+            }
+        }
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;原子累加器&lt;/h3&gt;
+&lt;p&gt;LongAdder&lt;/p&gt;
+&lt;p&gt;可以提升性能，在竞争的时候，设置多个累加单元（Cell），最后再将结果汇总，这样可以有效地减少CAS重试失败的次数&lt;/p&gt;
+&lt;h3&gt;Unsafe&lt;/h3&gt;
+&lt;p&gt;Unsafe对象提供了非常底层的内存操作，线程，Unsafe对象不可以直接调用，只能通过反射获取，直接使用getUnsafe会报错&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;Unsafe unsafe = Unsafe.getUnsafe(); // 抛出 java.lang.SecurityException
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;JVM 会检查调用类的类加载器，只有由 &lt;strong&gt;Bootstrap ClassLoader&lt;/strong&gt; 加载的类（如 JRE 核心库）才能直接获取 &lt;code&gt;Unsafe&lt;/code&gt; 实例&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@Slf4j
+public class Main {
+    public static void main(String[] args) throws Exception {
+        Field field = Unsafe.class.getDeclaredField(&quot;theUnsafe&quot;);
+        field.setAccessible(true);
+        Unsafe unsafe = (Unsafe) field.get(null);
+        System.out.println(unsafe);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;@Slf4j
+public class Main {
+    public static void main(String[] args) throws Exception {
+        Field field = Unsafe.class.getDeclaredField(&quot;theUnsafe&quot;);
+        field.setAccessible(true);
+        Unsafe unsafe = (Unsafe) field.get(null);
+        System.out.println(unsafe);
+        long idOffset = unsafe.objectFieldOffset(Teacher.class.getDeclaredField(&quot;id&quot;));
+        long nameOffset = unsafe.objectFieldOffset(Teacher.class.getDeclaredField(&quot;name&quot;));
+        Teacher teacher = new Teacher();
+        unsafe.compareAndSwapInt(teacher, idOffset, 0, 1);
+        unsafe.compareAndSwapObject(teacher, nameOffset, null, &quot;李四&quot;);
+        System.out.println(teacher);
+    }
+}
+
+@Data
+class Teacher {
+    volatile long id;
+    volatile String name;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;sun.misc.Unsafe@490d6c15
+Teacher(id=1, name=李四)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;不可变设计&lt;/h2&gt;
+&lt;p&gt;不可变类使用，不可变类设计，无状态设计&lt;/p&gt;
+&lt;p&gt;可变发生并发安全问题：&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;SimpleDateFormat&lt;/code&gt; 继承自 &lt;code&gt;DateFormat&lt;/code&gt;，其内部使用了一个 &lt;strong&gt;可变成员变量&lt;/strong&gt; &lt;code&gt;Calendar&lt;/code&gt; 来存储日期解析/格式化的中间状态&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;SimpleDateFormat sdf = new SimpleDateFormat(&quot;yyyy-MM-dd&quot;);
+
+Runnable task = () -&amp;gt; {
+    try {
+        // 多个线程共享同一个 SimpleDateFormat 实例
+        System.out.println(sdf.format(new Date()));
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+};
+
+// 启动 10 个线程
+for (int i = 0; i &amp;lt; 10; i++) {
+    new Thread(task).start();
+}
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;多线程并发时&lt;/strong&gt;，多个线程可能同时修改 &lt;code&gt;calendar&lt;/code&gt; 的状态，导致数据混乱。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;可以用DateTimeFormatter代替，其内部的成员是不可变的&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;DateTimeFormatter formatter = DateTimeFormatter.ofPattern(&quot;yyyy-MM-dd&quot;);
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;一个类的不可变设计&lt;/p&gt;
+&lt;p&gt;要么用final修饰变量，要么是私有的外界不可访问&lt;/p&gt;
+&lt;p&gt;另外一个就是不让继承，重写方法，实现方法&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@Stable
+private final byte[] value;
+private final byte coder;
+private int hash; // Default to 0
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;而因为byte用final修饰只是不可修改引用，我们还需要用保护性拷贝进行对于value内部数据的保护，使其不被修改&lt;/p&gt;
+</content:encoded></item><item><title>LeetCode刷题（抛硬币Ⅱ、滑动窗口最大值）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E6%8A%9B%E7%A1%AC%E5%B8%81%E2%85%B1%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3%E6%9C%80%E5%A4%A7%E5%80%BC/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E6%8A%9B%E7%A1%AC%E5%B8%81%E2%85%B1%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3%E6%9C%80%E5%A4%A7%E5%80%BC/</guid><description>新凯莱面试题目</description><pubDate>Thu, 06 Nov 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;抛硬币Ⅱ&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;给你一个整数数组 &lt;code&gt;coins&lt;/code&gt; 表示不同面额的硬币，另给一个整数 &lt;code&gt;amount&lt;/code&gt; 表示总金额。&lt;/p&gt;
+&lt;p&gt;请你计算并返回可以凑成总金额的硬币组合数。如果任何硬币组合都无法凑出总金额，返回 &lt;code&gt;0&lt;/code&gt; 。&lt;/p&gt;
+&lt;p&gt;假设每一种面额的硬币有无限个。&lt;/p&gt;
+&lt;p&gt;题目数据保证结果符合 32 位带符号整数。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：amount = 5, coins = [1, 2, 5]
+输出：4
+解释：有四种方式可以凑成总金额：
+5=5
+5=2+2+1
+5=2+1+1+1
+5=1+1+1+1+1
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：amount = 3, coins = [2]
+输出：0
+解释：只用面额 2 的硬币不能凑成总金额 3 。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 3：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：amount = 10, coins = [10] 
+输出：1
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;笔试用的回溯方法做的，超时&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;package com.num1;
+
+import java.util.*;
+
+public class Main {
+    private static int result = 0;
+    private static List&amp;lt;Integer&amp;gt; list = new ArrayList&amp;lt;Integer&amp;gt;();
+    private static List&amp;lt;List&amp;lt;Integer&amp;gt;&amp;gt; listResult = new ArrayList&amp;lt;&amp;gt;();
+    public static void main(String[] args) {
+        Scanner in = new Scanner(System.in);
+        String str = in.nextLine();
+        String[] arr = str.split(&quot; &quot;);
+        int[] nums = new int[arr.length];
+        for (int i = 0; i &amp;lt; arr.length; i++) {
+            nums[i] = Integer.parseInt(arr[i]);
+        }
+        int target = in.nextInt();
+        dfs(nums, target, 0, 0);
+        System.out.println(result);
+        for(List&amp;lt;Integer&amp;gt; list : listResult) {
+            System.out.println(list);
+        }
+    }
+
+    public static void dfs(int[] nums, int target, int count, int index) {
+        if (index == nums.length) {
+            return;
+        }
+        if (target == count) {
+            result++;
+            listResult.add(new ArrayList&amp;lt;&amp;gt;(list));
+            return;
+        }
+        if (count + nums[index] &amp;lt;= target) {
+            list.add(nums[index]);
+            dfs(nums, target, count + nums[index], index);
+            list.remove(list.size() - 1);
+        }
+        dfs(nums, target, count, index + 1);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;外层用硬币进行遍历，内层迭代每个取值的可能情况，以保证硬币不会重复&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public int change(int amount, int[] coins) {
+        int n = coins.length;
+        int[] dp = new int[amount + 1];
+        dp[0] = 1;
+        for(int coin : coins) {
+            for(int i = 1; i &amp;lt;= amount; i++) {
+                if(i &amp;gt;= coin)
+                    dp[i] += dp[i - coin];
+            }
+        }
+        return dp[amount];
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1&gt;滑动窗口最大值&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;给你一个整数数组 &lt;code&gt;nums&lt;/code&gt;，有一个大小为 &lt;code&gt;k&lt;/code&gt; 的滑动窗口从数组的最左侧移动到数组的最右侧。你只可以看到在滑动窗口内的 &lt;code&gt;k&lt;/code&gt; 个数字。滑动窗口每次只向右移动一位。&lt;/p&gt;
+&lt;p&gt;返回 &lt;em&gt;滑动窗口中的最大值&lt;/em&gt; 。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：nums = [1,3,-1,-3,5,3,6,7], k = 3
+输出：[3,3,5,5,6,7]
+解释：
+滑动窗口的位置                最大值
+---------------               -----
+[1  3  -1] -3  5  3  6  7       3
+ 1 [3  -1  -3] 5  3  6  7       3
+ 1  3 [-1  -3  5] 3  6  7       5
+ 1  3  -1 [-3  5  3] 6  7       5
+ 1  3  -1  -3 [5  3  6] 7       6
+ 1  3  -1  -3  5 [3  6  7]      7
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：nums = [1], k = 1
+输出：[1]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;解法一：暴力求解，在LeetCode中超时，但是面试AC了，抽象测例这一块&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public int[] maxSlidingWindow(int[] nums, int k) {
+        int n = nums.length;
+        int len = n - k + 1;
+        int[] result = new int[len];
+        for(int i = 0; i &amp;lt; n - k + 1; i++) {
+            int j = i + k - 1;
+            int max = nums[i];
+            for(int t = i; t &amp;lt;= j ;t++) {
+                max = Math.max(max, nums[t]);
+            }
+            result[i] = max;
+        }
+        return result;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;解法二：通过单调队列求解&lt;/p&gt;
+&lt;p&gt;设立一个双端队列用于存储元素索引，遍历数组，其中 j 代表当前加入的元素对应的最前端索引位置&lt;/p&gt;
+&lt;p&gt;两次循环目的分别是删除不在窗口中的索引，和从后向前删除小于当前元素的对应索引，之后将当前元素放入队列末尾，这样就可以维护一个单调递减的队列，且其中放置的元素索引都是在滑动窗口中的元素索引，当满足窗口左边界大于等于0的时候就可以从队列左侧取出最大的元素索引，将元素放入结果集合中&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public int[] maxSlidingWindow(int[] nums, int k) {
+        Deque&amp;lt;Integer&amp;gt; deque = new LinkedList&amp;lt;&amp;gt;();
+        int n = nums.length;
+        int[] result = new int[n - k + 1];
+        for(int i = 0; i &amp;lt; n; i++) {
+            int j = i - k + 1;
+            while(!deque.isEmpty() &amp;amp;&amp;amp; deque.peekFirst() &amp;lt; j) {
+                deque.pollFirst();
+            }
+            while(!deque.isEmpty() &amp;amp;&amp;amp; nums[deque.peekLast()] &amp;lt; nums[i]) {
+                deque.pollLast();
+            }
+            deque.offerLast(i);
+            if(j &amp;gt;= 0) {
+                result[j] = nums[deque.peekFirst()];
+            }
+        }
+        return result;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+</content:encoded></item><item><title>LeetCode刷题（简化路径、逆波兰式）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E7%AE%80%E5%8C%96%E8%B7%AF%E5%BE%84%E9%80%86%E6%B3%A2%E5%85%B0%E5%BC%8F/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E7%AE%80%E5%8C%96%E8%B7%AF%E5%BE%84%E9%80%86%E6%B3%A2%E5%85%B0%E5%BC%8F/</guid><pubDate>Thu, 06 Nov 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;简化路径&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;给你一个字符串 &lt;code&gt;path&lt;/code&gt; ，表示指向某一文件或目录的 Unix 风格 &lt;strong&gt;绝对路径&lt;/strong&gt; （以 &lt;code&gt;&apos;/&apos;&lt;/code&gt; 开头），请你将其转化为 &lt;strong&gt;更加简洁的规范路径&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;在 Unix 风格的文件系统中规则如下：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;一个点 &lt;code&gt;&apos;.&apos;&lt;/code&gt; 表示当前目录本身。&lt;/li&gt;
+&lt;li&gt;此外，两个点 &lt;code&gt;&apos;..&apos;&lt;/code&gt; 表示将目录切换到上一级（指向父目录）。&lt;/li&gt;
+&lt;li&gt;任意多个连续的斜杠（即，&lt;code&gt;&apos;//&apos;&lt;/code&gt; 或 &lt;code&gt;&apos;///&apos;&lt;/code&gt;）都被视为单个斜杠 &lt;code&gt;&apos;/&apos;&lt;/code&gt;。&lt;/li&gt;
+&lt;li&gt;任何其他格式的点（例如，&lt;code&gt;&apos;...&apos;&lt;/code&gt; 或 &lt;code&gt;&apos;....&apos;&lt;/code&gt;）均被视为有效的文件/目录名称。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;返回的 &lt;strong&gt;简化路径&lt;/strong&gt; 必须遵循下述格式：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;始终以斜杠 &lt;code&gt;&apos;/&apos;&lt;/code&gt; 开头。&lt;/li&gt;
+&lt;li&gt;两个目录名之间必须只有一个斜杠 &lt;code&gt;&apos;/&apos;&lt;/code&gt; 。&lt;/li&gt;
+&lt;li&gt;最后一个目录名（如果存在）&lt;strong&gt;不能&lt;/strong&gt; 以 &lt;code&gt;&apos;/&apos;&lt;/code&gt; 结尾。&lt;/li&gt;
+&lt;li&gt;此外，路径仅包含从根目录到目标文件或目录的路径上的目录（即，不含 &lt;code&gt;&apos;.&apos;&lt;/code&gt; 或 &lt;code&gt;&apos;..&apos;&lt;/code&gt;）。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;返回简化后得到的 &lt;strong&gt;规范路径&lt;/strong&gt; 。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;**输入：**path = &quot;/home/&quot;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;输出：&lt;/strong&gt;&quot;/home&quot;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;解释：&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;应删除尾随斜杠。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;**输入：**path = &quot;/home//foo/&quot;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;输出：&lt;/strong&gt;&quot;/home/foo&quot;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;解释：&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;多个连续的斜杠被单个斜杠替换。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 3：&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;**输入：**path = &quot;/home/user/Documents/../Pictures&quot;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;输出：&lt;/strong&gt;&quot;/home/user/Pictures&quot;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;解释：&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;两个点 &lt;code&gt;&quot;..&quot;&lt;/code&gt; 表示上一级目录（父目录）。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 4：&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;**输入：**path = &quot;/../&quot;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;输出：&lt;/strong&gt;&quot;/&quot;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;解释：&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;不可能从根目录上升一级目录。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 5：&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;**输入：**path = &quot;/.../a/../b/c/../d/./&quot;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;输出：&lt;/strong&gt;&quot;/.../b/d&quot;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;解释：&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;&quot;...&quot;&lt;/code&gt; 在这个问题中是一个合法的目录名。&lt;/p&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;先使用split进行拆分，对于..的时候进行弹栈，对于一般情况下将字符放入栈，构造StringBuilder依次将弹栈的元素插入开头，并在开头写上/&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public String simplifyPath(String path) {
+        String[] arr = path.split(&quot;/&quot;);
+        Stack&amp;lt;String&amp;gt; stack = new Stack&amp;lt;&amp;gt;();
+        for(String str : arr) {
+            if(str.equals(&quot;..&quot;) &amp;amp;&amp;amp; !stack.isEmpty()) {
+                stack.pop();
+            } 
+            if(!str.equals(&quot;.&quot;) &amp;amp;&amp;amp; !str.equals(&quot;&quot;) &amp;amp;&amp;amp; !str.equals(&quot;..&quot;)) {
+                stack.push(str);
+            }
+        }
+        StringBuilder sb = new StringBuilder();
+        while(!stack.isEmpty()) {
+            sb.insert(0, stack.pop());
+            sb.insert(0, &quot;/&quot;);
+        }
+        if(sb.length() == 0) sb.append(&quot;/&quot;);
+        return sb.toString();
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1&gt;逆波兰式&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;给你一个字符串数组 &lt;code&gt;tokens&lt;/code&gt; ，表示一个根据 &lt;a href=&quot;https://baike.baidu.com/item/%E9%80%86%E6%B3%A2%E5%85%B0%E5%BC%8F/128437&quot;&gt;逆波兰表示法&lt;/a&gt; 表示的算术表达式。&lt;/p&gt;
+&lt;p&gt;请你计算该表达式。返回一个表示表达式值的整数。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;注意：&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;有效的算符为 &lt;code&gt;&apos;+&apos;&lt;/code&gt;、&lt;code&gt;&apos;-&apos;&lt;/code&gt;、&lt;code&gt;&apos;*&apos;&lt;/code&gt; 和 &lt;code&gt;&apos;/&apos;&lt;/code&gt; 。&lt;/li&gt;
+&lt;li&gt;每个操作数（运算对象）都可以是一个整数或者另一个表达式。&lt;/li&gt;
+&lt;li&gt;两个整数之间的除法总是 &lt;strong&gt;向零截断&lt;/strong&gt; 。&lt;/li&gt;
+&lt;li&gt;表达式中不含除零运算。&lt;/li&gt;
+&lt;li&gt;输入是一个根据逆波兰表示法表示的算术表达式。&lt;/li&gt;
+&lt;li&gt;答案及所有中间计算结果可以用 &lt;strong&gt;32 位&lt;/strong&gt; 整数表示。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：tokens = [&quot;2&quot;,&quot;1&quot;,&quot;+&quot;,&quot;3&quot;,&quot;*&quot;]
+输出：9
+解释：该算式转化为常见的中缀算术表达式为：((2 + 1) * 3) = 9
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：tokens = [&quot;4&quot;,&quot;13&quot;,&quot;5&quot;,&quot;/&quot;,&quot;+&quot;]
+输出：6
+解释：该算式转化为常见的中缀算术表达式为：(4 + (13 / 5)) = 6
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 3：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：tokens = [&quot;10&quot;,&quot;6&quot;,&quot;9&quot;,&quot;3&quot;,&quot;+&quot;,&quot;-11&quot;,&quot;*&quot;,&quot;/&quot;,&quot;*&quot;,&quot;17&quot;,&quot;+&quot;,&quot;5&quot;,&quot;+&quot;]
+输出：22
+解释：该算式转化为常见的中缀算术表达式为：
+  ((10 * (6 / ((9 + 3) * -11))) + 17) + 5
+= ((10 * (6 / (12 * -11))) + 17) + 5
+= ((10 * (6 / -132)) + 17) + 5
+= ((10 * 0) + 17) + 5
+= (0 + 17) + 5
+= 17 + 5
+= 22
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;构造一个栈用于存储数字，当发现符号的时候去除其中的两个数字做对应的计算，最后放入栈中，遍历结束之后从栈中取出结果即可&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public int evalRPN(String[] tokens) {
+        Stack&amp;lt;String&amp;gt; stack = new Stack&amp;lt;&amp;gt;();
+        for(String token : tokens) {
+            if(token.equals(&quot;*&quot;) || token.equals(&quot;/&quot;) || token.equals(&quot;+&quot;) || token.equals(&quot;-&quot;)) {
+                String n2 = stack.pop();
+                String n1 = stack.pop();
+                int num1 = Integer.parseInt(n1);
+                int num2 = Integer.parseInt(n2);
+                int target = 0;
+                switch(token) {
+                    case &quot;*&quot; :
+                        target = num1 * num2;
+                    break;
+                    case &quot;/&quot; :
+                        target = num1 / num2;
+                    break;
+                    case &quot;+&quot; :
+                        target = num1 + num2;
+                    break;
+                    case &quot;-&quot; :
+                        target = num1 - num2;
+                    break;
+                }
+                stack.push(target + &quot;&quot;);
+            } else {
+                stack.push(token);
+            }
+        }
+        return Integer.parseInt(stack.pop());
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+</content:encoded></item><item><title>多线程并发编程笔记（活跃性、ReentrantLock、线程同步）</title><link>https://thrinisty.github.io/posts/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E7%AC%94%E8%AE%B0%E6%B4%BB%E8%B7%83%E6%80%A7reentrantlock%E7%BA%BF%E7%A8%8B%E5%90%8C%E6%AD%A5/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E7%AC%94%E8%AE%B0%E6%B4%BB%E8%B7%83%E6%80%A7reentrantlock%E7%BA%BF%E7%A8%8B%E5%90%8C%E6%AD%A5/</guid><description>活跃性、ReentrantLock、线程同步模式</description><pubDate>Thu, 06 Nov 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;多线程并发编程笔记&lt;/h1&gt;
+&lt;h2&gt;活跃性&lt;/h2&gt;
+&lt;h3&gt;死锁&lt;/h3&gt;
+&lt;p&gt;t1线程拥有A锁，等待获取B锁&lt;/p&gt;
+&lt;p&gt;t2线程拥有B锁，等待获取A锁&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;package com;
+
+import lombok.extern.slf4j.Slf4j;
+
+import java.util.concurrent.locks.LockSupport;
+
+@Slf4j
+public class Main {
+    public static void main(String[] args) throws InterruptedException {
+        Thread t1 = new Thread(() -&amp;gt; {
+            synchronized (&quot;A&quot;.intern()) {
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+                log.info(&quot;占有A，等待B&quot;);
+                synchronized (&quot;B&quot;.intern()) {
+                    System.out.println(&quot;获取到B&quot;);
+                }
+            }
+        }, &quot;t1&quot;);
+        Thread t2 = new Thread(() -&amp;gt; {
+            synchronized (&quot;B&quot;.intern()) {
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+                log.info(&quot;占有B，等待A&quot;);
+                synchronized (&quot;A&quot;.intern()) {
+                    System.out.println(&quot;获取到A&quot;);
+                }
+            }
+        }, &quot;t2&quot;);
+        t1.start();
+        t2.start();
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;死锁定位：jconsole工具，jps定位进程中的活锁&lt;/p&gt;
+&lt;p&gt;可以通过顺序加锁进行处理&lt;/p&gt;
+&lt;h3&gt;活锁&lt;/h3&gt;
+&lt;p&gt;两个线程互相改变对方结束的条件，导致了两个线程都不结束&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@Slf4j
+public class DeadLock {
+    private static int i = 10;
+    public static void main(String[] args) throws InterruptedException {
+        Thread t1 = new Thread(() -&amp;gt; {
+           while(i &amp;gt;= 0) {
+               i--;
+               log.info(&quot;i=&quot; + i);
+               try {
+                   Thread.sleep(300);
+               } catch (InterruptedException e) {
+                   throw new RuntimeException(e);
+               }
+           }
+        }, &quot;t1&quot;);
+        Thread t2 = new Thread(() -&amp;gt; {
+            while(i &amp;lt;= 20) {
+                i++;
+                log.info(&quot;i=&quot; + i);
+                try {
+                    Thread.sleep(300);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }, &quot;t2&quot;);
+        t1.start();
+        t2.start();
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;可以加一些随机的休眠时间解决&lt;/p&gt;
+&lt;h3&gt;饥饿&lt;/h3&gt;
+&lt;p&gt;一个线程由于优先级太低，始终得不到CPU调度执行，也不能结束&lt;/p&gt;
+&lt;p&gt;我们在用顺序获取锁解决的死锁，就有可能导致后面的线程一直抢不到锁，导致饥饿&lt;/p&gt;
+&lt;h2&gt;ReentrantLock&lt;/h2&gt;
+&lt;p&gt;具备以下特点：可中断，可以设置超时时间，可以设置为公平锁，支持多个变量条件&lt;/p&gt;
+&lt;p&gt;基本语法：&lt;/p&gt;
+&lt;p&gt;创建ReentrantLock对象&lt;/p&gt;
+&lt;p&gt;可重入&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@Slf4j
+public class Reentrant {
+    private static ReentrantLock lock = new ReentrantLock();
+    public static void main(String[] args) {
+        Thread thread = new Thread(() -&amp;gt; {
+            try {
+                log.info(&quot;线程对ReentrantLock加锁&quot;);
+                lock.lock();
+                log.info(&quot;尝试重入锁&quot;);
+                lock.lock();
+                log.info(&quot;再次尝试重入锁&quot;);
+                lock.lock();
+            } finally {
+                lock.unlock();
+            }
+        }, &quot;t1&quot;);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;可被打断：使用lockInterruptibly锁可以被打断&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@Slf4j
+public class Reentrant {
+    private static ReentrantLock lock = new ReentrantLock();
+    public static void main(String[] args) throws InterruptedException {
+        Thread thread = new Thread(() -&amp;gt; {
+            try {
+                log.info(&quot;线程对ReentrantLock加锁&quot;);
+                lock.lockInterruptibly();
+                Thread.sleep(40000);
+            } catch (InterruptedException e) {
+                log.info(&quot;被打断&quot;);
+            } finally {
+                lock.unlock();
+            }
+        }, &quot;t1&quot;);
+        thread.start();
+        Thread.sleep(2000);
+        thread.interrupt();
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;锁超时：立即失败&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@Slf4j
+public class Reentrant {
+    private static ReentrantLock lock = new ReentrantLock();
+    public static void main(String[] args) throws InterruptedException {
+        Thread thread = new Thread(() -&amp;gt; {
+            try {
+                log.info(&quot;线程对ReentrantLock尝试加锁&quot;);
+                boolean b = lock.tryLock();
+                if(!b) {
+                    log.info(&quot;没获取到锁ReentrantLock，立即返回&quot;);
+                    return;
+                }
+                log.info(&quot;成功获取锁，执行代码&quot;);
+            }  finally {
+                lock.unlock();
+            }
+        }, &quot;t1&quot;);
+        lock.lock();
+        Thread.sleep(2000);
+        thread.start();
+        Thread.sleep(2000);
+        log.info(&quot;主线程结束&quot;);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;也可以在尝试获取锁添加时间，在这个时间段上获取到锁也可以正常执行&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@Slf4j
+public class Reentrant {
+    private static ReentrantLock lock = new ReentrantLock();
+    public static void main(String[] args) throws InterruptedException {
+        Thread thread = new Thread(() -&amp;gt; {
+            try {
+                log.info(&quot;线程对ReentrantLock尝试加锁&quot;);
+                boolean b = lock.tryLock(3, TimeUnit.SECONDS);
+                if(!b) {
+                    log.info(&quot;没获取到锁ReentrantLock，立即返回&quot;);
+                    return;
+                }
+                log.info(&quot;成功获取锁，执行代码&quot;);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            } finally {
+                lock.unlock();
+            }
+        }, &quot;t1&quot;);
+        lock.lock();
+        Thread.sleep(1000);
+        thread.start();
+        Thread.sleep(2000);
+        log.info(&quot;主线程结束&quot;);
+        lock.unlock();
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;公平锁：ReentrantLock默认是不公平的&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;private static ReentrantLock lock = new ReentrantLock(true);
+//设置为公平
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;条件变量&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@Slf4j
+public class Reentrant {
+    private static ReentrantLock lock = new ReentrantLock(false);
+    public static void main(String[] args) throws InterruptedException {
+        Condition condition = lock.newCondition();
+        Thread thread = new Thread(() -&amp;gt; {
+            lock.lock();
+            try {
+                Thread.sleep(2000);
+                condition.signal();
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            } finally {
+                lock.unlock();
+            }
+        });
+        thread.start();
+        lock.lock();
+        //进入休息室等待
+        condition.await();
+        lock.unlock();
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;线程同步模式&lt;/h2&gt;
+&lt;p&gt;&lt;strong&gt;先后执行&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@Slf4j
+public class Reentrant {
+    private static ReentrantLock lock = new ReentrantLock(false);
+    public static void main(String[] args) throws InterruptedException {
+        Thread t1 = new Thread(() -&amp;gt; {
+           log.info(&quot;1&quot;);
+        }, &quot;t1&quot;);
+        Thread t2 = new Thread(() -&amp;gt; {
+            log.info(&quot;2&quot;);
+        }, &quot;t2&quot;);
+        t1.start();
+        t2.start();
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;2025-11-06 20:06:07 [t2] INFO  com.Reentrant - 2
+2025-11-06 20:06:07 [t1] INFO  com.Reentrant - 1
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;使用条件变量实现&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@Slf4j
+public class Reentrant {
+    private static ReentrantLock lock = new ReentrantLock(false);
+    public static void main(String[] args) throws InterruptedException {
+        Condition condition = lock.newCondition();
+        Thread t1 = new Thread(() -&amp;gt; {
+            try {
+                lock.lock();
+                condition.await();
+                log.info(&quot;1&quot;);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            } finally {
+                lock.unlock();
+            }
+        }, &quot;t1&quot;);
+        Thread t2 = new Thread(() -&amp;gt; {
+            try {
+                lock.lock();
+                log.info(&quot;2&quot;);
+                condition.signal();
+            }  finally {
+                lock.unlock();
+            }
+        }, &quot;t2&quot;);
+        t1.start();
+        t2.start();
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;unpark/park实现&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@Slf4j
+public class Reentrant {
+    public static void main(String[] args) throws InterruptedException {
+        Thread t1 = new Thread(() -&amp;gt; {
+            LockSupport.park();
+            log.info(&quot;t1&quot;);
+
+        }, &quot;t1&quot;);
+        Thread t2 = new Thread(() -&amp;gt; {
+            log.info(&quot;t2&quot;);
+            LockSupport.unpark(t1);
+        }, &quot;t2&quot;);
+        t1.start();
+        t2.start();
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;交替输出&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;自旋实现，忙等待&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@Slf4j
+public class Reentrant {
+    private static volatile int flag = 1;
+    public static void main(String[] args) throws InterruptedException {
+        Thread t1 = new Thread(() -&amp;gt; {
+            while (true) {
+                while (flag == 1) {
+                    log.info(&quot;a&quot;);
+                    flag = 2;
+                }
+            }
+        }, &quot;t1&quot;);
+        Thread t2 = new Thread(() -&amp;gt; {
+            while (true) {
+                while (flag == 2) {
+                    log.info(&quot;b&quot;);
+                    flag = 3;
+                }
+            }
+        }, &quot;t2&quot;);
+        Thread t3 = new Thread(() -&amp;gt; {
+            while (true) {
+                while (flag == 3) {
+                    log.info(&quot;c&quot;);
+                    flag = 1;
+                }
+            }
+        }, &quot;t3&quot;);
+        t1.start();
+        t2.start();
+        t3.start();
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;使用wait+notifyAll实现&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@Slf4j
+public class Reentrant {
+    private static int flag = 1;
+    private static final Object lock = new Object();
+    public static void main(String[] args) throws InterruptedException {
+        Thread t1 = new Thread(() -&amp;gt; {
+            while (true) {
+                synchronized (lock) {
+                    while (flag != 1) {
+                        try {
+                            lock.wait();
+                        } catch (InterruptedException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                    log.info(&quot;a&quot;);
+                    flag = 2;
+                    lock.notifyAll();
+                }
+            }
+        }, &quot;t1&quot;);
+        Thread t2 = new Thread(() -&amp;gt; {
+            while (true) {
+                synchronized (lock) {
+                    while (flag != 2) {
+                        try {
+                            lock.wait();
+                        } catch (InterruptedException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                    log.info(&quot;b&quot;);
+                    flag = 3;
+                    lock.notifyAll();
+                }
+            }
+        }, &quot;t2&quot;);
+        Thread t3 = new Thread(() -&amp;gt; {
+            while (true) {
+                synchronized (lock) {
+                    while (flag != 3) {
+                        try {
+                            lock.wait();
+                        } catch (InterruptedException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                    log.info(&quot;c&quot;);
+                    flag = 1;
+                    lock.notifyAll();
+                }
+            }
+        }, &quot;t3&quot;);
+        t1.start();
+        t2.start();
+        t3.start();
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;再封装一下&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;package com;
+
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+public class Reentrant {
+    public static void main(String[] args) throws InterruptedException {
+        Thread t1 = new Thread(() -&amp;gt; {
+            Notify notify = new Notify();
+            notify.printChar(&quot;a&quot;, 1, 2);
+        });
+        Thread t2 = new Thread(() -&amp;gt; {
+            Notify notify = new Notify();
+            notify.printChar(&quot;b&quot;, 2, 3);
+        });
+        Thread t3 = new Thread(() -&amp;gt; {
+            Notify notify = new Notify();
+            notify.printChar(&quot;c&quot;, 3, 1);
+        });
+        t1.start();
+        t2.start();
+        t3.start();
+    }
+}
+
+@Slf4j
+class Notify {
+    private static int flag = 1;
+    public final int LOOP_NUM = 10;
+    public void printChar(String msg, int target, int next) {
+        for (int i = 0; i &amp;lt; LOOP_NUM; i++) {
+            synchronized (Notify.class) {
+                while (flag != target) {
+                    try {
+                        Notify.class.wait();
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+                log.info(msg);
+                flag = next;
+                Notify.class.notifyAll();
+            }
+        }
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;使用park/unpark实现&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@Slf4j
+public class Reentrant {
+    static Thread t1;
+    static Thread t2;
+    static Thread t3;
+    public static void main(String[] args) throws InterruptedException {
+        Notify notify = new Notify();
+        t1 = new Thread(() -&amp;gt; {
+            notify.printChar(&quot;a&quot;, t2);
+        });
+        t2 = new Thread(() -&amp;gt; {
+            notify.printChar(&quot;b&quot;, t3);
+        });
+        t3 = new Thread(() -&amp;gt; {
+            notify.printChar(&quot;c&quot;, t1);
+        });
+        t1.start();
+        t2.start();
+        t3.start();
+        Thread.sleep(100);
+        LockSupport.unpark(t1);
+    }
+}
+
+@Slf4j
+class Notify {
+    public final int LOOP_NUM = 10;
+    public void printChar(String msg, Thread next) {
+        for (int i = 0; i &amp;lt; LOOP_NUM; i++) {
+            LockSupport.park();
+            log.info(msg);
+            LockSupport.unpark(next);
+        }
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+</content:encoded></item><item><title>LeetCode刷题（插入区间、最少数量的箭引爆气球）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E6%8F%92%E5%85%A5%E5%8C%BA%E9%97%B4%E6%9C%80%E5%B0%91%E6%95%B0%E9%87%8F%E7%9A%84%E7%AE%AD%E5%BC%95%E7%88%86%E6%B0%94%E7%90%83/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E6%8F%92%E5%85%A5%E5%8C%BA%E9%97%B4%E6%9C%80%E5%B0%91%E6%95%B0%E9%87%8F%E7%9A%84%E7%AE%AD%E5%BC%95%E7%88%86%E6%B0%94%E7%90%83/</guid><description>插入区间、最少数量的箭引爆气球</description><pubDate>Wed, 05 Nov 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;插入区间&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;给你一个 &lt;strong&gt;无重叠的&lt;/strong&gt; *，*按照区间起始端点排序的区间列表 &lt;code&gt;intervals&lt;/code&gt;，其中 &lt;code&gt;intervals[i] = [starti, endi]&lt;/code&gt; 表示第 &lt;code&gt;i&lt;/code&gt; 个区间的开始和结束，并且 &lt;code&gt;intervals&lt;/code&gt; 按照 &lt;code&gt;starti&lt;/code&gt; 升序排列。同样给定一个区间 &lt;code&gt;newInterval = [start, end]&lt;/code&gt; 表示另一个区间的开始和结束。&lt;/p&gt;
+&lt;p&gt;在 &lt;code&gt;intervals&lt;/code&gt; 中插入区间 &lt;code&gt;newInterval&lt;/code&gt;，使得 &lt;code&gt;intervals&lt;/code&gt; 依然按照 &lt;code&gt;starti&lt;/code&gt; 升序排列，且区间之间不重叠（如果有必要的话，可以合并区间）。&lt;/p&gt;
+&lt;p&gt;返回插入之后的 &lt;code&gt;intervals&lt;/code&gt;。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：intervals = [[1,3],[6,9]], newInterval = [2,5]
+输出：[[1,5],[6,9]]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：intervals = [[1,2],[3,5],[6,7],[8,10],[12,16]], newInterval = [4,8]
+输出：[[1,2],[3,10],[12,16]]
+解释：这是因为新的区间 [4,8] 与 [3,5],[6,7],[8,10] 重叠。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;还是用之前的方式，按照顺序插入，并合并&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public int[][] insert(int[][] intervals, int[] newInterval) {
+        if(intervals == null || intervals.length == 0) {
+            return new int[][]{newInterval};
+        }
+        List&amp;lt;int[]&amp;gt; result = new ArrayList&amp;lt;&amp;gt;();
+        int index = -1;
+        for(int i = 0; i &amp;lt; intervals.length; i++) {
+            int[] range = intervals[i];
+            if(range[0] &amp;gt;= newInterval[0]) {
+                index = i;
+                break;
+            }
+        }
+        if(newInterval[0] &amp;gt; intervals[intervals.length - 1][0]) {
+            index = -2;
+        }
+
+        if(index == -1) {
+            result.add(newInterval);
+        }
+
+        for(int i = 0; i &amp;lt; intervals.length; i++) {
+            if(i == index) {
+                if(result.isEmpty() || newInterval[0] &amp;gt; result.get(result.size() - 1)[1]) {
+                    result.add(newInterval);
+                } else {
+                    int[] target = result.get(result.size() - 1);
+                    target[1] = Math.max(target[1], newInterval[1]);
+                }
+            }
+
+            if(result.isEmpty() || intervals[i][0] &amp;gt; result.get(result.size() - 1)[1]) {
+                result.add(intervals[i]);
+            } else {
+                int[] target = result.get(result.size() - 1);
+                target[1] = Math.max(target[1], intervals[i][1]);
+            }
+        }
+        if(index == -2) {
+            if(result.isEmpty() || newInterval[0] &amp;gt; result.get(result.size() - 1)[1]) {
+                    result.add(newInterval);
+                } else {
+                    int[] target = result.get(result.size() - 1);
+                    target[1] = Math.max(target[1], newInterval[1]);
+                }
+        }
+        int[][] ans = new int[result.size()][2];
+        for(int i = 0; i &amp;lt; result.size(); i++) {
+            ans[i] = result.get(i);
+        }
+        return ans;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;通过较为简单的方式实现&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public int[][] insert(int[][] intervals, int[] newInterval) {
+        List&amp;lt;int[]&amp;gt; result = new ArrayList&amp;lt;&amp;gt;();
+        int i = 0;
+        int n = intervals.length;
+        
+        // 1. 添加所有结束时间小于新区间开始时间的区间
+        while (i &amp;lt; n &amp;amp;&amp;amp; intervals[i][1] &amp;lt; newInterval[0]) {
+            result.add(intervals[i]);
+            i++;
+        }
+        
+        // 2. 合并所有与新区间重叠的区间
+        while (i &amp;lt; n &amp;amp;&amp;amp; intervals[i][0] &amp;lt;= newInterval[1]) {
+            newInterval[0] = Math.min(newInterval[0], intervals[i][0]);
+            newInterval[1] = Math.max(newInterval[1], intervals[i][1]);
+            i++;
+        }
+        result.add(newInterval);
+        
+        // 3. 添加剩余区间
+        while (i &amp;lt; n) {
+            result.add(intervals[i]);
+            i++;
+        }
+        
+        return result.toArray(new int[result.size()][]);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1&gt;最少数量的箭引爆气球&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;有一些球形气球贴在一堵用 XY 平面表示的墙面上。墙面上的气球记录在整数数组 &lt;code&gt;points&lt;/code&gt; ，其中&lt;code&gt;points[i] = [xstart, xend]&lt;/code&gt; 表示水平直径在 &lt;code&gt;xstart&lt;/code&gt; 和 &lt;code&gt;xend&lt;/code&gt;之间的气球。你不知道气球的确切 y 坐标。&lt;/p&gt;
+&lt;p&gt;一支弓箭可以沿着 x 轴从不同点 &lt;strong&gt;完全垂直&lt;/strong&gt; 地射出。在坐标 &lt;code&gt;x&lt;/code&gt; 处射出一支箭，若有一个气球的直径的开始和结束坐标为 &lt;code&gt;xstart&lt;/code&gt;，&lt;code&gt;xend&lt;/code&gt;， 且满足  &lt;code&gt;xstart ≤ x ≤ xend&lt;/code&gt;，则该气球会被 &lt;strong&gt;引爆&lt;/strong&gt; 。可以射出的弓箭的数量 &lt;strong&gt;没有限制&lt;/strong&gt; 。 弓箭一旦被射出之后，可以无限地前进。&lt;/p&gt;
+&lt;p&gt;给你一个数组 &lt;code&gt;points&lt;/code&gt; ，&lt;em&gt;返回引爆所有气球所必须射出的 &lt;strong&gt;最小&lt;/strong&gt; 弓箭数&lt;/em&gt; 。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：points = [[10,16],[2,8],[1,6],[7,12]]
+输出：2
+解释：气球可以用2支箭来爆破:
+-在x = 6处射出箭，击破气球[2,8]和[1,6]。
+-在x = 11处发射箭，击破气球[10,16]和[7,12]。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：points = [[1,2],[3,4],[5,6],[7,8]]
+输出：4
+解释：每个气球需要射出一支箭，总共需要4支箭。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 3：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：points = [[1,2],[2,3],[3,4],[4,5]]
+输出：2
+解释：气球可以用2支箭来爆破:
+- 在x = 2处发射箭，击破气球[1,2]和[2,3]。
+- 在x = 4处射出箭，击破气球[3,4]和[4,5]。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;先进行按照起始进行从小到大的排序，如果当前区间的左边小于上一个区间的右边界，代表这两个区间重合，可以一并射穿，我们把区间设置为交集供下一个区间判断是否可以合并&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public int findMinArrowShots(int[][] points) {
+        if(points.length == 0) {
+            return 0;
+        }
+        Arrays.sort(points, (p1, p2) -&amp;gt; Integer.compare(p1[0], p2[0]));
+        int n = points.length;
+        for(int i = 1; i &amp;lt; points.length; i++) {
+            if(points[i][0] &amp;lt;= points[i - 1][1]) {
+                n--;
+                points[i][0] = Math.max(points[i][0], points[i - 1][0]);
+                points[i][1] = Math.min(points[i][1], points[i - 1][1]);
+            }
+        }
+        return n;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+</content:encoded></item><item><title>LeetCode刷题（汇总区间）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E6%B1%87%E6%80%BB%E5%8C%BA%E9%97%B4/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E6%B1%87%E6%80%BB%E5%8C%BA%E9%97%B4/</guid><description>汇总区间</description><pubDate>Tue, 04 Nov 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;汇总区间&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;给定一个  &lt;strong&gt;无重复元素&lt;/strong&gt; 的 &lt;strong&gt;有序&lt;/strong&gt; 整数数组 &lt;code&gt;nums&lt;/code&gt; 。&lt;/p&gt;
+&lt;p&gt;区间 &lt;code&gt;[a,b]&lt;/code&gt; 是从 &lt;code&gt;a&lt;/code&gt; 到 &lt;code&gt;b&lt;/code&gt;（包含）的所有整数的集合。&lt;/p&gt;
+&lt;p&gt;返回 &lt;em&gt;&lt;strong&gt;恰好覆盖数组中所有数字&lt;/strong&gt; 的 &lt;strong&gt;最小有序&lt;/strong&gt; 区间范围列表&lt;/em&gt; 。也就是说，&lt;code&gt;nums&lt;/code&gt; 的每个元素都恰好被某个区间范围所覆盖，并且不存在属于某个区间但不属于 &lt;code&gt;nums&lt;/code&gt; 的数字 &lt;code&gt;x&lt;/code&gt; 。&lt;/p&gt;
+&lt;p&gt;列表中的每个区间范围 &lt;code&gt;[a,b]&lt;/code&gt; 应该按如下格式输出：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;&quot;a-&amp;gt;b&quot;&lt;/code&gt; ，如果 &lt;code&gt;a != b&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;&quot;a&quot;&lt;/code&gt; ，如果 &lt;code&gt;a == b&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：nums = [0,1,2,4,5,7]
+输出：[&quot;0-&amp;gt;2&quot;,&quot;4-&amp;gt;5&quot;,&quot;7&quot;]
+解释：区间范围是：
+[0,2] --&amp;gt; &quot;0-&amp;gt;2&quot;
+[4,5] --&amp;gt; &quot;4-&amp;gt;5&quot;
+[7,7] --&amp;gt; &quot;7&quot;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;通过双指针求解，判断当前元素后续元素值是否是当前元素+1，否则后续元素是另一个区间，将头部和尾部之间比较，如果相同代表只有一个元素，如果不同则区间就是这两个元素，将其加入结果集合中即可&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public List&amp;lt;String&amp;gt; summaryRanges(int[] nums) {
+        List&amp;lt;String&amp;gt; result = new ArrayList&amp;lt;&amp;gt;();
+        int i = 0;
+        for(int j = 0; j &amp;lt; nums.length; j++) {
+            if(j + 1 == nums.length || nums[j] + 1 != nums[j + 1]) {
+                StringBuilder target = new StringBuilder();
+                target.append(nums[i]);
+                if(i != j) {
+                    target.append(&quot;-&amp;gt;&quot;).append(nums[j]);
+                }
+                result.add(target.toString());
+                i = j + 1;
+            }
+        }
+        return result;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+</content:encoded></item><item><title>LeetCode刷题（快乐数、存在重复元素Ⅱ）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E5%BF%AB%E4%B9%90%E6%95%B0%E5%AD%98%E5%9C%A8%E9%87%8D%E5%A4%8D%E5%85%83%E7%B4%A0%E2%85%B1/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E5%BF%AB%E4%B9%90%E6%95%B0%E5%AD%98%E5%9C%A8%E9%87%8D%E5%A4%8D%E5%85%83%E7%B4%A0%E2%85%B1/</guid><description>快乐数、存在重复元素Ⅱ</description><pubDate>Mon, 03 Nov 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;快乐数&lt;/h1&gt;
 &lt;h2&gt;题目描述&lt;/h2&gt;
 &lt;p&gt;编写一个算法来判断一个数 &lt;code&gt;n&lt;/code&gt; 是不是快乐数。&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;「快乐数」&lt;/strong&gt; 定义为：&lt;/p&gt;
@@ -252,6 +1753,7 @@
 </content:encoded></item><item><title>LeetCode刷题（）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E6%A8%A1%E6%9D%BF/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E6%A8%A1%E6%9D%BF/</guid><pubDate>Sat, 01 Nov 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;（题目）&lt;/h1&gt;
 &lt;h2&gt;题目描述&lt;/h2&gt;
 &lt;h2&gt;题解&lt;/h2&gt;
+</content:encoded></item><item><title>多线程并发编程笔记（）</title><link>https://thrinisty.github.io/posts/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E7%AC%94%E8%AE%B0%E6%A8%A1%E6%9D%BF/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E7%AC%94%E8%AE%B0%E6%A8%A1%E6%9D%BF/</guid><pubDate>Sat, 01 Nov 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;多线程并发编程笔记&lt;/h1&gt;
 </content:encoded></item><item><title>LeetCode刷题（赎金信、生命游戏）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E8%B5%8E%E9%87%91%E4%BF%A1%E7%94%9F%E5%91%BD%E6%B8%B8%E6%88%8F/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E8%B5%8E%E9%87%91%E4%BF%A1%E7%94%9F%E5%91%BD%E6%B8%B8%E6%88%8F/</guid><description>赎金信、生命游戏</description><pubDate>Sat, 01 Nov 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;赎金信&lt;/h1&gt;
 &lt;h2&gt;题目描述&lt;/h2&gt;
 &lt;p&gt;给你两个字符串：&lt;code&gt;ransomNote&lt;/code&gt; 和 &lt;code&gt;magazine&lt;/code&gt; ，判断 &lt;code&gt;ransomNote&lt;/code&gt; 能不能由 &lt;code&gt;magazine&lt;/code&gt; 里面的字符构成。&lt;/p&gt;
@@ -912,6 +2414,9 @@ public class Main {
 &lt;p&gt;3.Network网络：实现容器的网络隔离，docker容器内部的网络互不影响&lt;/p&gt;
 &lt;p&gt;4.Namespaces命名空间：可以把进程隔离在不同的命名空间下，每个容器都有自己的命名空间，不同的命名空间下的进程互不影响&lt;/p&gt;
 &lt;p&gt;5.Storage存储空间：容器内的文件相互隔离&lt;/p&gt;
+&lt;p&gt;DockerClientConfig：用于定义初始化DockerClient配置&lt;/p&gt;
+&lt;p&gt;DockerHttpClient：用于向Docker守护进程（操作Docker的接口）低层封装&lt;/p&gt;
+&lt;p&gt;DockerClient：真正和Docker守护进程交互的SDK，是高层封装，对于DockerHttpClient的再次封装&lt;/p&gt;
 </content:encoded></item><item><title>LeetCode刷题（长度最小的子数组、有效的数独）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E9%95%BF%E5%BA%A6%E6%9C%80%E5%B0%8F%E7%9A%84%E5%AD%90%E6%95%B0%E7%BB%84%E6%9C%89%E6%95%88%E7%9A%84%E6%95%B0%E7%8B%AC/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E9%95%BF%E5%BA%A6%E6%9C%80%E5%B0%8F%E7%9A%84%E5%AD%90%E6%95%B0%E7%BB%84%E6%9C%89%E6%95%88%E7%9A%84%E6%95%B0%E7%8B%AC/</guid><description>长度最小的子数组、有效的数独</description><pubDate>Thu, 30 Oct 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;长度最小的子数组&lt;/h1&gt;
 &lt;h2&gt;题目描述&lt;/h2&gt;
 &lt;p&gt;给定一个含有 &lt;code&gt;n&lt;/code&gt; 个正整数的数组和一个正整数 &lt;code&gt;target&lt;/code&gt; &lt;strong&gt;。&lt;/strong&gt;&lt;/p&gt;
@@ -1245,6 +2750,27 @@ class Message {
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
+&lt;pre&gt;&lt;code&gt;@Slf4j
+public class Main {
+    public static void main(String[] args) throws InterruptedException {
+        Thread t1 = new Thread(() -&amp;gt; {
+            log.info(&quot;start&quot;);
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+            log.info(&quot;park&quot;);
+            LockSupport.park();
+            log.info(&quot;resume&quot;);
+        }, &quot;t1&quot;);
+        t1.start();
+        Thread.sleep(2000);
+        log.info(&quot;unpack:t1&quot;);
+        LockSupport.unpark(t1);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
 </content:encoded></item><item><title>LeetCode刷题（找出匹配项、验证回文串）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E6%89%BE%E5%87%BA%E5%8C%B9%E9%85%8D%E9%A1%B9%E9%AA%8C%E8%AF%81%E5%9B%9E%E6%96%87%E4%B8%B2/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E6%89%BE%E5%87%BA%E5%8C%B9%E9%85%8D%E9%A1%B9%E9%AA%8C%E8%AF%81%E5%9B%9E%E6%96%87%E4%B8%B2/</guid><description>找出字符串中第一个匹配项下表、验证回文串</description><pubDate>Tue, 28 Oct 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;找出匹配项&lt;/h1&gt;
 &lt;h2&gt;题目描述&lt;/h2&gt;
 &lt;p&gt;给你两个字符串 &lt;code&gt;haystack&lt;/code&gt; 和 &lt;code&gt;needle&lt;/code&gt; ，请你在 &lt;code&gt;haystack&lt;/code&gt; 字符串中找出 &lt;code&gt;needle&lt;/code&gt; 字符串的第一个匹配项的下标（下标从 0 开始）。如果 &lt;code&gt;needle&lt;/code&gt; 不是 &lt;code&gt;haystack&lt;/code&gt; 的一部分，则返回 &lt;code&gt;-1&lt;/code&gt; 。&lt;/p&gt;
@@ -9397,7 +10923,6 @@ tcp        0      0 192.168.95.8:39136      100.64.205.163:80       ESTABLISHED
 &lt;/code&gt;&lt;/pre&gt;
 </content:encoded></item><item><title>Redis笔记（）</title><link>https://thrinisty.github.io/posts/redis%E7%AC%94%E8%AE%B0%E6%A8%A1%E6%9D%BF/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/redis%E7%AC%94%E8%AE%B0%E6%A8%A1%E6%9D%BF/</guid><pubDate>Wed, 01 Oct 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;Redis笔记&lt;/h1&gt;
 </content:encoded></item><item><title>开发项目（）</title><link>https://thrinisty.github.io/posts/%E5%BC%80%E5%8F%91%E9%A1%B9%E7%9B%AE%E6%A8%A1%E6%9D%BF/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/%E5%BC%80%E5%8F%91%E9%A1%B9%E7%9B%AE%E6%A8%A1%E6%9D%BF/</guid><pubDate>Wed, 01 Oct 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;项目&lt;/h1&gt;
-</content:encoded></item><item><title>多线程并发编程笔记（）</title><link>https://thrinisty.github.io/posts/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E7%AC%94%E8%AE%B0%E6%A8%A1%E6%9D%BF/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E7%AC%94%E8%AE%B0%E6%A8%A1%E6%9D%BF/</guid><pubDate>Wed, 01 Oct 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;多线程并发编程笔记&lt;/h1&gt;
 </content:encoded></item><item><title>Linux笔记（软件包管理、Shell编程）</title><link>https://thrinisty.github.io/posts/linux%E7%AC%94%E8%AE%B0%E8%BD%AF%E4%BB%B6%E5%8C%85%E7%AE%A1%E7%90%86shell%E7%BC%96%E7%A8%8B/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/linux%E7%AC%94%E8%AE%B0%E8%BD%AF%E4%BB%B6%E5%8C%85%E7%AE%A1%E7%90%86shell%E7%BC%96%E7%A8%8B/</guid><description>rpm包管理、Shell编程快速入门</description><pubDate>Tue, 30 Sep 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;Linux笔记&lt;/h1&gt;
 &lt;h2&gt;软件包管理&lt;/h2&gt;
 &lt;h3&gt;rpm指令&lt;/h3&gt;

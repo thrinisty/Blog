@@ -672,3 +672,12 @@ Docker实现代码沙箱
 4.Namespaces命名空间：可以把进程隔离在不同的命名空间下，每个容器都有自己的命名空间，不同的命名空间下的进程互不影响
 
 5.Storage存储空间：容器内的文件相互隔离
+
+
+
+DockerClientConfig：用于定义初始化DockerClient配置
+
+DockerHttpClient：用于向Docker守护进程（操作Docker的接口）低层封装
+
+DockerClient：真正和Docker守护进程交互的SDK，是高层封装，对于DockerHttpClient的再次封装
+
