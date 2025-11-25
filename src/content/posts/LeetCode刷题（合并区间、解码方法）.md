@@ -48,21 +48,23 @@ draft: false
 ```java
 class Solution {
     public int[][] merge(int[][] intervals) {
-        if(intervals.length == 0) {
-            return new int[0][2];
-        }
-        Arrays.sort(intervals, (i1, i2) -> i1[0] - i2[0]);
-        List<int[]> merged = new ArrayList<>();
-        for(int i = 0; i < intervals.length; i++) {
-            int L = intervals[i][0];
-            int R = intervals[i][1];
-            if(merged.size() == 0 || merged.get(merged.size() - 1)[1] < L) {
-                merged.add(new int[]{L, R});
+        Arrays.sort(intervals, (n1, n2) -> {
+            return n1[0] - n2[0];
+        });
+        List<int[]> list = new ArrayList<>();
+        for(int[] range : intervals) {
+            if(list.isEmpty() || list.get(list.size() - 1)[1] < range[0]) {
+                list.add(range);
             } else {
-                merged.get(merged.size() - 1)[1] = Math.max(merged.get(merged.size() - 1)[1], R);
+                int[] target = list.get(list.size() - 1);
+                target[1] = Math.max(target[1], range[1]);
             }
         }
-        return merged.toArray(new int[merged.size()][2]);
+        int[][] result = new int[list.size()][2];
+        for(int i = 0; i < result.length; i++) {
+            result[i] = list.get(i);
+        }
+        return result;
     }
 }
 ```

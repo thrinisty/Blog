@@ -1,4 +1,2277 @@
-<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Thrinisty&apos;s Blog</title><description>New Blog</description><link>https://thrinisty.github.io/</link><language>zh_CN</language><item><title>LeetCode刷题（二叉搜索树最小绝对差、搜索树第K小元素）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E4%BA%8C%E5%8F%89%E6%90%9C%E7%B4%A2%E6%A0%91%E6%9C%80%E5%B0%8F%E7%BB%9D%E5%AF%B9%E5%B7%AE%E6%90%9C%E7%B4%A2%E6%A0%91%E7%AC%ACk%E5%B0%8F%E5%85%83%E7%B4%A0/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E4%BA%8C%E5%8F%89%E6%90%9C%E7%B4%A2%E6%A0%91%E6%9C%80%E5%B0%8F%E7%BB%9D%E5%AF%B9%E5%B7%AE%E6%90%9C%E7%B4%A2%E6%A0%91%E7%AC%ACk%E5%B0%8F%E5%85%83%E7%B4%A0/</guid><description>二叉搜索树最小绝对差、搜索树第K小元素</description><pubDate>Thu, 13 Nov 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;二叉搜索树最小绝对差&lt;/h1&gt;
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Thrinisty&apos;s Blog</title><description>New Blog</description><link>https://thrinisty.github.io/</link><language>zh_CN</language><item><title>LeetCode刷题（只出现一次的数字Ⅱ、数字范围按位与）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E5%8F%AA%E5%87%BA%E7%8E%B0%E4%B8%80%E6%AC%A1%E7%9A%84%E6%95%B0%E5%AD%97%E2%85%B1%E6%95%B0%E5%AD%97%E8%8C%83%E5%9B%B4%E6%8C%89%E4%BD%8D%E4%B8%8E/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E5%8F%AA%E5%87%BA%E7%8E%B0%E4%B8%80%E6%AC%A1%E7%9A%84%E6%95%B0%E5%AD%97%E2%85%B1%E6%95%B0%E5%AD%97%E8%8C%83%E5%9B%B4%E6%8C%89%E4%BD%8D%E4%B8%8E/</guid><description>只出现一次的数字Ⅱ、数字范围按位与</description><pubDate>Tue, 25 Nov 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;只出现一次的数字Ⅱ&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;给你一个整数数组 &lt;code&gt;nums&lt;/code&gt; ，除某个元素仅出现 &lt;strong&gt;一次&lt;/strong&gt; 外，其余每个元素都恰出现 **三次 。**请你找出并返回那个只出现了一次的元素。&lt;/p&gt;
+&lt;p&gt;你必须设计并实现线性时间复杂度的算法且使用常数级空间来解决此问题。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：nums = [2,2,3,2]
+输出：3
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：nums = [0,1,0,1,0,1,99]
+输出：99
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;解法一：HashMap计数&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public int singleNumber(int[] nums) {
+        Map&amp;lt;Integer, Integer&amp;gt; map = new HashMap&amp;lt;&amp;gt;();
+        for(int num : nums) {
+            int count = map.getOrDefault(num, 0);
+            map.put(num, count + 1);
+        }
+        Set&amp;lt;Integer&amp;gt; keySet = map.keySet();
+        int target = -1;
+        for(Integer key : keySet) {
+            int count = map.get(key);
+            if(count == 1) {
+                return key;
+            }
+        }
+        return target;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;解法二：位运算&lt;/p&gt;
+&lt;p&gt;这个部分最好联系离散数学的表达式写一个状态表进行求解&lt;/p&gt;
+&lt;p&gt;设当前状态为XY，输入为Z，那么我们可以分别为X和Y列出真值表&lt;/p&gt;
+&lt;p&gt;1	00	0	0	0
+2	01	0	0	1
+3	10	0	1	0
+4	00	1	0	1
+5	01	1	1	0
+6	10	1	0	0&lt;/p&gt;
+&lt;p&gt;Y new = ~X ⋅ Y ⋅~Z+ ~X ⋅~Y⋅ Z&lt;/p&gt;
+&lt;p&gt;X同理也可以列出逻辑表达式&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public int singleNumber(int[] nums) {
+        int a = 0, b = 0;
+        for(int num : nums) {
+            a = (a ^ num) &amp;amp; ~b;
+            b = (b ^ num) &amp;amp; ~a;
+        }
+        return a;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1&gt;数字范围按位与&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;给你两个整数 &lt;code&gt;left&lt;/code&gt; 和 &lt;code&gt;right&lt;/code&gt; ，表示区间 &lt;code&gt;[left, right]&lt;/code&gt; ，返回此区间内所有数字 &lt;strong&gt;按位与&lt;/strong&gt; 的结果（包含 &lt;code&gt;left&lt;/code&gt; 、&lt;code&gt;right&lt;/code&gt; 端点）。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：left = 5, right = 7
+输出：4
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：left = 0, right = 0
+输出：0
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 3：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：left = 1, right = 2147483647
+输出：0
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;按位与的性质&lt;/strong&gt;：
+&lt;ul&gt;
+&lt;li&gt;任何数字与0按位与结果为0&lt;/li&gt;
+&lt;li&gt;只有所有数字在某一位都为1时，结果的这一位才会是1&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;关键观察&lt;/strong&gt;：
+&lt;ul&gt;
+&lt;li&gt;区间内所有数字的按位与结果其实就是这些数字的二进制表示的公共前缀&lt;/li&gt;
+&lt;li&gt;随着数字增加，最低有效位（最右边的1）会不断变化&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;算法操作&lt;/strong&gt;：
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;right &amp;amp;= right - 1&lt;/code&gt; 这个操作会将 &lt;code&gt;right&lt;/code&gt; 的最右边的1变为0&lt;/li&gt;
+&lt;li&gt;重复这个过程，直到 &lt;code&gt;right&lt;/code&gt; 小于 &lt;code&gt;left&lt;/code&gt;，此时剩下的就是公共前缀&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public int rangeBitwiseAnd(int left, int right) {
+        while(left &amp;lt; right) {
+            right &amp;amp;= right - 1;
+        }
+        return right;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+</content:encoded></item><item><title>Redis笔记（底层数据结构、网络模型）</title><link>https://thrinisty.github.io/posts/redis%E7%AC%94%E8%AE%B0%E5%BA%95%E5%B1%82%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E7%BD%91%E7%BB%9C%E6%A8%A1%E5%9E%8B/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/redis%E7%AC%94%E8%AE%B0%E5%BA%95%E5%B1%82%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E7%BD%91%E7%BB%9C%E6%A8%A1%E5%9E%8B/</guid><description>底层数据结构、网络模型</description><pubDate>Tue, 25 Nov 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;Redis笔记&lt;/h1&gt;
+&lt;h2&gt;数据结构&lt;/h2&gt;
+&lt;h3&gt;动态字符串&lt;/h3&gt;
+&lt;p&gt;&lt;strong&gt;SDS&lt;/strong&gt; 简单动态字符串&lt;/p&gt;
+&lt;p&gt;Redis保存的Key是字符串，value往往是字符串或者字符串的集合，所以字符串是Redis中最重要的一个部分，它不用C语言的字符串，因为C语言的字符串存在缺陷：1.获取字符串长度需要通过运算，2.非二进制安全，3.不可修改&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/421.png&quot; alt=&quot;421&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;预分配&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/422.png&quot; alt=&quot;422&quot; /&gt;&lt;/p&gt;
+&lt;h3&gt;整数集合&lt;/h3&gt;
+&lt;p&gt;&lt;strong&gt;IntSet&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;IntSet是Redis的Set集合的一种实现方式，基于整数数组的来实现的，并且具备长度可变，有序等特性，查询采用二分查找的方式&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/423.png&quot; alt=&quot;423&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;升级编码&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/424.png&quot; alt=&quot;424&quot; /&gt;&lt;/p&gt;
+&lt;h3&gt;字典&lt;/h3&gt;
+&lt;p&gt;&lt;strong&gt;Dict&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Redis是一个KV类型的数据可，可以根据键快速实现增删改查，而键值之间的映射关系就是通过Dick来实现的&lt;/p&gt;
+&lt;p&gt;Dict由三部分组成：哈希表（DictHashTabale）、哈希节点（DictEntry）、字典（Dict）&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/425.png&quot; alt=&quot;425&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;单向Dict添加键值对的时候，Redis首先根据key计算出hash值（h），然后利用h&amp;amp;sizemask来计算元素应该存储到数组中的哪个索引位置&lt;/p&gt;
+&lt;p&gt;Dict结构如下，包含了两个数组&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/426.png&quot; alt=&quot;426&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;当集合中元素较多的时候，哈希冲突会增多，链表增长，查询效率降低&lt;/p&gt;
+&lt;p&gt;扩张&lt;/p&gt;
+&lt;p&gt;每次新增时候会检查负载因子used/size，满足负载因子大于等于1（且服务器没有执行BGSAVE和BGREWRITEAOF等后台进行）、负载因子大于5&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/427.png&quot; alt=&quot;427&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;收缩&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/428.png&quot; alt=&quot;428&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;rehash&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;通过另一个dicthashtable的数组创建新的Entry数组，讲各个KV重新指向，最后将第一个dicthashtable重新指向新创建的数组就可以完成扩容&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/429.png&quot; alt=&quot;429&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/431.png&quot; alt=&quot;431&quot; /&gt;&lt;/p&gt;
+&lt;h3&gt;压缩链表&lt;/h3&gt;
+&lt;p&gt;&lt;strong&gt;ZipList&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;是一种特殊的“双端链表”，有一系列特殊的编码的连续内存快组成，可以在任意一端进行压入/弹出，并且实践操作复杂度位O（1）&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/432.png&quot; alt=&quot;432&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/433.png&quot; alt=&quot;433&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;Entry内部结构&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/434.png&quot; alt=&quot;434&quot; /&gt;&lt;/p&gt;
+&lt;h3&gt;快速链表&lt;/h3&gt;
+&lt;p&gt;&lt;strong&gt;QuickList&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;压缩链表虽然节省内存，但是申请需要连续空间，如果内存的占用比较多，申请效率很低，这个时候可以去申请分片，分为多个ZipList，但是并不利于管理，我们使用到QuickList进行统一管理&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/435.png&quot; alt=&quot;435&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/436.png&quot; alt=&quot;436&quot; /&gt;&lt;/p&gt;
+&lt;h3&gt;跳表&lt;/h3&gt;
+&lt;p&gt;&lt;strong&gt;SkipList&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;是链表，但是与传统链表有所差异：&lt;/p&gt;
+&lt;p&gt;1.按照升序排列存储&lt;/p&gt;
+&lt;p&gt;2.节点可能包含多个指针，指针跨度不同&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/437.png&quot; alt=&quot;437&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/438.png&quot; alt=&quot;438&quot; /&gt;&lt;/p&gt;
+&lt;h3&gt;Redis对象&lt;/h3&gt;
+&lt;p&gt;&lt;strong&gt;RedisObject&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Redis中的任意数据类型的KV都会被封装为RedisObject，称作Redis对象&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/439.png&quot; alt=&quot;439&quot; /&gt;&lt;/p&gt;
+&lt;h2&gt;数据类型&lt;/h2&gt;
+&lt;h3&gt;String&lt;/h3&gt;
+&lt;p&gt;RAW基于SDS实现，上限为512MB&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/440.png&quot; alt=&quot;440&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;EMBSTR编码：当SDS长度小于44字节，这个时候ObjectHead和SDS是一段连续的内存空间&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/441.png&quot; alt=&quot;441&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;INT编码&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/442.png&quot; alt=&quot;442&quot; /&gt;&lt;/p&gt;
+&lt;h3&gt;List&lt;/h3&gt;
+&lt;p&gt;Redis中的List可以从头尾查找数组，以下是几种实现思路&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/443.png&quot; alt=&quot;443&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/444.png&quot; alt=&quot;444&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/445.png&quot; alt=&quot;445&quot; /&gt;&lt;/p&gt;
+&lt;h3&gt;Set&lt;/h3&gt;
+&lt;p&gt;Redis中的单列集合，不保证有序性、保证元素唯一、可求并交差集&lt;/p&gt;
+&lt;p&gt;底层是HashTable，也就是RedisDict，不过Dick是双列集合&lt;/p&gt;
+&lt;p&gt;HT编码：这里为了查询效率和唯一性，set采用的是HashTable（Dict）Dict中的key用来存储元素，value统一为null&lt;/p&gt;
+&lt;p&gt;IntSet编码：如果存储所有数据是整数，当元素数量不超过set-max-inset-entries（512）时，Set采用IntSet编码来节省内存&lt;/p&gt;
+&lt;h3&gt;ZSet&lt;/h3&gt;
+&lt;p&gt;ZSet是SortedSet，其中每一个元素都需要制定一个score和member值&lt;/p&gt;
+&lt;p&gt;1.可以根据score值排序后&lt;/p&gt;
+&lt;p&gt;2.member必须唯一&lt;/p&gt;
+&lt;p&gt;3.可以根据member查询分数&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/446.png&quot; alt=&quot;446&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/447.png&quot; alt=&quot;447&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;底层结构&lt;/p&gt;
+&lt;p&gt;第一种：SkipList 跳表+字典（效率高、内存大）&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/448.png&quot; alt=&quot;448&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;第二种：ZipList&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/449.png&quot; alt=&quot;449&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/450.png&quot; alt=&quot;450&quot; /&gt;&lt;/p&gt;
+&lt;h3&gt;Hash&lt;/h3&gt;
+&lt;p&gt;Hash结构和ZSet非常类似&lt;/p&gt;
+&lt;p&gt;1.都是键值存储&lt;/p&gt;
+&lt;p&gt;2.都是根据键获取值&lt;/p&gt;
+&lt;p&gt;3.键必须唯一&lt;/p&gt;
+&lt;p&gt;区别是：zset的键是member，值是score；hash的键值都是任意值&lt;/p&gt;
+&lt;p&gt;zset根据score排序，hash无需排序&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/451.png&quot; alt=&quot;451&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/452.png&quot; alt=&quot;452&quot; /&gt;&lt;/p&gt;
+&lt;h2&gt;网络模型&lt;/h2&gt;
+&lt;p&gt;用户空间和内核空间&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/453.png&quot; alt=&quot;453&quot; /&gt;&lt;/p&gt;
+&lt;h3&gt;五种IO模型&lt;/h3&gt;
+&lt;h4&gt;阻塞IO（BIO）&lt;/h4&gt;
+&lt;p&gt;&lt;img src=&quot;../images/454.png&quot; alt=&quot;454&quot; /&gt;&lt;/p&gt;
+&lt;h4&gt;非阻塞IO（NIO）&lt;/h4&gt;
+&lt;p&gt;&lt;img src=&quot;../images/455.png&quot; alt=&quot;455&quot; /&gt;&lt;/p&gt;
+&lt;h4&gt;IO多路复用&lt;/h4&gt;
+&lt;p&gt;&lt;img src=&quot;../images/456.png&quot; alt=&quot;456&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/457.png&quot; alt=&quot;457&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/458.png&quot; alt=&quot;458&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;常见的有三种多路复用&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/459.png&quot; alt=&quot;459&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;select&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;每次执行select都需要拷贝fd_set，select无法得知是哪一个fd就绪，需要遍历set，fd_set监听的fd数量不能够超过1024&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/460.png&quot; alt=&quot;460&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;poll&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;对于select进行简单的改进，但是性能不明显&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/461.png&quot; alt=&quot;461&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;epoll&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/462.png&quot; alt=&quot;462&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;总结&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/463.png&quot; alt=&quot;463&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;LT模式和ET模式&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;当FD有数据可读的时候，我们调用epoll_wait就可以得到通知，但是通知的模式有两种分别为：LevelTriggered，简称LT和EdgeTriggered简称EL&lt;/p&gt;
+&lt;p&gt;LevelTriggered：当FD有数据可读的时候，会通知多次，直到数据处理完成，是epoll的默认模式。&lt;/p&gt;
+&lt;p&gt;EdgeTriggered：当FD有数据可读的时候，只会通知一次，不管数据是否处理完成&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/464.png&quot; alt=&quot;464&quot; /&gt;&lt;/p&gt;
+</content:encoded></item><item><title>LeetCode刷题（二进制求和、颠倒的二进制位）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E4%BA%8C%E8%BF%9B%E5%88%B6%E6%B1%82%E5%92%8C%E9%A2%A0%E5%80%92%E7%9A%84%E4%BA%8C%E8%BF%9B%E5%88%B6%E4%BD%8D/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E4%BA%8C%E8%BF%9B%E5%88%B6%E6%B1%82%E5%92%8C%E9%A2%A0%E5%80%92%E7%9A%84%E4%BA%8C%E8%BF%9B%E5%88%B6%E4%BD%8D/</guid><description>二进制求和、颠倒的二进制位</description><pubDate>Mon, 24 Nov 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;二进制求和&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;给你两个二进制字符串 &lt;code&gt;a&lt;/code&gt; 和 &lt;code&gt;b&lt;/code&gt; ，以二进制字符串的形式返回它们的和。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入:a = &quot;11&quot;, b = &quot;1&quot;
+输出：&quot;100&quot;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：a = &quot;1010&quot;, b = &quot;1011&quot;
+输出：&quot;10101&quot;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;提示：&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;1 &amp;lt;= a.length, b.length &amp;lt;= 104&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;a&lt;/code&gt; 和 &lt;code&gt;b&lt;/code&gt; 仅由字符 &lt;code&gt;&apos;0&apos;&lt;/code&gt; 或 &lt;code&gt;&apos;1&apos;&lt;/code&gt; 组成&lt;/li&gt;
+&lt;li&gt;字符串如果不是 &lt;code&gt;&quot;0&quot;&lt;/code&gt; ，就不含前导零&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;思路和两数之和类似，构造一个数组存储数据依次相加即可&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public String addBinary(String a, String b) {
+        int n1 = a.length();
+        int n2 = b.length();
+        int n = Math.max(n1, n2) + 1;
+        int[] arr = new int[n];
+        int p = n - 1;
+        int i = n1 - 1;
+        int j = n2 - 1;
+        int count = 0;
+        while(i &amp;gt;= 0 || j &amp;gt;= 0 || count != 0) {
+            int num1 = i &amp;gt;= 0 ? Integer.parseInt(a.charAt(i) + &quot;&quot;) : 0;
+            int num2 = j &amp;gt;= 0 ? Integer.parseInt(b.charAt(j) + &quot;&quot;) : 0;
+            int sum = num1 + num2 + count;
+            arr[p--] = sum % 2;
+            count = sum / 2;
+            if(i &amp;gt;= 0) i--;
+            if(j &amp;gt;= 0) j--;
+        }
+        StringBuilder result = new StringBuilder();
+        if(arr[0] == 1) result.append(1);
+        for(int k = 1; k &amp;lt; n; k++) {
+            result.append(arr[k]);
+        }
+        return result.toString();
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1&gt;颠倒的二进制位&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;颠倒给定的 32 位有符号整数的二进制位。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;**输入：**n = 43261596&lt;/p&gt;
+&lt;p&gt;**输出：**964176192&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;解释：&lt;/strong&gt;&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;整数&lt;/th&gt;
+&lt;th&gt;二进制&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;43261596&lt;/td&gt;
+&lt;td&gt;00000010100101000001111010011100&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;964176192&lt;/td&gt;
+&lt;td&gt;00111001011110000010100101000000&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;**输入：**n = 2147483644&lt;/p&gt;
+&lt;p&gt;**输出：**1073741822&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;解释：&lt;/strong&gt;&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;整数&lt;/th&gt;
+&lt;th&gt;二进制&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;2147483644&lt;/td&gt;
+&lt;td&gt;01111111111111111111111111111100&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;1073741822&lt;/td&gt;
+&lt;td&gt;00111111111111111111111111111110&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&lt;strong&gt;提示：&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;0 &amp;lt;= n &amp;lt;= 231 - 2&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;n&lt;/code&gt; 为偶数&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;进阶&lt;/strong&gt;: 如果多次调用这个函数，你将如何优化你的算法？&lt;/p&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;讲n转化为二进制数据放入数组中，再从左向右构造最后的结果&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public int reverseBits(int n) {
+        int[] arr = new int[32];
+        int i = 31;
+        while(n &amp;gt; 0) {
+            arr[i--] = n % 2;
+            n /= 2;
+        }
+        int result = 0;
+        int temp = 1;
+        for(i = 0; i &amp;lt; 32; i++) {
+            if(arr[i] == 1) {
+                result += temp;
+            }
+            temp &amp;lt;&amp;lt;= 1;
+        }
+        return result;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+</content:encoded></item><item><title>LeetCode刷题（Pow(x，n)、直线上最多点数）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98powxn%E7%9B%B4%E7%BA%BF%E4%B8%8A%E6%9C%80%E5%A4%9A%E7%82%B9%E6%95%B0/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98powxn%E7%9B%B4%E7%BA%BF%E4%B8%8A%E6%9C%80%E5%A4%9A%E7%82%B9%E6%95%B0/</guid><description>Pow(x，n)、直线上最多点数</description><pubDate>Sun, 23 Nov 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;Pow(x，n)&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;实现 &lt;a href=&quot;https://www.cplusplus.com/reference/valarray/pow/&quot;&gt;pow(&lt;em&gt;x&lt;/em&gt;, &lt;em&gt;n&lt;/em&gt;)&lt;/a&gt; ，即计算 &lt;code&gt;x&lt;/code&gt; 的整数 &lt;code&gt;n&lt;/code&gt; 次幂函数（即，&lt;code&gt;xn&lt;/code&gt; ）。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：x = 2.00000, n = 10
+输出：1024.00000
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：x = 2.10000, n = 3
+输出：9.26100
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 3：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：x = 2.00000, n = -2
+输出：0.25000
+解释：2-2 = 1/22 = 1/4 = 0.25
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;解法一：依次×原数（超时）&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public double myPow(double x, int n) {
+        double result = 1;
+        if(n == 0) {
+            return 1;
+        } else if(n &amp;gt; 0) {
+            for(int i = 0; i &amp;lt; n; i++) {
+                result *= x;
+            }
+        } else {
+            n = -n;
+            for(int i = 0; i &amp;lt; n; i++) {
+                result *= 1.0 / x;
+            }
+        }
+        return result;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;解法二：快速幂解析&lt;/p&gt;
+&lt;p&gt;每一次幂数末尾为1的时候让结果乘上原数，之后原数乘等于原数，最后右移幂数&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public double myPow(double x, int n) {
+        if(x == 0) return 0 ;
+        double result = 1.0;
+        long m = n;
+        if(m &amp;lt; 0) {
+            x = 1 / x;
+            m = -m;
+        }
+        while(m &amp;gt; 0) {
+            if((m &amp;amp; 1) == 1) result *= x;
+            x *= x;
+            m &amp;gt;&amp;gt;= 1;
+        }
+        return result;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1&gt;直线上最多点数&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;给你一个数组 &lt;code&gt;points&lt;/code&gt; ，其中 &lt;code&gt;points[i] = [xi, yi]&lt;/code&gt; 表示 &lt;strong&gt;X-Y&lt;/strong&gt; 平面上的一个点。求最多有多少个点在同一条直线上。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/389.jpg&quot; alt=&quot;389&quot; /&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：points = [[1,1],[2,2],[3,3]]
+输出：3
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/390.jpg&quot; alt=&quot;390&quot; /&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：points = [[1,1],[3,2],[5,3],[4,1],[2,3],[1,4]]
+输出：4
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;稍微在除法哪里卡了一下，后面发觉可以将除号转为乘号&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public int maxPoints(int[][] points) {
+        int n = points.length; 
+        if(n &amp;lt;= 2) return n;
+        int result = 0;
+        for(int i = 0; i &amp;lt; n; i++) {
+            int x1 = points[i][0];
+            int y1 = points[i][1];
+            for(int j = i + 1; j &amp;lt; n; j++) {
+                int x2 = points[j][0];
+                int y2 = points[j][1];
+                int count = 0;
+                for(int k = 0; k &amp;lt; n; k++) {
+                    int x = points[k][0];
+                    int y = points[k][1];
+                    if((y - y1) * (x - x2) == (y - y2) * (x - x1)) {
+                        count++;
+                    }
+                }
+                result = Math.max(result, count);
+            }
+        }
+        return result;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+</content:encoded></item><item><title>Redis笔记（异步秒杀、持久化、Redis集群）</title><link>https://thrinisty.github.io/posts/redis%E7%AC%94%E8%AE%B0%E5%BC%82%E6%AD%A5%E7%A7%92%E6%9D%80%E6%8C%81%E4%B9%85%E5%8C%96redis%E9%9B%86%E7%BE%A4/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/redis%E7%AC%94%E8%AE%B0%E5%BC%82%E6%AD%A5%E7%A7%92%E6%9D%80%E6%8C%81%E4%B9%85%E5%8C%96redis%E9%9B%86%E7%BE%A4/</guid><description>异步秒杀、AOF、RDB、Redis集群</description><pubDate>Sun, 23 Nov 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;Redis笔记&lt;/h1&gt;
+&lt;h2&gt;秒杀优化&lt;/h2&gt;
+&lt;h3&gt;流程图&lt;/h3&gt;
+&lt;p&gt;&lt;img src=&quot;../images/391.png&quot; alt=&quot;391&quot; /&gt;&lt;/p&gt;
+&lt;h3&gt;Redis库存扣减&lt;/h3&gt;
+&lt;p&gt;将库存提前保存在Redis中，在Redis中校验一人一单（运用Set记录id信息）&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/392.png&quot; alt=&quot;392&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;Lua脚本&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;-- KEYS[1]: 商品库存key 格式: stock:商品id
+-- KEYS[2]: 订单记录Set key 格式: orders:商品id
+-- ARGV[1]: 要扣减的库存数量
+-- ARGV[2]: 用户id
+-- ARGV[3]: 商品id
+-- ARGV[4]: 订单记录过期时间(秒)
+-- 返回值: 
+--   1 表示成功
+--   0 表示库存不足
+--  -1 表示已经购买过(一人一单限制)
+--  -2 表示其他错误
+
+-- 检查用户是否已经购买过该商品
+local ordersKey = KEYS[2]
+local userId = ARGV[2]
+local isMember = redis.call(&apos;SISMEMBER&apos;, ordersKey, userId)
+
+if isMember == 1 then
+    return -1
+end
+
+-- 检查库存是否充足
+local stockKey = KEYS[1]
+local stock = tonumber(redis.call(&apos;GET&apos;, stockKey))
+local num = tonumber(ARGV[1])
+
+if not stock or stock &amp;lt;= 0 then
+    return 0
+end
+
+-- 扣减库存
+local newStock = stock - num
+redis.call(&apos;SET&apos;, stockKey, newStock)
+
+-- 将用户添加到订单Set中(设置过期时间)
+redis.call(&apos;SADD&apos;, ordersKey, userId)
+local expireTime = tonumber(ARGV[4])
+if expireTime &amp;gt; 0 then
+    redis.call(&apos;EXPIRE&apos;, ordersKey, expireTime)
+end
+
+-- 返回成功
+return 1
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;读取Lua脚本&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@Configuration
+public class RedisConfig {
+    
+    @Bean
+    public RedisTemplate&amp;lt;String, Object&amp;gt; redisTemplate(RedisConnectionFactory factory) {
+        RedisTemplate&amp;lt;String, Object&amp;gt; template = new RedisTemplate&amp;lt;&amp;gt;();
+        template.setConnectionFactory(factory);
+        template.setKeySerializer(new StringRedisSerializer());
+        template.setValueSerializer(new GenericJackson2JsonRedisSerializer());
+        return template;
+    }
+    
+    @Bean
+    public DefaultRedisScript&amp;lt;Long&amp;gt; stockDeductionScript() {
+        DefaultRedisScript&amp;lt;Long&amp;gt; script = new DefaultRedisScript&amp;lt;&amp;gt;();
+        script.setScriptSource(new ResourceScriptSource(new ClassPathResource(&quot;scripts/deduct_stock.lua&quot;)));
+        script.setResultType(Long.class);
+        return script;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;@Service
+public class StockService {
+    
+    private final RedisTemplate&amp;lt;String, Object&amp;gt; redisTemplate;
+    private final DefaultRedisScript&amp;lt;Long&amp;gt; stockDeductionScript;
+    
+    public StockService(RedisTemplate&amp;lt;String, Object&amp;gt; redisTemplate, 
+                      DefaultRedisScript&amp;lt;Long&amp;gt; stockDeductionScript) {
+        this.redisTemplate = redisTemplate;
+        this.stockDeductionScript = stockDeductionScript;
+    }
+    
+    public DeductionResult deductStock(String productId, String userId, int quantity, int expireSeconds) {
+        List&amp;lt;String&amp;gt; keys = Arrays.asList(
+            &quot;stock:&quot; + productId,
+            &quot;orders:&quot; + productId
+        );
+        
+        Object[] args = {
+            quantity,
+            userId,
+            productId,
+            expireSeconds
+        };
+        
+        Long result = redisTemplate.execute(
+            stockDeductionScript,
+            new StringRedisSerializer(),
+            new GenericToStringSerializer&amp;lt;&amp;gt;(Long.class),
+            keys,
+            args
+        );
+        
+        if (result == null) {
+            return DeductionResult.FAILED;
+        }
+        
+        switch (result.intValue()) {
+            case 1: return DeductionResult.SUCCESS;
+            case 0: return DeductionResult.NOT_ENOUGH_STOCK;
+            case -1: return DeductionResult.ALREADY_ORDERED;
+            default: return DeductionResult.FAILED;
+        }
+    }
+    
+    public enum DeductionResult {
+        SUCCESS(&quot;扣减成功&quot;),
+        NOT_ENOUGH_STOCK(&quot;库存不足&quot;),
+        ALREADY_ORDERED(&quot;已经购买过&quot;),
+        FAILED(&quot;操作失败&quot;);
+        
+        private final String message;
+        
+        DeductionResult(String message) {
+            this.message = message;
+        }
+        
+        public String getMessage() {
+            return message;
+        }
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;异步处理&lt;/h3&gt;
+&lt;p&gt;我这里觉得使用RabbitMQ会稍微好一点，可以提供更多的确认机制&lt;/p&gt;
+&lt;p&gt;独立线程异步处理&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/393.png&quot; alt=&quot;393&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;利用Redis实现消息队列&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/394.png&quot; alt=&quot;394&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;List实现&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/395.png&quot; alt=&quot;395&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;PubSub&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;消息队列实现&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/396.png&quot; alt=&quot;396&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Stream实现&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;发送消息&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/397.png&quot; alt=&quot;397&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;读取消息&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/398.png&quot; alt=&quot;398&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/399.png&quot; alt=&quot;399&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/400.png&quot; alt=&quot;400&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;消费者组&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/401.png&quot; alt=&quot;401&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;创建/修改消费者组&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/402.png&quot; alt=&quot;402&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;从消费者组中读取信息&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/403.png&quot; alt=&quot;403&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;消费者优点&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/404.png&quot; alt=&quot;404&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;总结&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/405.png&quot; alt=&quot;405&quot; /&gt;&lt;/p&gt;
+&lt;h2&gt;持久化&lt;/h2&gt;
+&lt;h3&gt;RDB&lt;/h3&gt;
+&lt;p&gt;&lt;img src=&quot;../images/406.png&quot; alt=&quot;406&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;在Redis内部有触发RDB机制&lt;/p&gt;
+&lt;p&gt;在900s内如果有一个key被修改、300内修改10key，60s内修改10000，就会执行bgsava&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/407.png&quot; alt=&quot;407&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;原理&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;bgsave开始时会fork主进程得到子进程，子进程共享主进程的内存数据，完成fork后读取内存数据并写入RDB文件&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/408.png&quot; alt=&quot;408&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;由于两次RDB持久化之间存在时间间隔，可能导致数据的缺失，我们还需要AOF作为补充&lt;/p&gt;
+&lt;h3&gt;AOF&lt;/h3&gt;
+&lt;p&gt;追加文件，Redis处理的每一个写命令都会被记录在AOF文件中，可以看作是命令的日志文件&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/409.png&quot; alt=&quot;409&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/410.png&quot; alt=&quot;410&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/411.png&quot; alt=&quot;411&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;优缺点&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/412.png&quot; alt=&quot;412&quot; /&gt;&lt;/p&gt;
+&lt;h3&gt;集群&lt;/h3&gt;
+&lt;p&gt;&lt;strong&gt;全量同步&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/413.png&quot; alt=&quot;413&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;增量同步&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/414.png&quot; alt=&quot;414&quot; /&gt;&lt;/p&gt;
+&lt;h3&gt;哨兵&lt;/h3&gt;
+&lt;p&gt;&lt;img src=&quot;../images/415.png&quot; alt=&quot;415&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/416.png&quot; alt=&quot;416&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/417.png&quot; alt=&quot;417&quot; /&gt;&lt;/p&gt;
+&lt;h3&gt;分片集群&lt;/h3&gt;
+&lt;p&gt;客户端可以请求任意的节点，路由到正确的redis中&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/418.png&quot; alt=&quot;418&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;散列插槽&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/419.png&quot; alt=&quot;419&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;:::note&lt;/p&gt;
+&lt;p&gt;因为我们后续可能会拓展节点，或者节点有可能会下线，假如key绑定的是master节点，数据就要频繁的解析变更，加上槽就可以解耦，变化槽和节点之间的映射关系即可&lt;/p&gt;
+&lt;p&gt;:::&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;特性&lt;/th&gt;
+&lt;th&gt;槽机制&lt;/th&gt;
+&lt;th&gt;传统哈希分片&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;扩展性&lt;/td&gt;
+&lt;td&gt;动态迁移槽即可扩容&lt;/td&gt;
+&lt;td&gt;需要重新哈希所有数据&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;数据均衡&lt;/td&gt;
+&lt;td&gt;预先分配保证均衡&lt;/td&gt;
+&lt;td&gt;依赖哈希函数质量&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;故障恢复&lt;/td&gt;
+&lt;td&gt;只需转移槽&lt;/td&gt;
+&lt;td&gt;需要转移实际数据&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;客户端复杂度&lt;/td&gt;
+&lt;td&gt;只需维护槽映射表&lt;/td&gt;
+&lt;td&gt;需要知道完整分片规则&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&lt;img src=&quot;../images/420.png&quot; alt=&quot;420&quot; /&gt;&lt;/p&gt;
+</content:encoded></item><item><title>LeetCode刷题（回文数、加一、阶乘后的零）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E5%9B%9E%E6%96%87%E6%95%B0%E5%8A%A0%E4%B8%80%E9%98%B6%E4%B9%98%E5%90%8E%E7%9A%84%E9%9B%B6/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E5%9B%9E%E6%96%87%E6%95%B0%E5%8A%A0%E4%B8%80%E9%98%B6%E4%B9%98%E5%90%8E%E7%9A%84%E9%9B%B6/</guid><description>回文数、加一、阶乘后的零</description><pubDate>Sat, 22 Nov 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;回文数&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;给你一个整数 &lt;code&gt;x&lt;/code&gt; ，如果 &lt;code&gt;x&lt;/code&gt; 是一个回文整数，返回 &lt;code&gt;true&lt;/code&gt; ；否则，返回 &lt;code&gt;false&lt;/code&gt; 。&lt;/p&gt;
+&lt;p&gt;回文数是指正序（从左向右）和倒序（从右向左）读都是一样的整数。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;例如，&lt;code&gt;121&lt;/code&gt; 是回文，而 &lt;code&gt;123&lt;/code&gt; 不是。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：x = 121
+输出：true
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：x = -121
+输出：false
+解释：从左向右读, 为 -121 。 从右向左读, 为 121- 。因此它不是一个回文数。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 3：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：x = 10
+输出：false
+解释：从右向左读, 为 01 。因此它不是一个回文数。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;对每一位取出，构造对应的回文数，最后判断回文数是否和原先的数相等&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public boolean isPalindrome(int x) {
+        if(x &amp;lt; 0) return false;
+        int num = 0;
+        int cur = x;
+        while(cur != 0) {
+            int low = cur % 10;
+            num = num * 10 + low;
+            cur /= 10;
+        }
+        return x == num;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1&gt;加一&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;给定一个表示 &lt;strong&gt;大整数&lt;/strong&gt; 的整数数组 &lt;code&gt;digits&lt;/code&gt;，其中 &lt;code&gt;digits[i]&lt;/code&gt; 是整数的第 &lt;code&gt;i&lt;/code&gt; 位数字。这些数字按从左到右，从最高位到最低位排列。这个大整数不包含任何前导 &lt;code&gt;0&lt;/code&gt;。&lt;/p&gt;
+&lt;p&gt;将大整数加 1，并返回结果的数字数组。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：digits = [1,2,3]
+输出：[1,2,4]
+解释：输入数组表示数字 123。
+加 1 后得到 123 + 1 = 124。
+因此，结果应该是 [1,2,4]。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：digits = [4,3,2,1]
+输出：[4,3,2,2]
+解释：输入数组表示数字 4321。
+加 1 后得到 4321 + 1 = 4322。
+因此，结果应该是 [4,3,2,2]。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 3：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：digits = [9]
+输出：[1,0]
+解释：输入数组表示数字 9。
+加 1 得到了 9 + 1 = 10。
+因此，结果应该是 [1,0]。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;先在末尾加1，之后依次判断是否是10，如果是则前位++，本位为0，最后第一位特判以下做复制处理&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public int[] plusOne(int[] digits) {
+        int n = digits.length;
+        digits[n - 1] += 1;
+        for(int i = n - 1; i &amp;gt;= 1; i--) {
+            if(digits[i] == 10) {
+                digits[i] = 0;
+                digits[i - 1] += 1;
+            }
+        }
+        if(digits[0] != 10) return digits;
+        digits[0] = 0;
+        int[] result = new int[n + 1];
+        result[0] = 1;
+        for(int i = 1; i &amp;lt;= n; i++) {
+            result[i] = digits[i - 1];
+        }
+        return result;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1&gt;阶乘后的零&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;给定一个整数 &lt;code&gt;n&lt;/code&gt; ，返回 &lt;code&gt;n!&lt;/code&gt; 结果中尾随零的数量。&lt;/p&gt;
+&lt;p&gt;提示 &lt;code&gt;n! = n * (n - 1) * (n - 2) * ... * 3 * 2 * 1&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例1：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：n = 3
+输出：0
+解释：3! = 6 ，不含尾随 0
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：n = 5
+输出：1
+解释：5! = 120 ，有一个尾随 0
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 3：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：n = 0
+输出：0
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;解法一：计算阶乘之后计算0数（结果溢出导致错误）&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public int trailingZeroes(int n) {
+        int sum = 1;
+        for(int i = 1; i &amp;lt;= n; i++) {
+            sum *= i;
+        }
+        int result = 0;
+        while(sum != 0) {
+            int low = sum % 10;
+            if(low == 0) {
+                result++;
+            } else {
+                break;
+            }
+            sum /= 10;
+        }
+        return result;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;解法二：数学大法，what can I say? 背就完了&lt;/p&gt;
+&lt;p&gt;大概的思路是将0个数改为计算多少对（2、5），也就是5出现的数&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public int trailingZeroes(int n) {
+        int count = 0;
+        while(n &amp;gt; 0) {
+            count += n / 5;
+            n /= 5;
+        }
+        return count;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+</content:encoded></item><item><title>LeetCode刷题（搜索插入位置、搜索二维矩阵、寻找峰值）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E6%90%9C%E7%B4%A2%E6%8F%92%E5%85%A5%E4%BD%8D%E7%BD%AE%E6%90%9C%E7%B4%A2%E4%BA%8C%E7%BB%B4%E7%9F%A9%E9%98%B5%E5%AF%BB%E6%89%BE%E5%B3%B0%E5%80%BC/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E6%90%9C%E7%B4%A2%E6%8F%92%E5%85%A5%E4%BD%8D%E7%BD%AE%E6%90%9C%E7%B4%A2%E4%BA%8C%E7%BB%B4%E7%9F%A9%E9%98%B5%E5%AF%BB%E6%89%BE%E5%B3%B0%E5%80%BC/</guid><description>搜索插入位置、搜索二维矩阵、寻找峰值</description><pubDate>Wed, 19 Nov 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;搜索插入位置&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;给定一个排序数组和一个目标值，在数组中找到目标值，并返回其索引。如果目标值不存在于数组中，返回它将会被按顺序插入的位置。&lt;/p&gt;
+&lt;p&gt;请必须使用时间复杂度为 &lt;code&gt;O(log n)&lt;/code&gt; 的算法。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 1:&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入: nums = [1,3,5,6], target = 5
+输出: 2
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2:&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入: nums = [1,3,5,6], target = 2
+输出: 1
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 3:&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入: nums = [1,3,5,6], target = 7
+输出: 4
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;解法一：依次遍历&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public int searchInsert(int[] nums, int target) {
+        int n = nums.length;
+        for(int i = 0; i &amp;lt; n; i++) {
+            if(nums[i] &amp;gt;= target) {
+                return i;
+            }
+        }
+        return n;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;解法二：二分查找&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public int searchInsert(int[] nums, int target) {
+        int n = nums.length;
+        return search(nums, 0, n - 1, target);
+    }
+
+    public int search(int[] nums, int left, int right, int target) {
+        if(left &amp;gt; right) {
+            return left;
+        }
+        int mid = left + (right - left) / 2;
+        int num = nums[mid];
+        if(num == target) {
+            return mid;
+        } else if(target &amp;lt; num) {
+            return search(nums, left, mid - 1, target);
+        } else {
+            return search(nums, mid + 1, right, target);
+        }
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;解法三：补一个循环非递归&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public int searchInsert(int[] nums, int target) {
+        int n = nums.length;
+        int left = 0;
+        int right = n - 1;
+        while(left &amp;lt;= right) {
+            int mid = (left + right) / 2;
+            int num = nums[mid];
+            if(num == target) {
+                return mid;
+            } else if(target &amp;lt; num) {
+                right = mid - 1;
+            } else {
+                left = mid + 1;
+            }
+        }
+        return left;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1&gt;搜索二维矩阵&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;给你一个满足下述两条属性的 &lt;code&gt;m x n&lt;/code&gt; 整数矩阵：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;每行中的整数从左到右按非严格递增顺序排列。&lt;/li&gt;
+&lt;li&gt;每行的第一个整数大于前一行的最后一个整数。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;给你一个整数 &lt;code&gt;target&lt;/code&gt; ，如果 &lt;code&gt;target&lt;/code&gt; 在矩阵中，返回 &lt;code&gt;true&lt;/code&gt; ；否则，返回 &lt;code&gt;false&lt;/code&gt; 。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/387.jpg&quot; alt=&quot;387&quot; /&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：matrix = [[1,3,5,7],[10,11,16,20],[23,30,34,60]], target = 3
+输出：true
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/388.jpg&quot; alt=&quot;388&quot; /&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：matrix = [[1,3,5,7],[10,11,16,20],[23,30,34,60]], target = 13
+输出：false
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;解法一：先找出目标元素在哪一行，然后对于行二分查找&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public boolean searchMatrix(int[][] matrix, int target) {
+        int row = matrix.length;
+        int col = matrix[0].length;
+        int targetRow = -1;
+        for(int i = 0; i &amp;lt; row; i++) {
+            if(matrix[i][0] &amp;lt;= target &amp;amp;&amp;amp; target &amp;lt;= matrix[i][col - 1]) {
+                targetRow = i;
+                break;
+            }
+        }
+        if(targetRow == -1) return false;
+        int[] searchRow = matrix[targetRow];
+        int left = 0;
+        int right = col - 1;
+        while(left &amp;lt;= right) {
+            int mid = left + (right - left) / 2;
+            int num = searchRow[mid];
+            if(num == target) {
+                return true;
+            } else if(target &amp;lt; num) {
+                right = mid - 1;
+            } else {
+                left = mid + 1;
+            }
+        }
+        return false;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;解法二：直接抽象成为一维数组，对于一维数组进行二分查找&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public boolean searchMatrix(int[][] matrix, int target) {
+        int n = matrix.length, m = matrix[0].length;
+        int left = 0, right = n * m - 1;
+        while (left &amp;lt;= right) {
+            int mid = (left + right) / 2;
+            int x = mid / m, y = mid % m;
+            int t = matrix[x][y];
+            if (t == target)
+                return true;
+            if (t &amp;lt; target)
+                left = mid + 1;
+            else
+                right = mid - 1;
+        }
+        return false;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1&gt;寻找峰值&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;峰值元素是指其值严格大于左右相邻值的元素。&lt;/p&gt;
+&lt;p&gt;给你一个整数数组 &lt;code&gt;nums&lt;/code&gt;，找到峰值元素并返回其索引。数组可能包含多个峰值，在这种情况下，返回 &lt;strong&gt;任何一个峰值&lt;/strong&gt; 所在位置即可。&lt;/p&gt;
+&lt;p&gt;你可以假设 &lt;code&gt;nums[-1] = nums[n] = -∞&lt;/code&gt; 。&lt;/p&gt;
+&lt;p&gt;你必须实现时间复杂度为 &lt;code&gt;O(log n)&lt;/code&gt; 的算法来解决此问题。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：nums = [1,2,3,1]
+输出：2
+解释：3 是峰值元素，你的函数应该返回其索引 2。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：nums = [1,2,1,3,5,6,4]
+输出：1 或 5 
+解释：你的函数可以返回索引 1，其峰值元素为 2；
+     或者返回索引 5， 其峰值元素为 6。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;解法一：顺序遍历&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public int findPeakElement(int[] nums) {
+        int n = nums.length;
+        int[] temp = new int[n + 2];
+        for(int i = 0; i &amp;lt; n; i++) {
+            temp[i + 1] = nums[i];
+        }
+        temp[0] = Integer.MIN_VALUE;
+        temp[n + 1] = Integer.MIN_VALUE;
+        for(int i = 1; i &amp;lt;= n; i++) {
+            if(temp[i] &amp;gt; temp[i - 1] &amp;amp;&amp;amp; temp[i] &amp;gt; temp[i + 1]) {
+                return i - 1;
+            }
+        }
+        return 0;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;解法二：二分查找，当mid对应的数大于mid+1的时候说明峰值在左侧&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public int findPeakElement(int[] nums) {
+        int n = nums.length;
+        int left = 0;
+        int right = n - 1;
+        while(left &amp;lt; right) {
+            int mid = left + (right - left) / 2;
+            if(nums[mid] &amp;gt; nums[mid + 1]) {
+                right = mid;
+            } else {
+                left = mid + 1;
+            }
+        }
+        return left;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+</content:encoded></item><item><title>LeetCode刷题（将有序数组转为二叉搜索树、环形最大子数组和）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E5%B0%86%E6%9C%89%E5%BA%8F%E6%95%B0%E7%BB%84%E8%BD%AC%E4%B8%BA%E4%BA%8C%E5%8F%89%E6%90%9C%E7%B4%A2%E6%A0%91%E7%8E%AF%E5%BD%A2%E6%9C%80%E5%A4%A7%E5%AD%90%E6%95%B0%E7%BB%84%E5%92%8C/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E5%B0%86%E6%9C%89%E5%BA%8F%E6%95%B0%E7%BB%84%E8%BD%AC%E4%B8%BA%E4%BA%8C%E5%8F%89%E6%90%9C%E7%B4%A2%E6%A0%91%E7%8E%AF%E5%BD%A2%E6%9C%80%E5%A4%A7%E5%AD%90%E6%95%B0%E7%BB%84%E5%92%8C/</guid><description>将有序数组转为二叉搜索树、环形最大子数组和</description><pubDate>Tue, 18 Nov 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;将有序数组转为二叉搜索树&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;给你一个整数数组 &lt;code&gt;nums&lt;/code&gt; ，其中元素已经按 &lt;strong&gt;升序&lt;/strong&gt; 排列，请你将其转换为一棵 平衡 二叉搜索树。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/381.jpg&quot; alt=&quot;381&quot; /&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：nums = [-10,-3,0,5,9]
+输出：[0,-3,9,-10,null,5]
+解释：[0,-10,5,null,-3,null,9] 也将被视为正确答案：
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/382.jpg&quot; alt=&quot;382&quot; /&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：nums = [1,3]
+输出：[3,1]
+解释：[1,null,3] 和 [3,1] 都是高度平衡二叉搜索树。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;使用递归求解，对于mid左右侧的数组分别是小于/大于mid的有序数组&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public TreeNode sortedArrayToBST(int[] nums) {
+        return func(nums, 0, nums.length - 1);
+    }
+
+    public TreeNode func(int[] nums, int left, int right) {
+        if(left &amp;gt; right) return null;
+        int mid = left + (right - left) / 2;
+        TreeNode root = new TreeNode(nums[mid]);
+        root.left = func(nums, left, mid - 1);
+        root.right = func(nums, mid + 1, right);
+        return root;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1&gt;环形最大子数组和&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;给定一个长度为 &lt;code&gt;n&lt;/code&gt; 的&lt;strong&gt;环形整数数组&lt;/strong&gt; &lt;code&gt;nums&lt;/code&gt; ，返回 &lt;em&gt;&lt;code&gt;nums&lt;/code&gt; 的非空 &lt;strong&gt;子数组&lt;/strong&gt; 的最大可能和&lt;/em&gt; 。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;环形数组&lt;/strong&gt; 意味着数组的末端将会与开头相连呈环状。形式上， &lt;code&gt;nums[i]&lt;/code&gt; 的下一个元素是 &lt;code&gt;nums[(i + 1) % n]&lt;/code&gt; ， &lt;code&gt;nums[i]&lt;/code&gt; 的前一个元素是 &lt;code&gt;nums[(i - 1 + n) % n]&lt;/code&gt; 。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;子数组&lt;/strong&gt; 最多只能包含固定缓冲区 &lt;code&gt;nums&lt;/code&gt; 中的每个元素一次。形式上，对于子数组 &lt;code&gt;nums[i], nums[i + 1], ..., nums[j]&lt;/code&gt; ，不存在 &lt;code&gt;i &amp;lt;= k1, k2 &amp;lt;= j&lt;/code&gt; 其中 &lt;code&gt;k1 % n == k2 % n&lt;/code&gt; 。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：nums = [1,-2,3,-2]
+输出：3
+解释：从子数组 [3] 得到最大和 3
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：nums = [5,-3,5]
+输出：10
+解释：从子数组 [5,5] 得到最大和 5 + 5 = 10
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 3：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：nums = [3,-2,2,-3]
+输出：3
+解释：从子数组 [3] 和 [3,-2,2] 都可以得到最大和 3
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;题解写注解里了&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public int maxSubarraySumCircular(int[] nums) {
+        int n = nums.length;
+        int[] leftMax = new int[n];//记录从左侧头开始最大和
+        leftMax[0] = nums[0];
+    
+        int sum = nums[0];
+        int result = nums[0];
+        int leftSum = nums[0];//用于记录左侧的累加和
+        for(int i = 1; i &amp;lt; n; i++) {
+            //计算从左侧开始的累加和
+            leftSum += nums[i];
+            //计算从左侧开始到该位置的最大可能
+            leftMax[i] = Math.max(leftMax[i - 1], leftSum);
+            //以下代表不一定要从头开始的选取方式,思路和子数组最大和一致
+            sum = Math.max(sum + nums[i], nums[i]);
+            result = Math.max(sum, result);
+        }
+
+        int rightSum = 0;//记录从右侧开始的累加和
+        for(int i = n - 1; i &amp;gt; 0; i--) {
+            rightSum += nums[i];
+            //右侧该位置的累加和加上从最左侧开始的最大和，用结果迭代result
+            result = Math.max(result, rightSum + leftMax[i - 1]);
+        }
+        return result;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+</content:encoded></item><item><title>austin消息推送平台项目</title><link>https://thrinisty.github.io/posts/austin%E6%B6%88%E6%81%AF%E6%8E%A8%E9%80%81%E5%B9%B3%E5%8F%B0%E9%A1%B9%E7%9B%AE/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/austin%E6%B6%88%E6%81%AF%E6%8E%A8%E9%80%81%E5%B9%B3%E5%8F%B0%E9%A1%B9%E7%9B%AE/</guid><pubDate>Mon, 17 Nov 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;Austin&lt;/h1&gt;
+&lt;h2&gt;依赖配置&lt;/h2&gt;
+&lt;p&gt;Maven仓库&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;  &amp;lt;!-- aliyun yun --&amp;gt;
+	&amp;lt;mirror&amp;gt;
+    &amp;lt;id&amp;gt;alimaven&amp;lt;/id&amp;gt;
+    &amp;lt;mirrorOf&amp;gt;central&amp;lt;/mirrorOf&amp;gt;
+    &amp;lt;name&amp;gt;aliyun maven&amp;lt;/name&amp;gt;
+    &amp;lt;url&amp;gt;http://maven.aliyun.com/nexus/content/groups/public/&amp;lt;/url&amp;gt;
+  &amp;lt;/mirror&amp;gt;
+
+  &amp;lt;!-- huawei yun --&amp;gt;
+  &amp;lt;mirror&amp;gt;
+      &amp;lt;id&amp;gt;huaweicloud&amp;lt;/id&amp;gt;
+      &amp;lt;mirrorOf&amp;gt;*&amp;lt;/mirrorOf&amp;gt;
+      &amp;lt;url&amp;gt;https://repo.huaweicloud.com/repository/maven/&amp;lt;/url&amp;gt;
+  &amp;lt;/mirror&amp;gt;
+  
+   &amp;lt;!-- 中央仓库1 --&amp;gt;
+  &amp;lt;mirror&amp;gt;
+      &amp;lt;id&amp;gt;repo1&amp;lt;/id&amp;gt;
+      &amp;lt;mirrorOf&amp;gt;central&amp;lt;/mirrorOf&amp;gt;
+      &amp;lt;name&amp;gt;Human Readable Name for this Mirror.&amp;lt;/name&amp;gt;
+      &amp;lt;url&amp;gt;http://repo1.maven.org/maven2/&amp;lt;/url&amp;gt;
+  &amp;lt;/mirror&amp;gt;
+
+  &amp;lt;!-- 中央仓库2 --&amp;gt;
+  &amp;lt;mirror&amp;gt;
+      &amp;lt;id&amp;gt;repo2&amp;lt;/id&amp;gt;
+      &amp;lt;mirrorOf&amp;gt;central&amp;lt;/mirrorOf&amp;gt;
+      &amp;lt;name&amp;gt;Human Readable Name for this Mirror.&amp;lt;/name&amp;gt;
+      &amp;lt;url&amp;gt;http://repo2.maven.org/maven2/&amp;lt;/url&amp;gt;
+  &amp;lt;/mirror&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;项目模块化&lt;/h2&gt;
+&lt;p&gt;我们创建项目的时候以业务作为区分将各个项目模块化，不同职责被分到对应的模块上而&lt;code&gt;austin&lt;/code&gt;直属下的&lt;code&gt;pom&lt;/code&gt;文件就一般只用来管理依赖&lt;/p&gt;
+&lt;p&gt;利用modules标签包含以下子模块&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;modules&amp;gt;
+    &amp;lt;module&amp;gt;common&amp;lt;/module&amp;gt;
+    &amp;lt;module&amp;gt;support&amp;lt;/module&amp;gt;
+    &amp;lt;module&amp;gt;stream&amp;lt;/module&amp;gt;
+    &amp;lt;module&amp;gt;handler&amp;lt;/module&amp;gt;
+    &amp;lt;module&amp;gt;web&amp;lt;/module&amp;gt;
+    &amp;lt;module&amp;gt;service&amp;lt;/module&amp;gt;
+    &amp;lt;module&amp;gt;service-impl&amp;lt;/module&amp;gt;
+    &amp;lt;module&amp;gt;cron&amp;lt;/module&amp;gt;
+&amp;lt;/modules&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;在父工程中引入SpringBoot版本，后续再子模块中导入依赖的时候就不需要指定版本&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;parent&amp;gt;
+    &amp;lt;groupId&amp;gt;org.springframework.boot&amp;lt;/groupId&amp;gt;
+    &amp;lt;artifactId&amp;gt;spring-boot-starter-parent&amp;lt;/artifactId&amp;gt;
+    &amp;lt;version&amp;gt;2.5.6&amp;lt;/version&amp;gt;
+    &amp;lt;relativePath/&amp;gt;
+&amp;lt;/parent&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;SpringBoot&lt;/h3&gt;
+&lt;p&gt;在子模块web中接入SpringBoot&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;dependencies&amp;gt;
+    &amp;lt;dependency&amp;gt;
+        &amp;lt;groupId&amp;gt;org.springframework.boot&amp;lt;/groupId&amp;gt;
+        &amp;lt;artifactId&amp;gt;spring-boot-starter-web&amp;lt;/artifactId&amp;gt;
+    &amp;lt;/dependency&amp;gt;
+&amp;lt;/dependencies&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;@SpringBootApplication
+public class AustinApplication {
+    public static void main(String[] args) {
+        SpringApplication.run(AustinApplication.class, args);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;常用工具&lt;/h3&gt;
+&lt;p&gt;在日常开发中常用的一些开发工具，同样的在父工程中进行定义&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;dependencyManagement&amp;gt;
+    &amp;lt;dependencies&amp;gt;
+        &amp;lt;dependency&amp;gt;
+            &amp;lt;groupId&amp;gt;cn.hutool&amp;lt;/groupId&amp;gt;
+            &amp;lt;artifactId&amp;gt;hutool-all&amp;lt;/artifactId&amp;gt;
+            &amp;lt;version&amp;gt;5.7.15&amp;lt;/version&amp;gt;
+        &amp;lt;/dependency&amp;gt;
+        &amp;lt;dependency&amp;gt;
+            &amp;lt;groupId&amp;gt;com.google.guava&amp;lt;/groupId&amp;gt;
+            &amp;lt;artifactId&amp;gt;guava&amp;lt;/artifactId&amp;gt;
+            &amp;lt;version&amp;gt;31.0.1-jre&amp;lt;/version&amp;gt;
+        &amp;lt;/dependency&amp;gt;
+        &amp;lt;dependency&amp;gt;
+            &amp;lt;groupId&amp;gt;com.alibaba&amp;lt;/groupId&amp;gt;
+            &amp;lt;artifactId&amp;gt;fastjson&amp;lt;/artifactId&amp;gt;
+            &amp;lt;version&amp;gt;1.2.83&amp;lt;/version&amp;gt;
+        &amp;lt;/dependency&amp;gt;
+        &amp;lt;dependency&amp;gt;
+             &amp;lt;groupId&amp;gt;org.projectlombok&amp;lt;/groupId&amp;gt;
+             &amp;lt;artifactId&amp;gt;lombok&amp;lt;/artifactId&amp;gt;
+             &amp;lt;version&amp;gt;1.18.34&amp;lt;/version&amp;gt;
+         &amp;lt;/dependency&amp;gt;
+    &amp;lt;/dependencies&amp;gt;
+&amp;lt;/dependencyManagement&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;集成日志&lt;/h3&gt;
+&lt;p&gt;在线上我们不常用sout进行日志的打印，因为需要对于时间、持久化的一些处理，这个时候日志框架是更好的选择，Slf4j是日志框架的接口&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;dependency&amp;gt;
+    &amp;lt;groupId&amp;gt;org.projectlombok&amp;lt;/groupId&amp;gt;
+    &amp;lt;artifactId&amp;gt;lombok&amp;lt;/artifactId&amp;gt;
+&amp;lt;/dependency&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;在resource资源下引入logback.xml配置&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&amp;gt;
+&amp;lt;configuration scan=&quot;true&quot; scanPeriod=&quot;30 seconds&quot;&amp;gt;
+
+    &amp;lt;!-- 定义通用日志格式 --&amp;gt;
+    &amp;lt;property name=&quot;LOG_PATTERN&quot; value=&quot;%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n&quot;/&amp;gt;
+
+    &amp;lt;!-- 控制台输出 --&amp;gt;
+    &amp;lt;appender name=&quot;CONSOLE&quot; class=&quot;ch.qos.logback.core.ConsoleAppender&quot;&amp;gt;
+        &amp;lt;encoder&amp;gt;
+            &amp;lt;pattern&amp;gt;${LOG_PATTERN}&amp;lt;/pattern&amp;gt;
+        &amp;lt;/encoder&amp;gt;
+    &amp;lt;/appender&amp;gt;
+
+    &amp;lt;!-- 主日志文件（按天滚动，保留30天） --&amp;gt;
+    &amp;lt;appender name=&quot;FILE&quot; class=&quot;ch.qos.logback.core.rolling.RollingFileAppender&quot;&amp;gt;
+        &amp;lt;file&amp;gt;logs/app.log&amp;lt;/file&amp;gt;
+        &amp;lt;rollingPolicy class=&quot;ch.qos.logback.core.rolling.TimeBasedRollingPolicy&quot;&amp;gt;
+            &amp;lt;fileNamePattern&amp;gt;logs/app.%d{yyyy-MM-dd}.log&amp;lt;/fileNamePattern&amp;gt;
+            &amp;lt;maxHistory&amp;gt;30&amp;lt;/maxHistory&amp;gt;
+        &amp;lt;/rollingPolicy&amp;gt;
+        &amp;lt;encoder&amp;gt;
+            &amp;lt;pattern&amp;gt;${LOG_PATTERN}&amp;lt;/pattern&amp;gt;
+        &amp;lt;/encoder&amp;gt;
+    &amp;lt;/appender&amp;gt;
+
+    &amp;lt;!-- ERROR级别日志单独输出 --&amp;gt;
+    &amp;lt;appender name=&quot;ERROR_FILE&quot; class=&quot;ch.qos.logback.core.rolling.RollingFileAppender&quot;&amp;gt;
+        &amp;lt;file&amp;gt;logs/error.log&amp;lt;/file&amp;gt;
+        &amp;lt;filter class=&quot;ch.qos.logback.classic.filter.ThresholdFilter&quot;&amp;gt;
+            &amp;lt;level&amp;gt;ERROR&amp;lt;/level&amp;gt;
+        &amp;lt;/filter&amp;gt;
+        &amp;lt;rollingPolicy class=&quot;ch.qos.logback.core.rolling.TimeBasedRollingPolicy&quot;&amp;gt;
+            &amp;lt;fileNamePattern&amp;gt;logs/error.%d{yyyy-MM-dd}.log&amp;lt;/fileNamePattern&amp;gt;
+            &amp;lt;maxHistory&amp;gt;30&amp;lt;/maxHistory&amp;gt;
+        &amp;lt;/rollingPolicy&amp;gt;
+        &amp;lt;encoder&amp;gt;
+            &amp;lt;pattern&amp;gt;${LOG_PATTERN}&amp;lt;/pattern&amp;gt;
+        &amp;lt;/encoder&amp;gt;
+    &amp;lt;/appender&amp;gt;
+
+    &amp;lt;!-- 异步日志（提升性能） --&amp;gt;
+    &amp;lt;appender name=&quot;ASYNC_FILE&quot; class=&quot;ch.qos.logback.classic.AsyncAppender&quot;&amp;gt;
+        &amp;lt;queueSize&amp;gt;512&amp;lt;/queueSize&amp;gt;
+        &amp;lt;discardingThreshold&amp;gt;0&amp;lt;/discardingThreshold&amp;gt;
+        &amp;lt;appender-ref ref=&quot;FILE&quot;/&amp;gt;
+    &amp;lt;/appender&amp;gt;
+
+    &amp;lt;!-- 根日志级别（可覆盖包路径级别） --&amp;gt;
+    &amp;lt;root level=&quot;INFO&quot;&amp;gt;
+        &amp;lt;appender-ref ref=&quot;CONSOLE&quot;/&amp;gt;
+        &amp;lt;appender-ref ref=&quot;ASYNC_FILE&quot;/&amp;gt;
+        &amp;lt;appender-ref ref=&quot;ERROR_FILE&quot;/&amp;gt;
+    &amp;lt;/root&amp;gt;
+
+    &amp;lt;!-- 特定包/类日志级别（示例） --&amp;gt;
+    &amp;lt;logger name=&quot;com.example&quot; level=&quot;DEBUG&quot;/&amp;gt;
+    &amp;lt;logger name=&quot;org.springframework&quot; level=&quot;WARN&quot;/&amp;gt;
+    &amp;lt;logger name=&quot;org.hibernate.SQL&quot; level=&quot;DEBUG&quot;/&amp;gt;
+
+&amp;lt;/configuration&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;通过@Slf4j注解实现日志的集成&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;/**
+ * 测试接口
+ */
+@Slf4j
+@RestController
+@RequestMapping(&quot;test&quot;)
+public class TestController {
+    @GetMapping
+    public String test() {
+        log.info(&quot;test&quot;);
+        return &quot;test&quot;;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;2025-11-16 22:26:30.259 [http-nio-8080-exec-3] INFO  c.l.m.web.controller.TestController - test
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;短信发送&lt;/h2&gt;
+&lt;p&gt;腾讯云SDK&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;dependency&amp;gt;
+    &amp;lt;groupId&amp;gt;com.tencentcloudapi&amp;lt;/groupId&amp;gt;
+    &amp;lt;artifactId&amp;gt;tencentcloud-sdk-java-sms&amp;lt;/artifactId&amp;gt;
+    &amp;lt;version&amp;gt;3.1.1357&amp;lt;/version&amp;gt;
+&amp;lt;/dependency&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;@Slf4j
+public class Main {
+    public static void main(String[] args) {
+        send(&quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;);
+    }
+    public static void send(String phone, String content,String secretId,String secretKey,String sdkAppId) {
+
+        try {
+
+            /**
+             * 初始化
+             */
+            Credential cred = new Credential(secretId, secretKey);
+            HttpProfile httpProfile = new HttpProfile();
+            httpProfile.setEndpoint(&quot;sms.tencentcloudapi.com&quot;);
+            ClientProfile clientProfile = new ClientProfile();
+            clientProfile.setHttpProfile(httpProfile);
+            SmsClient client = new SmsClient(cred, &quot;ap-guangzhou&quot;, clientProfile);
+
+            /**
+             * 组装入参
+             */
+            SendSmsRequest req = new SendSmsRequest();
+            String[] phoneNumberSet1 = new String[]{phone};
+            req.setPhoneNumberSet(phoneNumberSet1);
+            req.setSmsSdkAppId(sdkAppId);
+            req.setSignName(&quot;Java3y公众号&quot;);
+            req.setTemplateId(&quot;1182097&quot;);
+            String[] templateParamSet1 = {content};
+            req.setTemplateParamSet(templateParamSet1);
+            req.setSessionContext(IdUtil.fastSimpleUUID());
+
+            /**
+             * 发送
+             */
+            SendSmsResponse response = client.SendSms(req);
+            log.info(JSON.toJSONString(response));
+        } catch (Exception e) {
+            log.error(Throwables.getStackTraceAsString(e));
+        }
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;数据库&lt;/h2&gt;
+&lt;p&gt;这个项目使用的是MySQL数据库，用于存储消息发送后短信的凭证，以及拉取的回执，并在后续提供一些发送消息的可视化业务&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;
+
+CREATE TABLE `message_template`
+(
+    `id`               bigint(20) NOT NULL AUTO_INCREMENT,
+    `name`             varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT &apos;&apos; COMMENT &apos;标题&apos;,
+    `audit_status`     tinyint(4) NOT NULL DEFAULT &apos;0&apos; COMMENT &apos;当前消息审核状态： 10.待审核 20.审核成功 30.被拒绝&apos;,
+    `flow_id`          varchar(50) COLLATE utf8mb4_unicode_ci COMMENT &apos;工单ID&apos;,
+    `msg_status`       tinyint(4) NOT NULL DEFAULT &apos;0&apos; COMMENT &apos;当前消息状态：10.新建 20.停用 30.启用 40.等待发送 50.发送中 60.发送成功 70.发送失败&apos;,
+    `cron_task_id`     bigint(20) COMMENT &apos;定时任务Id (xxl-job-admin返回)&apos;,
+    `cron_crowd_path`  varchar(500) COMMENT &apos;定时发送人群的文件路径&apos;,
+    `expect_push_time` varchar(100) COLLATE utf8mb4_unicode_ci COMMENT &apos;期望发送时间：0:立即发送 定时任务以及周期任务:cron表达式&apos;,
+    `id_type`          tinyint(4) NOT NULL DEFAULT &apos;0&apos; COMMENT &apos;消息的发送ID类型：10. userId 20.did 30.手机号 40.openId 50.email 60.企业微信userId&apos;,
+    `send_channel`     tinyint(4) NOT NULL DEFAULT &apos;0&apos; COMMENT &apos;消息发送渠道：10.IM 20.Push 30.短信 40.Email 50.公众号 60.小程序 70.企业微信 80.钉钉机器人 90.钉钉工作通知 100.企业微信机器人 110.飞书机器人 110. 飞书应用消息 &apos;,
+    `template_type`    tinyint(4) NOT NULL DEFAULT &apos;0&apos; COMMENT &apos;10.运营类 20.技术类接口调用&apos;,
+    `msg_type`         tinyint(4) NOT NULL DEFAULT &apos;0&apos; COMMENT &apos;10.通知类消息 20.营销类消息 30.验证码类消息&apos;,
+    `shield_type`      tinyint(4) NOT NULL DEFAULT &apos;0&apos; COMMENT &apos;10.夜间不屏蔽 20.夜间屏蔽 30.夜间屏蔽(次日早上9点发送)&apos;,
+    `msg_content`      varchar(600) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT &apos;&apos; COMMENT &apos;消息内容 占位符用{$var}表示&apos;,
+    `send_account`     tinyint(4) NOT NULL DEFAULT &apos;0&apos; COMMENT &apos;发送账号 一个渠道下可存在多个账号&apos;,
+    `creator`          varchar(45) COLLATE utf8mb4_unicode_ci  NOT NULL DEFAULT &apos;&apos; COMMENT &apos;创建者&apos;,
+    `updator`          varchar(45) COLLATE utf8mb4_unicode_ci  NOT NULL DEFAULT &apos;&apos; COMMENT &apos;更新者&apos;,
+    `auditor`          varchar(45) COLLATE utf8mb4_unicode_ci  NOT NULL DEFAULT &apos;&apos; COMMENT &apos;审核人&apos;,
+    `team`             varchar(45) COLLATE utf8mb4_unicode_ci  NOT NULL DEFAULT &apos;&apos; COMMENT &apos;业务方团队&apos;,
+    `proposer`         varchar(45) COLLATE utf8mb4_unicode_ci  NOT NULL DEFAULT &apos;&apos; COMMENT &apos;业务方&apos;,
+    `is_deleted`       tinyint(4) NOT NULL DEFAULT &apos;0&apos; COMMENT &apos;是否删除：0.不删除 1.删除&apos;,
+    `created`          int(11) NOT NULL DEFAULT &apos;0&apos; COMMENT &apos;创建时间&apos;,
+    `updated`          int(11) NOT NULL DEFAULT &apos;0&apos; COMMENT &apos;更新时间&apos;,
+    PRIMARY KEY (`id`),
+    KEY                `idx_channel` (`send_channel`)
+) ENGINE = InnoDB
+  AUTO_INCREMENT = 1
+  DEFAULT CHARSET = utf8mb4
+  COLLATE = utf8mb4_unicode_ci COMMENT =&apos;消息模板信息&apos;;
+
+
+
+CREATE TABLE `sms_record`
+(
+    `id`                  bigint(20) NOT NULL AUTO_INCREMENT,
+    `message_template_id` bigint(20) NOT NULL DEFAULT &apos;0&apos; COMMENT &apos;消息模板ID&apos;,
+    `phone`               bigint(20) NOT NULL DEFAULT &apos;0&apos; COMMENT &apos;手机号&apos;,
+    `supplier_id`         tinyint(4) NOT NULL DEFAULT &apos;0&apos; COMMENT &apos;发送短信渠道商的ID&apos;,
+    `supplier_name`       varchar(40) COLLATE utf8mb4_unicode_ci  NOT NULL DEFAULT &apos;&apos; COMMENT &apos;发送短信渠道商的名称&apos;,
+    `msg_content`         varchar(600) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT &apos;&apos; COMMENT &apos;短信发送的内容&apos;,
+    `series_id`           varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT &apos;&apos; COMMENT &apos;下发批次的ID&apos;,
+    `charging_num`        tinyint(4) NOT NULL DEFAULT &apos;0&apos; COMMENT &apos;计费条数&apos;,
+    `report_content`      varchar(50)                             NOT NULL DEFAULT &apos;&apos; COMMENT &apos;回执内容&apos;,
+    `status`              tinyint(4) NOT NULL DEFAULT &apos;0&apos; COMMENT &apos;短信状态： 10.发送 20.成功 30.失败&apos;,
+    `send_date`           int(11) NOT NULL DEFAULT &apos;0&apos; COMMENT &apos;发送日期：20211112&apos;,
+    `created`             int(11) NOT NULL DEFAULT &apos;0&apos; COMMENT &apos;创建时间&apos;,
+    `updated`             int(11) NOT NULL DEFAULT &apos;0&apos; COMMENT &apos;更新时间&apos;,
+    PRIMARY KEY (`id`),
+    KEY                   `idx_send_date` (`send_date`)
+) ENGINE = InnoDB
+  AUTO_INCREMENT = 1
+  DEFAULT CHARSET = utf8mb4
+  COLLATE = utf8mb4_unicode_ci COMMENT =&apos;短信记录信息&apos;;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;责任链模板&lt;/h2&gt;
+&lt;p&gt;方法接口，其中实现责任链中每个节点调用的方法&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;/**
+ * 业务执行器
+ */
+public interface BusinessProcess {
+    void process(ProcessContext context);
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;责任链的上下文，要求传入ProcessContext主要是责任链下游可能需要上游的一些信息&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;/**
+ * 责任链上下文
+ */
+public class ProcessContext {
+    // 标识责任链的code
+    private String code;
+    // 存储上下文的真正载体
+    private Model model;
+    // 责任链中断的标识
+    private Boolean needBreak = false;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;通过ProcessTemplate，放入多个被实现的BusinessProcess接口组装成为链，提供获取链的方法&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;/**
+ * 业务执行模板（把责任链的逻辑串起来）
+ */
+public class ProcessTemplate {
+    private List&amp;lt;BusinessProcess&amp;gt; processList;
+    public List&amp;lt;BusinessProcess&amp;gt; getProcessList() {
+        return processList;
+    }
+    public void setProcessList(List&amp;lt;BusinessProcess&amp;gt; processList) {
+        this.processList = processList;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;执行器，这里还额外的用了一个责任链工厂存储不同的责任链，根据业务code选取不同的责任链&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;/**
+ * 责任链的流程控制器（整个责任链的执行流程通用控制）
+ */
+@Data
+public class ProcessController {
+    
+    // 不同的code 对应不同的责任链
+    private Map&amp;lt;String, ProcessTemplate&amp;gt; templateConfig = null;
+
+    public void process(ProcessContext context) {
+        //根据上下文的Code 执行不同的责任链
+        String businessCode = context.getCode();
+        ProcessTemplate processTemplate = templateConfig.get(businessCode);
+        List&amp;lt;BusinessProcess&amp;gt; actionList = processTemplate.getProcessList();
+        //遍历某个责任链的流程节点
+        for (BusinessProcess action : actionList) {
+            try {
+                action.process(context);
+                if (context.getNeedBreak()) {
+                    break;
+                }
+            } catch (Exception e2) {
+                //...
+            }
+        }
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+</content:encoded></item><item><title>LeetCode刷题（地下城游戏、组合、N皇后Ⅱ）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E5%9C%B0%E4%B8%8B%E5%9F%8E%E6%B8%B8%E6%88%8F%E7%BB%84%E5%90%88n%E7%9A%87%E5%90%8E%E2%85%B1/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E5%9C%B0%E4%B8%8B%E5%9F%8E%E6%B8%B8%E6%88%8F%E7%BB%84%E5%90%88n%E7%9A%87%E5%90%8E%E2%85%B1/</guid><description>地下城游戏、组合、N皇后Ⅱ</description><pubDate>Mon, 17 Nov 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;地下城游戏&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;恶魔们抓住了公主并将她关在了地下城 &lt;code&gt;dungeon&lt;/code&gt; 的 &lt;strong&gt;右下角&lt;/strong&gt; 。地下城是由 &lt;code&gt;m x n&lt;/code&gt; 个房间组成的二维网格。我们英勇的骑士最初被安置在 &lt;strong&gt;左上角&lt;/strong&gt; 的房间里，他必须穿过地下城并通过对抗恶魔来拯救公主。&lt;/p&gt;
+&lt;p&gt;骑士的初始健康点数为一个正整数。如果他的健康点数在某一时刻降至 0 或以下，他会立即死亡。&lt;/p&gt;
+&lt;p&gt;有些房间由恶魔守卫，因此骑士在进入这些房间时会失去健康点数（若房间里的值为&lt;em&gt;负整数&lt;/em&gt;，则表示骑士将损失健康点数）；其他房间要么是空的（房间里的值为 &lt;em&gt;0&lt;/em&gt;），要么包含增加骑士健康点数的魔法球（若房间里的值为&lt;em&gt;正整数&lt;/em&gt;，则表示骑士将增加健康点数）。&lt;/p&gt;
+&lt;p&gt;为了尽快解救公主，骑士决定每次只 &lt;strong&gt;向右&lt;/strong&gt; 或 &lt;strong&gt;向下&lt;/strong&gt; 移动一步。&lt;/p&gt;
+&lt;p&gt;返回确保骑士能够拯救到公主所需的最低初始健康点数。&lt;/p&gt;
+&lt;p&gt;**注意：**任何房间都可能对骑士的健康点数造成威胁，也可能增加骑士的健康点数，包括骑士进入的左上角房间以及公主被监禁的右下角房间。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/380.jpg&quot; alt=&quot;380&quot; /&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：dungeon = [[-2,-3,3],[-5,-10,1],[10,30,-5]]
+输出：7
+解释：如果骑士遵循最佳路径：右 -&amp;gt; 右 -&amp;gt; 下 -&amp;gt; 下 ，则骑士的初始健康点数至少为 7 。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;从右下角开始运用动态规划求解，dp代表从当前格出发至少需要多少生命值才可以到达右下角&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public int calculateMinimumHP(int[][] dungeon) {
+        int row = dungeon.length;
+        int col = dungeon[0].length;
+        int[][] dp = new int[row][col];
+        dp[row - 1][col - 1] = Math.max(1, 1 - dungeon[row - 1][col - 1]);
+        for(int i = row - 2; i &amp;gt;= 0; i--) {
+            dp[i][col - 1] = Math.max(1, dp[i + 1][col - 1] - dungeon[i][col - 1]);
+        }
+        for(int j = col - 2; j &amp;gt;= 0; j--) {
+            dp[row - 1][j] = Math.max(1, dp[row - 1][j + 1] - dungeon[row - 1][j]);
+        }
+        for(int i = row - 2; i &amp;gt;= 0; i--) {
+            for(int j = col - 2; j &amp;gt;= 0; j--) {
+                int min = Math.min(dp[i + 1][j], dp[i][j + 1]);
+                dp[i][j] = Math.max(1, min - dungeon[i][j]);
+            }
+        }
+        return dp[0][0];
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1&gt;组合&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;给定两个整数 &lt;code&gt;n&lt;/code&gt; 和 &lt;code&gt;k&lt;/code&gt;，返回范围 &lt;code&gt;[1, n]&lt;/code&gt; 中所有可能的 &lt;code&gt;k&lt;/code&gt; 个数的组合。&lt;/p&gt;
+&lt;p&gt;你可以按 &lt;strong&gt;任何顺序&lt;/strong&gt; 返回答案。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：n = 4, k = 2
+输出：
+[
+  [2,4],
+  [3,4],
+  [2,3],
+  [1,2],
+  [1,3],
+  [1,4],
+]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：n = 1, k = 1
+输出：[[1]]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;运用回溯法，记录下标，对下标到最右侧的数字可以被选取，当长度位k的时候将结果加入到result中&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    List&amp;lt;List&amp;lt;Integer&amp;gt;&amp;gt; result = new ArrayList&amp;lt;&amp;gt;();
+    List&amp;lt;Integer&amp;gt; list = new ArrayList&amp;lt;&amp;gt;();
+    public List&amp;lt;List&amp;lt;Integer&amp;gt;&amp;gt; combine(int n, int k) {
+        dfs(n, k, 1);
+        return result;
+    }
+
+    public void dfs(int n, int k, int index) {
+        if(list.size() == k) {
+            result.add(new ArrayList&amp;lt;&amp;gt;(list));
+            return;
+        }
+        for(int i = index; i &amp;lt;= n; i++) {
+            list.add(i);
+            dfs(n, k, i + 1);
+            list.remove(list.size() - 1);
+        }
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1&gt;N皇后&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;&lt;strong&gt;n 皇后问题&lt;/strong&gt; 研究的是如何将 &lt;code&gt;n&lt;/code&gt; 个皇后放置在 &lt;code&gt;n × n&lt;/code&gt; 的棋盘上，并且使皇后彼此之间不能相互攻击。&lt;/p&gt;
+&lt;p&gt;给你一个整数 &lt;code&gt;n&lt;/code&gt; ，返回 &lt;strong&gt;n 皇后问题&lt;/strong&gt; 不同的解决方案的数量。&lt;/p&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;给定map用于存储每个行上放置的列位置，依次放置每一行，对于每一行的每一列，如果可以放置则递归的放置下一层&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    int result = 0;
+    public int totalNQueens(int n) {
+        int[] map = new int[n];
+        func(map, 0);
+        return result;
+    }
+
+    public void func(int[] map, int level) {
+        int n = map.length;
+        if(level == n) {
+            result++;
+            return;
+        }
+        for(int i = 0; i &amp;lt; n; i++) {
+            map[level] = i;
+            if(canPlace(map, level, i)) {
+                func(map, level + 1);
+            } 
+        }
+    }
+
+    public boolean canPlace(int[] map, int row, int col) {
+        for(int i = 0; i &amp;lt; row; i++) {
+            if(col == map[i] || row + col == i + map[i] || row - col == i - map[i]) {
+                return false;
+            }
+        }
+        return true;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+</content:encoded></item><item><title>LeetCode刷题（前缀树拓展、单词查找Ⅱ）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E5%89%8D%E7%BC%80%E6%A0%91%E6%8B%93%E5%B1%95%E5%8D%95%E8%AF%8D%E6%9F%A5%E6%89%BE%E2%85%B1/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E5%89%8D%E7%BC%80%E6%A0%91%E6%8B%93%E5%B1%95%E5%8D%95%E8%AF%8D%E6%9F%A5%E6%89%BE%E2%85%B1/</guid><description>添加与搜索单词、单词查找Ⅱ（超时）</description><pubDate>Sun, 16 Nov 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;添加与搜索单词&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;请你设计一个数据结构，支持 添加新单词 和 查找字符串是否与任何先前添加的字符串匹配 。&lt;/p&gt;
+&lt;p&gt;实现词典类 &lt;code&gt;WordDictionary&lt;/code&gt; ：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;WordDictionary()&lt;/code&gt; 初始化词典对象&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;void addWord(word)&lt;/code&gt; 将 &lt;code&gt;word&lt;/code&gt; 添加到数据结构中，之后可以对它进行匹配&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;bool search(word)&lt;/code&gt; 如果数据结构中存在字符串与 &lt;code&gt;word&lt;/code&gt; 匹配，则返回 &lt;code&gt;true&lt;/code&gt; ；否则，返回 &lt;code&gt;false&lt;/code&gt; 。&lt;code&gt;word&lt;/code&gt; 中可能包含一些 &lt;code&gt;&apos;.&apos;&lt;/code&gt; ，每个 &lt;code&gt;.&lt;/code&gt; 都可以表示任何一个字母。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;示例：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：
+[&quot;WordDictionary&quot;,&quot;addWord&quot;,&quot;addWord&quot;,&quot;addWord&quot;,&quot;search&quot;,&quot;search&quot;,&quot;search&quot;,&quot;search&quot;]
+[[],[&quot;bad&quot;],[&quot;dad&quot;],[&quot;mad&quot;],[&quot;pad&quot;],[&quot;bad&quot;],[&quot;.ad&quot;],[&quot;b..&quot;]]
+输出：
+[null,null,null,null,false,true,true,true]
+
+解释：
+WordDictionary wordDictionary = new WordDictionary();
+wordDictionary.addWord(&quot;bad&quot;);
+wordDictionary.addWord(&quot;dad&quot;);
+wordDictionary.addWord(&quot;mad&quot;);
+wordDictionary.search(&quot;pad&quot;); // 返回 False
+wordDictionary.search(&quot;bad&quot;); // 返回 True
+wordDictionary.search(&quot;.ad&quot;); // 返回 True
+wordDictionary.search(&quot;b..&quot;); // 返回 True
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;这一道题的添加思路和Node结构与前缀树的一致，难点是如何匹配 &quot;.&quot; 的时候遍历其下的所有情况，我们采用dfs的方式进行遍历，如果c不为 &quot;.&quot; 则按正常的方式匹配下一个字符，直到匹配完全，如果位 &quot;.&quot; 的情况则需要遍历26个分叉，看是否有满足后续的可能出现，否则返回false&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class WordDictionary {
+
+    class Node {
+        boolean isEnd = false;
+        Node[] next = new Node[26];
+    }
+
+    Node root;
+
+    public WordDictionary() {
+        root = new Node();
+    }
+    
+    public void addWord(String word) {
+        Node p = root;
+        char[] arr = word.toCharArray();
+        for(char c : arr) {
+            int index = c - &apos;a&apos;;
+            if(p.next[index] == null) {
+                p.next[index] = new Node();
+            }
+            p = p.next[index];
+        }
+        p.isEnd = true;
+    }
+    
+    public boolean search(String word) {
+        return dfs(word, 0, root);
+    }
+
+    public boolean dfs(String word, int index, Node node) {
+        if(index == word.length()) {
+            return node.isEnd;
+        }
+        char c = word.charAt(index);
+        if(c != &apos;.&apos;) {
+            int i = c - &apos;a&apos;;
+            if(node.next[i] == null) return false;
+            return dfs(word, index + 1, node.next[i]);
+        } else {
+            for(int i = 0; i &amp;lt; 26; i++) {
+                if(node.next[i] != null &amp;amp;&amp;amp; dfs(word, index + 1, node.next[i])) {
+                    return true;
+                }
+            }
+            return false;
+        }
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1&gt;单词查找Ⅱ&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;给定一个 &lt;code&gt;m x n&lt;/code&gt; 二维字符网格 &lt;code&gt;board&lt;/code&gt; 和一个单词（字符串）列表 &lt;code&gt;words&lt;/code&gt;， &lt;em&gt;返回所有二维网格上的单词&lt;/em&gt; 。&lt;/p&gt;
+&lt;p&gt;单词必须按照字母顺序，通过 &lt;strong&gt;相邻的单元格&lt;/strong&gt; 内的字母构成，其中“相邻”单元格是那些水平相邻或垂直相邻的单元格。同一个单元格内的字母在一个单词中不允许被重复使用。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/377.jpg&quot; alt=&quot;377&quot; /&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：board = [[&quot;o&quot;,&quot;a&quot;,&quot;a&quot;,&quot;n&quot;],[&quot;e&quot;,&quot;t&quot;,&quot;a&quot;,&quot;e&quot;],[&quot;i&quot;,&quot;h&quot;,&quot;k&quot;,&quot;r&quot;],[&quot;i&quot;,&quot;f&quot;,&quot;l&quot;,&quot;v&quot;]], words = [&quot;oath&quot;,&quot;pea&quot;,&quot;eat&quot;,&quot;rain&quot;]
+输出：[&quot;eat&quot;,&quot;oath&quot;]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/379.jpg&quot; alt=&quot;379&quot; /&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：board = [[&quot;a&quot;,&quot;b&quot;],[&quot;c&quot;,&quot;d&quot;]], words = [&quot;abcb&quot;]
+输出：[]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;暴力解法：和之前的单词查找一致，看是否有满足的情况，如果有将word加入到结果中，最后返回结果&lt;/p&gt;
+&lt;p&gt;超时（63/65），之后有时间二刷再看看&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public List&amp;lt;String&amp;gt; findWords(char[][] board, String[] words) {
+        Set&amp;lt;String&amp;gt; result = new HashSet&amp;lt;&amp;gt;();
+        boolean[][] visited = new boolean[board.length][board[0].length];
+        for(int i = 0; i &amp;lt; board.length; i++) {
+            for(int j = 0; j &amp;lt; board[0].length; j++) {
+                for(String word : words) {
+                    if(dfs(board, visited, word, i, j, 0)) {
+                        result.add(word);
+                    }
+                }
+            }
+        }
+        return new ArrayList&amp;lt;&amp;gt;(result);
+    }
+
+    public boolean dfs(char[][] board, boolean[][] visited, String word, int i, int j, int index) {
+        if(i &amp;gt;= 0 &amp;amp;&amp;amp; i &amp;lt; board.length &amp;amp;&amp;amp; j &amp;gt;= 0 &amp;amp;&amp;amp; j &amp;lt; board[0].length &amp;amp;&amp;amp; !visited[i][j]) {
+            if(word.charAt(index) != board[i][j]) {
+                return false;
+            }
+            if(index == word.length() - 1) {
+                return true;
+            }
+            visited[i][j] = true;
+            boolean u = dfs(board, visited, word, i - 1, j, index + 1);
+            boolean d = dfs(board, visited, word, i + 1, j, index + 1);
+            boolean l = dfs(board, visited, word, i, j - 1, index + 1);
+            boolean r = dfs(board, visited, word, i, j + 1, index + 1);
+            visited[i][j] = false;
+            return u || d || l || r;
+        } else {
+            return false;
+        }
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+</content:encoded></item><item><title>Redis笔记（Redission）</title><link>https://thrinisty.github.io/posts/redis%E7%AC%94%E8%AE%B0redission/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/redis%E7%AC%94%E8%AE%B0redission/</guid><description>Redission</description><pubDate>Sun, 16 Nov 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;Redis笔记&lt;/h1&gt;
+&lt;h2&gt;Lua脚本&lt;/h2&gt;
+&lt;p&gt;Redis提供了Lua脚本功能，在一个脚本中编写多条Redis命令，确保多条命令执行的原子性&lt;/p&gt;
+&lt;p&gt;使用Lua脚本编写Redis命令&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;redis.call(&apos;命令名称&apos;, &apos;key&apos;, &apos;参数&apos;, ...)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;在Redis中利用EVAL调用Lua脚本&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;EVAL &quot;return redis.call(&apos;set&apos;, &apos;name&apos;, &apos;jack&apos;)&quot; 0
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;脚本&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;-- KEYS[1]: 锁的Key
+-- ARGV[1]: 当前客户端持有的锁标识（如UUID）
+if redis.call(&quot;get&quot;, KEYS[1]) == ARGV[1] then
+    return redis.call(&quot;del&quot;, KEYS[1])
+else
+    return 0
+end
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;import org.springframework.data.redis.core.RedisTemplate;
+import java.util.Collections;
+@Autowired
+private RedisTemplate&amp;lt;String, String&amp;gt; redisTemplate;
+public boolean releaseLock(String lockKey, String clientId) {
+    // 定义脚本（可通过@Bean提前注入）
+    DefaultRedisScript&amp;lt;Long&amp;gt; script = new DefaultRedisScript&amp;lt;&amp;gt;();
+    script.setScriptText(&quot;...&quot;); // 同上
+    script.setResultType(Long.class);
+    // 执行脚本
+    Long result = redisTemplate.execute(
+        script,
+        Collections.singletonList(lockKey), // KEYS[1]
+        clientId                           // ARGV[1]
+    );
+    // 返回是否释放成功
+    return result != null &amp;amp;&amp;amp; result == 1L;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;Redisson&lt;/h2&gt;
+&lt;p&gt;基于setnx实现的分布式锁存在不可重入问题、不可重试问题、超时释放问题、主从一致性问题，Redisson可以解决这些问题&lt;/p&gt;
+&lt;p&gt;Redission是在Redis基础上实现的Java驻内存数据网格，不仅提供了一系列的分布式Java常用对象，还提供了许多分布式服务，其中包含了各种分布式锁的实现&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;dependency&amp;gt;
+    &amp;lt;groupId&amp;gt;org.redisson&amp;lt;/groupId&amp;gt;
+    &amp;lt;artifactId&amp;gt;redisson-spring-boot-starter&amp;lt;/artifactId&amp;gt;
+    &amp;lt;version&amp;gt;3.23.4&amp;lt;/version&amp;gt;
+&amp;lt;/dependency&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;@Configuration
+public class RedissonConfig {
+
+    @Bean(destroyMethod = &quot;shutdown&quot;)
+    public RedissonClient redissonClient() {
+        Config config = new Config();
+        config.useSingleServer()
+              .setAddress(&quot;redis://127.0.0.1:6379&quot;)
+              .setPassword(&quot;your-password&quot;);
+        return Redisson.create(config);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;代码使用&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@Autowired
+private RedissonClient redissonClient;
+
+public void doSomethingWithLock() {
+    RLock lock = redissonClient.getLock(&quot;myLock&quot;);
+    
+    try {
+        // 尝试加锁，最多等待 10 秒，锁自动释放时间 30 秒
+        boolean isLocked = lock.tryLock(10, 30, TimeUnit.SECONDS);
+        
+        if (isLocked) {
+            // 执行业务逻辑
+            System.out.println(&quot;Lock acquired, doing work...&quot;);
+        }
+    } catch (InterruptedException e) {
+        Thread.currentThread().interrupt();
+        throw new RuntimeException(&quot;Failed to acquire lock&quot;, e);
+    } finally {
+        // 确保锁被释放
+        if (lock.isHeldByCurrentThread()) {
+            lock.unlock();
+        }
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;可重入锁&lt;/h3&gt;
+&lt;p&gt;用Redis实现&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/383.png&quot; alt=&quot;383&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;在实际使用的时候用RLock锁实现即可&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;import org.redisson.Redisson;
+import org.redisson.api.RLock;
+import org.redisson.api.RedissonClient;
+import org.redisson.config.Config;
+public class ReentrantLockExample {
+    public static void main(String[] args) {
+        // 1. 初始化Redisson客户端
+        Config config = new Config();
+        config.useSingleServer().setAddress(&quot;redis://127.0.0.1:6379&quot;);
+        RedissonClient redisson = Redisson.create(config);
+        // 2. 获取锁对象
+        RLock lock = redisson.getLock(&quot;myReentrantLock&quot;);
+        // 3. 第一次加锁
+        lock.lock();
+        try {
+            System.out.println(&quot;第一次加锁成功，执行主业务逻辑...&quot;);
+            // 4. 同一线程内第二次加锁（可重入）
+            lock.lock();
+            try {
+                System.out.println(&quot;第二次加锁成功，执行嵌套业务逻辑...&quot;);
+            } finally {
+                // 5. 释放第二次加的锁
+                lock.unlock();
+                System.out.println(&quot;释放第二次加的锁&quot;);
+            }
+        } finally {
+            // 6. 释放第一次加的锁
+            lock.unlock();
+            System.out.println(&quot;释放第一次加的锁&quot;);
+        }
+        // 7. 关闭Redisson客户端
+        redisson.shutdown();
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;重试自旋&lt;/h3&gt;
+&lt;p&gt;&lt;img src=&quot;../images/385.png&quot; alt=&quot;385&quot; /&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;RLock lock = redisson.getLock(&quot;spinLock&quot;);
+long waitTime = 5000; // 最大等待时间（毫秒）
+long leaseTime = 30000; // 锁持有时间（毫秒）
+long startTime = System.currentTimeMillis();
+
+while (true) {
+    // 尝试非阻塞加锁（等待时间0，立即返回）
+    boolean isLocked = lock.tryLock(0, leaseTime, TimeUnit.MILLISECONDS);
+    if (isLocked) {
+        try {
+            System.out.println(&quot;获取锁成功，执行业务逻辑...&quot;);
+            break; // 业务完成后退出循环
+        } finally {
+            lock.unlock();
+        }
+    } else {
+        // 检查是否超时
+        if (System.currentTimeMillis() - startTime &amp;gt; waitTime) {
+            System.out.println(&quot;等待超时，放弃获取锁&quot;);
+            break;
+        }
+        // 短暂休眠后重试（避免CPU空转）
+        Thread.sleep(100); 
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;一致性问题&lt;/h3&gt;
+&lt;p&gt;&lt;img src=&quot;../images/386.png&quot; alt=&quot;386&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;RedLock的CAP属性&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;import org.redisson.Redisson;
+import org.redisson.api.RLock;
+import org.redisson.api.RedissonClient;
+import org.redisson.config.Config;
+import java.util.concurrent.TimeUnit;
+
+public class RedLockExample {
+
+    public static void main(String[] args) {
+        // 1. 初始化3个独立的Redisson客户端（连接不同Redis节点）
+        RedissonClient client1 = createClient(&quot;redis://node1:6379&quot;);
+        RedissonClient client2 = createClient(&quot;redis://node2:6379&quot;);
+        RedissonClient client3 = createClient(&quot;redis://node3:6379&quot;);
+
+        // 2. 从每个客户端获取同一个资源的锁
+        RLock lock1 = client1.getLock(&quot;global_task_lock&quot;);
+        RLock lock2 = client2.getLock(&quot;global_task_lock&quot;);
+        RLock lock3 = client3.getLock(&quot;global_task_lock&quot;);
+
+        // 3. 创建RedLock（需至少3个节点）
+        RLock redLock = Redisson.createRedLock(lock1, lock2, lock3);
+
+        try {
+            // 4. 尝试加锁（等待5秒，锁自动释放时间30秒）
+            boolean isLocked = redLock.tryLock(5, 30, TimeUnit.SECONDS);
+            if (isLocked) {
+                System.out.println(&quot;RedLock加锁成功，执行关键业务...&quot;);
+                // 此处编写需要保护的代码（如唯一任务调度）
+            } else {
+                System.out.println(&quot;获取锁失败，可能因节点不可用或竞争激烈&quot;);
+            }
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            System.err.println(&quot;锁获取被中断&quot;);
+        } finally {
+            // 5. 确保释放锁
+            redLock.unlock();
+            client1.shutdown();
+            client2.shutdown();
+            client3.shutdown();
+        }
+    }
+
+    private static RedissonClient createClient(String address) {
+        Config config = new Config();
+        config.useSingleServer()
+              .setAddress(address)
+              .setPassword(&quot;your_password&quot;)  // 如果有密码
+              .setConnectionPoolSize(64)     // 连接池大小
+              .setTimeout(3000);             // 操作超时时间
+        return Redisson.create(config);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;&lt;strong&gt;CAP特性&lt;/strong&gt;&lt;/th&gt;
+&lt;th&gt;&lt;strong&gt;RedLock的表现&lt;/strong&gt;&lt;/th&gt;
+&lt;th&gt;&lt;strong&gt;说明&lt;/strong&gt;&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;Consistency (C)&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;强一致性&lt;/strong&gt;（多数派成功才加锁，避免脑裂）。&lt;/td&gt;
+&lt;td&gt;需至少&lt;code&gt;N/2+1&lt;/code&gt;个节点成功获取锁。&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;Availability (A)&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;分区时可能不可用&lt;/strong&gt;（若多数节点不可达，则拒绝加锁）。&lt;/td&gt;
+&lt;td&gt;牺牲部分可用性换取一致性。&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;Partition Tolerance (P)&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;支持网络分区&lt;/strong&gt;（部分节点故障不影响整体判断）。&lt;/td&gt;
+&lt;td&gt;依赖Redis节点的独立部署（如不同机房）。&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&lt;strong&gt;结论&lt;/strong&gt;：RedLock是典型的&lt;strong&gt;CP系统&lt;/strong&gt;，优先保证数据一致性。&lt;/p&gt;
+&lt;p&gt;MultiLock锁&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;import org.redisson.Redisson;
+import org.redisson.api.RLock;
+import org.redisson.api.RedissonClient;
+import org.redisson.config.Config;
+
+public class MultiLockExample {
+    public static void main(String[] args) throws InterruptedException {
+        // 1. 初始化多个Redisson客户端（连接不同Redis节点）
+        RedissonClient client1 = Redisson.create(new Config().useSingleServer().setAddress(&quot;redis://node1:6379&quot;));
+        RedissonClient client2 = Redisson.create(new Config().useSingleServer().setAddress(&quot;redis://node2:6379&quot;));
+
+        // 2. 获取多个独立的锁
+        RLock orderLock = client1.getLock(&quot;order:lock:&quot; + orderId);
+        RLock stockLock = client2.getLock(&quot;stock:lock:&quot; + itemId);
+
+        // 3. 创建MultiLock（将多个锁合并）
+        RLock multiLock = client1.getMultiLock(orderLock, stockLock);
+
+        try {
+            // 4. 尝试加锁（等待10秒，锁持有30秒）
+            boolean isLocked = multiLock.tryLock(10, 30, TimeUnit.SECONDS);
+            if (isLocked) {
+                System.out.println(&quot;MultiLock加锁成功，执行业务逻辑...&quot;);
+                // 操作订单和库存（原子性保证）
+            } else {
+                System.out.println(&quot;获取锁失败，处理重试或降级逻辑&quot;);
+            }
+        } finally {
+            // 5. 释放锁（自动释放所有子锁）
+            multiLock.unlock();
+            client1.shutdown();
+            client2.shutdown();
+        }
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;&lt;strong&gt;特性&lt;/strong&gt;&lt;/th&gt;
+&lt;th&gt;&lt;strong&gt;MultiLock&lt;/strong&gt;&lt;/th&gt;
+&lt;th&gt;&lt;strong&gt;RedLock&lt;/strong&gt;&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;核心目的&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;合并多个独立的锁为一个逻辑锁&lt;/strong&gt;，确保多个资源同时被锁定。&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;通过多节点投票实现高可靠的分布式锁&lt;/strong&gt;，避免单点故障。&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;一致性模型&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;强一致性（所有子锁必须全部成功）。&lt;/td&gt;
+&lt;td&gt;强一致性（多数派节点成功即可，N/2+1）。&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;CAP属性&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;CP（牺牲可用性）&lt;/td&gt;
+&lt;td&gt;CP（牺牲可用性）&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;性能影响&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;随子锁数量线性增长。&lt;/td&gt;
+&lt;td&gt;随Redis节点数量增长。&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+</content:encoded></item><item><title>LeetCode刷题（克隆图、课程表Ⅱ、除法求值）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E5%85%8B%E9%9A%86%E5%9B%BE%E8%AF%BE%E7%A8%8B%E8%A1%A8%E2%85%B1%E9%99%A4%E6%B3%95%E6%B1%82%E5%80%BC/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E5%85%8B%E9%9A%86%E5%9B%BE%E8%AF%BE%E7%A8%8B%E8%A1%A8%E2%85%B1%E9%99%A4%E6%B3%95%E6%B1%82%E5%80%BC/</guid><description>克隆图、课程表Ⅱ、除法求值</description><pubDate>Sat, 15 Nov 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;克隆图&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;给你无向 &lt;strong&gt;&lt;a href=&quot;https://baike.baidu.com/item/%E8%BF%9E%E9%80%9A%E5%9B%BE/6460995?fr=aladdin&quot;&gt;连通&lt;/a&gt;&lt;/strong&gt; 图中一个节点的引用，请你返回该图的 &lt;a href=&quot;https://baike.baidu.com/item/%E6%B7%B1%E6%8B%B7%E8%B4%9D/22785317?fr=aladdin&quot;&gt;&lt;strong&gt;深拷贝&lt;/strong&gt;&lt;/a&gt;（克隆）。&lt;/p&gt;
+&lt;p&gt;图中的每个节点都包含它的值 &lt;code&gt;val&lt;/code&gt;（&lt;code&gt;int&lt;/code&gt;） 和其邻居的列表（&lt;code&gt;list[Node]&lt;/code&gt;）。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Node {
+    public int val;
+    public List&amp;lt;Node&amp;gt; neighbors;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;测试用例格式：&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;简单起见，每个节点的值都和它的索引相同。例如，第一个节点值为 1（&lt;code&gt;val = 1&lt;/code&gt;），第二个节点值为 2（&lt;code&gt;val = 2&lt;/code&gt;），以此类推。该图在测试用例中使用邻接列表表示。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;邻接列表&lt;/strong&gt; 是用于表示有限图的无序列表的集合。每个列表都描述了图中节点的邻居集。&lt;/p&gt;
+&lt;p&gt;给定节点将始终是图中的第一个节点（值为 1）。你必须将 &lt;strong&gt;给定节点的拷贝&lt;/strong&gt; 作为对克隆图的引用返回。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/376.png&quot; alt=&quot;376&quot; /&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：adjList = [[2,4],[1,3],[2,4],[1,3]]
+输出：[[2,4],[1,3],[2,4],[1,3]]
+解释：
+图中有 4 个节点。
+节点 1 的值是 1，它有两个邻居：节点 2 和 4 。
+节点 2 的值是 2，它有两个邻居：节点 1 和 3 。
+节点 3 的值是 3，它有两个邻居：节点 2 和 4 。
+节点 4 的值是 4，它有两个邻居：节点 1 和 3 。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/378.png&quot; alt=&quot;378&quot; /&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：adjList = [[]]
+输出：[[]]
+解释：输入包含一个空列表。该图仅仅只有一个值为 1 的节点，它没有任何邻居。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 3：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：adjList = []
+输出：[]
+解释：这个图是空的，它不含任何节点。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;建立一个map集合，被复制节点为key，复制后的节点作为value&lt;/p&gt;
+&lt;p&gt;如果当前节点被复制过，则从map中取出复制的节点直接返回&lt;/p&gt;
+&lt;p&gt;如果没有则创建复制节点并放入map集合中，之后将邻居节点复制后放入List中，最后返回复制后的节点&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    Map&amp;lt;Node, Node&amp;gt; map = new HashMap&amp;lt;&amp;gt;();
+    public Node cloneGraph(Node node) {
+        if(node == null) return null;
+        Node newNode = map.get(node);
+        if(newNode != null) return newNode;
+        newNode = new Node(node.val, new ArrayList&amp;lt;&amp;gt;());
+        map.put(node, newNode);
+        for(Node next : node.neighbors) {
+            newNode.neighbors.add(cloneGraph(next));
+        }
+        return newNode;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1&gt;课程表Ⅱ&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;现在你总共有 &lt;code&gt;numCourses&lt;/code&gt; 门课需要选，记为 &lt;code&gt;0&lt;/code&gt; 到 &lt;code&gt;numCourses - 1&lt;/code&gt;。给你一个数组 &lt;code&gt;prerequisites&lt;/code&gt; ，其中 &lt;code&gt;prerequisites[i] = [ai, bi]&lt;/code&gt; ，表示在选修课程 &lt;code&gt;ai&lt;/code&gt; 前 &lt;strong&gt;必须&lt;/strong&gt; 先选修 &lt;code&gt;bi&lt;/code&gt; 。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;例如，想要学习课程 &lt;code&gt;0&lt;/code&gt; ，你需要先完成课程 &lt;code&gt;1&lt;/code&gt; ，我们用一个匹配来表示：&lt;code&gt;[0,1]&lt;/code&gt; 。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;返回你为了学完所有课程所安排的学习顺序。可能会有多个正确的顺序，你只要返回 &lt;strong&gt;任意一种&lt;/strong&gt; 就可以了。如果不可能完成所有课程，返回 &lt;strong&gt;一个空数组&lt;/strong&gt; 。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：numCourses = 2, prerequisites = [[1,0]]
+输出：[0,1]
+解释：总共有 2 门课程。要学习课程 1，你需要先完成课程 0。因此，正确的课程顺序为 [0,1] 。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：numCourses = 4, prerequisites = [[1,0],[2,0],[3,1],[3,2]]
+输出：[0,2,1,3]
+解释：总共有 4 门课程。要学习课程 3，你应该先完成课程 1 和课程 2。并且课程 1 和课程 2 都应该排在课程 0 之后。
+因此，一个正确的课程顺序是 [0,1,2,3] 。另一个正确的排序是 [0,2,1,3] 。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 3：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：numCourses = 1, prerequisites = []
+输出：[0]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;按照课程表方法，在位0的时候加入课程即可&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public int[] findOrder(int numCourses, int[][] prerequisites) {
+        int n = prerequisites.length;
+        int[] before = new int[numCourses];
+        List&amp;lt;Integer&amp;gt;[] after = new List[numCourses];
+        List&amp;lt;Integer&amp;gt; result = new ArrayList&amp;lt;&amp;gt;();
+        for(int i = 0; i &amp;lt; numCourses; i++) {
+            after[i] = new LinkedList&amp;lt;&amp;gt;();
+        }
+        for(int rule[] : prerequisites) {
+            before[rule[0]]++;
+            after[rule[1]].add(rule[0]);
+        }
+        Queue&amp;lt;Integer&amp;gt; queue = new LinkedList&amp;lt;&amp;gt;();
+        int count = 0;
+        for(int i = 0; i &amp;lt; numCourses; i++) {
+            if(before[i] == 0) {
+                queue.offer(i);
+                result.add(i);
+            }
+        }
+        while(!queue.isEmpty()) {
+            int target = queue.poll();
+            List&amp;lt;Integer&amp;gt; nextList = after[target];
+            for(int next : nextList) {
+                before[next]--;
+                if(before[next] == 0) {
+                    queue.offer(next);
+                    result.add(next);
+                }
+            }
+            count++;
+        }
+        if(count != numCourses) return new int[0];
+        int[] target = new int[numCourses];
+        for(int i = 0; i &amp;lt; numCourses; i++) {
+            target[i] = result.get(i);
+        }
+        return target;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1&gt;除法求值&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;给你一个变量对数组 &lt;code&gt;equations&lt;/code&gt; 和一个实数值数组 &lt;code&gt;values&lt;/code&gt; 作为已知条件，其中 &lt;code&gt;equations[i] = [Ai, Bi]&lt;/code&gt; 和 &lt;code&gt;values[i]&lt;/code&gt; 共同表示等式 &lt;code&gt;Ai / Bi = values[i]&lt;/code&gt; 。每个 &lt;code&gt;Ai&lt;/code&gt; 或 &lt;code&gt;Bi&lt;/code&gt; 是一个表示单个变量的字符串。&lt;/p&gt;
+&lt;p&gt;另有一些以数组 &lt;code&gt;queries&lt;/code&gt; 表示的问题，其中 &lt;code&gt;queries[j] = [Cj, Dj]&lt;/code&gt; 表示第 &lt;code&gt;j&lt;/code&gt; 个问题，请你根据已知条件找出 &lt;code&gt;Cj / Dj = ?&lt;/code&gt; 的结果作为答案。&lt;/p&gt;
+&lt;p&gt;返回 &lt;strong&gt;所有问题的答案&lt;/strong&gt; 。如果存在某个无法确定的答案，则用 &lt;code&gt;-1.0&lt;/code&gt; 替代这个答案。如果问题中出现了给定的已知条件中没有出现的字符串，也需要用 &lt;code&gt;-1.0&lt;/code&gt; 替代这个答案。&lt;/p&gt;
+&lt;p&gt;**注意：**输入总是有效的。你可以假设除法运算中不会出现除数为 0 的情况，且不存在任何矛盾的结果。&lt;/p&gt;
+&lt;p&gt;**注意：**未在等式列表中出现的变量是未定义的，因此无法确定它们的答案。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：equations = [[&quot;a&quot;,&quot;b&quot;],[&quot;b&quot;,&quot;c&quot;]], values = [2.0,3.0], queries = [[&quot;a&quot;,&quot;c&quot;],[&quot;b&quot;,&quot;a&quot;],[&quot;a&quot;,&quot;e&quot;],[&quot;a&quot;,&quot;a&quot;],[&quot;x&quot;,&quot;x&quot;]]
+输出：[6.00000,0.50000,-1.00000,1.00000,-1.00000]
+解释：
+条件：a / b = 2.0, b / c = 3.0
+问题：a / c = ?, b / a = ?, a / e = ?, a / a = ?, x / x = ?
+结果：[6.0, 0.5, -1.0, 1.0, -1.0 ]
+注意：x 是未定义的 =&amp;gt; -1.0
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：equations = [[&quot;a&quot;,&quot;b&quot;],[&quot;b&quot;,&quot;c&quot;],[&quot;bc&quot;,&quot;cd&quot;]], values = [1.5,2.5,5.0], queries = [[&quot;a&quot;,&quot;c&quot;],[&quot;c&quot;,&quot;b&quot;],[&quot;bc&quot;,&quot;cd&quot;],[&quot;cd&quot;,&quot;bc&quot;]]
+输出：[3.75000,0.40000,5.00000,0.20000]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 3：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：equations = [[&quot;a&quot;,&quot;b&quot;]], values = [0.5], queries = [[&quot;a&quot;,&quot;b&quot;],[&quot;b&quot;,&quot;a&quot;],[&quot;a&quot;,&quot;c&quot;],[&quot;x&quot;,&quot;y&quot;]]
+输出：[0.50000,2.00000,-1.00000,-1.00000]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;用map存储各个路径以及对应权重，利用弗洛伊德算法求解所有的可能，最后看是否存在其中返回结果即可&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    Map&amp;lt;String, Double&amp;gt; map = new HashMap&amp;lt;&amp;gt;();
+    Set&amp;lt;String&amp;gt; set = new HashSet&amp;lt;&amp;gt;();
+    public double[] calcEquation(List&amp;lt;List&amp;lt;String&amp;gt;&amp;gt; equations, double[] values, List&amp;lt;List&amp;lt;String&amp;gt;&amp;gt; queries) {
+        for(int i = 0; i &amp;lt; equations.size(); i++) {
+            String a = equations.get(i).get(0);
+            String b = equations.get(i).get(1);
+            map.put(a + &quot; &quot; + b, values[i]);
+            map.put(b + &quot; &quot; + a, 1.0 / values[i]);
+            set.add(a);
+            set.add(b);
+        }
+        for(String a : set) map.put(a + &quot; &quot; + a, 1.0);
+        for(String k : set) {
+            for(String i : set) {
+                for(String j : set) {
+                    if(map.containsKey(i + &quot; &quot; + j)) continue;
+                    if(map.containsKey(i + &quot; &quot; + k) &amp;amp;&amp;amp; map.containsKey(k + &quot; &quot; + j)) {
+                        map.put(i + &quot; &quot; + j, map.get(i + &quot; &quot; + k) * map.get(k + &quot; &quot; + j));
+                    }
+                }
+            }
+        }
+        double[] result = new double[queries.size()];
+        for(int i = 0; i &amp;lt; queries.size(); i++) {
+            String a = queries.get(i).get(0);
+            String b = queries.get(i).get(1);
+            if(map.containsKey(a + &quot; &quot; + b)) {
+                result[i] = map.get(a + &quot; &quot; + b);
+            } else {
+                result[i] = -1.0;
+            }
+        }
+        return result;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+</content:encoded></item><item><title>LeetCode刷题（分割等和子集、目标和）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E5%88%86%E5%89%B2%E7%AD%89%E5%92%8C%E5%AD%90%E9%9B%86%E7%9B%AE%E6%A0%87%E5%92%8C/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E5%88%86%E5%89%B2%E7%AD%89%E5%92%8C%E5%AD%90%E9%9B%86%E7%9B%AE%E6%A0%87%E5%92%8C/</guid><pubDate>Fri, 14 Nov 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;分割等和子集&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;给你一个 &lt;strong&gt;只包含正整数&lt;/strong&gt; 的 &lt;strong&gt;非空&lt;/strong&gt; 数组 &lt;code&gt;nums&lt;/code&gt; 。请你判断是否可以将这个数组分割成两个子集，使得两个子集的元素和相等。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：nums = [1,5,11,5]
+输出：true
+解释：数组可以分割成 [1, 5, 5] 和 [11] 。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：nums = [1,2,3,5]
+输出：false
+解释：数组不能分割成两个元素和相等的子集。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;分解为01背包问题，求nums和，如果不为偶数则不可能等和，我们此时从数组中取出和的一半剩余的就是相等的另一半&lt;/p&gt;
+&lt;p&gt;再通过01背包运用动态规划的方式迭代dp，其中是是否可以从数组中取出对应的和&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public boolean canPartition(int[] nums) {
+        int sum = 0;
+        for(int num : nums) {
+            sum += num;
+        }
+        if(sum % 2 != 0) return false;
+        int target = sum / 2;
+        boolean[] dp = new boolean[target + 1];
+        dp[0] = true;
+        for(int num : nums) {
+            for(int i = target; i &amp;gt;= num; i--) {
+                dp[i] = dp[i] || dp[i - num];
+            }
+        }
+        return dp[target];
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1&gt;目标和&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;给你一个非负整数数组 &lt;code&gt;nums&lt;/code&gt; 和一个整数 &lt;code&gt;target&lt;/code&gt; 。&lt;/p&gt;
+&lt;p&gt;向数组中的每个整数前添加 &lt;code&gt;&apos;+&apos;&lt;/code&gt; 或 &lt;code&gt;&apos;-&apos;&lt;/code&gt; ，然后串联起所有整数，可以构造一个 &lt;strong&gt;表达式&lt;/strong&gt; ：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;例如，&lt;code&gt;nums = [2, 1]&lt;/code&gt; ，可以在 &lt;code&gt;2&lt;/code&gt; 之前添加 &lt;code&gt;&apos;+&apos;&lt;/code&gt; ，在 &lt;code&gt;1&lt;/code&gt; 之前添加 &lt;code&gt;&apos;-&apos;&lt;/code&gt; ，然后串联起来得到表达式 &lt;code&gt;&quot;+2-1&quot;&lt;/code&gt; 。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;返回可以通过上述方法构造的、运算结果等于 &lt;code&gt;target&lt;/code&gt; 的不同 &lt;strong&gt;表达式&lt;/strong&gt; 的数目。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：nums = [1,1,1,1,1], target = 3
+输出：5
+解释：一共有 5 种方法让最终目标和为 3 。
+-1 + 1 + 1 + 1 + 1 = 3
++1 - 1 + 1 + 1 + 1 = 3
++1 + 1 - 1 + 1 + 1 = 3
++1 + 1 + 1 - 1 + 1 = 3
++1 + 1 + 1 + 1 - 1 = 3
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：nums = [1], target = 1
+输出：1
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public int findTargetSumWays(int[] nums, int target) {
+        int sum = 0;
+        for (int num : nums)
+            sum += num;
+        int dif = sum - target;
+        if(dif &amp;lt; 0 || dif % 2 != 0) {
+            return 0;
+        }
+        int neg = dif / 2;
+        int[] dp = new int[neg + 1];
+        dp[0] = 1;
+        for(int num : nums) {
+            for(int i = neg; i &amp;gt;= num; i--) {
+                dp[i] += dp[i - num];
+            }
+        }
+        return dp[neg];
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+</content:encoded></item><item><title>LeetCode刷题（二叉搜索树最小绝对差、搜索树第K小元素）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E4%BA%8C%E5%8F%89%E6%90%9C%E7%B4%A2%E6%A0%91%E6%9C%80%E5%B0%8F%E7%BB%9D%E5%AF%B9%E5%B7%AE%E6%90%9C%E7%B4%A2%E6%A0%91%E7%AC%ACk%E5%B0%8F%E5%85%83%E7%B4%A0/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E4%BA%8C%E5%8F%89%E6%90%9C%E7%B4%A2%E6%A0%91%E6%9C%80%E5%B0%8F%E7%BB%9D%E5%AF%B9%E5%B7%AE%E6%90%9C%E7%B4%A2%E6%A0%91%E7%AC%ACk%E5%B0%8F%E5%85%83%E7%B4%A0/</guid><description>二叉搜索树最小绝对差、搜索树第K小元素</description><pubDate>Thu, 13 Nov 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;二叉搜索树最小绝对差&lt;/h1&gt;
 &lt;h2&gt;题目描述&lt;/h2&gt;
 &lt;p&gt;给你一个二叉搜索树的根节点 &lt;code&gt;root&lt;/code&gt; ，返回 &lt;strong&gt;树中任意两不同节点值之间的最小差值&lt;/strong&gt; 。&lt;/p&gt;
 &lt;p&gt;差值是一个正数，其数值等于两值之差的绝对值。&lt;/p&gt;
@@ -246,86 +2519,6 @@ public class KafkaProducerService {
     public void sendMessage(String topic, String message) {
         kafkaTemplate.send(topic, message);
         System.out.println(&quot;Sent message: &quot; + message);
-    }
-}
-&lt;/code&gt;&lt;/pre&gt;
-</content:encoded></item><item><title>LeetCode刷题（分割等和子集、目标和）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E5%88%86%E5%89%B2%E7%AD%89%E5%92%8C%E5%AD%90%E9%9B%86%E7%9B%AE%E6%A0%87%E5%92%8C/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E5%88%86%E5%89%B2%E7%AD%89%E5%92%8C%E5%AD%90%E9%9B%86%E7%9B%AE%E6%A0%87%E5%92%8C/</guid><pubDate>Wed, 12 Nov 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;分割等和子集&lt;/h1&gt;
-&lt;h2&gt;题目描述&lt;/h2&gt;
-&lt;p&gt;给你一个 &lt;strong&gt;只包含正整数&lt;/strong&gt; 的 &lt;strong&gt;非空&lt;/strong&gt; 数组 &lt;code&gt;nums&lt;/code&gt; 。请你判断是否可以将这个数组分割成两个子集，使得两个子集的元素和相等。&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;输入：nums = [1,5,11,5]
-输出：true
-解释：数组可以分割成 [1, 5, 5] 和 [11] 。
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;输入：nums = [1,2,3,5]
-输出：false
-解释：数组不能分割成两个元素和相等的子集。
-&lt;/code&gt;&lt;/pre&gt;
-&lt;h2&gt;题解&lt;/h2&gt;
-&lt;p&gt;分解为01背包问题，求nums和，如果不为偶数则不可能等和，我们此时从数组中取出和的一半剩余的就是相等的另一半&lt;/p&gt;
-&lt;p&gt;再通过01背包运用动态规划的方式迭代dp，其中是是否可以从数组中取出对应的和&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;class Solution {
-    public boolean canPartition(int[] nums) {
-        int sum = 0;
-        for(int num : nums) {
-            sum += num;
-        }
-        if(sum % 2 != 0) return false;
-        int target = sum / 2;
-        boolean[] dp = new boolean[target + 1];
-        dp[0] = true;
-        for(int num : nums) {
-            for(int i = target; i &amp;gt;= num; i--) {
-                dp[i] = dp[i] || dp[i - num];
-            }
-        }
-        return dp[target];
-    }
-}
-&lt;/code&gt;&lt;/pre&gt;
-&lt;h1&gt;目标和&lt;/h1&gt;
-&lt;h2&gt;题目描述&lt;/h2&gt;
-&lt;p&gt;给你一个非负整数数组 &lt;code&gt;nums&lt;/code&gt; 和一个整数 &lt;code&gt;target&lt;/code&gt; 。&lt;/p&gt;
-&lt;p&gt;向数组中的每个整数前添加 &lt;code&gt;&apos;+&apos;&lt;/code&gt; 或 &lt;code&gt;&apos;-&apos;&lt;/code&gt; ，然后串联起所有整数，可以构造一个 &lt;strong&gt;表达式&lt;/strong&gt; ：&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;例如，&lt;code&gt;nums = [2, 1]&lt;/code&gt; ，可以在 &lt;code&gt;2&lt;/code&gt; 之前添加 &lt;code&gt;&apos;+&apos;&lt;/code&gt; ，在 &lt;code&gt;1&lt;/code&gt; 之前添加 &lt;code&gt;&apos;-&apos;&lt;/code&gt; ，然后串联起来得到表达式 &lt;code&gt;&quot;+2-1&quot;&lt;/code&gt; 。&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;返回可以通过上述方法构造的、运算结果等于 &lt;code&gt;target&lt;/code&gt; 的不同 &lt;strong&gt;表达式&lt;/strong&gt; 的数目。&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;输入：nums = [1,1,1,1,1], target = 3
-输出：5
-解释：一共有 5 种方法让最终目标和为 3 。
--1 + 1 + 1 + 1 + 1 = 3
-+1 - 1 + 1 + 1 + 1 = 3
-+1 + 1 - 1 + 1 + 1 = 3
-+1 + 1 + 1 - 1 + 1 = 3
-+1 + 1 + 1 + 1 - 1 = 3
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;输入：nums = [1], target = 1
-输出：1
-&lt;/code&gt;&lt;/pre&gt;
-&lt;h2&gt;题解&lt;/h2&gt;
-&lt;p&gt;没怎么看懂转化为的01背包，待定，后面再看看，先背为敬&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;class Solution {
-    public int findTargetSumWays(int[] nums, int target) {
-        int sum = 0;
-        for (int num : nums)
-            sum += num;
-        int dif = sum - target;
-        if(dif &amp;lt; 0 || dif % 2 != 0) {
-            return 0;
-        }
-        int neg = dif / 2;
-        int[] dp = new int[neg + 1];
-        dp[0] = 1;
-        for(int num : nums) {
-            for(int i = neg; i &amp;gt;= num; i--) {
-                dp[i] += dp[i - num];
-            }
-        }
-        return dp[neg];
     }
 }
 &lt;/code&gt;&lt;/pre&gt;
@@ -3382,6 +5575,7 @@ class Notify {
 </content:encoded></item><item><title>LeetCode刷题（）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E6%A8%A1%E6%9D%BF/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E6%A8%A1%E6%9D%BF/</guid><pubDate>Sat, 01 Nov 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;（题目）&lt;/h1&gt;
 &lt;h2&gt;题目描述&lt;/h2&gt;
 &lt;h2&gt;题解&lt;/h2&gt;
+</content:encoded></item><item><title>Redis笔记（）</title><link>https://thrinisty.github.io/posts/redis%E7%AC%94%E8%AE%B0%E6%A8%A1%E6%9D%BF/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/redis%E7%AC%94%E8%AE%B0%E6%A8%A1%E6%9D%BF/</guid><pubDate>Sat, 01 Nov 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;Redis笔记&lt;/h1&gt;
 </content:encoded></item><item><title>LeetCode刷题（赎金信、生命游戏）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E8%B5%8E%E9%87%91%E4%BF%A1%E7%94%9F%E5%91%BD%E6%B8%B8%E6%88%8F/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E8%B5%8E%E9%87%91%E4%BF%A1%E7%94%9F%E5%91%BD%E6%B8%B8%E6%88%8F/</guid><description>赎金信、生命游戏</description><pubDate>Sat, 01 Nov 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;赎金信&lt;/h1&gt;
 &lt;h2&gt;题目描述&lt;/h2&gt;
 &lt;p&gt;给你两个字符串：&lt;code&gt;ransomNote&lt;/code&gt; 和 &lt;code&gt;magazine&lt;/code&gt; ，判断 &lt;code&gt;ransomNote&lt;/code&gt; 能不能由 &lt;code&gt;magazine&lt;/code&gt; 里面的字符构成。&lt;/p&gt;
@@ -7491,21 +9685,23 @@ Person p2 = p1.clone();  // ❌ 创建新对象，破坏单例
 &lt;p&gt;最后将List转化为int[][]数组&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;class Solution {
     public int[][] merge(int[][] intervals) {
-        if(intervals.length == 0) {
-            return new int[0][2];
-        }
-        Arrays.sort(intervals, (i1, i2) -&amp;gt; i1[0] - i2[0]);
-        List&amp;lt;int[]&amp;gt; merged = new ArrayList&amp;lt;&amp;gt;();
-        for(int i = 0; i &amp;lt; intervals.length; i++) {
-            int L = intervals[i][0];
-            int R = intervals[i][1];
-            if(merged.size() == 0 || merged.get(merged.size() - 1)[1] &amp;lt; L) {
-                merged.add(new int[]{L, R});
+        Arrays.sort(intervals, (n1, n2) -&amp;gt; {
+            return n1[0] - n2[0];
+        });
+        List&amp;lt;int[]&amp;gt; list = new ArrayList&amp;lt;&amp;gt;();
+        for(int[] range : intervals) {
+            if(list.isEmpty() || list.get(list.size() - 1)[1] &amp;lt; range[0]) {
+                list.add(range);
             } else {
-                merged.get(merged.size() - 1)[1] = Math.max(merged.get(merged.size() - 1)[1], R);
+                int[] target = list.get(list.size() - 1);
+                target[1] = Math.max(target[1], range[1]);
             }
         }
-        return merged.toArray(new int[merged.size()][2]);
+        int[][] result = new int[list.size()][2];
+        for(int i = 0; i &amp;lt; result.length; i++) {
+            result[i] = list.get(i);
+        }
+        return result;
     }
 }
 &lt;/code&gt;&lt;/pre&gt;
@@ -12550,8 +14746,6 @@ tcp        0      0 192.168.95.8:39136      100.64.205.163:80       ESTABLISHED
 223.104.204.225
 100.64.205.163
 &lt;/code&gt;&lt;/pre&gt;
-</content:encoded></item><item><title>Redis笔记（）</title><link>https://thrinisty.github.io/posts/redis%E7%AC%94%E8%AE%B0%E6%A8%A1%E6%9D%BF/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/redis%E7%AC%94%E8%AE%B0%E6%A8%A1%E6%9D%BF/</guid><pubDate>Wed, 01 Oct 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;Redis笔记&lt;/h1&gt;
-</content:encoded></item><item><title>开发项目（）</title><link>https://thrinisty.github.io/posts/%E5%BC%80%E5%8F%91%E9%A1%B9%E7%9B%AE%E6%A8%A1%E6%9D%BF/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/%E5%BC%80%E5%8F%91%E9%A1%B9%E7%9B%AE%E6%A8%A1%E6%9D%BF/</guid><pubDate>Wed, 01 Oct 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;项目&lt;/h1&gt;
 </content:encoded></item><item><title>Linux笔记（软件包管理、Shell编程）</title><link>https://thrinisty.github.io/posts/linux%E7%AC%94%E8%AE%B0%E8%BD%AF%E4%BB%B6%E5%8C%85%E7%AE%A1%E7%90%86shell%E7%BC%96%E7%A8%8B/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/linux%E7%AC%94%E8%AE%B0%E8%BD%AF%E4%BB%B6%E5%8C%85%E7%AE%A1%E7%90%86shell%E7%BC%96%E7%A8%8B/</guid><description>rpm包管理、Shell编程快速入门</description><pubDate>Tue, 30 Sep 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;Linux笔记&lt;/h1&gt;
 &lt;h2&gt;软件包管理&lt;/h2&gt;
 &lt;h3&gt;rpm指令&lt;/h3&gt;

@@ -1,7 +1,7 @@
 ---
 title: LeetCode刷题（分割等和子集、目标和）
-published: 2025-11-12
-updated: 2025-11-12
+published: 2025-11-14
+updated: 2025-11-14
 description: ''
 image: ''
 tags: [LeetCode]
@@ -97,8 +97,6 @@ class Solution {
 
 
 ## 题解
-
-没怎么看懂转化为的01背包，待定，后面再看看，先背为敬
 
 ```java
 class Solution {
