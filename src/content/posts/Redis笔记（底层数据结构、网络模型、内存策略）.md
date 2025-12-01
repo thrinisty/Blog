@@ -1,8 +1,8 @@
 ---
-title: Redis笔记（底层数据结构、网络模型）
+title: Redis笔记（底层数据结构、网络模型、内存策略）
 published: 2025-11-25
 updated: 2025-11-25
-description: '底层数据结构、网络模型'
+description: '底层数据结构、网络模型、内存策略'
 image: ''
 tags: [Redis]
 category: ''
@@ -51,7 +51,7 @@ Dict由三部分组成：哈希表（DictHashTabale）、哈希节点（DictEntr
 
 ![425](../images/425.png)
 
-单向Dict添加键值对的时候，Redis首先根据key计算出hash值（h），然后利用h&sizemask来计算元素应该存储到数组中的哪个索引位置
+单向Dict添加键值对的时候，Redis首先根据key计算出hash值（h），然后利用sizemask来计算元素应该存储到数组中的哪个索引位置
 
 Dict结构如下，包含了两个数组
 
@@ -288,3 +288,85 @@ LevelTriggered：当FD有数据可读的时候，会通知多次，直到数据�
 EdgeTriggered：当FD有数据可读的时候，只会通知一次，不管数据是否处理完成
 
 ![464](../images/464.png)
+
+![467](../images/467.png)
+
+
+
+#### 信号驱动IO
+
+![468](../images/468.png)
+
+
+
+#### 异步IO
+
+![469](../images/469.png)
+
+
+
+### Redis网络模型
+
+Redis是单线程还是多线程？
+
+1.Redis的核心业务部分（命令处理），答案是单线程
+
+2.如果是整个Redis，是多线程
+
+:::note
+
+Redis4.0：引入多线程异步处理一些耗时长的任务
+
+Redis6.0：在网络模型中引入了多线程，进一步提高对于多核CPU的利用率
+
+:::
+
+![470](../images/470.png)
+
+![471](../images/471.png)
+
+
+
+### 通信协议
+
+RESP协议
+
+Redis是CS结构软件
+
+1.客户端向服务端发送命令
+
+2.服务器解析并执行命令，返回响应结果
+
+因此客户端发送命令格式、服务端响应结果的格式必须要有一个规范，这个规范就是通信协议
+
+![472](../images/472.png)
+
+
+
+## 内存策略
+
+### 过期策略
+
+![473](../images/473.png)
+
+DB结构
+
+![474](../images/474.png)
+
+**定期删除**
+
+![475](../images/475.png)
+
+
+
+![476](../images/476.png)
+
+Fast/Slow
+
+![477](../images/477.png)
+
+
+
+### 内存淘汰
+
+![478](../images/478.png)

@@ -84,6 +84,67 @@ class Solution {
 }
 ```
 
+再补一个非归并的方式
+
+```java
+class Solution {
+    Queue<Integer> queue = new LinkedList<>();
+    public int[] sortArray(int[] nums) {
+        // quickSort(nums, 0, nums.length - 1);
+        // return nums;
+        queue.offer(0);
+        queue.offer(nums.length - 1);
+        while(!queue.isEmpty()) {
+            int left = queue.poll();
+            int right = queue.poll();
+            if(left >= right) continue;
+            int mid = partition(nums, left, right);
+            queue.offer(left);
+            queue.offer(mid - 1);
+            queue.offer(mid + 1);
+            queue.offer(right);
+        }
+        return nums;
+    }
+
+    // public void quickSort(int[] nums, int left, int right) {
+    //     if(left >= right) {
+    //         return; 
+    //     }
+    //     int mid = partition(nums, left, right);
+    //     quickSort(nums, left, mid - 1);
+    //     quickSort(nums, mid + 1, right);
+    // }
+
+    public int partition(int[] nums, int left, int right) {
+        int midNum = nums[left];
+        int i = left + 1;
+        int j = right;
+        while(i <= j) {
+            while(i <= j && midNum > nums[i]) {
+                i++;
+            }
+            while(i <= j && midNum < nums[j]) {
+                j--;
+            }
+            if(i <= j) {
+                swap(nums, i, j);
+                i++;
+                j--;
+            }
+        }
+        swap(nums, j, left);
+        return j;
+    }
+
+    public void swap(int[] nums, int i, int j) {
+        int temp = nums[i];
+        nums[i] = nums[j];
+        nums[j] = temp;
+    }
+}
+```
+
 我们的partition方法和swap方法都可以复用，只需要修改Quick功能函数的逻辑即可，在快速排序中我们需要对于所选择中间值的左右两侧同时进行递归排序
 
 而在快速选择排序中我们可以先对于得到的所选值进行判断，如果是选择值的索引位置是我们需要的目标索引直接返回即可，因为左右两侧虽然没有排序完毕，但因为左边的值都是小于选取目标，右边同理，选择值的索引位置与排序过后的位置相同

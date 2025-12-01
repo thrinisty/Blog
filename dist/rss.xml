@@ -1,4 +1,510 @@
-<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Thrinisty&apos;s Blog</title><description>New Blog</description><link>https://thrinisty.github.io/</link><language>zh_CN</language><item><title>LeetCode刷题（只出现一次的数字Ⅱ、数字范围按位与）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E5%8F%AA%E5%87%BA%E7%8E%B0%E4%B8%80%E6%AC%A1%E7%9A%84%E6%95%B0%E5%AD%97%E2%85%B1%E6%95%B0%E5%AD%97%E8%8C%83%E5%9B%B4%E6%8C%89%E4%BD%8D%E4%B8%8E/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E5%8F%AA%E5%87%BA%E7%8E%B0%E4%B8%80%E6%AC%A1%E7%9A%84%E6%95%B0%E5%AD%97%E2%85%B1%E6%95%B0%E5%AD%97%E8%8C%83%E5%9B%B4%E6%8C%89%E4%BD%8D%E4%B8%8E/</guid><description>只出现一次的数字Ⅱ、数字范围按位与</description><pubDate>Tue, 25 Nov 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;只出现一次的数字Ⅱ&lt;/h1&gt;
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Thrinisty&apos;s Blog</title><description>New Blog</description><link>https://thrinisty.github.io/</link><language>zh_CN</language><item><title>自学第九月份总结</title><link>https://thrinisty.github.io/posts/%E8%87%AA%E5%AD%A6%E7%AC%AC%E4%B9%9D%E6%9C%88%E4%BB%BD%E6%80%BB%E7%BB%93/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/%E8%87%AA%E5%AD%A6%E7%AC%AC%E4%B9%9D%E6%9C%88%E4%BB%BD%E6%80%BB%E7%BB%93/</guid><description>面试、八股、算法</description><pubDate>Mon, 01 Dec 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;自学第九月份总结&lt;/h1&gt;
+&lt;h2&gt;秋招情况&lt;/h2&gt;
+&lt;p&gt;面试逐渐多起来了，但是暂时还没有offer，维信金科二面过了，12.4号终面，虾皮12.1号面的，好像发挥不是很好也不知道会不会通过，再看看吧，新凯莱一面过了，等后边主管面（非技术）&lt;/p&gt;
+&lt;p&gt;另外的华为复活，12.3号重新笔试，这段时间也做了深蓝互动和作业帮的笔试（编程题都AC了，希望约面），小红书的笔试挺难的（1 + 0.18 + 0.09）暂时不抱期望约面了，面试了有个6、7场了，慢慢找到感觉了希望后续顺利&lt;/p&gt;
+&lt;h2&gt;技术学习&lt;/h2&gt;
+&lt;p&gt;这个月看了看Redis的剩余部分，主要是场景题目，因为面试喜欢考，也有在积累面试的场景题目&lt;/p&gt;
+&lt;p&gt;算法方面：之前不是刷Hop150和 Top100嘛，150剩了9道题目，100剩了5道题目，又开始做119变种挑战了，基本上和前面的题库重复的题目蛮多的，每天刷其中的一道新的题目，然后把路上碰到的原本做过的题目再做一遍当作复习。&lt;/p&gt;
+&lt;p&gt;SQL的50道题目也快刷完了（44/50），但是没什么记忆点，后续应该还会二刷&lt;/p&gt;
+&lt;h2&gt;总结&lt;/h2&gt;
+&lt;p&gt;11月份面试体验下来感觉难度还算可以，临时背的八股题目被问到了也可以答的不错，小公司的面试基本可以凭借八股、学校title、以及实习经验乱杀，中公司面试的压力就稍微有点大了，还得再多看看，目前也是在上升期，希望12月份能得到好的消息&lt;/p&gt;
+&lt;p&gt;笔试积累量也蛮不错的，简单的基本能做出来了，困难的也多多少少有点思路，明年尝试下字节把，把算法掌握的牢固一点&lt;/p&gt;
+</content:encoded></item><item><title>LeetCode刷题（两数相除、最大的单词长度乘积）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E4%B8%A4%E6%95%B0%E7%9B%B8%E9%99%A4%E6%9C%80%E5%A4%A7%E7%9A%84%E5%8D%95%E8%AF%8D%E9%95%BF%E5%BA%A6%E4%B9%98%E7%A7%AF/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E4%B8%A4%E6%95%B0%E7%9B%B8%E9%99%A4%E6%9C%80%E5%A4%A7%E7%9A%84%E5%8D%95%E8%AF%8D%E9%95%BF%E5%BA%A6%E4%B9%98%E7%A7%AF/</guid><description>两数相除、最大的单词长度乘积</description><pubDate>Sun, 30 Nov 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;两数相除&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;给定两个整数 &lt;code&gt;a&lt;/code&gt; 和 &lt;code&gt;b&lt;/code&gt; ，求它们的除法的商 &lt;code&gt;a/b&lt;/code&gt; ，要求不得使用乘号 &lt;code&gt;&apos;*&apos;&lt;/code&gt;、除号 &lt;code&gt;&apos;/&apos;&lt;/code&gt; 以及求余符号 &lt;code&gt;&apos;%&apos;&lt;/code&gt; 。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;注意：&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;整数除法的结果应当截去（&lt;code&gt;truncate&lt;/code&gt;）其小数部分，例如：&lt;code&gt;truncate(8.345) = 8&lt;/code&gt; 以及 &lt;code&gt;truncate(-2.7335) = -2&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;假设我们的环境只能存储 32 位有符号整数，其数值范围是 &lt;code&gt;[−231, 231−1]&lt;/code&gt;。本题中，如果除法结果溢出，则返回 &lt;code&gt;231 − 1&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：a = 15, b = 2
+输出：7
+解释：15/2 = truncate(7.5) = 7
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：a = 7, b = -3
+输出：-2
+解释：7/-3 = truncate(-2.33333..) = -2
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 3：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：a = 0, b = 1
+输出：0
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 4：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：a = 1, b = 1
+输出：1
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;对于特解进行相应处理，因为负数能存的绝对值要大一些，这里会溢出，按题目要求设置为最大值&lt;/p&gt;
+&lt;p&gt;flag标注数字的最终符号，通过两个ab数来得到，将两个数都改为负数以实现不会溢出（负数的范围大一些），用count计数，当a小于等于b时代表还没有减到最终最接近于0的数，这个时候count代表b的数量，再添加上符号即可&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public int divide(int a, int b) {
+        if(b == -1) {
+            return a == Integer.MIN_VALUE ? Integer.MAX_VALUE : -a;
+        }
+        boolean flag = (a &amp;lt;= 0 &amp;amp;&amp;amp; b &amp;lt; 0) || (a &amp;gt; 0 &amp;amp;&amp;amp; b &amp;gt; 0);
+        if(a &amp;gt; 0) a = -a;
+        if(b &amp;gt; 0) b = -b;
+        int count = 0;
+        while(a &amp;lt;= b) {
+            a -= b;
+            count++;
+        }
+        return flag ? count : -count;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1&gt;最大的单词长度乘积&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;给定一个字符串数组 &lt;code&gt;words&lt;/code&gt;，请计算当两个字符串 &lt;code&gt;words[i]&lt;/code&gt; 和 &lt;code&gt;words[j]&lt;/code&gt; 不包含相同字符时，它们长度的乘积的最大值。假设字符串中只包含英语的小写字母。如果没有不包含相同字符的一对字符串，返回 0。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：words = [&quot;abcw&quot;,&quot;baz&quot;,&quot;foo&quot;,&quot;bar&quot;,&quot;fxyz&quot;,&quot;abcdef&quot;]
+输出：16 
+解释：这两个单词为 &quot;abcw&quot;, &quot;fxyz&quot;。它们不包含相同字符，且长度的乘积最大。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：words = [&quot;a&quot;,&quot;ab&quot;,&quot;abc&quot;,&quot;d&quot;,&quot;cd&quot;,&quot;bcd&quot;,&quot;abcd&quot;]
+输出：4 
+解释：这两个单词为 &quot;ab&quot;, &quot;cd&quot;。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 3：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：words = [&quot;a&quot;,&quot;aa&quot;,&quot;aaa&quot;,&quot;aaaa&quot;]
+输出：0 
+解释：不存在这样的两个单词。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;依次比较两个字符串是否有相同字符，如果没有则迭代result结果即可&lt;/p&gt;
+&lt;p&gt;解法一：暴力拆解计算是否有相同的字符&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public int maxProduct(String[] words) {
+        int n = words.length;
+        int result = 0;
+        for(int i = 0; i &amp;lt; n; i++) {
+            for(int j = i + 1; j &amp;lt; n; j++) {
+                if(!hasSameChar(words[i], words[j])) {
+                    result = Math.max(result, words[i].length() * words[j].length());
+                }
+            }
+        }
+        return result;
+    }
+
+    public boolean hasSameChar(String w1, String w2) {
+        for(char c : w1.toCharArray()) {
+            if(w2.indexOf(c) != -1) {
+                return true;
+            }
+        }
+        return false;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;解法二：更改辅助方法&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt; public boolean hasSameChar(String w1, String w2) {
+        boolean[] count = new boolean[26];
+        for(char c : w1.toCharArray()) {
+            int index = c - &apos;a&apos;;
+            count[index] = true;
+        }
+        for(char c : w2.toCharArray()) {
+            int index = c - &apos;a&apos;;
+            if(count[index]) return true;
+        }
+        return false;
+    }
+&lt;/code&gt;&lt;/pre&gt;
+</content:encoded></item><item><title>LeetCode刷题（查找和最小的K对数字、基本计算器、缺失的第一个正数）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E6%9F%A5%E6%89%BE%E5%92%8C%E6%9C%80%E5%B0%8F%E7%9A%84k%E5%AF%B9%E6%95%B0%E5%AD%97%E5%9F%BA%E6%9C%AC%E8%AE%A1%E7%AE%97%E5%99%A8%E7%BC%BA%E5%A4%B1%E7%9A%84%E7%AC%AC%E4%B8%80%E4%B8%AA%E6%AD%A3%E6%95%B0/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E6%9F%A5%E6%89%BE%E5%92%8C%E6%9C%80%E5%B0%8F%E7%9A%84k%E5%AF%B9%E6%95%B0%E5%AD%97%E5%9F%BA%E6%9C%AC%E8%AE%A1%E7%AE%97%E5%99%A8%E7%BC%BA%E5%A4%B1%E7%9A%84%E7%AC%AC%E4%B8%80%E4%B8%AA%E6%AD%A3%E6%95%B0/</guid><description>查找和最小的K对数字、基本计算器、缺失的第一个正数</description><pubDate>Fri, 28 Nov 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;查找和最小的K对数字&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;给定两个以 &lt;strong&gt;非递减顺序排列&lt;/strong&gt; 的整数数组 &lt;code&gt;nums1&lt;/code&gt; 和 &lt;code&gt;nums2&lt;/code&gt; , 以及一个整数 &lt;code&gt;k&lt;/code&gt; 。&lt;/p&gt;
+&lt;p&gt;定义一对值 &lt;code&gt;(u,v)&lt;/code&gt;，其中第一个元素来自 &lt;code&gt;nums1&lt;/code&gt;，第二个元素来自 &lt;code&gt;nums2&lt;/code&gt; 。&lt;/p&gt;
+&lt;p&gt;请找到和最小的 &lt;code&gt;k&lt;/code&gt; 个数对 &lt;code&gt;(u1,v1)&lt;/code&gt;, &lt;code&gt; (u2,v2)&lt;/code&gt; ...  &lt;code&gt;(uk,vk)&lt;/code&gt; 。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 1:&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入: nums1 = [1,7,11], nums2 = [2,4,6], k = 3
+输出: [1,2],[1,4],[1,6]
+解释: 返回序列中的前 3 对数：
+     [1,2],[1,4],[1,6],[7,2],[7,4],[11,2],[7,6],[11,4],[11,6]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2:&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入: nums1 = [1,1,2], nums2 = [1,2,3], k = 2
+输出: [1,1],[1,1]
+解释: 返回序列中的前 2 对数：
+     [1,1],[1,1],[1,2],[2,1],[1,2],[2,2],[1,3],[1,3],[2,3]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;运用最小堆进行求解，由于两个数组都是单调递增的，对于由两个数组分别作为下标得到和的二维数组满足从左到右依次递增以及从上至下依次递增，将第一列的元素放入最小堆中，依次从最小堆中取出最小的和以及对应的横纵坐标，将其右侧的元素和以及横纵坐标放入最小堆中，取够k个数即可&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public List&amp;lt;List&amp;lt;Integer&amp;gt;&amp;gt; kSmallestPairs(int[] nums1, int[] nums2, int k) {
+        PriorityQueue&amp;lt;int[]&amp;gt; heap = new PriorityQueue&amp;lt;&amp;gt;((a, b) -&amp;gt; a[0] - b[0]);
+        for(int i = 0; i &amp;lt; Math.min(nums1.length, k); i++) {
+            heap.offer(new int[]{nums1[i] + nums2[0], i, 0});
+        }
+        
+        List&amp;lt;List&amp;lt;Integer&amp;gt;&amp;gt; result = new ArrayList&amp;lt;&amp;gt;();
+        for(int t = 0; t &amp;lt; k; t++) {
+            int[] min = heap.poll();
+            int i = min[1];
+            int j = min[2];
+            result.add(Arrays.asList(nums1[i], nums2[j]));
+            if(j &amp;lt; nums2.length - 1) {
+                heap.offer(new int[]{nums1[i] + nums2[j + 1], i, j + 1});
+            }
+        }
+        return result;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1&gt;基本计算器&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;给你一个字符串表达式 &lt;code&gt;s&lt;/code&gt; ，请你实现一个基本计算器来计算并返回它的值。&lt;/p&gt;
+&lt;p&gt;注意:不允许使用任何将字符串作为数学表达式计算的内置函数，比如 &lt;code&gt;eval()&lt;/code&gt; 。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：s = &quot;1 + 1&quot;
+输出：2
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：s = &quot; 2-1 + 2 &quot;
+输出：3
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 3：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：s = &quot;(1+(4+5+2)-3)+(6+8)&quot;
+输出：23
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;本质上对于每个数而言无外乎取正取负，通过sign作为其符号标识，再额外设立一个栈标识对应括号范围内的符号取值&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;当前字符为+的时候就直接从栈中取出符号（正或负）
+如果是-则peek出来的符号取反
+如果是(则需要将当前的符号放入栈中，用作当前括号范围内数据取符号的基准
+如果是)则当前的括号完毕，将其弹出，之后的数字基准为之前括号的符号
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public int calculate(String s) {
+        Stack&amp;lt;Integer&amp;gt; ops = new Stack&amp;lt;&amp;gt;();
+        ops.push(1);
+        int sign = 1;
+        
+        int result = 0;
+        int i = 0;
+        int n = s.length();
+        while(i &amp;lt; n) {
+            char c = s.charAt(i);
+            if(c == &apos; &apos;) {
+                i++;
+            } else if(c == &apos;+&apos;) {
+                sign = ops.peek();
+                i++;
+            } else if(c == &apos;-&apos;) {
+                sign = -ops.peek();
+                i++;
+            } else if(c == &apos;(&apos;) {
+                ops.push(sign);
+                i++;
+            } else if(c == &apos;)&apos;) {
+                ops.pop();
+                i++;
+            } else {
+                long num = 0;
+                while(i &amp;lt; n &amp;amp;&amp;amp; s.charAt(i) &amp;gt;= &apos;0&apos; &amp;amp;&amp;amp; s.charAt(i) &amp;lt;= &apos;9&apos;) {
+                    num = num * 10 + s.charAt(i) - &apos;0&apos;;
+                    i++;
+                }
+                result += sign * num;
+            }
+        }
+        return result;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1&gt;缺失的第一个正数&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;给你一个未排序的整数数组 &lt;code&gt;nums&lt;/code&gt; ，请你找出其中没有出现的最小的正整数。&lt;/p&gt;
+&lt;p&gt;请你实现时间复杂度为 &lt;code&gt;O(n)&lt;/code&gt; 并且只使用常数级别额外空间的解决方案。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：nums = [1,2,0]
+输出：3
+解释：范围 [1,2] 中的数字都在数组中。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：nums = [3,4,-1,1]
+输出：2
+解释：1 在数组中，但 2 没有。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 3：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：nums = [7,8,9,11,12]
+输出：1
+解释：最小的正数 1 没有出现。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;我们的所有数字的预期是1-n，即从下标0开始到n-1都对应着下标+1的数&lt;/p&gt;
+&lt;p&gt;遍历数组，对于遍历到的数字满足在数组预期的范围内且不满足其位置在自己应该在的位置上的时候，需要交换将其放在应该在的位置上，对于交换过来的数字也应该重新判断（while），等全部交换完毕的时候如果数字是预期放入的数字，那么它们就在自己的位置上&lt;/p&gt;
+&lt;p&gt;这样只需要从头开始，找到第一个不符合预期的数字位置，返回位置 + 1，就是缺少的数字&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public int firstMissingPositive(int[] nums) {
+        int n = nums.length;
+        for(int i = 0; i &amp;lt; n; i++) {
+            while(nums[i] &amp;gt;= 1 &amp;amp;&amp;amp; nums[i] &amp;lt;= n &amp;amp;&amp;amp; nums[i] - 1 != i) {
+                int j = nums[i] - 1;
+                int temp = nums[i];
+                nums[i] = nums[j];
+                nums[j] = temp;
+            }
+        }
+        for(int i = 0; i &amp;lt; n; i++) {
+            if(nums[i] != i + 1) {
+                return i + 1;
+            }
+        }
+        return n + 1;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;但是这种方式没有办法处理有重复元素出现的情况，会出现死循环，这个时候需要更改判断条件，在相同的时候直接break即可&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public int firstMissingPositive(int[] nums) {
+        int n = nums.length;
+        for(int i = 0; i &amp;lt; n; i++) {
+            while(nums[i] &amp;gt;= 1 &amp;amp;&amp;amp; nums[i] &amp;lt;= n &amp;amp;&amp;amp; nums[i] - 1 != i) {
+                int j = nums[i] - 1;
+                if(nums[i] == nums[j]) break;
+                int temp = nums[i];
+                nums[i] = nums[j];
+                nums[j] = temp;
+            }
+        }
+        for(int i = 0; i &amp;lt; n; i++) {
+            if(nums[i] != i + 1) {
+                return i + 1;
+            }
+        }
+        return n + 1;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+</content:encoded></item><item><title>Redis笔记（场景）</title><link>https://thrinisty.github.io/posts/redis%E7%AC%94%E8%AE%B0%E7%BC%93%E5%AD%98/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/redis%E7%AC%94%E8%AE%B0%E7%BC%93%E5%AD%98/</guid><pubDate>Fri, 28 Nov 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;Redis笔记&lt;/h1&gt;
+&lt;h2&gt;&lt;/h2&gt;
+</content:encoded></item><item><title>LeetCode刷题（交错字符串、买卖股票Ⅳ）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E4%BA%A4%E9%94%99%E5%AD%97%E7%AC%A6%E4%B8%B2%E4%B9%B0%E5%8D%96%E8%82%A1%E7%A5%A8%E2%85%B3/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E4%BA%A4%E9%94%99%E5%AD%97%E7%AC%A6%E4%B8%B2%E4%B9%B0%E5%8D%96%E8%82%A1%E7%A5%A8%E2%85%B3/</guid><description>交错字符串、买卖股票的最佳时机Ⅳ</description><pubDate>Thu, 27 Nov 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;交错字符串&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;给定三个字符串 &lt;code&gt;s1&lt;/code&gt;、&lt;code&gt;s2&lt;/code&gt;、&lt;code&gt;s3&lt;/code&gt;，请你帮忙验证 &lt;code&gt;s3&lt;/code&gt; 是否是由 &lt;code&gt;s1&lt;/code&gt; 和 &lt;code&gt;s2&lt;/code&gt; &lt;strong&gt;交错&lt;/strong&gt; 组成的。&lt;/p&gt;
+&lt;p&gt;两个字符串 &lt;code&gt;s&lt;/code&gt; 和 &lt;code&gt;t&lt;/code&gt; &lt;strong&gt;交错&lt;/strong&gt; 的定义与过程如下，其中每个字符串都会被分割成若干 &lt;strong&gt;非空&lt;/strong&gt; 子字符串：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;s = s1 + s2 + ... + sn&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;t = t1 + t2 + ... + tm&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;|n - m| &amp;lt;= 1&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;交错&lt;/strong&gt; 是 &lt;code&gt;s1 + t1 + s2 + t2 + s3 + t3 + ...&lt;/code&gt; 或者 &lt;code&gt;t1 + s1 + t2 + s2 + t3 + s3 + ...&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;注意：&lt;/strong&gt;&lt;code&gt;a + b&lt;/code&gt; 意味着字符串 &lt;code&gt;a&lt;/code&gt; 和 &lt;code&gt;b&lt;/code&gt; 连接。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/479.jpg&quot; alt=&quot;479&quot; /&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：s1 = &quot;aabcc&quot;, s2 = &quot;dbbca&quot;, s3 = &quot;aadbbcbcac&quot;
+输出：true
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：s1 = &quot;aabcc&quot;, s2 = &quot;dbbca&quot;, s3 = &quot;aadbbbaccc&quot;
+输出：false
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 3：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：s1 = &quot;&quot;, s2 = &quot;&quot;, s3 = &quot;&quot;
+输出：true
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;构造dp二维数组，存放的是用前i和j个字符是否可以组成s3字符的i+j个，依次判断i + j的位置是否可以被s1或者s2中的i、j位置防止，当满足一个即可判断对应位置为true&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public boolean isInterleave(String s1, String s2, String s3) {
+        int n1 = s1.length();
+        int n2 = s2.length();
+        int n3 = s3.length();
+        if(n1 + n2 != n3) return false;
+        boolean[][] dp = new boolean[n1 + 1][n2 + 1];
+        dp[0][0] = true;
+        s1 = &quot; &quot; + s1;
+        s2 = &quot; &quot; + s2;
+        s3 = &quot; &quot; + s3;
+        for(int i = 0; i &amp;lt;= n1; i++) {
+            for(int j = 0; j &amp;lt;= n2; j++) {
+                if(i &amp;gt; 0 &amp;amp;&amp;amp; s1.charAt(i) == s3.charAt(i + j)) {
+                    dp[i][j] = dp[i - 1][j];
+                }
+                if(j &amp;gt; 0 &amp;amp;&amp;amp; s2.charAt(j) == s3.charAt(i + j)) {
+                    dp[i][j] = dp[i][j] || dp[i][j - 1];
+                }
+            }
+        }
+        return dp[n1][n2];
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1&gt;买卖股票Ⅳ&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;给你一个整数数组 &lt;code&gt;prices&lt;/code&gt; 和一个整数 &lt;code&gt;k&lt;/code&gt; ，其中 &lt;code&gt;prices[i]&lt;/code&gt; 是某支给定的股票在第 &lt;code&gt;i&lt;/code&gt; 天的价格。&lt;/p&gt;
+&lt;p&gt;设计一个算法来计算你所能获取的最大利润。你最多可以完成 &lt;code&gt;k&lt;/code&gt; 笔交易。也就是说，你最多可以买 &lt;code&gt;k&lt;/code&gt; 次，卖 &lt;code&gt;k&lt;/code&gt; 次。&lt;/p&gt;
+&lt;p&gt;**注意：**你不能同时参与多笔交易（你必须在再次购买前出售掉之前的股票）。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：k = 2, prices = [2,4,1]
+输出：2
+解释：在第 1 天 (股票价格 = 2) 的时候买入，在第 2 天 (股票价格 = 4) 的时候卖出，这笔交易所能获得利润 = 4-2 = 2 。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：k = 2, prices = [3,2,6,5,0,3]
+输出：7
+解释：在第 2 天 (股票价格 = 2) 的时候买入，在第 3 天 (股票价格 = 6) 的时候卖出, 这笔交易所能获得利润 = 6-2 = 4 。
+     随后，在第 5 天 (股票价格 = 0) 的时候买入，在第 6 天 (股票价格 = 3) 的时候卖出, 这笔交易所能获得利润 = 3-0 = 3 。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;在Ⅲ的基础上纵向的拓展一下&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public int maxProfit(int k, int[] prices) {
+        int n = prices.length;
+        if(n &amp;lt;= 1) return 0;
+        k = Math.min(k, n / 2);
+        int[][] buy = new int[k][n];
+        int[][] sell = new int[k][n];
+        for(int i = 0; i &amp;lt; k; i++) {
+            buy[i][0] = -prices[0];
+        }
+        for(int i = 1; i &amp;lt; n; i++) {
+            buy[0][i] = Math.max(buy[0][i - 1], -prices[i]);
+            sell[0][i] = Math.max(sell[0][i - 1], buy[0][i - 1] + prices[i]);
+            for(int j = 1; j &amp;lt; k; j++) {
+                buy[j][i] = Math.max(buy[j][i - 1], sell[j - 1][i - 1] - prices[i]);
+                sell[j][i] = Math.max(sell[j][i - 1], buy[j][i - 1] + prices[i]);
+            }
+        }
+        return sell[k - 1][n - 1];
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+</content:encoded></item><item><title>LeetCode刷题（三角形最小路径和、不同路径Ⅱ）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E4%B8%89%E8%A7%92%E5%BD%A2%E6%9C%80%E5%B0%8F%E8%B7%AF%E5%BE%84%E5%92%8C%E4%B8%8D%E5%90%8C%E8%B7%AF%E5%BE%84%E2%85%B1/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E4%B8%89%E8%A7%92%E5%BD%A2%E6%9C%80%E5%B0%8F%E8%B7%AF%E5%BE%84%E5%92%8C%E4%B8%8D%E5%90%8C%E8%B7%AF%E5%BE%84%E2%85%B1/</guid><description>三角形最小路径和、不同路径Ⅱ</description><pubDate>Wed, 26 Nov 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;三角形最小路径和&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;给定一个三角形 &lt;code&gt;triangle&lt;/code&gt; ，找出自顶向下的最小路径和。&lt;/p&gt;
+&lt;p&gt;每一步只能移动到下一行中相邻的结点上。&lt;strong&gt;相邻的结点&lt;/strong&gt; 在这里指的是 &lt;strong&gt;下标&lt;/strong&gt; 与 &lt;strong&gt;上一层结点下标&lt;/strong&gt; 相同或者等于 &lt;strong&gt;上一层结点下标 + 1&lt;/strong&gt; 的两个结点。也就是说，如果正位于当前行的下标 &lt;code&gt;i&lt;/code&gt; ，那么下一步可以移动到下一行的下标 &lt;code&gt;i&lt;/code&gt; 或 &lt;code&gt;i + 1&lt;/code&gt; 。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：triangle = [[2],[3,4],[6,5,7],[4,1,8,3]]
+输出：11
+解释：如下面简图所示：
+   2
+  3 4
+ 6 5 7
+4 1 8 3
+自顶向下的最小路径和为 11（即，2 + 3 + 5 + 1 = 11）。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：triangle = [[-10]]
+输出：-10
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;解法一：递归（超时27/46）&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public int minimumTotal(List&amp;lt;List&amp;lt;Integer&amp;gt;&amp;gt; triangle) {
+        return  dfs(triangle, 0, 0);
+    }
+
+    private int dfs(List&amp;lt;List&amp;lt;Integer&amp;gt;&amp;gt; triangle, int i, int j) {
+        if (i == triangle.size()) {
+            return 0;
+        }
+        return Math.min(dfs(triangle, i + 1, j), dfs(triangle, i + 1, j + 1)) + triangle.get(i).get(j);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;解法二：在上述基础上添加记忆，避免重复计算&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    Integer[][] memory;
+    public int minimumTotal(List&amp;lt;List&amp;lt;Integer&amp;gt;&amp;gt; triangle) {
+        memory = new Integer[triangle.size()][triangle.size()];
+        return dfs(triangle, 0, 0);
+    }
+
+    public int dfs(List&amp;lt;List&amp;lt;Integer&amp;gt;&amp;gt; triangle, int i, int j) {
+        if(triangle.size() == i) {
+            return 0;
+        }
+        if(memory[i][j] != null) {
+            return memory[i][j];
+        }
+        memory[i][j] = Math.min(dfs(triangle, i + 1, j), dfs(triangle, i + 1, j + 1)) + triangle.get(i).get(j);
+        return memory[i][j];
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;解法三：动态规划求解&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public int minimumTotal(List&amp;lt;List&amp;lt;Integer&amp;gt;&amp;gt; triangle) {
+        int n = triangle.size();
+        int[][] dp = new int[n + 1][n + 1];
+        for(int i = n - 1; i &amp;gt;= 0; i--) {
+            for(int j = 0; j &amp;lt;= i; j++) {
+                dp[i][j] = Math.min(dp[i + 1][j], dp[i + 1][j + 1]) + triangle.get(i).get(j);
+            }
+        }
+        return dp[0][0];
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;空间优化：对于每一层的开头的元素其实没必要存储层数，只需要存储下一层的对应位置以及后续一个位置就可以规划出当前行的取值，而不影响之后的元素计算&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public int minimumTotal(List&amp;lt;List&amp;lt;Integer&amp;gt;&amp;gt; triangle) {
+        int n = triangle.size();
+        int[] dp = new int[n + 1];
+        for(int i = n - 1; i &amp;gt;= 0; i--) {
+            for(int j = 0; j &amp;lt;= i; j++) {
+                dp[j] = Math.min(dp[j], dp[j + 1]) + triangle.get(i).get(j);
+            }
+        }
+        return dp[0];
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1&gt;不同路径Ⅱ&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;给定一个 &lt;code&gt;m x n&lt;/code&gt; 的整数数组 &lt;code&gt;grid&lt;/code&gt;。一个机器人初始位于 &lt;strong&gt;左上角&lt;/strong&gt;（即 &lt;code&gt;grid[0][0]&lt;/code&gt;）。机器人尝试移动到 &lt;strong&gt;右下角&lt;/strong&gt;（即 &lt;code&gt;grid[m - 1][n - 1]&lt;/code&gt;）。机器人每次只能向下或者向右移动一步。&lt;/p&gt;
+&lt;p&gt;网格中的障碍物和空位置分别用 &lt;code&gt;1&lt;/code&gt; 和 &lt;code&gt;0&lt;/code&gt; 来表示。机器人的移动路径中不能包含 &lt;strong&gt;任何&lt;/strong&gt; 有障碍物的方格。&lt;/p&gt;
+&lt;p&gt;返回机器人能够到达右下角的不同路径数量。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/465.jpg&quot; alt=&quot;465&quot; /&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：obstacleGrid = [[0,0,0],[0,1,0],[0,0,0]]
+输出：2
+解释：3x3 网格的正中间有一个障碍物。
+从左上角到右下角一共有 2 条不同的路径：
+1. 向右 -&amp;gt; 向右 -&amp;gt; 向下 -&amp;gt; 向下
+2. 向下 -&amp;gt; 向下 -&amp;gt; 向右 -&amp;gt; 向右
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/466.jpg&quot; alt=&quot;466&quot; /&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：obstacleGrid = [[0,1],[0,0]]
+输出：1
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;当遇到障碍的时候停止初始的横向纵向初始化，因为后面的都到达不了，之后如果当前的位置不是障碍物则用上左的结果相加赋值当前结果&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public int uniquePathsWithObstacles(int[][] obstacleGrid) {
+        int row = obstacleGrid.length;
+        int col = obstacleGrid[0].length;
+        int[][] dp = new int[row][col];
+        if(obstacleGrid[0][0] == 0) {
+            dp[0][0] = 1;
+        }
+        int i = 1;
+        while(i &amp;lt; row &amp;amp;&amp;amp; obstacleGrid[i][0] != 1) {
+            dp[i][0] = dp[i - 1][0]; 
+            i++;
+        }
+        int j = 1;
+        while(j &amp;lt; col &amp;amp;&amp;amp; obstacleGrid[0][j] != 1) {
+            dp[0][j] = dp[0][j - 1];
+            j++;
+        }
+        for(i = 1; i &amp;lt; row; i++) {
+            for(j = 1; j &amp;lt; col; j++) {
+                if(obstacleGrid[i][j] != 1) {
+                    dp[i][j] = dp[i - 1][j] + dp[i][j - 1];
+                }
+            }
+        }
+        return dp[row - 1][col - 1];
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+</content:encoded></item><item><title>LeetCode刷题（只出现一次的数字Ⅱ、数字范围按位与）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E5%8F%AA%E5%87%BA%E7%8E%B0%E4%B8%80%E6%AC%A1%E7%9A%84%E6%95%B0%E5%AD%97%E2%85%B1%E6%95%B0%E5%AD%97%E8%8C%83%E5%9B%B4%E6%8C%89%E4%BD%8D%E4%B8%8E/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E5%8F%AA%E5%87%BA%E7%8E%B0%E4%B8%80%E6%AC%A1%E7%9A%84%E6%95%B0%E5%AD%97%E2%85%B1%E6%95%B0%E5%AD%97%E8%8C%83%E5%9B%B4%E6%8C%89%E4%BD%8D%E4%B8%8E/</guid><description>只出现一次的数字Ⅱ、数字范围按位与</description><pubDate>Tue, 25 Nov 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;只出现一次的数字Ⅱ&lt;/h1&gt;
 &lt;h2&gt;题目描述&lt;/h2&gt;
 &lt;p&gt;给你一个整数数组 &lt;code&gt;nums&lt;/code&gt; ，除某个元素仅出现 &lt;strong&gt;一次&lt;/strong&gt; 外，其余每个元素都恰出现 **三次 。**请你找出并返回那个只出现了一次的元素。&lt;/p&gt;
 &lt;p&gt;你必须设计并实现线性时间复杂度的算法且使用常数级空间来解决此问题。&lt;/p&gt;
@@ -98,7 +604,7 @@
     }
 }
 &lt;/code&gt;&lt;/pre&gt;
-</content:encoded></item><item><title>Redis笔记（底层数据结构、网络模型）</title><link>https://thrinisty.github.io/posts/redis%E7%AC%94%E8%AE%B0%E5%BA%95%E5%B1%82%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E7%BD%91%E7%BB%9C%E6%A8%A1%E5%9E%8B/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/redis%E7%AC%94%E8%AE%B0%E5%BA%95%E5%B1%82%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E7%BD%91%E7%BB%9C%E6%A8%A1%E5%9E%8B/</guid><description>底层数据结构、网络模型</description><pubDate>Tue, 25 Nov 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;Redis笔记&lt;/h1&gt;
+</content:encoded></item><item><title>Redis笔记（底层数据结构、网络模型、内存策略）</title><link>https://thrinisty.github.io/posts/redis%E7%AC%94%E8%AE%B0%E5%BA%95%E5%B1%82%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E7%BD%91%E7%BB%9C%E6%A8%A1%E5%9E%8B%E5%86%85%E5%AD%98%E7%AD%96%E7%95%A5/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/redis%E7%AC%94%E8%AE%B0%E5%BA%95%E5%B1%82%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E7%BD%91%E7%BB%9C%E6%A8%A1%E5%9E%8B%E5%86%85%E5%AD%98%E7%AD%96%E7%95%A5/</guid><description>底层数据结构、网络模型、内存策略</description><pubDate>Tue, 25 Nov 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;Redis笔记&lt;/h1&gt;
 &lt;h2&gt;数据结构&lt;/h2&gt;
 &lt;h3&gt;动态字符串&lt;/h3&gt;
 &lt;p&gt;&lt;strong&gt;SDS&lt;/strong&gt; 简单动态字符串&lt;/p&gt;
@@ -117,7 +623,7 @@
 &lt;p&gt;Redis是一个KV类型的数据可，可以根据键快速实现增删改查，而键值之间的映射关系就是通过Dick来实现的&lt;/p&gt;
 &lt;p&gt;Dict由三部分组成：哈希表（DictHashTabale）、哈希节点（DictEntry）、字典（Dict）&lt;/p&gt;
 &lt;p&gt;&lt;img src=&quot;../images/425.png&quot; alt=&quot;425&quot; /&gt;&lt;/p&gt;
-&lt;p&gt;单向Dict添加键值对的时候，Redis首先根据key计算出hash值（h），然后利用h&amp;amp;sizemask来计算元素应该存储到数组中的哪个索引位置&lt;/p&gt;
+&lt;p&gt;单向Dict添加键值对的时候，Redis首先根据key计算出hash值（h），然后利用sizemask来计算元素应该存储到数组中的哪个索引位置&lt;/p&gt;
 &lt;p&gt;Dict结构如下，包含了两个数组&lt;/p&gt;
 &lt;p&gt;&lt;img src=&quot;../images/426.png&quot; alt=&quot;426&quot; /&gt;&lt;/p&gt;
 &lt;p&gt;当集合中元素较多的时候，哈希冲突会增多，链表增长，查询效率降低&lt;/p&gt;
@@ -222,6 +728,40 @@
 &lt;p&gt;LevelTriggered：当FD有数据可读的时候，会通知多次，直到数据处理完成，是epoll的默认模式。&lt;/p&gt;
 &lt;p&gt;EdgeTriggered：当FD有数据可读的时候，只会通知一次，不管数据是否处理完成&lt;/p&gt;
 &lt;p&gt;&lt;img src=&quot;../images/464.png&quot; alt=&quot;464&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/467.png&quot; alt=&quot;467&quot; /&gt;&lt;/p&gt;
+&lt;h4&gt;信号驱动IO&lt;/h4&gt;
+&lt;p&gt;&lt;img src=&quot;../images/468.png&quot; alt=&quot;468&quot; /&gt;&lt;/p&gt;
+&lt;h4&gt;异步IO&lt;/h4&gt;
+&lt;p&gt;&lt;img src=&quot;../images/469.png&quot; alt=&quot;469&quot; /&gt;&lt;/p&gt;
+&lt;h3&gt;Redis网络模型&lt;/h3&gt;
+&lt;p&gt;Redis是单线程还是多线程？&lt;/p&gt;
+&lt;p&gt;1.Redis的核心业务部分（命令处理），答案是单线程&lt;/p&gt;
+&lt;p&gt;2.如果是整个Redis，是多线程&lt;/p&gt;
+&lt;p&gt;:::note&lt;/p&gt;
+&lt;p&gt;Redis4.0：引入多线程异步处理一些耗时长的任务&lt;/p&gt;
+&lt;p&gt;Redis6.0：在网络模型中引入了多线程，进一步提高对于多核CPU的利用率&lt;/p&gt;
+&lt;p&gt;:::&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/470.png&quot; alt=&quot;470&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/471.png&quot; alt=&quot;471&quot; /&gt;&lt;/p&gt;
+&lt;h3&gt;通信协议&lt;/h3&gt;
+&lt;p&gt;RESP协议&lt;/p&gt;
+&lt;p&gt;Redis是CS结构软件&lt;/p&gt;
+&lt;p&gt;1.客户端向服务端发送命令&lt;/p&gt;
+&lt;p&gt;2.服务器解析并执行命令，返回响应结果&lt;/p&gt;
+&lt;p&gt;因此客户端发送命令格式、服务端响应结果的格式必须要有一个规范，这个规范就是通信协议&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/472.png&quot; alt=&quot;472&quot; /&gt;&lt;/p&gt;
+&lt;h2&gt;内存策略&lt;/h2&gt;
+&lt;h3&gt;过期策略&lt;/h3&gt;
+&lt;p&gt;&lt;img src=&quot;../images/473.png&quot; alt=&quot;473&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;DB结构&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/474.png&quot; alt=&quot;474&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;定期删除&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/475.png&quot; alt=&quot;475&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/476.png&quot; alt=&quot;476&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;Fast/Slow&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/477.png&quot; alt=&quot;477&quot; /&gt;&lt;/p&gt;
+&lt;h3&gt;内存淘汰&lt;/h3&gt;
+&lt;p&gt;&lt;img src=&quot;../images/478.png&quot; alt=&quot;478&quot; /&gt;&lt;/p&gt;
 </content:encoded></item><item><title>LeetCode刷题（二进制求和、颠倒的二进制位）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E4%BA%8C%E8%BF%9B%E5%88%B6%E6%B1%82%E5%92%8C%E9%A2%A0%E5%80%92%E7%9A%84%E4%BA%8C%E8%BF%9B%E5%88%B6%E4%BD%8D/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E4%BA%8C%E8%BF%9B%E5%88%B6%E6%B1%82%E5%92%8C%E9%A2%A0%E5%80%92%E7%9A%84%E4%BA%8C%E8%BF%9B%E5%88%B6%E4%BD%8D/</guid><description>二进制求和、颠倒的二进制位</description><pubDate>Mon, 24 Nov 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;二进制求和&lt;/h1&gt;
 &lt;h2&gt;题目描述&lt;/h2&gt;
 &lt;p&gt;给你两个二进制字符串 &lt;code&gt;a&lt;/code&gt; 和 &lt;code&gt;b&lt;/code&gt; ，以二进制字符串的形式返回它们的和。&lt;/p&gt;
@@ -20708,6 +21248,64 @@ public List&amp;lt;User&amp;gt; returnBean() {
     }
 
     private void swap(int[] nums, int i, int j) {
+        int temp = nums[i];
+        nums[i] = nums[j];
+        nums[j] = temp;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;再补一个非归并的方式&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    Queue&amp;lt;Integer&amp;gt; queue = new LinkedList&amp;lt;&amp;gt;();
+    public int[] sortArray(int[] nums) {
+        // quickSort(nums, 0, nums.length - 1);
+        // return nums;
+        queue.offer(0);
+        queue.offer(nums.length - 1);
+        while(!queue.isEmpty()) {
+            int left = queue.poll();
+            int right = queue.poll();
+            if(left &amp;gt;= right) continue;
+            int mid = partition(nums, left, right);
+            queue.offer(left);
+            queue.offer(mid - 1);
+            queue.offer(mid + 1);
+            queue.offer(right);
+        }
+        return nums;
+    }
+
+    // public void quickSort(int[] nums, int left, int right) {
+    //     if(left &amp;gt;= right) {
+    //         return; 
+    //     }
+    //     int mid = partition(nums, left, right);
+    //     quickSort(nums, left, mid - 1);
+    //     quickSort(nums, mid + 1, right);
+    // }
+
+    public int partition(int[] nums, int left, int right) {
+        int midNum = nums[left];
+        int i = left + 1;
+        int j = right;
+        while(i &amp;lt;= j) {
+            while(i &amp;lt;= j &amp;amp;&amp;amp; midNum &amp;gt; nums[i]) {
+                i++;
+            }
+            while(i &amp;lt;= j &amp;amp;&amp;amp; midNum &amp;lt; nums[j]) {
+                j--;
+            }
+            if(i &amp;lt;= j) {
+                swap(nums, i, j);
+                i++;
+                j--;
+            }
+        }
+        swap(nums, j, left);
+        return j;
+    }
+
+    public void swap(int[] nums, int i, int j) {
         int temp = nums[i];
         nums[i] = nums[j];
         nums[j] = temp;
