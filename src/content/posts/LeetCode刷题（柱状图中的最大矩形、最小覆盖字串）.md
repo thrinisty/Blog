@@ -64,6 +64,66 @@ class Solution {
 }
 ```
 
+优化：可以通过优化来通过测试用例，当前 高度 * 长度 小于之前的结果的时候就可以直接不去进行后续的遍历了（LCR的测例过得了，但是Hot100过不了）
+
+```java
+class Solution {
+    public int largestRectangleArea(int[] heights) {
+        int n = heights.length;
+        int result = 0;
+        for(int i = 0; i < n; i++) {
+            int height = heights[i];
+            int left = i;
+            if(heights.length * heights[i] <= result) {
+                continue;
+            }
+            while(left - 1 >= 0 && heights[left - 1] >= height) {
+                left--;
+            }
+            int right = i;
+            while(right + 1 < n && heights[right + 1] >= height) {
+                right++;
+            }
+            result = Math.max(result, height * (right - left + 1));
+        }
+        return result;
+    }
+}
+```
+
+
+
+解法二：单调栈求解
+
+对于栈里面的元素始终满足递增，另外构造heights数组的两个哨兵，第一个是为了防止栈为空的情况，最后一个是为了求数组最后一个heigh对应的最大面积
+
+栈中放置0代表第一个哨兵，遍历后续的改造过后的数组，循环判断栈中最后的元素是否大于当前元素，将位置弹出，并计算各个元素对应的高度和宽度，迭代result，循环结束以后栈中的元素都小于当前的位置对应高度最后加入当前位置
+
+```java
+class Solution {
+    public int largestRectangleArea(int[] heights) {
+        int n = heights.length;
+        int result = 0;
+        int[] temp = new int[n + 2];
+        for(int i = 0; i < n; i++) {
+            temp[i + 1] = heights[i];
+        }
+        int len = n + 2;
+        Deque<Integer> stack = new LinkedList<>();
+        stack.addLast(0);
+        for(int i = 1; i < len; i++) {
+            while(temp[i] < temp[stack.peekLast()]) {
+                int height = temp[stack.pollLast()];
+                int size = i - stack.peekLast() - 1;
+                result = Math.max(result, height * size);
+            }
+            stack.addLast(i);
+        }
+        return result;
+    }
+}
+```
+
 
 
 # 最小覆盖字串

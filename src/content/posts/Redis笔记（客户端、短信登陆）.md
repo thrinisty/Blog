@@ -186,7 +186,6 @@ spring:
     redis:
       port: 6379
       host: localhost
-
 ```
 
 测试代码

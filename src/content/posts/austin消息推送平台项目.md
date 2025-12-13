@@ -1,7 +1,7 @@
 ---
 title: austin消息推送平台项目
-published: 2025-11-17
-updated: 2025-11-17
+published: 2025-12-03
+updated: 2025-12-03
 description: ''
 image: ''
 tags: [project]
@@ -10,6 +10,8 @@ draft: false
 ---
 
 # Austin
+
+这一份笔记记录一些运用到的常见依赖，以及开发过程中可重复利用的代码，以及开发过程中的接口设计
 
 ## 依赖配置
 
@@ -75,7 +77,7 @@ Maven仓库
 <parent>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-parent</artifactId>
-    <version>2.5.6</version>
+    <version>3.4.0</version>
     <relativePath/>
 </parent>
 ```
@@ -278,7 +280,7 @@ public class Main {
             String[] phoneNumberSet1 = new String[]{phone};
             req.setPhoneNumberSet(phoneNumberSet1);
             req.setSmsSdkAppId(sdkAppId);
-            req.setSignName("Java3y公众号");
+            req.setSignName("Java");
             req.setTemplateId("1182097");
             String[] templateParamSet1 = {content};
             req.setTemplateParamSet(templateParamSet1);
@@ -302,9 +304,7 @@ public class Main {
 
 这个项目使用的是MySQL数据库，用于存储消息发送后短信的凭证，以及拉取的回执，并在后续提供一些发送消息的可视化业务
 
-```
-
-
+```sql
 CREATE TABLE `message_template`
 (
     `id`               bigint(20) NOT NULL AUTO_INCREMENT,
@@ -360,6 +360,126 @@ CREATE TABLE `sms_record`
   AUTO_INCREMENT = 1
   DEFAULT CHARSET = utf8mb4
   COLLATE = utf8mb4_unicode_ci COMMENT ='短信记录信息';
+```
+
+
+
+## SQL接入
+
+```xml
+<dependency>
+    <groupId>com.baomidou</groupId>
+    <artifactId>mybatis-plus-spring-boot3-starter</artifactId>
+    <version>3.5.7</version>
+</dependency>
+<dependency>
+    <groupId>mysql</groupId>
+    <artifactId>mysql-connector-java</artifactId>
+    <version>8.0.33</version>
+</dependency>
+```
+
+```yaml
+spring:
+  application:
+    name: thrina
+
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://thrinisty.fun:3306/thrina
+    username: root
+    password: ***
+```
+
+
+
+## 接口设计
+
+发送接口
+
+```java
+/**
+ * 发送接口
+ */
+public interface SendService {
+
+    /**
+     * 单文案发送接口
+     *
+     * @param sendRequest
+     * @return
+     */
+    SendResponse send(SendRequest sendRequest);
+
+
+    /**
+     * 多文案发送接口
+     *
+     * @param batchSendRequest
+     * @return
+     */
+    SendResponse batchSend(BatchSendRequest batchSendRequest);
+}
+```
+
+
+
+传入参数
+
+```java
+/**
+ * 发送/撤回接口的参数
+ */
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+public class SendRequest {
+
+    /**
+     * 执行业务类型
+     * send:发送消息
+     * recall:撤回消息
+     */
+    private String code;
+
+    /**
+     * 消息模板Id
+     * 【必填】
+     */
+    private Long messageTemplateId;
+
+
+    /**
+     * 消息相关的参数
+     * 当业务类型为"send"，必传
+     */
+    private MessageParam messageParam;
+}
+```
+
+
+
+返回参数
+
+```java
+/**
+ * 发送接口返回值
+ */
+@Data
+@AllArgsConstructor
+public class SendResponse {
+    /**
+     * 响应状态
+     */
+    private String code;
+
+    /**
+     * 响应编码
+     */
+    private String msg;
+
+}
 ```
 
 

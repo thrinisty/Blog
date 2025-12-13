@@ -15,6 +15,18 @@ MyBatisPlus是MyBatis的增强版，旨在简化单表SQL的编写
 
 ## 基本使用
 
+```yaml
+spring:
+  application:
+    name: **
+
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://thrinisty.fun:3306/thrina
+    username: root
+    password: **
+```
+
 相关依赖：这个依赖可以直接替代原先的MyBatis依赖
 
 ```xml
@@ -42,7 +54,7 @@ public class User {
     private String nickName;
     private String icon;
     private LocalDateTime createTime;
-    private LocalDateTime updateTime;
+    private LocalDateTime updateTime;	
 }
 ```
 
