@@ -4,8 +4,8 @@ published: 2025-12-13
 updated: 2025-12-13
 description: '基础概念、聊天入门使用'
 image: ''
-tags: [MCP]
-category: 'MCP'
+tags: [SpringAI]
+category: 'Frame'
 draft: false 
 ---
 
@@ -150,9 +150,7 @@ public class TestController {
 
 
 
-如果需要同一个模型实现不同的聊天客户端
-
-则需要用 ChatClient.builder(chatModel).build() 创建不同默认提示词的ChatClient
+如果需要同一个模型实现不同的聊天客户端，为了构造出默认提示词不同的客户端，可以通过chatModel实例构造
 
 ```java
 @RestController
@@ -193,5 +191,225 @@ public class TestController {
                 content();
     }
 }
+```
+
+
+
+### 聊天响应
+
+和模型调用后的结果是ChatResponse，这个结构里包含了非常多的信息，它包含关于回复如何生成的元数据，也可以包含多个响应，称为 [Generations](https://www.spring-doc.cn/spring-ai/1.1.0/api_chatmodel.html#Generation)，每个响应都有自己的元数据
+
+```java
+ChatResponse chatResponse = chatClient.prompt()
+    .user("Tell me a joke")
+    .call()
+    .chatResponse();
+```
+
+
+
+**结构化响应**
+
+结构化的响应，将返回的结果通过entity映射到类对象上
+
+```java
+@Data
+public class Student {
+    private String name;
+    private int age;
+}
+```
+
+```java
+    @GetMapping("/chat/1/{message}")
+    public Student chat(@PathVariable String message) {
+        return chatClient.
+                prompt().
+                user(message).
+                call().
+                entity(Student.class);
+    }
+```
+
+返回结果
+
+```json
+{
+    "name": "DeepSeek",
+    "age": 3
+}
+```
+
+
+
+同样的想要获取List的集合可以通过如下代码
+
+```
+http://localhost:8080/chat/4/给我生成数个学生内容包含姓名年龄
+```
+
+```java
+@GetMapping("/chat/4/{message}")
+public List<Student> chatListResponse(@PathVariable String message) {
+    return chatClient.
+            prompt().
+            user(message).
+            call().entity(new ParameterizedTypeReference<List<Student>>() {
+            });
+}
+```
+
+```json
+[
+    {
+        "name": "张三",
+        "age": 18
+    },
+    {
+        "name": "李四",
+        "age": 19
+    }
+]
+```
+
+
+
+**流式响应**
+
+这里需要给produces属性设置字符编码格式否则会出现乱码
+
+```java
+@GetMapping(value = "/chat/5/{message}", produces = "text/html;charset=UTF-8")
+public Flux<String> chatWithFlux(@PathVariable String message) {
+    return chatClient.
+            prompt().
+            user(message).
+            stream().
+            content();
+}
+```
+
+
+
+**模板式替换**
+
+这里通过lambda表达式可以用参数传入替换掉占位符中的内容
+
+```java
+@GetMapping("/chat/6/{message}")
+public String chatTemplate(@PathVariable String message) {
+    return chatClient.
+            prompt().
+            user(u -> u.text("请告诉我有关于{message}的相关知识")
+                 .param("message", message)).
+            call().
+            content();
+}
+```
+
+如果涉及到模板中存在{}类型的字符，并且不想要被替换可以使用如下的方式，将占位符号设计为不冲突的，例如我这里设置为了<>作为占位符
+
+```java
+public String chatTemplateJsonExpected(@PathVariable String message) {
+    return chatClient.
+            prompt().
+            user(u -> u.text("请解释一下如下的Json{\n" +
+                    "        \"name\": \"张三\",\n" +
+                    "        \"age\": 18\n" +
+                    "    } 表达方式通过<message>的形式讲述").
+                 param("message", message)).
+            templateRenderer(StTemplateRenderer.
+                             builder().
+                             startDelimiterToken('<').
+                             endDelimiterToken('>').
+                             build()).
+            call().
+            content();
+}
+```
+
+
+
+### 顾问
+
+Advisors 提供了一种灵活且强大的方式，拦截、修改和增强您在 Spring 应用中的 AI 驱动交互。 通过利用 Advisors API，开发者可以创建更复杂、可重复使用且易于维护的 AI 组件。
+
+定义两个顾问，通过Order指定先后
+
+```java
+public class TestAdvisor implements CallAdvisor {
+    @Override
+    public ChatClientResponse adviseCall(ChatClientRequest request, CallAdvisorChain chain) {
+        System.out.println("顾问调用前日志");
+        // 执行实际调用
+        ChatClientResponse response = chain.nextCall(request);
+        // 记录响应内容
+        System.out.println("顾问调用后日志");
+
+        return response;
+    }
+
+    @Override
+    public String getName() {
+        return "TestAdvisor";
+    }
+
+    @Override
+    public int getOrder() {
+        return 1;
+    }
+}
+```
+
+```java
+public class AnotherAdvisor implements CallAdvisor {
+    @Override
+    public ChatClientResponse adviseCall(ChatClientRequest request, CallAdvisorChain chain) {
+        System.out.println("Another顾问调用前日志");
+        // 执行实际调用
+        ChatClientResponse response = chain.nextCall(request);
+        // 记录响应内容
+        System.out.println("Another顾问调用后日志");
+
+        return response;
+    }
+
+    @Override
+    public String getName() {
+        return "AnotherAdvisor";
+    }
+
+    @Override
+    public int getOrder() {
+        return 2;
+    }
+}
+```
+
+
+
+在返回结果中加入顾问，就可以通过顾问来增强响应
+
+```java
+public String chatLogTest(@PathVariable String message) {
+    Advisor ad1 = new TestAdvisor();
+    Advisor ad2 = new AnotherAdvisor();
+    return chatClient.
+            prompt().
+            advisors(ad1, ad2).
+            user(message).
+            call().
+            content();
+}
+```
+
+输出
+
+```
+顾问调用前日志
+Another顾问调用前日志
+（大模型调用中）
+Another顾问调用后日志
+顾问调用后日志
 ```
 
