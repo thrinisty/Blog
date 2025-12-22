@@ -1,4 +1,824 @@
-<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Thrinisty&apos;s Blog</title><description>New Blog</description><link>https://thrinisty.github.io/</link><language>zh_CN</language><item><title>LeetCode刷题（二叉搜索树中的中序后继、两数之和Ⅱ）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E4%BA%8C%E5%8F%89%E6%90%9C%E7%B4%A2%E6%A0%91%E4%B8%AD%E7%9A%84%E4%B8%AD%E5%BA%8F%E5%90%8E%E7%BB%A7%E4%B8%A4%E6%95%B0%E4%B9%8B%E5%92%8C%E2%85%B1/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E4%BA%8C%E5%8F%89%E6%90%9C%E7%B4%A2%E6%A0%91%E4%B8%AD%E7%9A%84%E4%B8%AD%E5%BA%8F%E5%90%8E%E7%BB%A7%E4%B8%A4%E6%95%B0%E4%B9%8B%E5%92%8C%E2%85%B1/</guid><description>二叉搜索树中的中序后继、两数之和Ⅱ</description><pubDate>Mon, 15 Dec 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;二叉搜索树中的中序后继&lt;/h1&gt;
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Thrinisty&apos;s Blog</title><description>New Blog</description><link>https://thrinisty.github.io/</link><language>zh_CN</language><item><title>LeetCode刷题（搜索插入位置、山脉数组的封顶索引）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E6%90%9C%E7%B4%A2%E6%8F%92%E5%85%A5%E4%BD%8D%E7%BD%AE%E5%B1%B1%E8%84%89%E6%95%B0%E7%BB%84%E7%9A%84%E5%B0%81%E9%A1%B6%E7%B4%A2%E5%BC%95/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E6%90%9C%E7%B4%A2%E6%8F%92%E5%85%A5%E4%BD%8D%E7%BD%AE%E5%B1%B1%E8%84%89%E6%95%B0%E7%BB%84%E7%9A%84%E5%B0%81%E9%A1%B6%E7%B4%A2%E5%BC%95/</guid><description>搜索插入位置、山脉数组的封顶索引</description><pubDate>Sun, 21 Dec 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;搜索插入位置&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;给定一个排序的整数数组 &lt;code&gt;nums&lt;/code&gt; 和一个整数目标值&lt;code&gt; target&lt;/code&gt; ，请在数组中找到 &lt;code&gt;target &lt;/code&gt;，并返回其下标。如果目标值不存在于数组中，返回它将会被按顺序插入的位置。&lt;/p&gt;
+&lt;p&gt;请必须使用时间复杂度为 &lt;code&gt;O(log n)&lt;/code&gt; 的算法。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入: nums = [1,3,5,6], target = 5
+输出: 2
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入: nums = [1,3,5,6], target = 2
+输出: 1
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 3：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入: nums = [1,3,5,6], target = 7
+输出: 4
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 4：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入: nums = [1,3,5,6], target = 0
+输出: 0
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 5：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入: nums = [1], target = 0
+输出: 0
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;二分查找&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public int searchInsert(int[] nums, int target) {
+        int left = 0;
+        int right = nums.length - 1;
+        while(left &amp;lt;= right) {
+            int mid = left + (right - left) / 2;
+            if(target == nums[mid]) {
+                return mid;
+            } else if(nums[mid] &amp;lt; target) {
+                left = mid + 1;
+            } else {
+                right = mid - 1;
+            }
+        }
+        return left;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1&gt;山脉数组的封顶索引&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;符合下列属性的数组 &lt;code&gt;arr&lt;/code&gt; 称为 &lt;strong&gt;山峰数组&lt;/strong&gt;（&lt;strong&gt;山脉数组）&lt;/strong&gt; ：&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：arr = [0,1,0]
+输出：1
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：arr = [1,3,5,4,2]
+输出：2
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 3：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：arr = [0,10,5,2]
+输出：1
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 4：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：arr = [3,4,5,1]
+输出：2
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 5：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：arr = [24,69,100,99,79,78,67,36,26,19]
+输出：2
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;依旧二分查找，只不过左右设置为第2和n - 1个元素（题目中没有最左右是最大的情况）&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public int peakIndexInMountainArray(int[] arr) {
+        int left = 1;
+        int right = arr.length - 2;
+        while(left &amp;lt;= right) {
+            int mid = left + (right - left) / 2;
+            if(arr[mid] &amp;gt; arr[mid + 1]) {
+                right = mid - 1;
+            } else {
+                left = mid + 1;
+            }
+        } 
+        return left;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+</content:encoded></item><item><title>LeetCode刷题（键值映射、数组中两个数的最大异或值）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E9%94%AE%E5%80%BC%E6%98%A0%E5%B0%84%E6%95%B0%E7%BB%84%E4%B8%AD%E4%B8%A4%E4%B8%AA%E6%95%B0%E7%9A%84%E6%9C%80%E5%A4%A7%E5%BC%82%E6%88%96%E5%80%BC/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E9%94%AE%E5%80%BC%E6%98%A0%E5%B0%84%E6%95%B0%E7%BB%84%E4%B8%AD%E4%B8%A4%E4%B8%AA%E6%95%B0%E7%9A%84%E6%9C%80%E5%A4%A7%E5%BC%82%E6%88%96%E5%80%BC/</guid><description>数组中两个数的最大异或值</description><pubDate>Sat, 20 Dec 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;键值映射&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;实现一个 &lt;code&gt;MapSum&lt;/code&gt; 类，支持两个方法，&lt;code&gt;insert&lt;/code&gt; 和 &lt;code&gt;sum&lt;/code&gt;：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;MapSum()&lt;/code&gt; 初始化 &lt;code&gt;MapSum&lt;/code&gt; 对象&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;void insert(String key, int val)&lt;/code&gt; 插入 &lt;code&gt;key-val&lt;/code&gt; 键值对，字符串表示键 &lt;code&gt;key&lt;/code&gt; ，整数表示值 &lt;code&gt;val&lt;/code&gt; 。如果键 &lt;code&gt;key&lt;/code&gt; 已经存在，那么原来的键值对将被替代成新的键值对。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;int sum(string prefix)&lt;/code&gt; 返回所有以该前缀 &lt;code&gt;prefix&lt;/code&gt; 开头的键 &lt;code&gt;key&lt;/code&gt; 的值的总和。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;示例：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：
+inputs = [&quot;MapSum&quot;, &quot;insert&quot;, &quot;sum&quot;, &quot;insert&quot;, &quot;sum&quot;]
+inputs = [[], [&quot;apple&quot;, 3], [&quot;ap&quot;], [&quot;app&quot;, 2], [&quot;ap&quot;]]
+输出：
+[null, null, 3, null, 5]
+
+解释：
+MapSum mapSum = new MapSum();
+mapSum.insert(&quot;apple&quot;, 3);  
+mapSum.sum(&quot;ap&quot;);           // return 3 (apple = 3)
+mapSum.insert(&quot;app&quot;, 2);    
+mapSum.sum(&quot;ap&quot;);           // return 5 (apple + app = 3 + 2 = 5)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;解法一：sum暴力扫描，对于每个符合条件的key使得结果+value&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class MapSum {
+    Map&amp;lt;String, Integer&amp;gt; map = new HashMap&amp;lt;&amp;gt;();
+    
+    public void insert(String key, int val) {
+        map.put(key, val);
+    }
+    
+    public int sum(String prefix) {
+        int result = 0;
+        for(String key : map.keySet()) {
+            if(key.startsWith(prefix)) {
+                result += map.get(key);
+            }
+        }
+        return result;
+    }   
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;解法二：在insert构造的时候将所有的前缀赋予对应的值，重复的+value，在查找的时候直接差对应得前缀Map即可&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class MapSum {
+    Map&amp;lt;String, Integer&amp;gt; map;
+    Map&amp;lt;String, Integer&amp;gt; prefixmap;
+    /** Initialize your data structure here. */
+    public MapSum() {
+        map = new HashMap&amp;lt;&amp;gt;();
+        prefixmap = new HashMap&amp;lt;&amp;gt;();
+    }
+    
+    public void insert(String key, int val) {
+        int del = val - map.getOrDefault(key, 0);
+        map.put(key, val);
+        for(int i = 0; i &amp;lt; key.length(); i++) {
+            String preStr = key.substring(0, i + 1);
+            prefixmap.put(preStr, prefixmap.getOrDefault(preStr, 0) + del);
+        }
+    }
+    
+    public int sum(String prefix) {
+        return prefixmap.getOrDefault(prefix, 0);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;解法三：通过字典树进行求解&lt;/p&gt;
+&lt;p&gt;在插入的时候给每个位置加上del，在取出的时候，遍历到最后取出对应value&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class MapSum {
+    class Node {
+        int value = 0;
+        Node[] next = new Node[26];
+    }
+
+    Node root;
+    Map&amp;lt;String, Integer&amp;gt; map;
+    public MapSum() {
+        root = new Node();
+        map = new HashMap&amp;lt;&amp;gt;();
+    }
+    
+    public void insert(String key, int val) {
+        int del = val - map.getOrDefault(key, 0);
+        map.put(key, val);
+        Node p = root;
+        for(char c : key.toCharArray()) {
+            int index = c - &apos;a&apos;;
+            if(p.next[index] == null) {
+                p.next[index] = new Node();
+            }
+            p = p.next[index];
+            p.value += del;
+        }
+    }
+    
+    public int sum(String prefix) {
+        Node p = root;
+        for(char c : prefix.toCharArray()) {
+            int index = c - &apos;a&apos;;
+            if(p.next[index] == null) {
+                return 0;
+            }
+            p = p.next[index];
+        }
+        return p.value;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1&gt;数组中两个数的最大异或值&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;给定一个整数数组 &lt;code&gt;nums&lt;/code&gt; ，返回 &lt;code&gt;nums[i] XOR nums[j]&lt;/code&gt; 的最大运算结果，其中 &lt;code&gt;0 ≤ i ≤ j &amp;lt; n&lt;/code&gt; 。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：nums = [3,10,5,25,2,8]
+输出：28
+解释：最大运算结果是 5 XOR 25 = 28.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：nums = [0]
+输出：0
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 3：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：nums = [2,4]
+输出：6
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 4：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：nums = [8,10,2]
+输出：10
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 5：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：nums = [14,70,53,83,49,91,36,80,92,51,66,70]
+输出：127
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;解法一：暴力求解（超时40/41）&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public int findMaximumXOR(int[] nums) {
+        int max = 0;
+        int n = nums.length;
+        for(int i = 0; i &amp;lt; n; i++) {
+            for(int j = i + 1; j &amp;lt; n; j++) {
+                max = Math.max(max, nums[i] ^ nums[j]);
+            }
+        }
+        return max;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;解法二：通过字典树构造每个数字的字典树，之后通过逐个从高位取出一个位，如果有相反的位优先取相反的位，没有再取同位，构造出一个理想的要要异或的数，最后异或&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    class Node {
+        Node[] next = new Node[2];
+    }
+
+    Node root = new Node();
+    public int findMaximumXOR(int[] nums) {
+        for(int num : nums) {
+            build(num);
+        }
+        int max = 0;
+        for(int num : nums) {
+            max = Math.max(max, search(num));
+        }
+        return max;
+    }
+
+    public void build(int num) {
+        Node p = root;
+        for(int i = 30; i &amp;gt;= 0; i--) {
+            int index = (num &amp;gt;&amp;gt; i) &amp;amp; 1;
+            if(p.next[index] == null) {
+                p.next[index] = new Node();
+            }
+            p = p.next[index];
+        }
+    }
+
+    public int search(int num) {
+        Node p = root;
+        int target = 0;
+        for(int i = 30; i &amp;gt;= 0; i--) {
+            int current = (num &amp;gt;&amp;gt; i) &amp;amp; 1;
+            int reverse = current == 1 ? 0 : 1;
+            if(p.next[reverse] != null) {
+                p = p.next[reverse];
+                target = target * 2 + reverse;
+            } else {
+                p = p.next[current];
+                target = target * 2 + current;
+            }
+        }
+        return num ^ target;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+</content:encoded></item><item><title>SpringAI笔记（MCP快速入门，Mcp服务端、Mcp客户端）</title><link>https://thrinisty.github.io/posts/springai%E7%AC%94%E8%AE%B0mcp/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/springai%E7%AC%94%E8%AE%B0mcp/</guid><description>MCP模型上下文协议</description><pubDate>Sat, 20 Dec 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;SpringAI笔记&lt;/h1&gt;
+&lt;h2&gt;快速入门&lt;/h2&gt;
+&lt;h3&gt;服务端&lt;/h3&gt;
+&lt;p&gt;&lt;strong&gt;注册MCP的服务工具&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;引入依赖，这里我试了下1.0.0不支持Mcp的注解，改为的1.1.0&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;dependencyManagement&amp;gt;
+    &amp;lt;dependencies&amp;gt;
+        &amp;lt;dependency&amp;gt;
+            &amp;lt;groupId&amp;gt;org.springframework.ai&amp;lt;/groupId&amp;gt;
+            &amp;lt;artifactId&amp;gt;spring-ai-bom&amp;lt;/artifactId&amp;gt;
+            &amp;lt;version&amp;gt;1.1.0&amp;lt;/version&amp;gt;
+            &amp;lt;type&amp;gt;pom&amp;lt;/type&amp;gt;
+            &amp;lt;scope&amp;gt;import&amp;lt;/scope&amp;gt;
+        &amp;lt;/dependency&amp;gt;
+    &amp;lt;/dependencies&amp;gt;
+&amp;lt;/dependencyManagement&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;dependency&amp;gt;
+    &amp;lt;groupId&amp;gt;org.springframework.ai&amp;lt;/groupId&amp;gt;
+    &amp;lt;artifactId&amp;gt;spring-ai-starter-mcp-server-webmvc&amp;lt;/artifactId&amp;gt;
+&amp;lt;/dependency&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;运用Tool注解创建function工具&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@Service
+public class McpService {
+    @Tool(description = &quot;根据城市名称获取天气&quot;)
+    public String getWeather(@ToolParam(description = &quot;城市名称&quot;) String cityName) {
+        if(cityName == null) {
+            return &quot;城市名称不能为空&quot;;
+        }
+        if(&quot;北京&quot;.equals(cityName)) {
+            return &quot;北京今天天气：晴，气温25°C，空气质量良&quot;;
+        }
+        if(&quot;上海&quot;.equals(cityName)) {
+            return &quot;上海今天天气：阴，气温28°C，湿度65%&quot;;
+        }
+        return &quot;暂不支持该城市查询，当前可查询：北京、上海&quot;;
+    }
+
+    @Tool(description = &quot;查询城市今天适合的运动&quot;)
+    public String action(@ToolParam(description = &quot;城市名称&quot;) String cityName) {
+        if(&quot;北京&quot;.equals(cityName)) {
+            return &quot;北京今天天气：空气质量良，适合出门运动&quot;;
+        }
+        if(&quot;上海&quot;.equals(cityName)) {
+            return &quot;上海今天天气：阴，适合室内学习&quot;;
+        }
+        return &quot;暂不支持该城市查询，当前可查询：北京、上海&quot;;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;配置Mcp服务&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@Configuration
+public class MCPServiceConfig {
+    @Bean
+    public ToolCallbackProvider weatherTools(McpService mcpService) {
+        return MethodToolCallbackProvider.builder().toolObjects(mcpService).build();
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;再CherryStudio配置使用服务器的Mcp工具&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;我将为您查找上海的天气信息并推荐适合的运动。请稍等片刻。
+MCP 服务器 : getWeather
+已完成
+MCP 服务器 : action
+已完成
+
+根据查询结果：
+
+上海今日天气
+天气状况：阴天
+气温：28°C
+湿度：65%
+运动推荐
+由于今天是阴天，湿度适中，推荐以下运动：
+
+室内健身：如瑜伽、普拉提或健身房训练
+游泳：室内游泳池是不错的选择
+羽毛球/乒乓球：适合在室内场馆进行
+轻度慢跑：如果户外空气质量良好，可以适当进行
+温馨提示：虽然气温不算太高，但阴天紫外线依然存在，户外运动时请注意防晒。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;运用注解注册Mcp服务&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@Service
+public class McpToolService {
+    @McpTool(description = &quot;一个特殊的计算公式&quot;)
+    public int getResult(
+            @McpToolParam(description = &quot;参数a&quot;, required = true) int a,
+            @McpToolParam(description = &quot;参数b&quot;, required = true) int b) {
+        return a * b + 10;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;客户端&lt;/h3&gt;
+&lt;p&gt;如果要让客户端调用刚刚的服务端提供的服务需要更改服务端配置，注意使服务端和客户端的响应方式一致（SSE/STREAMABLE）&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;spring:
+  application:
+    name: basic-test
+  ai:
+    deepseek:
+      api-key: &quot;sk-60b14a427b8946949ebbdff03e99f0e3&quot;
+      base-url: &quot;https://api.deepseek.com&quot;
+      chat:
+        completions-path: &quot;/v1/chat/completions&quot;
+        options:
+          model: &quot;deepseek-chat&quot;
+#    mcp:
+#      server:
+#        protocol: STREAMABLE
+    mcp:
+      server:
+        protocol: SSE
+
+server:
+  port: 8080
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;再在客户端方面引入MCP客户端依赖&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;dependencies&amp;gt;
+    &amp;lt;dependency&amp;gt;
+        &amp;lt;groupId&amp;gt;org.springframework.boot&amp;lt;/groupId&amp;gt;
+        &amp;lt;artifactId&amp;gt;spring-boot-starter-web&amp;lt;/artifactId&amp;gt;
+    &amp;lt;/dependency&amp;gt;
+    &amp;lt;dependency&amp;gt;
+        &amp;lt;groupId&amp;gt;org.springframework.ai&amp;lt;/groupId&amp;gt;
+        &amp;lt;artifactId&amp;gt;spring-ai-starter-mcp-client&amp;lt;/artifactId&amp;gt;
+    &amp;lt;/dependency&amp;gt;
+    &amp;lt;dependency&amp;gt;
+        &amp;lt;groupId&amp;gt;org.springframework.ai&amp;lt;/groupId&amp;gt;
+        &amp;lt;artifactId&amp;gt;spring-ai-starter-model-deepseek&amp;lt;/artifactId&amp;gt;
+    &amp;lt;/dependency&amp;gt;
+&amp;lt;/dependencies&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;再配置客户端yaml文件&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;spring:
+  application:
+    name: mcp-client
+  ai:
+    deepseek:
+      api-key: &quot;sk-60b14a427b8946949ebbdff03e99f0e3&quot;
+      base-url: &quot;https://api.deepseek.com&quot;
+      chat:
+        completions-path: &quot;/v1/chat/completions&quot;
+        options:
+          model: &quot;deepseek-chat&quot;
+    mcp:
+      client:
+        sse:
+          connections:
+            map-server:
+              url: http://localhost:8080
+#        streamable-http:
+#            connections:
+#              mcp-server:
+#                url: http://localhost:8080
+
+server:
+  port: 8081
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;编写测试Controller，将ToolCallbackProvider放入回调工具中，其中就有远程获取到的MCP服务&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@RestController
+@RequestMapping(&quot;/mcp&quot;)
+public class McpClientController {
+    @Resource
+    private ChatClient chatClient;
+    @Resource
+    ToolCallbackProvider mcpTools;
+
+    @GetMapping(&quot;/test&quot;)
+    public String getResult() {
+        return chatClient
+                .prompt(&quot;获取a=10, b=12通过Mcp服务中的特殊计算公式得到的结果&quot;)
+                .toolCallbacks(mcpTools)
+                .call()
+                .content();
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;测试&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;http://localhost:8081/mcp/test
+根据特殊计算公式，当 a=10, b=12 时，得到的结果是 **130**。
+&lt;/code&gt;&lt;/pre&gt;
+</content:encoded></item><item><title>LeetCode刷题（实现一个魔法字典、单词的压缩编码）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E5%AE%9E%E7%8E%B0%E4%B8%80%E4%B8%AA%E9%AD%94%E6%B3%95%E5%AD%97%E5%85%B8%E5%8D%95%E8%AF%8D%E7%9A%84%E5%8E%8B%E7%BC%A9%E7%BC%96%E7%A0%81/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E5%AE%9E%E7%8E%B0%E4%B8%80%E4%B8%AA%E9%AD%94%E6%B3%95%E5%AD%97%E5%85%B8%E5%8D%95%E8%AF%8D%E7%9A%84%E5%8E%8B%E7%BC%A9%E7%BC%96%E7%A0%81/</guid><description>实现一个魔法字典、单词的压缩编码</description><pubDate>Thu, 18 Dec 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;实现一个魔法字典&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;设计一个使用单词列表进行初始化的数据结构，单词列表中的单词 &lt;strong&gt;互不相同&lt;/strong&gt; 。 如果给出一个单词，请判定能否只将这个单词中&lt;strong&gt;一个&lt;/strong&gt;字母换成另一个字母，使得所形成的新单词存在于已构建的神奇字典中。&lt;/p&gt;
+&lt;p&gt;实现 &lt;code&gt;MagicDictionary&lt;/code&gt; 类：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;MagicDictionary()&lt;/code&gt; 初始化对象&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;void buildDict(String[] dictionary)&lt;/code&gt; 使用字符串数组 &lt;code&gt;dictionary&lt;/code&gt; 设定该数据结构，&lt;code&gt;dictionary&lt;/code&gt; 中的字符串互不相同&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;bool search(String searchWord)&lt;/code&gt; 给定一个字符串 &lt;code&gt;searchWord&lt;/code&gt; ，判定能否只将字符串中 &lt;strong&gt;一个&lt;/strong&gt; 字母换成另一个字母，使得所形成的新字符串能够与字典中的任一字符串匹配。如果可以，返回 &lt;code&gt;true&lt;/code&gt; ；否则，返回 &lt;code&gt;false&lt;/code&gt; 。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;示例：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入
+inputs = [&quot;MagicDictionary&quot;, &quot;buildDict&quot;, &quot;search&quot;, &quot;search&quot;, &quot;search&quot;, &quot;search&quot;]
+inputs = [[], [[&quot;hello&quot;, &quot;leetcode&quot;]], [&quot;hello&quot;], [&quot;hhllo&quot;], [&quot;hell&quot;], [&quot;leetcoded&quot;]]
+输出
+[null, null, false, true, false, false]
+
+解释
+MagicDictionary magicDictionary = new MagicDictionary();
+magicDictionary.buildDict([&quot;hello&quot;, &quot;leetcode&quot;]);
+magicDictionary.search(&quot;hello&quot;); // 返回 False
+magicDictionary.search(&quot;hhllo&quot;); // 将第二个 &apos;h&apos; 替换为 &apos;e&apos; 可以匹配 &quot;hello&quot; ，所以返回 True
+magicDictionary.search(&quot;hell&quot;); // 返回 False
+magicDictionary.search(&quot;leetcoded&quot;); // 返回 False
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;运用前缀树求解，加入单词的部分与前缀树一致，差别在于查找需要对其中的一个字符进行替换，替换后从该字符下开始遍历后续的字符即contain函数，其中一种情况满足true即可，如果替换都不满足，则匹配当前字符向下继续判断（不匹配则返回flase）&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class MagicDictionary {
+    class Node {
+        boolean isEnd = false;
+        Node[] next = new Node[26];
+    }
+
+    Node root = new Node();    
+    public void buildDict(String[] dictionary) {
+        for(String word : dictionary) {
+            Node p = root;
+            for(char c : word.toCharArray()) {
+                int index = c - &apos;a&apos;;
+                if(p.next[index] == null) {
+                    p.next[index] = new Node();
+                }
+                p = p.next[index];
+            }
+            p.isEnd = true;
+        }
+    }
+    
+    public boolean search(String searchWord) {
+        int n = searchWord.length();
+        Node p = root;
+        for(int i = 0; i &amp;lt; n; i++) {
+            int index = searchWord.charAt(i) - &apos;a&apos;;
+            for(int j = 0; j &amp;lt; 26; j++) {
+                if(j == index || p.next[j] == null) {
+                    continue;
+                }
+                if(contain(searchWord.substring(i + 1), p.next[j])) {
+                    return true;
+                }
+            }
+            if(p.next[index] == null) {
+                return false;
+            }
+            p = p.next[index];
+        }
+        return false;
+    }
+
+    public boolean contain(String word, Node p) {
+        for(char c : word.toCharArray()) {
+            int index = c - &apos;a&apos;;
+            if(p.next[index] == null) {
+                return false;
+            }
+            p = p.next[index];
+        }
+        return p.isEnd;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1&gt;单词的压缩编码&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;单词数组 &lt;code&gt;words&lt;/code&gt; 的 &lt;strong&gt;有效编码&lt;/strong&gt; 由任意助记字符串 &lt;code&gt;s&lt;/code&gt; 和下标数组 &lt;code&gt;indices&lt;/code&gt; 组成，且满足：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;words.length == indices.length&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;助记字符串 &lt;code&gt;s&lt;/code&gt; 以 &lt;code&gt;&apos;#&apos;&lt;/code&gt; 字符结尾&lt;/li&gt;
+&lt;li&gt;对于每个下标 &lt;code&gt;indices[i]&lt;/code&gt; ，&lt;code&gt;s&lt;/code&gt; 的一个从 &lt;code&gt;indices[i]&lt;/code&gt; 开始、到下一个 &lt;code&gt;&apos;#&apos;&lt;/code&gt; 字符结束（但不包括 &lt;code&gt;&apos;#&apos;&lt;/code&gt;）的 &lt;strong&gt;子字符串&lt;/strong&gt; 恰好与 &lt;code&gt;words[i]&lt;/code&gt; 相等&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;给定一个单词数组 &lt;code&gt;words&lt;/code&gt; ，返回成功对 &lt;code&gt;words&lt;/code&gt; 进行编码的最小助记字符串 &lt;code&gt;s&lt;/code&gt; 的长度 。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：words = [&quot;time&quot;, &quot;me&quot;, &quot;bell&quot;]
+输出：10
+解释：一组有效编码为 s = &quot;time#bell#&quot; 和 indices = [0, 2, 5] 。
+words[0] = &quot;time&quot; ，s 开始于 indices[0] = 0 到下一个 &apos;#&apos; 结束的子字符串，如加粗部分所示 &quot;time#bell#&quot;
+words[1] = &quot;me&quot; ，s 开始于 indices[1] = 2 到下一个 &apos;#&apos; 结束的子字符串，如加粗部分所示 &quot;time#bell#&quot;
+words[2] = &quot;bell&quot; ，s 开始于 indices[2] = 5 到下一个 &apos;#&apos; 结束的子字符串，如加粗部分所示 &quot;time#bell#&quot;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：words = [&quot;t&quot;]
+输出：2
+解释：一组有效编码为 s = &quot;t#&quot; 和 indices = [0] 。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;将words从大到小按照长度排序，这样小的就可以被后边的大的word包含，遍历，依次判断是否存在满足set中有str以word结尾，如果有则不用放入，如果没有则需要放入set，并更新增加result（单词长度+#）&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public int minimumLengthEncoding(String[] words) {
+        Arrays.sort(words, (a, b) -&amp;gt; b.length() - a.length());
+        Set&amp;lt;String&amp;gt; set = new HashSet&amp;lt;&amp;gt;();
+        int result = 0;
+        for(String word : words) {
+            boolean flag = false;
+            for(String str : set) {
+                if(str.endsWith(word)) {
+                    flag = true;
+                    break;
+                }
+            }
+            if(!flag) {
+                set.add(word);
+                result += word.length() + 1;
+            }
+        }
+        return result;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+</content:encoded></item><item><title>LeetCode刷题（数据流中的第K大元素、单词替换）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E6%95%B0%E6%8D%AE%E6%B5%81%E4%B8%AD%E7%9A%84%E7%AC%ACk%E5%A4%A7%E5%85%83%E7%B4%A0%E5%8D%95%E8%AF%8D%E6%9B%BF%E6%8D%A2/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E6%95%B0%E6%8D%AE%E6%B5%81%E4%B8%AD%E7%9A%84%E7%AC%ACk%E5%A4%A7%E5%85%83%E7%B4%A0%E5%8D%95%E8%AF%8D%E6%9B%BF%E6%8D%A2/</guid><description>数据流中的第K大元素、单词替换</description><pubDate>Wed, 17 Dec 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;数据流中的第K大元素&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;设计一个找到数据流中第 &lt;code&gt;k&lt;/code&gt; 大元素的类（class）。注意是排序后的第 &lt;code&gt;k&lt;/code&gt; 大元素，不是第 &lt;code&gt;k&lt;/code&gt; 个不同的元素。&lt;/p&gt;
+&lt;p&gt;请实现 &lt;code&gt;KthLargest&lt;/code&gt; 类：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;KthLargest(int k, int[] nums)&lt;/code&gt; 使用整数 &lt;code&gt;k&lt;/code&gt; 和整数流 &lt;code&gt;nums&lt;/code&gt; 初始化对象。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;int add(int val)&lt;/code&gt; 将 &lt;code&gt;val&lt;/code&gt; 插入数据流 &lt;code&gt;nums&lt;/code&gt; 后，返回当前数据流中第 &lt;code&gt;k&lt;/code&gt; 大的元素。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;示例：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：
+[&quot;KthLargest&quot;, &quot;add&quot;, &quot;add&quot;, &quot;add&quot;, &quot;add&quot;, &quot;add&quot;]
+[[3, [4, 5, 8, 2]], [3], [5], [10], [9], [4]]
+输出：
+[null, 4, 5, 5, 8, 8]
+
+解释：
+KthLargest kthLargest = new KthLargest(3, [4, 5, 8, 2]);
+kthLargest.add(3);   // return 4
+kthLargest.add(5);   // return 5
+kthLargest.add(10);  // return 5
+kthLargest.add(9);   // return 8
+kthLargest.add(4);   // return 8
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;pre&gt;&lt;code&gt;class KthLargest {
+    PriorityQueue&amp;lt;Integer&amp;gt; heap;
+    int k;
+
+    public KthLargest(int k, int[] nums) {
+        this.k = k;
+        heap = new PriorityQueue&amp;lt;&amp;gt;();
+        for(int num : nums) {
+            heap.offer(num);
+            if(heap.size() &amp;gt; k) {
+                heap.poll();
+            }
+        }
+    }
+    
+    public int add(int val) {
+        heap.offer(val);
+        if(heap.size() &amp;gt; k) {
+            heap.poll();
+        }
+        return heap.peek();
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1&gt;单词替换&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;在英语中，有一个叫做 &lt;code&gt;词根(root)&lt;/code&gt; 的概念，它可以跟着其他一些词组成另一个较长的单词——我们称这个词为 &lt;code&gt;继承词(successor)&lt;/code&gt;。例如，词根&lt;code&gt;an&lt;/code&gt;，跟随着单词 &lt;code&gt;other&lt;/code&gt;(其他)，可以形成新的单词 &lt;code&gt;another&lt;/code&gt;(另一个)。&lt;/p&gt;
+&lt;p&gt;现在，给定一个由许多词根组成的词典和一个句子，需要将句子中的所有&lt;code&gt;继承词&lt;/code&gt;用&lt;code&gt;词根&lt;/code&gt;替换掉。如果&lt;code&gt;继承词&lt;/code&gt;有许多可以形成它的&lt;code&gt;词根&lt;/code&gt;，则用最短的词根替换它。&lt;/p&gt;
+&lt;p&gt;需要输出替换之后的句子。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：dictionary = [&quot;cat&quot;,&quot;bat&quot;,&quot;rat&quot;], sentence = &quot;the cattle was rattled by the battery&quot;
+输出：&quot;the cat was rat by the bat&quot;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：dictionary = [&quot;a&quot;,&quot;b&quot;,&quot;c&quot;], sentence = &quot;aadsfasf absbs bbab cadsfafs&quot;
+输出：&quot;a a b c&quot;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 3：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：dictionary = [&quot;a&quot;, &quot;aa&quot;, &quot;aaa&quot;, &quot;aaaa&quot;], sentence = &quot;a aa a aaaa aaa aaa aaa aaaaaa bbb baba ababa&quot;
+输出：&quot;a a a a a a a a bbb baba a&quot;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 4：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：dictionary = [&quot;catt&quot;,&quot;cat&quot;,&quot;bat&quot;,&quot;rat&quot;], sentence = &quot;the cattle was rattled by the battery&quot;
+输出：&quot;the cat was rat by the bat&quot;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 5：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：dictionary = [&quot;ac&quot;,&quot;ab&quot;], sentence = &quot;it is abnormal that this solution is accepted&quot;
+输出：&quot;it is ab that this solution is ac&quot;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;依旧用前缀树解决，但是不存储isEnd了，而是存储到这里的前缀单词，提供放入前缀的函数，以及判断单词是否在树中有前缀，对于每个词进行判断，之后构造结果&lt;/p&gt;
+&lt;p&gt;get就是依次判断有没有前缀，如果中间看到了后续的字符为null则没有对应前缀，如果遍历到了一个节点发现有对应的前缀即word不为null，则返回word前缀&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    class Node {
+        String word = null;
+        Node[] next = new Node[26];
+    }
+
+    Node root = new Node();
+    public String replaceWords(List&amp;lt;String&amp;gt; dictionary, String sentence) {
+        for(String str : dictionary) {
+            insert(str);
+        }
+        String[] arr = sentence.split(&quot; &quot;);
+        for(int i = 0; i &amp;lt; arr.length; i++) {
+            arr[i] = get(arr[i]) == null ? arr[i] : get(arr[i]);
+        } 
+        StringBuilder result = new StringBuilder();
+        for(int i = 0; i &amp;lt; arr.length; i++) {
+            String str = arr[i];
+            result.append(str + &quot; &quot;);
+        }
+        result.deleteCharAt(result.length() - 1);
+        return result.toString();
+    }
+
+    void insert(String word) {
+        Node p = root;
+        for(char c : word.toCharArray()) {
+            int index = c - &apos;a&apos;;
+            if(p.next[index] == null) {
+                p.next[index] = new Node();
+            }
+            p = p.next[index];
+        }
+        p.word = word;
+    }
+
+    String get(String word) {
+        Node p = root;
+        for(char c : word.toCharArray()) {
+            int index = c - &apos;a&apos;;
+            if(p.next[index] == null) {
+                return null;
+            }
+            p = p.next[index];
+            if(p.word != null) {
+                break;
+            }
+        }
+        return p.word;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+</content:encoded></item><item><title>LeetCode刷题（存在重复元素Ⅲ、我的日程安排表）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E5%AD%98%E5%9C%A8%E9%87%8D%E5%A4%8D%E5%85%83%E7%B4%A0%E2%85%B2%E6%88%91%E7%9A%84%E6%97%A5%E7%A8%8B%E5%AE%89%E6%8E%92%E8%A1%A8/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E5%AD%98%E5%9C%A8%E9%87%8D%E5%A4%8D%E5%85%83%E7%B4%A0%E2%85%B2%E6%88%91%E7%9A%84%E6%97%A5%E7%A8%8B%E5%AE%89%E6%8E%92%E8%A1%A8/</guid><description>存在重复元素Ⅲ、我的日程安排表</description><pubDate>Tue, 16 Dec 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;存在重复元素Ⅲ表&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;给你一个整数数组 &lt;code&gt;nums&lt;/code&gt; 和两个整数 &lt;code&gt;k&lt;/code&gt; 和 &lt;code&gt;t&lt;/code&gt; 。请你判断是否存在 &lt;strong&gt;两个不同下标&lt;/strong&gt; &lt;code&gt;i&lt;/code&gt; 和 &lt;code&gt;j&lt;/code&gt;，使得 &lt;code&gt;abs(nums[i] - nums[j]) &amp;lt;= t&lt;/code&gt; ，同时又满足 &lt;code&gt;abs(i - j) &amp;lt;= k&lt;/code&gt; 。&lt;/p&gt;
+&lt;p&gt;如果存在则返回 &lt;code&gt;true&lt;/code&gt;，不存在返回 &lt;code&gt;false&lt;/code&gt;。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：nums = [1,2,3,1], k = 3, t = 0
+输出：true
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：nums = [1,0,1,1], k = 1, t = 2
+输出：true
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 3：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：nums = [1,5,9,1,5,9], k = 2, t = 3
+输出：false
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;使用TreeSet集合，这个集合由红黑树构成，可以保证内部元素按照顺序排列，每一次加入元素的时候查询上一个、下一个元素的值并判断值相差小于等于t，如果满足则返回true（前后两个元素不满足则其余的也不满足）&lt;/p&gt;
+&lt;p&gt;加入当前元素，并移除 i - k 对应的元素，因为下一个i + 1的位置放入元素对于这个i - k的元素是没有办法满足i - j &amp;lt;= k 的&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public boolean containsNearbyAlmostDuplicate(int[] nums, int k, int t) {
+        TreeSet&amp;lt;Integer&amp;gt; set = new TreeSet&amp;lt;&amp;gt;();
+        for(int i = 0; i &amp;lt; nums.length; i++) {
+            Integer num = nums[i];
+            Integer left = set.floor(num);
+            Integer right = set.ceiling(num);
+            if(left != null &amp;amp;&amp;amp; (long)num - left &amp;lt;= t) {
+                return true;
+            }
+            if(right != null &amp;amp;&amp;amp; (long)right - num &amp;lt;= t) {
+                return true;
+            }
+            set.add(num);
+            if(i &amp;gt;= k) {
+                set.remove(nums[i - k]);
+            }
+        }
+        return false;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1&gt;我的日程安排表&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;请实现一个 &lt;code&gt;MyCalendar&lt;/code&gt; 类来存放你的日程安排。如果要添加的时间内没有其他安排，则可以存储这个新的日程安排。&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;MyCalendar&lt;/code&gt; 有一个 &lt;code&gt;book(int start, int end)&lt;/code&gt;方法。它意味着在 start 到 end 时间内增加一个日程安排，注意，这里的时间是半开区间，即 &lt;code&gt;[start, end)&lt;/code&gt;, 实数 &lt;code&gt;x&lt;/code&gt; 的范围为，  &lt;code&gt;start &amp;lt;= x &amp;lt; end&lt;/code&gt;。&lt;/p&gt;
+&lt;p&gt;当两个日程安排有一些时间上的交叉时（例如两个日程安排都在同一时间内），就会产生重复预订。&lt;/p&gt;
+&lt;p&gt;每次调用 &lt;code&gt;MyCalendar.book&lt;/code&gt;方法时，如果可以将日程安排成功添加到日历中而不会导致重复预订，返回 &lt;code&gt;true&lt;/code&gt;。否则，返回 &lt;code&gt;false&lt;/code&gt; 并且不要将该日程安排添加到日历中。&lt;/p&gt;
+&lt;p&gt;请按照以下步骤调用 &lt;code&gt;MyCalendar&lt;/code&gt; 类: &lt;code&gt;MyCalendar cal = new MyCalendar();&lt;/code&gt; &lt;code&gt;MyCalendar.book(start, end)&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入:
+[&quot;MyCalendar&quot;,&quot;book&quot;,&quot;book&quot;,&quot;book&quot;]
+[[],[10,20],[15,25],[20,30]]
+输出: [null,true,false,true]
+解释: 
+MyCalendar myCalendar = new MyCalendar();
+MyCalendar.book(10, 20); // returns true 
+MyCalendar.book(15, 25); // returns false ，第二个日程安排不能添加到日历中，因为时间 15 已经被第一个日程安排预定了
+MyCalendar.book(20, 30); // returns true ，第三个日程安排可以添加到日历中，因为第一个日程安排并不包含时间 20 
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;解法一：运用List集合存储，每次放入的时候遍历集合看是否有冲突&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class MyCalendar {
+    List&amp;lt;int[]&amp;gt; booked;
+    public MyCalendar() {
+        booked = new ArrayList&amp;lt;&amp;gt;();
+    }
+    
+    public boolean book(int start, int end) {
+        for(int[] arr : booked) {
+            int left = arr[0];
+            int right = arr[1];
+            if(end &amp;gt; left &amp;amp;&amp;amp; start &amp;lt; right) {
+                return false;
+            }
+        }
+        booked.add(new int[]{start, end});
+        return true;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;解法二：运用TreeSet设置比较规则，因为集合中的元素都满足不重叠，只需要设置比较起始从小到大即可，取出前一个和后一个位置的元素，元素存在时判断是否冲突即可&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class MyCalendar {
+    TreeSet&amp;lt;int[]&amp;gt; booked;
+
+    public MyCalendar() {
+        booked = new TreeSet&amp;lt;&amp;gt;((a, b) -&amp;gt; a[0] - b[0]);
+    }
+    
+    public boolean book(int start, int end) {
+        int[] current = new int[]{start, end};
+        if(!booked.isEmpty()) {
+            int[] prev = booked.floor(current);
+            int[] next = booked.ceiling(current);
+            if(prev != null &amp;amp;&amp;amp; start &amp;lt; prev[1]) {
+                return false;
+            }
+            if(next != null &amp;amp;&amp;amp; end &amp;gt; next[0]) {
+                return false;
+            }
+        }
+        booked.add(current);
+        return true;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+</content:encoded></item><item><title>LeetCode刷题（二叉搜索树中的中序后继、两数之和Ⅱ）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E4%BA%8C%E5%8F%89%E6%90%9C%E7%B4%A2%E6%A0%91%E4%B8%AD%E7%9A%84%E4%B8%AD%E5%BA%8F%E5%90%8E%E7%BB%A7%E4%B8%A4%E6%95%B0%E4%B9%8B%E5%92%8C%E2%85%B1/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E4%BA%8C%E5%8F%89%E6%90%9C%E7%B4%A2%E6%A0%91%E4%B8%AD%E7%9A%84%E4%B8%AD%E5%BA%8F%E5%90%8E%E7%BB%A7%E4%B8%A4%E6%95%B0%E4%B9%8B%E5%92%8C%E2%85%B1/</guid><description>二叉搜索树中的中序后继、两数之和Ⅱ</description><pubDate>Mon, 15 Dec 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;二叉搜索树中的中序后继&lt;/h1&gt;
 &lt;h2&gt;题目描述&lt;/h2&gt;
 &lt;p&gt;给定一棵二叉搜索树和其中的一个节点 &lt;code&gt;p&lt;/code&gt; ，找到该节点在树中的中序后继。如果节点没有中序后继，请返回 &lt;code&gt;null&lt;/code&gt; 。&lt;/p&gt;
 &lt;p&gt;节点 &lt;code&gt;p&lt;/code&gt; 的后继是值比 &lt;code&gt;p.val&lt;/code&gt; 大的节点中键值最小的节点，即按中序遍历的顺序节点 &lt;code&gt;p&lt;/code&gt; 的下一个节点。&lt;/p&gt;
@@ -99,7 +919,7 @@
     }
 }
 &lt;/code&gt;&lt;/pre&gt;
-</content:encoded></item><item><title>SpringAI笔记（提示、结构化输出、聊天记忆、工具调用）</title><link>https://thrinisty.github.io/posts/springai%E7%AC%94%E8%AE%B0%E6%8F%90%E7%A4%BA%E7%BB%93%E6%9E%84%E5%8C%96%E8%BE%93%E5%87%BA%E8%81%8A%E5%A4%A9%E8%AE%B0%E5%BF%86/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/springai%E7%AC%94%E8%AE%B0%E6%8F%90%E7%A4%BA%E7%BB%93%E6%9E%84%E5%8C%96%E8%BE%93%E5%87%BA%E8%81%8A%E5%A4%A9%E8%AE%B0%E5%BF%86/</guid><description>提示、提示模板、结构化输出、聊天记忆、工具调用</description><pubDate>Mon, 15 Dec 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;SpringAI笔记&lt;/h1&gt;
+</content:encoded></item><item><title>SpringAI笔记（提示、结构化输出、聊天记忆、工具调用）</title><link>https://thrinisty.github.io/posts/springai%E7%AC%94%E8%AE%B0%E6%8F%90%E7%A4%BA%E7%BB%93%E6%9E%84%E5%8C%96%E8%BE%93%E5%87%BA%E8%81%8A%E5%A4%A9%E8%AE%B0%E5%BF%86%E5%B7%A5%E5%85%B7%E8%B0%83%E7%94%A8/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/springai%E7%AC%94%E8%AE%B0%E6%8F%90%E7%A4%BA%E7%BB%93%E6%9E%84%E5%8C%96%E8%BE%93%E5%87%BA%E8%81%8A%E5%A4%A9%E8%AE%B0%E5%BF%86%E5%B7%A5%E5%85%B7%E8%B0%83%E7%94%A8/</guid><description>提示、提示模板、结构化输出、聊天记忆、工具调用</description><pubDate>Mon, 15 Dec 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;SpringAI笔记&lt;/h1&gt;
 &lt;h2&gt;提示&lt;/h2&gt;
 &lt;p&gt;&lt;strong&gt;基本概念&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;提示词引导AI模型生成特定输出的输入，这些提示的设计和措辞显著影响模型的回答&lt;/p&gt;
@@ -353,6 +1173,79 @@ public String chatTemplateJson(@PathVariable String content) {
             .prompt()
             .user(content)
             .tools(new TestTools())
+            .call()
+            .content();
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;功能工具回调&lt;/h3&gt;
+&lt;p&gt;温度获取工具&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class WeatherService implements Function&amp;lt;WeatherRequest, WeatherResponse&amp;gt; {
+    @Override
+    public WeatherResponse apply(WeatherRequest weatherRequest) {
+        return new WeatherResponse(Util.C, 30.0);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;工具传入参数&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@Data
+@AllArgsConstructor
+public class WeatherRequest {
+    Util util;
+    String location;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;工具输出参数&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@Data
+@AllArgsConstructor
+public class WeatherResponse {
+    Util util;
+    double temp;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;枚举类&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public enum Util {
+    C,
+    F
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;AI回调工具&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@GetMapping(&quot;/chat/function/{content}&quot;)
+public String chatUserFunction(@PathVariable String content) {
+    ToolCallback toolCallback = FunctionToolCallback
+            .builder(&quot;currentWeather&quot;, new WeatherService())
+            .description(&quot;Get the weather in location&quot;)
+            .inputType(WeatherRequest.class)
+            .build();
+
+    return chatClient.prompt(&quot;今天北京天气怎样&quot;)
+            .toolCallbacks(toolCallback)
+            .call()
+            .content();
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;请求：http://localhost:8080/tool/chat/function/北京、摄氏度
+结果：今天北京天气比较热，气温为30°C。建议您注意防暑降温，多补充水分。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;通过Bean注解完成&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@Configuration(proxyBeanMethods = false)
+public class WeatherTool {
+    WeatherService weatherService = new WeatherService();
+
+    @Bean(&quot;currentWeather&quot;)
+    @Description(&quot;获取气温&quot;)
+    Function&amp;lt;WeatherRequest, WeatherResponse&amp;gt; currentWeather() {
+        return weatherService;
+    }
+
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;调用&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@GetMapping(&quot;/chat/weather/{content}&quot;)
+public String chatWeatherFunction(@PathVariable String content) {
+    return chatClient
+            .prompt()
+            .user(content)
+            .toolNames(&quot;currentWeather&quot;)
             .call()
             .content();
 }
@@ -20380,188 +21273,6 @@ public class UserController {
 &lt;h2&gt;总结&lt;/h2&gt;
 &lt;p&gt;总的来说这个月学到的东西还是很多来着，Spring部分结束了，LeetCode也是继续再刷，MyBatis、SpringMVC、SpringBoot学会了常见的使用（速成），之后等忙完了也许会再次回顾补补基础之类的？Spring AI的初步使用，现在官方的文档还不是很全不太好学习。南京很热啊，每天实习上下班通勤难受死了，回到公寓基本也是啥也不想干，周末放空大脑好好娱乐，不过好在确实能够接触到工作的环境，和前辈们交流交流了解一下工作的相关知识&lt;/p&gt;
 &lt;p&gt;负责的老师也派活下来了，拓展一个论坛的功能，要求前后端完成，所以Vue的学习也要提上日程了，算是个绝佳的练手机会吧&lt;/p&gt;
-</content:encoded></item><item><title>SpringAI笔记（MCPService，上下文对话，内容封装）</title><link>https://thrinisty.github.io/posts/springai%E7%AC%94%E8%AE%B0mcpservice%E4%B8%8A%E4%B8%8B%E6%96%87%E5%AF%B9%E8%AF%9D%E5%86%85%E5%AE%B9%E5%B0%81%E8%A3%85/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/springai%E7%AC%94%E8%AE%B0mcpservice%E4%B8%8A%E4%B8%8B%E6%96%87%E5%AF%B9%E8%AF%9D%E5%86%85%E5%AE%B9%E5%B0%81%E8%A3%85/</guid><description>MCPService 上下文对话，内容封装</description><pubDate>Mon, 30 Jun 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;SpringAI笔记&lt;/h1&gt;
-&lt;h2&gt;MCP&lt;/h2&gt;
-&lt;p&gt;模型上下文协议&lt;/p&gt;
-&lt;p&gt;是一种标准化协议，使 AI 模型能以结构化方式与外部工具及资源交互。它支持多种传输机制，以适应不同环境的灵活性需求。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;../images/215.jpg&quot; alt=&quot;215&quot; /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;a href=&quot;https://modelcontextprotocol.io/sdk/java&quot;&gt;MCP Java SDK&lt;/a&gt; 提供 MCP 的 Java 实现，支持通过同步和异步通信模式与 AI 模型及工具进行标准化交互。&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;Spring AI MCP&lt;/strong&gt; 通过集成 Spring Boot 扩展了 MCP Java SDK，同时提供 &lt;a href=&quot;https://springdoc.cn/spring-ai/api/mcp/mcp-client-boot-starter-docs.html&quot;&gt;客户端&lt;/a&gt; 和 &lt;a href=&quot;https://springdoc.cn/spring-ai/api/mcp/mcp-server-boot-starter-docs.html&quot;&gt;服务端&lt;/a&gt; Starter。使用 &lt;a href=&quot;https://start.springboot.io/&quot;&gt;Spring Initializer&lt;/a&gt;可快速构建支持 MCP 的 AI 应用。&lt;/p&gt;
-&lt;h2&gt;MCPService&lt;/h2&gt;
-&lt;h3&gt;引入相关依赖&lt;/h3&gt;
-&lt;p&gt;引入仓库依赖&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;&amp;lt;repositories&amp;gt;
-    &amp;lt;repository&amp;gt;
-       &amp;lt;id&amp;gt;spring-snapshots&amp;lt;/id&amp;gt;
-       &amp;lt;name&amp;gt;Spring Snapshots&amp;lt;/name&amp;gt;
-       &amp;lt;url&amp;gt;https://repo.spring.io/snapshot&amp;lt;/url&amp;gt;
-       &amp;lt;releases&amp;gt;
-          &amp;lt;enabled&amp;gt;false&amp;lt;/enabled&amp;gt;
-       &amp;lt;/releases&amp;gt;
-    &amp;lt;/repository&amp;gt;
-    &amp;lt;repository&amp;gt;
-       &amp;lt;name&amp;gt;Central Portal Snapshots&amp;lt;/name&amp;gt;
-       &amp;lt;id&amp;gt;central-portal-snapshots&amp;lt;/id&amp;gt;
-       &amp;lt;url&amp;gt;https://central.sonatype.com/repository/maven-snapshots/&amp;lt;/url&amp;gt;
-       &amp;lt;releases&amp;gt;
-          &amp;lt;enabled&amp;gt;false&amp;lt;/enabled&amp;gt;
-       &amp;lt;/releases&amp;gt;
-       &amp;lt;snapshots&amp;gt;
-          &amp;lt;enabled&amp;gt;true&amp;lt;/enabled&amp;gt;
-       &amp;lt;/snapshots&amp;gt;
-    &amp;lt;/repository&amp;gt;
-&amp;lt;/repositories&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;引入MCP Service相关依赖&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;&amp;lt;dependency&amp;gt;
-    &amp;lt;groupId&amp;gt;org.springframework.ai&amp;lt;/groupId&amp;gt;
-    &amp;lt;artifactId&amp;gt;spring-ai-starter-mcp-server-webmvc&amp;lt;/artifactId&amp;gt;
-&amp;lt;/dependency&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;&amp;lt;dependencyManagement&amp;gt;
-    &amp;lt;dependencies&amp;gt;
-       &amp;lt;dependency&amp;gt;
-          &amp;lt;groupId&amp;gt;org.springframework.ai&amp;lt;/groupId&amp;gt;
-          &amp;lt;artifactId&amp;gt;spring-ai-bom&amp;lt;/artifactId&amp;gt;
-          &amp;lt;version&amp;gt;1.0.0-SNAPSHOT&amp;lt;/version&amp;gt;
-          &amp;lt;type&amp;gt;pom&amp;lt;/type&amp;gt;
-          &amp;lt;scope&amp;gt;import&amp;lt;/scope&amp;gt;
-       &amp;lt;/dependency&amp;gt;
-    &amp;lt;/dependencies&amp;gt;
-&amp;lt;/dependencyManagement&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Tool注解表示MCP服务方法&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;@Service
-public class WeatherService {
-    @Tool(description = &quot;根据城市名称获取天气&quot;)
-    public String getWeather(@ToolParam(description = &quot;城市名称&quot;) String cityName) {
-        if(cityName == null) {
-            return &quot;城市名称不能为空&quot;;
-        }
-        if(&quot;北京&quot;.equals(cityName)) {
-            return &quot;北京今天天气：晴，气温25°C，空气质量良&quot;;
-        }
-        if(&quot;上海&quot;.equals(cityName)) {
-            return &quot;上海今天天气：阴，气温28°C，湿度65%&quot;;
-        }
-        return &quot;暂不支持该城市查询，当前可查询：北京、上海&quot;;
-    }
-
-    @Tool(description = &quot;查询城市今天适合的运动&quot;)
-    public String action(@ToolParam(description = &quot;城市名称&quot;) String cityName) {
-        if(&quot;北京&quot;.equals(cityName)) {
-            return &quot;北京今天天气：空气质量良，适合出门运动&quot;;
-        }
-        if(&quot;上海&quot;.equals(cityName)) {
-            return &quot;上海今天天气：阴，适合室内学习&quot;;
-        }
-        return &quot;暂不支持该城市查询，当前可查询：北京、上海&quot;;
-    }
-}
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;使用Bean注解注册ToolCallbackProvider&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;@Configuration
-public class MCPServiceConfig {
-    @Bean
-    public ToolCallbackProvider weatherTools(WeatherService weatherService) {
-        return MethodToolCallbackProvider.builder().toolObjects(weatherService).build();
-    }
-}
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;注册的服务&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;../images/214.png&quot; alt=&quot;214&quot; /&gt;&lt;/p&gt;
-&lt;p&gt;查询结果调用注册的MCP方法&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;../images/213.png&quot; alt=&quot;213&quot; /&gt;&lt;/p&gt;
-&lt;h2&gt;记忆对话&lt;/h2&gt;
-&lt;p&gt;上下文对话的作用就是让AI具有记忆力，在快速入门和流式对话中，我们是通过一种单一的输入输出方式进行调用的，这种调用方式无法让AI具有记忆力&lt;/p&gt;
-&lt;p&gt;ChatGPT上下文对话的实现原理较为简单，本质上其实就是将不同角色的聊天信息依次存储在一个队列中发送给ChatGPT即可，然后ChatGPT会根据整个聊天信息对回复内容进行判断。在OpenAI提供的接口中，每条信息的角色总共分为三类：&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;SystemMessage：系统限制信息，这种信息在对话中的权重很大，AI会优先依据SystemMessage里的内容进行回复；&lt;/li&gt;
-&lt;li&gt;UserMessage：用户信息&lt;/li&gt;
-&lt;li&gt;AssistantMessage：AI回复信息&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;如果我们需要实现上下文对话，就只需要使用一个List存储这些Message对象，并将这些Message对象一并发送给AI，AI拿到这些Message后，会根据Message里的内容进行回复。&lt;/p&gt;
-&lt;p&gt;:::warning&lt;/p&gt;
-&lt;p&gt;不过，根据OpenAI的计费规则，&lt;strong&gt;你的消息队列越长，单次问询需要的费用就会越高&lt;/strong&gt;，因此我们需要对这个消息列表的长度进行限制。&lt;/p&gt;
-&lt;p&gt;:::&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;private final List&amp;lt;Message&amp;gt; messageHistory = new ArrayList&amp;lt;&amp;gt;(); // 历史消息列表
-private static final int MAX_HISTORY = 10; // 保留最近10条消息
-
-@GetMapping(&quot;/chat&quot;)
-public String chat(@RequestParam String prompt) {
-    // 1. 添加用户消息到历史
-    messageHistory.add(new UserMessage(prompt));
-    // 2. 修剪历史（固定窗口算法）
-    if (messageHistory.size() &amp;gt; MAX_HISTORY) {
-        messageHistory.remove(0); // 移除最旧的消息
-    }
-    // 3. 调用模型生成回复
-    AssistantMessage assistantMessage = chatModel.call(new Prompt(messageHistory))
-            .getResult()
-            .getOutput();
-    // 4. 添加AI回复到历史
-    messageHistory.add(assistantMessage);
-    return assistantMessage.getContent();
-}
-// 清空历史（可选）
-@PostMapping(&quot;/clear&quot;)
-public String clear() {
-    messageHistory.clear();
-    return &quot;对话历史已重置&quot;;
-}
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;strong&gt;首次提问&lt;/strong&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;你的名字是Marry，请你记住，以后回复我的时候带上你的名字
-&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;好的，我记住了！以后每次回复你时，我都会带上名字的。 ——Marry
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;strong&gt;第二次提问&lt;/strong&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;你的名字是什么
-&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;我的名字是 **Marry**！很高兴为你服务～ ——Marry
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;strong&gt;第三次提问&lt;/strong&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;我对你的第一条信息的要求是什么
-&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;你第一条信息的要求是： **“请你记住，以后回复我的时候带上你的名字（Marry）”。** 所以我会在每次回复的结尾标注 **——Marry**，像这样哦～ （注：发现之前的拼写差异了吗？你最初写的是“Marry”，但这次提问时写成了“Marry”，我会继续统一使用 **Marry** 的拼写，除非你另有指示 😊） ——Marry
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;strong&gt;请求清除历史&lt;/strong&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;对话历史已重置
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;strong&gt;再次提问&lt;/strong&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;你最初的第一条信息是：**“你好！”** 不过，如果你指的是对**我**（即你作为用户）的第一条信息的要求，通常并没有严格限制。你可以自由地输入任何问题、指令或话题，比如： - 提问（如“如何学习编程？”） - 请求帮助（如“请总结这篇文章”） - 直接对话（如“嗨，今天怎么样？”） 我的设计目标是灵活适应你的需求，所以无论是简单问候、具体问题，还是测试功能，都可以直接发送。唯一需要注意的是： 1. **避免违法/有害内容**（如暴力、隐私侵犯等）。 2. **清晰表达需求**（越具体，回答越精准）。 如果有特别格式或规则，你可以随时提出，我会配合！ 😊 需要我演示如何回答某类问题吗？
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;实现了一定的上下文记忆要求&lt;/p&gt;
-&lt;h2&gt;内容封装&lt;/h2&gt;
-&lt;p&gt;将问答内容封装进入bean对象&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;@GetMapping(&quot;/findBook&quot;)
-public Book findBook(@RequestParam String bookName) throws Exception {
-    String userText = &quot;&quot;&quot;
-    请严格以如下JSON格式返回《%s》的信息：
-    {
-      &quot;name&quot;: &quot;书名&quot;,
-      &quot;author&quot;: &quot;作者&quot;,
-      &quot;price&quot;: 价格数字,
-      &quot;description&quot;: &quot;简介&quot;
-    }
-    不要返回任何非JSON内容。
-    &quot;&quot;&quot;.formatted(bookName);
-    String jsonResponse = chatModel.call(new Prompt(new UserMessage(userText)))
-            .getResult()
-            .getOutput()
-            .getContent();
-    System.out.println(jsonResponse);
-    // 使用Jackson解析JSON
-    return new ObjectMapper().readValue(jsonResponse, Book.class);
-}
-&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;{
-  &quot;name&quot;: &quot;1984&quot;,
-  &quot;author&quot;: &quot;乔治·奥威尔&quot;,
-  &quot;price&quot;: 35,
-  &quot;description&quot;: &quot;《1984》是英国作家乔治·奥威尔创作的一部反乌托邦小说，描绘了一个极权主义社会中个人自由被彻底剥夺的恐怖景象。小说通过主人公温斯顿·史密斯的视角，展现了思想控制、历史篡改和无处不在的监控如何彻底改变人类的本质。&quot;
-}
-&lt;/code&gt;&lt;/pre&gt;
 </content:encoded></item><item><title>SpringBoot笔记（原理分析，监控，项目部署）</title><link>https://thrinisty.github.io/posts/springboot%E7%AC%94%E8%AE%B0%E5%8E%9F%E7%90%86%E5%88%86%E6%9E%90%E7%9B%91%E6%8E%A7%E9%A1%B9%E7%9B%AE%E9%83%A8%E7%BD%B2/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/springboot%E7%AC%94%E8%AE%B0%E5%8E%9F%E7%90%86%E5%88%86%E6%9E%90%E7%9B%91%E6%8E%A7%E9%A1%B9%E7%9B%AE%E9%83%A8%E7%BD%B2/</guid><pubDate>Thu, 26 Jun 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;SpringBoot笔记&lt;/h1&gt;
 &lt;p&gt;Spring高级部分包括以下三个部分&lt;/p&gt;
 &lt;p&gt;SpringBoot原理分析  SpringBoot监控  SpringBoot项目部署&lt;/p&gt;
@@ -25085,6 +25796,7 @@ public class TransactionAspect {
 &lt;li&gt;题目数据保证答案唯一，换句话说，数组中前 &lt;code&gt;k&lt;/code&gt; 个高频元素的集合是唯一的&lt;/li&gt;
 &lt;/ul&gt;
 &lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;解法一：通过构造List数组，将指定个数的元素放入频率槽中，之后从后往前找到指定K个元素即可&lt;/p&gt;
 &lt;p&gt;这一题我按照哈希桶的方式自己用数组的形式，将放入哈希表中的数字-出现次数，按照出现的次数作为下标放入了一个数组中&lt;/p&gt;
 &lt;p&gt;本地测评没有问题，但是后续验证有两个数字出现频率相同的情况下，只会有一个数字放入到最后的结果中，应该是相同的频率下，后放入的数字会覆盖掉之前放入的数字，更改为List集合的数组后成功通过&lt;/p&gt;
 &lt;p&gt;在处理List集合的时候从后向前处理，当List集合为空表示没有数字落在对应的频率中，continue继续，到有元素的List时迭代的将其中的元素放入结果集中&lt;/p&gt;
@@ -25119,6 +25831,29 @@ public class TransactionAspect {
                     return result;
                 }
             }
+        }
+        return result;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;解法二：运用最小堆求解，按照频率进行排序，思路和最大的K个数一致，最后将结果取出即可&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public int[] topKFrequent(int[] nums, int k) {
+        Map&amp;lt;Integer, Integer&amp;gt; map = new HashMap&amp;lt;&amp;gt;();
+        for(int num : nums) {
+            map.put(num, map.getOrDefault(num, 0) + 1);
+        }
+        PriorityQueue&amp;lt;int[]&amp;gt; heap = new PriorityQueue&amp;lt;&amp;gt;((a, b) -&amp;gt; a[1] - b[1]);
+        Set&amp;lt;Integer&amp;gt; keySet = map.keySet();
+        for(Integer num : keySet) {
+            heap.offer(new int[]{num, map.get(num)});
+            if(heap.size() &amp;gt; k) {
+                heap.poll();
+            }
+        }
+        int[] result = new int[k];
+        for(int i = 0; i &amp;lt; k; i++) {
+            result[i] = heap.poll()[0];
         }
         return result;
     }

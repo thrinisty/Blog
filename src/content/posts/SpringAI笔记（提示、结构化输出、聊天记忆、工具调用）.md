@@ -379,3 +379,104 @@ public String chatTemplateJson(@PathVariable String content) {
             .content();
 }
 ```
+
+
+
+### 功能工具回调
+
+温度获取工具
+
+```java
+public class WeatherService implements Function<WeatherRequest, WeatherResponse> {
+    @Override
+    public WeatherResponse apply(WeatherRequest weatherRequest) {
+        return new WeatherResponse(Util.C, 30.0);
+    }
+}
+```
+
+工具传入参数
+
+```java
+@Data
+@AllArgsConstructor
+public class WeatherRequest {
+    Util util;
+    String location;
+}
+```
+
+工具输出参数
+
+```java
+@Data
+@AllArgsConstructor
+public class WeatherResponse {
+    Util util;
+    double temp;
+}
+```
+
+枚举类
+
+```java
+public enum Util {
+    C,
+    F
+}
+```
+
+AI回调工具
+
+```java
+@GetMapping("/chat/function/{content}")
+public String chatUserFunction(@PathVariable String content) {
+    ToolCallback toolCallback = FunctionToolCallback
+            .builder("currentWeather", new WeatherService())
+            .description("Get the weather in location")
+            .inputType(WeatherRequest.class)
+            .build();
+
+    return chatClient.prompt("今天北京天气怎样")
+            .toolCallbacks(toolCallback)
+            .call()
+            .content();
+}
+```
+
+```
+请求：http://localhost:8080/tool/chat/function/北京、摄氏度
+结果：今天北京天气比较热，气温为30°C。建议您注意防暑降温，多补充水分。
+```
+
+
+
+通过Bean注解完成
+
+```java
+@Configuration(proxyBeanMethods = false)
+public class WeatherTool {
+    WeatherService weatherService = new WeatherService();
+
+    @Bean("currentWeather")
+    @Description("获取气温")
+    Function<WeatherRequest, WeatherResponse> currentWeather() {
+        return weatherService;
+    }
+
+}
+```
+
+调用
+
+```java
+@GetMapping("/chat/weather/{content}")
+public String chatWeatherFunction(@PathVariable String content) {
+    return chatClient
+            .prompt()
+            .user(content)
+            .toolNames("currentWeather")
+            .call()
+            .content();
+}
+```

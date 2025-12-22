@@ -100,6 +100,8 @@ class Solution {
 
 ## 题解
 
+解法一：通过构造List数组，将指定个数的元素放入频率槽中，之后从后往前找到指定K个元素即可
+
 这一题我按照哈希桶的方式自己用数组的形式，将放入哈希表中的数字-出现次数，按照出现的次数作为下标放入了一个数组中
 
 本地测评没有问题，但是后续验证有两个数字出现频率相同的情况下，只会有一个数字放入到最后的结果中，应该是相同的频率下，后放入的数字会覆盖掉之前放入的数字，更改为List集合的数组后成功通过
@@ -138,6 +140,34 @@ class Solution {
                     return result;
                 }
             }
+        }
+        return result;
+    }
+}
+```
+
+
+
+解法二：运用最小堆求解，按照频率进行排序，思路和最大的K个数一致，最后将结果取出即可
+
+```java
+class Solution {
+    public int[] topKFrequent(int[] nums, int k) {
+        Map<Integer, Integer> map = new HashMap<>();
+        for(int num : nums) {
+            map.put(num, map.getOrDefault(num, 0) + 1);
+        }
+        PriorityQueue<int[]> heap = new PriorityQueue<>((a, b) -> a[1] - b[1]);
+        Set<Integer> keySet = map.keySet();
+        for(Integer num : keySet) {
+            heap.offer(new int[]{num, map.get(num)});
+            if(heap.size() > k) {
+                heap.poll();
+            }
+        }
+        int[] result = new int[k];
+        for(int i = 0; i < k; i++) {
+            result[i] = heap.poll()[0];
         }
         return result;
     }
