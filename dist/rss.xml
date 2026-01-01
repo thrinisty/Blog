@@ -1,4 +1,661 @@
-<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Thrinisty&apos;s Blog</title><description>New Blog</description><link>https://thrinisty.github.io/</link><language>zh_CN</language><item><title>LeetCode刷题（搜索插入位置、山脉数组的封顶索引）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E6%90%9C%E7%B4%A2%E6%8F%92%E5%85%A5%E4%BD%8D%E7%BD%AE%E5%B1%B1%E8%84%89%E6%95%B0%E7%BB%84%E7%9A%84%E5%B0%81%E9%A1%B6%E7%B4%A2%E5%BC%95/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E6%90%9C%E7%B4%A2%E6%8F%92%E5%85%A5%E4%BD%8D%E7%BD%AE%E5%B1%B1%E8%84%89%E6%95%B0%E7%BB%84%E7%9A%84%E5%B0%81%E9%A1%B6%E7%B4%A2%E5%BC%95/</guid><description>搜索插入位置、山脉数组的封顶索引</description><pubDate>Sun, 21 Dec 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;搜索插入位置&lt;/h1&gt;
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Thrinisty&apos;s Blog</title><description>New Blog</description><link>https://thrinisty.github.io/</link><language>zh_CN</language><item><title>LeetCode刷题（模板）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E6%A8%A1%E6%9D%BF/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E6%A8%A1%E6%9D%BF/</guid><pubDate>Thu, 01 Jan 2026 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;题目&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+</content:encoded></item><item><title>LeetCode刷题（分割回文串Ⅱ、最长的斐波那契子序列长度）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E5%88%86%E5%89%B2%E5%9B%9E%E6%96%87%E4%B8%B2%E2%85%B1%E6%9C%80%E9%95%BF%E7%9A%84%E6%96%90%E6%B3%A2%E9%82%A3%E5%A5%91%E5%AD%90%E5%BA%8F%E5%88%97%E9%95%BF%E5%BA%A6/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E5%88%86%E5%89%B2%E5%9B%9E%E6%96%87%E4%B8%B2%E2%85%B1%E6%9C%80%E9%95%BF%E7%9A%84%E6%96%90%E6%B3%A2%E9%82%A3%E5%A5%91%E5%AD%90%E5%BA%8F%E5%88%97%E9%95%BF%E5%BA%A6/</guid><description>分割回文串Ⅱ、最长的斐波那契子序列长度</description><pubDate>Thu, 01 Jan 2026 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;分割回文串Ⅱ&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;给定一个字符串 &lt;code&gt;s&lt;/code&gt;，请将 &lt;code&gt;s&lt;/code&gt; 分割成一些子串，使每个子串都是回文串。&lt;/p&gt;
+&lt;p&gt;返回符合要求的 &lt;strong&gt;最少分割次数&lt;/strong&gt; 。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：s = &quot;aab&quot;
+输出：1
+解释：只需一次分割就可将 s 分割成 [&quot;aa&quot;,&quot;b&quot;] 这样两个回文子串。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：s = &quot;a&quot;
+输出：0
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 3：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：s = &quot;ab&quot;
+输出：1
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;先用二维dp构造出回文判断矩阵，再建立结果result数组，代表到当前位置需要的最少分割数，逐个赋予最小分割数&lt;/p&gt;
+&lt;p&gt;循环的逻辑是如果j为0而0-i为回文就不需要分割赋值为0即可，而如果不为0在0-（j - 1）的最小分割分割即可，并依次迭代最小的分割数&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public int minCut(String s) {
+        int n = s.length();
+        boolean[][] dp = new boolean[n][n];
+        for(int len = 1; len &amp;lt;= n; len++) {
+            for(int i = 0; i &amp;lt;= n - len; i++) {
+                int j = i + len - 1;
+                if((s.charAt(i) == s.charAt(j)) &amp;amp;&amp;amp; (j - i &amp;lt; 2 || dp[i + 1][j - 1])) {
+                    dp[i][j] = true;
+                }
+            }
+        }
+        int[] result = new int[n];
+        for(int i = 1; i &amp;lt; n; i++) {
+            int min = i;
+            for(int j = 0; j &amp;lt;= i; j++) {
+                if(dp[j][i]) {
+                    min = Math.min(min, j == 0 ?  0 : result[j - 1] + 1);
+                }
+            }
+            result[i] = min;
+        }
+        return result[n - 1];
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1&gt;最长的斐波那契子序列长度&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;如果序列 &lt;code&gt;X_1, X_2, ..., X_n&lt;/code&gt; 满足下列条件，就说它是 &lt;em&gt;斐波那契式&lt;/em&gt; 的：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;n &amp;gt;= 3&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;对于所有 &lt;code&gt;i + 2 &amp;lt;= n&lt;/code&gt;，都有 &lt;code&gt;X_i + X_{i+1} = X_{i+2}&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;给定一个&lt;strong&gt;严格递增&lt;/strong&gt;的正整数数组形成序列 &lt;code&gt;arr&lt;/code&gt; ，找到 &lt;code&gt;arr&lt;/code&gt; 中最长的斐波那契式的子序列的长度。如果一个不存在，返回 0 。&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;（回想一下，子序列是从原序列 &lt;code&gt;arr&lt;/code&gt; 中派生出来的，它从 &lt;code&gt;arr&lt;/code&gt; 中删掉任意数量的元素（也可以不删），而不改变其余元素的顺序。例如， &lt;code&gt;[3, 5, 8]&lt;/code&gt; 是 &lt;code&gt;[3, 4, 5, 6, 7, 8]&lt;/code&gt; 的一个子序列）&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入: arr = [1,2,3,4,5,6,7,8]
+输出: 5
+解释: 最长的斐波那契式子序列为 [1,2,3,5,8] 。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入: arr = [1,3,7,11,12,14,18]
+输出: 3
+解释: 最长的斐波那契式子序列有 [1,11,12]、[3,11,14] 以及 [7,11,18] 。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;设立辅助的map集合，存放arr数字以及对应下标，设置dp为以i，j结尾的最长长度&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public int lenLongestFibSubseq(int[] arr) {
+        Map&amp;lt;Integer, Integer&amp;gt; map = new HashMap&amp;lt;&amp;gt;();
+        int n = arr.length;
+        for (int i = 0; i &amp;lt; n; i++) {
+            map.put(arr[i], i);
+        }
+        int[][] dp = new int[n][n];
+        int result = 0;
+        for (int i = 0; i &amp;lt; n; i++) {
+            for (int j = i - 1; j &amp;gt;= 0 &amp;amp;&amp;amp; arr[j] * 2 &amp;gt; arr[i]; j--) {
+                int k = map.getOrDefault(arr[i] - arr[j], -1);
+                if (k &amp;gt;= 0) {
+                    dp[j][i] = Math.max(dp[k][j] + 1, 3);
+                }
+                result = Math.max(result, dp[j][i]);
+            }
+        }
+        return result;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+</content:encoded></item><item><title>自学第十月份总结</title><link>https://thrinisty.github.io/posts/%E8%87%AA%E5%AD%A6%E7%AC%AC%E5%8D%81%E6%9C%88%E4%BB%BD%E6%80%BB%E7%BB%93/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/%E8%87%AA%E5%AD%A6%E7%AC%AC%E5%8D%81%E6%9C%88%E4%BB%BD%E6%80%BB%E7%BB%93/</guid><description>实习、签约、沉淀</description><pubDate>Thu, 01 Jan 2026 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;自学第十月份总结&lt;/h1&gt;
+&lt;p&gt;今天是新年第一天，我在上海的出租屋里码字，心情的方面还好，就总结下这个月做的一些事情吧&lt;/p&gt;
+&lt;h2&gt;秋招情况&lt;/h2&gt;
+&lt;p&gt;秋招：凡岛发offer了目前，也已完成签约，保底算是有了，另外新凯来通过了，但是薪资方面似乎还不如凡岛而且涉及到转语言，不太想转c++，另外的就是一些拒绝面试的和没过的了&lt;/p&gt;
+&lt;p&gt;实习：一共面了三个公司，滴滴、美团、字节，滴滴第二面挂了（上来就搞了个抽象的算法还有SQL题目，应该是本来就没想着要的），美团通过（二面），字节一面聊的蛮好的，后面美团通过了就拒绝了二面了，目前也是在上海这边再沉淀下，锻炼下技术吧。&lt;/p&gt;
+&lt;h2&gt;技术学习&lt;/h2&gt;
+&lt;p&gt;算法方面：变种的剑指offer119刷了95道了，这个月内可以结束，然后把之前的剩下的题目补一下，再之后就开始重刷top100+hot100了，准备主攻这两个题单，感觉这样看下了算法方面问题应该不是很大了，剩下就看运气吧&lt;/p&gt;
+&lt;p&gt;在美团这边从22开始实习的，大厂的氛围确实就不太一样了，感觉要学的东西也是蛮多的，中间件，各种python脚本，AI coding工具，好在mentor也愿意教，感觉进步也蛮快的，对于一些AI知识以及AI开发框架（langchain4j）也在慢慢学习，相信会慢慢好起来的，目前在做一些公司里的工具服务，熟悉开发流程&lt;/p&gt;
+&lt;h2&gt;总结&lt;/h2&gt;
+&lt;p&gt;12月份好消息还是蛮多的，首先就是终于拿到了秋招的offer并且完成签约，可以不用这么紧张了，另外也拿到了美团的实习offer，在这几个月好好再沉淀一下，相信自己到了春招竞争力应该不会差的&lt;/p&gt;
+&lt;p&gt;最后发个牢骚吧，上海消费真的好高，个人精力方面感觉也不太足，实习完了强迫自己刷一道算法完就不想动了，总之还是需要调整下状态，后面还要回学校把期末考试给搞了&lt;/p&gt;
+&lt;p&gt;实习、春招、考试、毕业论文排的还是很满的，不过我也相信自己能够兼顾它们，就是会有点累就是了，似乎后面也不太可能再有什么休息的时间了本来还打算毕业旅游来着，做梦去吧哈哈哈哈哈哈哈哈&lt;/p&gt;
+&lt;p&gt;不过是自己的选择，我也认了，辛苦这最后半年吧，之后的起点高一点选择也更多，也许我到后面也会有新的心得体会，干一段时间说不定觉得大厂或许也不适合我，谁知道呢？慢慢看吧，尽人事听天命，相信美好的事情在未来发生&lt;/p&gt;
+</content:encoded></item><item><title>LeetCode刷题（粉刷房子、将字符串翻转到单调递增）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E7%B2%89%E5%88%B7%E6%88%BF%E5%AD%90%E5%B0%86%E5%AD%97%E7%AC%A6%E4%B8%B2%E7%BF%BB%E8%BD%AC%E5%88%B0%E5%8D%95%E8%B0%83%E9%80%92%E5%A2%9E/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E7%B2%89%E5%88%B7%E6%88%BF%E5%AD%90%E5%B0%86%E5%AD%97%E7%AC%A6%E4%B8%B2%E7%BF%BB%E8%BD%AC%E5%88%B0%E5%8D%95%E8%B0%83%E9%80%92%E5%A2%9E/</guid><description>粉刷房子、将字符串翻转到单调递增</description><pubDate>Tue, 30 Dec 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;粉刷房子&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;假如有一排房子，共 &lt;code&gt;n&lt;/code&gt; 个，每个房子可以被粉刷成红色、蓝色或者绿色这三种颜色中的一种，你需要粉刷所有的房子并且使其相邻的两个房子颜色不能相同。&lt;/p&gt;
+&lt;p&gt;当然，因为市场上不同颜色油漆的价格不同，所以房子粉刷成不同颜色的花费成本也是不同的。每个房子粉刷成不同颜色的花费是以一个 &lt;code&gt;n x 3&lt;/code&gt; 的正整数矩阵 &lt;code&gt;costs&lt;/code&gt; 来表示的。&lt;/p&gt;
+&lt;p&gt;例如，&lt;code&gt;costs[0][0]&lt;/code&gt; 表示第 0 号房子粉刷成红色的成本花费；&lt;code&gt;costs[1][2]&lt;/code&gt; 表示第 1 号房子粉刷成绿色的花费，以此类推。&lt;/p&gt;
+&lt;p&gt;请计算出粉刷完所有房子最少的花费成本。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入: costs = [[17,2,17],[16,16,5],[14,3,19]]
+输出: 10
+解释: 将 0 号房子粉刷成蓝色，1 号房子粉刷成绿色，2 号房子粉刷成蓝色。
+     最少花费: 2 + 5 + 3 = 10。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入: costs = [[7,6,2]]
+输出: 2
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;建立三个状态，依次在不同的颜色情况下进行转移即可&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public int minCost(int[][] costs) {
+        int n = costs.length;
+        int a = costs[0][0];
+        int b = costs[0][1];
+        int c = costs[0][2];
+        for(int i = 1; i &amp;lt; n; i++) {
+            int ap = Math.min(b, c) + costs[i][0];
+            int bp = Math.min(a, c) + costs[i][1];
+            int cp = Math.min(a, b) + costs[i][2];
+            a = ap; b = bp; c = cp;
+        }
+        return Math.min(a, Math.min(b, c));
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1&gt;将字符串翻转到单调递增&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;如果一个由 &lt;code&gt;&apos;0&apos;&lt;/code&gt; 和 &lt;code&gt;&apos;1&apos;&lt;/code&gt; 组成的字符串，是以一些 &lt;code&gt;&apos;0&apos;&lt;/code&gt;（可能没有 &lt;code&gt;&apos;0&apos;&lt;/code&gt;）后面跟着一些 &lt;code&gt;&apos;1&apos;&lt;/code&gt;（也可能没有 &lt;code&gt;&apos;1&apos;&lt;/code&gt;）的形式组成的，那么该字符串是 &lt;strong&gt;单调递增&lt;/strong&gt; 的。&lt;/p&gt;
+&lt;p&gt;我们给出一个由字符 &lt;code&gt;&apos;0&apos;&lt;/code&gt; 和 &lt;code&gt;&apos;1&apos;&lt;/code&gt; 组成的字符串 s，我们可以将任何 &lt;code&gt;&apos;0&apos;&lt;/code&gt; 翻转为 &lt;code&gt;&apos;1&apos;&lt;/code&gt; 或者将 &lt;code&gt;&apos;1&apos;&lt;/code&gt; 翻转为 &lt;code&gt;&apos;0&apos;&lt;/code&gt;。&lt;/p&gt;
+&lt;p&gt;返回使 s &lt;strong&gt;单调递增&lt;/strong&gt; 的最小翻转次数。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：s = &quot;00110&quot;
+输出：1
+解释：我们翻转最后一位得到 00111.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：s = &quot;010110&quot;
+输出：2
+解释：我们翻转得到 011111，或者是 000111。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 3：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：s = &quot;00011000&quot;
+输出：2
+解释：我们翻转得到 00000000。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;设立两个数组保存当目前为0/1的最小改变的次数&lt;/p&gt;
+&lt;p&gt;当前元素为如果为0，当前防止为0的结果则从前一位0直接迁移即可（0后跟着0），而如果要为1，则要选取前一位0/1中较小的哪一个再+1&lt;/p&gt;
+&lt;p&gt;反之如果当前元素为1，则如果要使防止0需要从0的结果+1，要使放置1，则从0或者1的前一位迁过来即可无需改变&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public int minFlipsMonoIncr(String s) {
+        int n = s.length();
+        int[] result0 = new int[n];
+        int[] result1 = new int[n];
+        if(s.charAt(0) == &apos;1&apos;) {
+            result0[0] = 1;
+        } else {
+            result1[0] = 1;
+        }
+
+        for(int i = 1; i &amp;lt; n; i++) {
+            char c = s.charAt(i);
+            if(c == &apos;0&apos;) {
+                result0[i] = result0[i - 1];
+                result1[i] = Math.min(result1[i - 1], result0[i - 1]) + 1; 
+            } else {
+                result0[i] = result0[i - 1] + 1;
+                result1[i] = Math.min(result0[i - 1], result1[i - 1]);
+            }
+        }
+        return Math.min(result0[n - 1], result1[n - 1]);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+</content:encoded></item><item><title>LeetCode刷题（打家劫舍Ⅱ）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E6%89%93%E5%AE%B6%E5%8A%AB%E8%88%8D%E2%85%B1/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E6%89%93%E5%AE%B6%E5%8A%AB%E8%88%8D%E2%85%B1/</guid><description>打家劫舍Ⅱ</description><pubDate>Mon, 29 Dec 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;打家劫舍Ⅱ&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;一个专业的小偷，计划偷窃一个环形街道上沿街的房屋，每间房内都藏有一定的现金。这个地方所有的房屋都 &lt;strong&gt;围成一圈&lt;/strong&gt; ，这意味着第一个房屋和最后一个房屋是紧挨着的。同时，相邻的房屋装有相互连通的防盗系统，&lt;strong&gt;如果两间相邻的房屋在同一晚上被小偷闯入，系统会自动报警&lt;/strong&gt; 。&lt;/p&gt;
+&lt;p&gt;给定一个代表每个房屋存放金额的非负整数数组 &lt;code&gt;nums&lt;/code&gt; ，请计算 &lt;strong&gt;在不触动警报装置的情况下&lt;/strong&gt; ，今晚能够偷窃到的最高金额。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：nums = [2,3,2]
+输出：3
+解释：你不能先偷窃 1 号房屋（金额 = 2），然后偷窃 3 号房屋（金额 = 2）, 因为他们是相邻的。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：nums = [1,2,3,1]
+输出：4
+解释：你可以先偷窃 1 号房屋（金额 = 1），然后偷窃 3 号房屋（金额 = 3）。
+     偷窃到的最高金额 = 1 + 3 = 4 。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 3：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：nums = [0]
+输出：0
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;打劫了第一家，就不能碰最后一家，反之打劫了最后一家就不能打劫第一家，设置函数找出指定范围内的最大值即可&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public int rob(int[] nums) {
+        int n = nums.length;
+        if(n == 0) return 0;
+        if(n == 1) return nums[0];
+        int case1 = rob(nums, 0, n - 2);
+        int case2 = rob(nums, 1, n - 1);
+        return Math.max(case1, case2);
+    }
+
+    public int rob(int[] nums, int start, int end) {
+        int preRob = 0, preNoRob = 0;
+        for(int i = start; i &amp;lt;= end; i++) {
+            int curRob = preNoRob + nums[i];
+            int curNoRob = Math.max(preNoRob, preRob);
+            preNoRob = curNoRob;
+            preRob = curRob;
+        }
+        return Math.max(preNoRob, preRob);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+</content:encoded></item><item><title>LeetCode刷题（复原IP地址、使用最小花费爬楼梯）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E5%A4%8D%E5%8E%9Fip%E5%9C%B0%E5%9D%80%E4%BD%BF%E7%94%A8%E6%9C%80%E5%B0%8F%E8%8A%B1%E8%B4%B9%E7%88%AC%E6%A5%BC%E6%A2%AF/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E5%A4%8D%E5%8E%9Fip%E5%9C%B0%E5%9D%80%E4%BD%BF%E7%94%A8%E6%9C%80%E5%B0%8F%E8%8A%B1%E8%B4%B9%E7%88%AC%E6%A5%BC%E6%A2%AF/</guid><description>复原IP地址、使用最小花费爬楼梯</description><pubDate>Sun, 28 Dec 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;复原IP地址&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;给定一个只包含数字的字符串 &lt;code&gt;s&lt;/code&gt; ，用以表示一个 IP 地址，返回所有可能从 &lt;code&gt;s&lt;/code&gt; 获得的 &lt;strong&gt;有效 IP 地址&lt;/strong&gt; 。你可以按任何顺序返回答案。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;有效 IP 地址&lt;/strong&gt; 正好由四个整数（每个整数位于 0 到 255 之间组成，且不能含有前导 &lt;code&gt;0&lt;/code&gt;），整数之间用 &lt;code&gt;&apos;.&apos;&lt;/code&gt; 分隔。&lt;/p&gt;
+&lt;p&gt;例如：&quot;0.1.2.201&quot; 和 &quot;192.168.1.1&quot; 是 &lt;strong&gt;有效&lt;/strong&gt; IP 地址，但是 &quot;0.011.255.245&quot;、&quot;192.168.1.312&quot; 和 &quot;192.168@1.1&quot; 是 &lt;strong&gt;无效&lt;/strong&gt; IP 地址。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：s = &quot;25525511135&quot;
+输出：[&quot;255.255.11.135&quot;,&quot;255.255.111.35&quot;]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：s = &quot;0000&quot;
+输出：[&quot;0.0.0.0&quot;]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 3：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：s = &quot;1111&quot;
+输出：[&quot;1.1.1.1&quot;]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 4：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：s = &quot;010010&quot;
+输出：[&quot;0.10.0.10&quot;,&quot;0.100.1.0&quot;]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 5：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：s = &quot;10203040&quot;
+输出：[&quot;10.20.30.40&quot;,&quot;102.0.30.40&quot;,&quot;10.203.0.40&quot;]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;运用回溯法求解，当list结果中有4个元素，且index结束的时候加入result，如果超出了4个元素单结果也没取完则不加入result并return&lt;/p&gt;
+&lt;p&gt;每次回溯取出至多三个字符串并依次判断是否合法，合法则加入list并进行下一次回溯&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    List&amp;lt;String&amp;gt; result = new ArrayList&amp;lt;&amp;gt;();
+    List&amp;lt;String&amp;gt; list = new ArrayList&amp;lt;&amp;gt;();
+    public List&amp;lt;String&amp;gt; restoreIpAddresses(String s) {
+        dfs(s, 0);
+        return result;
+    }
+
+    public void dfs(String s, int index) {
+        if(list.size() == 4) {
+            if(index == s.length()) {
+                result.add(restoreIp(list));
+            }
+            return;
+        } 
+        int most = Math.min(s.length(), index + 3);
+        for(int i = index; i &amp;lt; most; i++) {
+            String str = s.substring(index, i + 1);
+            int num = Integer.parseInt(str);
+            if(str.charAt(0) == &apos;0&apos; &amp;amp;&amp;amp; str.length() &amp;gt; 1 || num &amp;lt; 0 || num &amp;gt; 255) {
+                break;
+            }
+            list.add(str);
+            dfs(s, i + 1);
+            list.remove(list.size() - 1);
+        }
+    }
+
+    public String restoreIp(List&amp;lt;String&amp;gt; list) {
+        StringBuilder str = new StringBuilder();
+        int n = list.size();
+        for(int i = 0; i &amp;lt; n - 1; i++) {
+            str.append(list.get(i));
+            str.append(&quot;.&quot;);
+        }
+        str.append(list.get(n - 1));
+        return str.toString();
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1&gt;使用最小花费爬楼梯&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;数组的每个下标作为一个阶梯，第 &lt;code&gt;i&lt;/code&gt; 个阶梯对应着一个非负数的体力花费值 &lt;code&gt;cost[i]&lt;/code&gt;（下标从 &lt;code&gt;0&lt;/code&gt; 开始）。&lt;/p&gt;
+&lt;p&gt;每当爬上一个阶梯都要花费对应的体力值，一旦支付了相应的体力值，就可以选择向上爬一个阶梯或者爬两个阶梯。&lt;/p&gt;
+&lt;p&gt;请找出达到楼层顶部的最低花费。在开始时，你可以选择从下标为 0 或 1 的元素作为初始阶梯。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：cost = [10, 15, 20]
+输出：15
+解释：最低花费是从 cost[1] 开始，然后走两步即可到阶梯顶，一共花费 15 。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：cost = [1, 100, 1, 1, 1, 100, 1, 1, 100, 1]
+输出：6
+解释：最低花费方式是从 cost[0] 开始，逐个经过那些 1 ，跳过 cost[3] ，一共花费 6 。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;动态规划求解，最后取最后一层和倒数第二层的最小dp值即可&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public int minCostClimbingStairs(int[] cost) {
+        int n = cost.length;
+        int[] dp = new int[n + 1];
+        dp[0] = cost[0];
+        dp[1] = cost[1];
+        for(int i = 2; i &amp;lt; n; i++) {
+            dp[i] = Math.min(dp[i - 1], dp[i - 2]) + cost[i];
+        }
+        return Math.min(dp[n - 1], dp[n - 2]);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+</content:encoded></item><item><title>LeetCode刷题（全排列Ⅱ、分割回文串）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E5%85%A8%E6%8E%92%E5%88%97%E2%85%B1%E5%88%86%E5%89%B2%E5%9B%9E%E6%96%87%E4%B8%B2/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E5%85%A8%E6%8E%92%E5%88%97%E2%85%B1%E5%88%86%E5%89%B2%E5%9B%9E%E6%96%87%E4%B8%B2/</guid><description>全排列Ⅱ、分割回文串</description><pubDate>Sat, 27 Dec 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;全排列Ⅱ&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;给定一个可包含重复数字的整数集合 &lt;code&gt;nums&lt;/code&gt; ，&lt;strong&gt;按任意顺序&lt;/strong&gt; 返回它所有不重复的全排列。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：nums = [1,1,2]
+输出：
+[[1,1,2],
+ [1,2,1],
+ [2,1,1]]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：nums = [1,2,3]
+输出：[[1,2,3],[1,3,2],[2,1,3],[2,3,1],[3,1,2],[3,2,1]]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;先对数组排序，然后设置一个辅助的visit数组记录用过的元素，每次调用dfs函数都尝试将所有的元素放入list中，如果其中有元素被用过了则排除当前情况，另外如果当前元素和前一个元素都没有被用过，且他们数值相等则跳过&lt;/p&gt;
+&lt;p&gt;放入list进行放置下一个数字，放完后删除，达到回溯&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    List&amp;lt;List&amp;lt;Integer&amp;gt;&amp;gt; result = new LinkedList&amp;lt;&amp;gt;();
+    List&amp;lt;Integer&amp;gt; list = new LinkedList&amp;lt;&amp;gt;();
+    boolean[] visit;
+
+    public List&amp;lt;List&amp;lt;Integer&amp;gt;&amp;gt; permuteUnique(int[] nums) {
+        Arrays.sort(nums);
+        visit = new boolean[nums.length];
+        dfs(nums);
+        return result;
+    }
+
+    public void dfs(int[] nums) {
+        if(list.size() == nums.length) {
+            result.add(new LinkedList&amp;lt;&amp;gt;(list));
+            return;
+        }
+        for(int i = 0; i &amp;lt; nums.length; i++) {
+            if(visit[i]) {
+                continue;
+            }
+            if(i &amp;gt; 0 &amp;amp;&amp;amp; !visit[i] &amp;amp;&amp;amp; !visit[i - 1] &amp;amp;&amp;amp; nums[i] == nums[i - 1]) {
+                continue;
+            }
+            list.add(nums[i]);
+            visit[i] = true;
+            dfs(nums);
+            visit[i] = false;
+            list.remove(list.size() - 1);
+        }
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1&gt;分割回文串&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;给定一个字符串 &lt;code&gt;s&lt;/code&gt; ，请将 &lt;code&gt;s&lt;/code&gt; 分割成一些子串，使每个子串都是 &lt;strong&gt;回文串&lt;/strong&gt; ，返回 s 所有可能的分割方案。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;回文串&lt;/strong&gt; 是正着读和反着读都一样的字符串。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：s = &quot;google&quot;
+输出：[[&quot;g&quot;,&quot;o&quot;,&quot;o&quot;,&quot;g&quot;,&quot;l&quot;,&quot;e&quot;],[&quot;g&quot;,&quot;oo&quot;,&quot;g&quot;,&quot;l&quot;,&quot;e&quot;],[&quot;goog&quot;,&quot;l&quot;,&quot;e&quot;]]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：s = &quot;aab&quot;
+输出：[[&quot;a&quot;,&quot;a&quot;,&quot;b&quot;],[&quot;aa&quot;,&quot;b&quot;]]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 3：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：s = &quot;a&quot;
+输出：[[&quot;a&quot;]]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;先运用动态规划求出dp，再使用回溯进行依次判断取出所有的可能&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    List&amp;lt;List&amp;lt;String&amp;gt;&amp;gt; result = new LinkedList&amp;lt;&amp;gt;();
+    List&amp;lt;String&amp;gt; list = new LinkedList&amp;lt;&amp;gt;();
+    boolean[][] dp;
+
+    public List&amp;lt;List&amp;lt;String&amp;gt;&amp;gt; partition(String s) {
+        int n = s.length();
+        dp = new boolean[n][n];
+        for(int len = 1; len &amp;lt;= n; len++) {
+            for(int left = 0; left &amp;lt;= n - len; left++) {
+                int right = left + len - 1;
+                if((s.charAt(left) == s.charAt(right)) &amp;amp;&amp;amp; (right - left &amp;lt; 2 || dp[left + 1][right - 1])) {
+                    dp[left][right] = true;
+                }
+            }
+        }
+        dfs(s, 0);
+        return result;
+    }
+
+    public void dfs(String s, int index) {
+        if(s.length() == index) {
+            result.add(new LinkedList&amp;lt;&amp;gt;(list));
+            return;
+        }
+        for(int i = index; i &amp;lt; s.length(); i++) {
+            if(dp[index][i]) {
+                list.add(s.substring(index, i + 1));
+                dfs(s, i + 1);
+                list.remove(list.size() - 1);
+            }
+        }
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+</content:encoded></item><item><title>LeetCode刷题（数组的相对排序、组合总数Ⅱ）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E6%95%B0%E7%BB%84%E7%9A%84%E7%9B%B8%E5%AF%B9%E6%8E%92%E5%BA%8F%E7%BB%84%E5%90%88%E6%80%BB%E6%95%B0%E2%85%B1/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E6%95%B0%E7%BB%84%E7%9A%84%E7%9B%B8%E5%AF%B9%E6%8E%92%E5%BA%8F%E7%BB%84%E5%90%88%E6%80%BB%E6%95%B0%E2%85%B1/</guid><description>数组的相对排序、组合总数Ⅱ</description><pubDate>Wed, 24 Dec 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;数组的相对排序&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;给定两个数组，&lt;code&gt;arr1&lt;/code&gt; 和 &lt;code&gt;arr2&lt;/code&gt;，&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;arr2&lt;/code&gt; 中的元素各不相同&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;arr2&lt;/code&gt; 中的每个元素都出现在 &lt;code&gt;arr1&lt;/code&gt; 中&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;对 &lt;code&gt;arr1&lt;/code&gt; 中的元素进行排序，使 &lt;code&gt;arr1&lt;/code&gt; 中项的相对顺序和 &lt;code&gt;arr2&lt;/code&gt; 中的相对顺序相同。未在 &lt;code&gt;arr2&lt;/code&gt; 中出现过的元素需要按照升序放在 &lt;code&gt;arr1&lt;/code&gt; 的末尾。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：arr1 = [2,3,1,3,2,4,6,7,9,2,19], arr2 = [2,1,4,3,9,6]
+输出：[2,2,2,1,4,3,3,9,6,7,19]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;提示：&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;1 &amp;lt;= arr1.length, arr2.length &amp;lt;= 1000&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;0 &amp;lt;= arr1[i], arr2[i] &amp;lt;= 1000&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;arr2&lt;/code&gt; 中的元素 &lt;code&gt;arr2[i]&lt;/code&gt; 各不相同&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;arr2&lt;/code&gt; 中的每个元素 &lt;code&gt;arr2[i]&lt;/code&gt; 都出现在 &lt;code&gt;arr1&lt;/code&gt; 中&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;拆成两个部分分别排序即可，map排序的规则自定义&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public int[] relativeSortArray(int[] arr1, int[] arr2) {
+        int n = arr1.length;
+        int[] result = new int[n];
+        Map&amp;lt;Integer, Integer&amp;gt; map = new HashMap&amp;lt;&amp;gt;();
+        for(int i = 0; i &amp;lt; arr2.length; i++) {
+            map.put(arr2[i], i);
+        }
+        List&amp;lt;Integer&amp;gt; list1 = new LinkedList&amp;lt;&amp;gt;(); 
+        List&amp;lt;Integer&amp;gt; list2 = new LinkedList&amp;lt;&amp;gt;(); 
+        for(int num : arr1) {
+            if(map.containsKey(num)) {
+                list1.add(num);
+            } else {
+                list2.add(num);
+            }
+        }
+        Collections.sort(list1, (a, b) -&amp;gt; map.get(a) - map.get(b));
+        Collections.sort(list2);
+        int index = 0;
+        for(int i = 0; i &amp;lt; list1.size(); i++) {
+            result[index++] = list1.get(i);
+        }
+        for(int i = 0; i &amp;lt; list2.size(); i++) {
+            result[index++] = list2.get(i);
+        }
+        return result;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1&gt;组合总数Ⅱ&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;给定一个可能有重复数字的整数数组 &lt;code&gt;candidates&lt;/code&gt; 和一个目标数 &lt;code&gt;target&lt;/code&gt; ，找出 &lt;code&gt;candidates&lt;/code&gt; 中所有可以使数字和为 &lt;code&gt;target&lt;/code&gt; 的组合。&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;candidates&lt;/code&gt; 中的每个数字在每个组合中只能使用一次，解集不能包含重复的组合。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：candidates = [10,1,2,7,6,1,5], target = 8
+输出：
+[
+[1,1,6],
+[1,2,5],
+[1,7],
+[2,6]
+]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：candidates = [2,5,2,1,2], target = 5
+输出：
+[
+[1,2,2],
+[5]
+]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;先进行数组排序，循环判断添加当前的元素是否大于target如果大于则后续也能找到更小的可能直接结束，否则尝试添加，如果当前数和前一个一致则跳过，避免重复，剩下的思路与组合总数一致&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    List&amp;lt;List&amp;lt;Integer&amp;gt;&amp;gt; result = new LinkedList&amp;lt;&amp;gt;();
+    List&amp;lt;Integer&amp;gt; list = new LinkedList&amp;lt;&amp;gt;();
+
+    public List&amp;lt;List&amp;lt;Integer&amp;gt;&amp;gt; combinationSum2(int[] candidates, int target) {
+        Arrays.sort(candidates);
+        dfs(candidates, target, 0);
+        return result;
+    }
+
+    public void dfs(int[] candidates, int target, int index) {
+        if(target == 0) {
+            result.add(new LinkedList&amp;lt;&amp;gt;(list));
+            return;
+        }
+        for(int i = index; i &amp;lt; candidates.length; i++) {
+            if(candidates[i] &amp;gt; target) {
+                break;
+            }
+            if(i &amp;gt; index &amp;amp;&amp;amp; candidates[i] == candidates[i - 1]) {
+                continue;
+            }
+            list.add(candidates[i]);
+            dfs(candidates, target - candidates[i], i + 1);
+            list.remove(list.size() - 1);
+        }
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+</content:encoded></item><item><title>LeetCode刷题（按权重随机选择、爱吃香蕉的狒狒）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E6%8C%89%E6%9D%83%E9%87%8D%E9%9A%8F%E6%9C%BA%E9%80%89%E6%8B%A9%E7%88%B1%E5%90%83%E9%A6%99%E8%95%89%E7%9A%84%E7%8B%92%E7%8B%92/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E6%8C%89%E6%9D%83%E9%87%8D%E9%9A%8F%E6%9C%BA%E9%80%89%E6%8B%A9%E7%88%B1%E5%90%83%E9%A6%99%E8%95%89%E7%9A%84%E7%8B%92%E7%8B%92/</guid><description>按权重随机选择、爱吃香蕉的狒狒</description><pubDate>Mon, 22 Dec 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;按权重随机选择&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;给定一个正整数数组 &lt;code&gt;w&lt;/code&gt; ，其中 &lt;code&gt;w[i]&lt;/code&gt; 代表下标 &lt;code&gt;i&lt;/code&gt; 的权重（下标从 &lt;code&gt;0&lt;/code&gt; 开始），请写一个函数 &lt;code&gt;pickIndex&lt;/code&gt; ，它可以随机地获取下标 &lt;code&gt;i&lt;/code&gt;，选取下标 &lt;code&gt;i&lt;/code&gt; 的概率与 &lt;code&gt;w[i]&lt;/code&gt; 成正比&lt;/p&gt;
+&lt;p&gt;例如，对于 &lt;code&gt;w = [1, 3]&lt;/code&gt;，挑选下标 &lt;code&gt;0&lt;/code&gt; 的概率为 &lt;code&gt;1 / (1 + 3) = 0.25&lt;/code&gt; （即，25%），而选取下标 &lt;code&gt;1&lt;/code&gt; 的概率为 &lt;code&gt;3 / (1 + 3) = 0.75&lt;/code&gt;（即，75%）。&lt;/p&gt;
+&lt;p&gt;也就是说，选取下标 &lt;code&gt;i&lt;/code&gt; 的概率为 &lt;code&gt;w[i] / sum(w)&lt;/code&gt; 。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：
+inputs = [&quot;Solution&quot;,&quot;pickIndex&quot;]
+inputs = [[[1]],[]]
+输出：
+[null,0]
+解释：
+Solution solution = new Solution([1]);
+solution.pickIndex(); // 返回 0，因为数组中只有一个元素，所以唯一的选择是返回下标 0。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：
+inputs = [&quot;Solution&quot;,&quot;pickIndex&quot;,&quot;pickIndex&quot;,&quot;pickIndex&quot;,&quot;pickIndex&quot;,&quot;pickIndex&quot;]
+inputs = [[[1,3]],[],[],[],[],[]]
+输出：
+[null,1,1,1,1,0]
+解释：
+Solution solution = new Solution([1, 3]);
+solution.pickIndex(); // 返回 1，返回下标 1，返回该下标概率为 3/4 。
+solution.pickIndex(); // 返回 1
+solution.pickIndex(); // 返回 1
+solution.pickIndex(); // 返回 1
+solution.pickIndex(); // 返回 0，返回下标 0，返回该下标概率为 1/4 。
+
+由于这是一个随机问题，允许多个答案，因此下列输出都可以被认为是正确的:
+[null,1,1,1,1,0]
+[null,1,1,1,1,1]
+[null,1,1,1,0,0]
+[null,1,1,1,0,1]
+[null,1,0,1,0,0]
+......
+诸若此类。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;二分查找+前缀和，构造前缀和后，运用二分查找差对应的元素&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    int[] pre;
+    public Solution(int[] w) {
+        pre = new int[w.length];
+        pre[0] = w[0];
+        for(int i = 1; i &amp;lt; w.length; i++) {
+            pre[i] = pre[i - 1] + w[i];
+        }
+    }
+    
+    public int pickIndex() {
+        int x = (int) (Math.random() * pre[pre.length - 1]) + 1;
+        return binarySearch(x);
+    }
+
+    public int binarySearch(int x) {
+        int left = 0;
+        int right = pre.length - 1;
+        while(left &amp;lt;= right) {
+            int mid = left + (right - left) / 2;
+            if(pre[mid] == x) {
+                return mid;
+            } else if(x &amp;lt; pre[mid]) {
+                right = mid - 1;
+            } else {
+                left = mid + 1;
+            }
+        }
+        return left;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1&gt;爱吃香蕉的狒狒&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;狒狒喜欢吃香蕉。这里有 &lt;code&gt;N&lt;/code&gt; 堆香蕉，第 &lt;code&gt;i&lt;/code&gt; 堆中有 &lt;code&gt;piles[i]&lt;/code&gt; 根香蕉。警卫已经离开了，将在 &lt;code&gt;H&lt;/code&gt; 小时后回来。&lt;/p&gt;
+&lt;p&gt;狒狒可以决定她吃香蕉的速度 &lt;code&gt;K&lt;/code&gt; （单位：根/小时）。每个小时，她将会选择一堆香蕉，从中吃掉 &lt;code&gt;K&lt;/code&gt; 根。如果这堆香蕉少于 &lt;code&gt;K&lt;/code&gt; 根，她将吃掉这堆的所有香蕉，然后这一小时内不会再吃更多的香蕉，下一个小时才会开始吃另一堆的香蕉。&lt;/p&gt;
+&lt;p&gt;狒狒喜欢慢慢吃，但仍然想在警卫回来前吃掉所有的香蕉。&lt;/p&gt;
+&lt;p&gt;返回她可以在 &lt;code&gt;H&lt;/code&gt; 小时内吃掉所有香蕉的最小速度 &lt;code&gt;K&lt;/code&gt;（&lt;code&gt;K&lt;/code&gt; 为整数）。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入: piles = [3,6,7,11], H = 8
+输出: 4
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入: piles = [30,11,23,4,20], H = 5
+输出: 30
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 3：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入: piles = [30,11,23,4,20], H = 6
+输出: 23
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;二分查找找符合条件的结果，边界最小为1，最大为香蕉最大数（此时需要耗费的时间最小），其中值得注意的是向上取整的部分的表达&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public int minEatingSpeed(int[] piles, int h) {
+        int max = Integer.MIN_VALUE;
+        for(int pile : piles) {
+            max = Math.max(max, pile);
+        }
+        int left = 1;
+        int right = max;
+        while(left &amp;lt;= right) {
+            int mid = left + (right - left) / 2;
+            if(getHour(mid, piles) &amp;gt; h) {
+                left = mid + 1;
+            } else {
+                right = mid - 1;
+            }
+        }
+        return left;
+    }
+
+    private int getHour(int speed, int[] piles){
+        int hour = 0;
+        for(int pile : piles) {
+            //向上取整
+            hour += (pile - 1) / speed + 1;
+        }
+        return hour;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+</content:encoded></item><item><title>LeetCode刷题（搜索插入位置、山脉数组的封顶索引）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E6%90%9C%E7%B4%A2%E6%8F%92%E5%85%A5%E4%BD%8D%E7%BD%AE%E5%B1%B1%E8%84%89%E6%95%B0%E7%BB%84%E7%9A%84%E5%B0%81%E9%A1%B6%E7%B4%A2%E5%BC%95/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E6%90%9C%E7%B4%A2%E6%8F%92%E5%85%A5%E4%BD%8D%E7%BD%AE%E5%B1%B1%E8%84%89%E6%95%B0%E7%BB%84%E7%9A%84%E5%B0%81%E9%A1%B6%E7%B4%A2%E5%BC%95/</guid><description>搜索插入位置、山脉数组的封顶索引</description><pubDate>Sun, 21 Dec 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;搜索插入位置&lt;/h1&gt;
 &lt;h2&gt;题目描述&lt;/h2&gt;
 &lt;p&gt;给定一个排序的整数数组 &lt;code&gt;nums&lt;/code&gt; 和一个整数目标值&lt;code&gt; target&lt;/code&gt; ，请在数组中找到 &lt;code&gt;target &lt;/code&gt;，并返回其下标。如果目标值不存在于数组中，返回它将会被按顺序插入的位置。&lt;/p&gt;
 &lt;p&gt;请必须使用时间复杂度为 &lt;code&gt;O(log n)&lt;/code&gt; 的算法。&lt;/p&gt;
@@ -3092,13 +3749,10 @@ public class ProcessController {
     }
 }
 &lt;/code&gt;&lt;/pre&gt;
-</content:encoded></item><item><title>LeetCode刷题（模板）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E6%A8%A1%E6%9D%BF/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E6%A8%A1%E6%9D%BF/</guid><pubDate>Mon, 01 Dec 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;题目&lt;/h1&gt;
-&lt;h2&gt;题目描述&lt;/h2&gt;
-&lt;h2&gt;题解&lt;/h2&gt;
 </content:encoded></item><item><title>SpringAI笔记（模板）</title><link>https://thrinisty.github.io/posts/springai%E7%AC%94%E8%AE%B0%E6%A8%A1%E6%9D%BF/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/springai%E7%AC%94%E8%AE%B0%E6%A8%A1%E6%9D%BF/</guid><pubDate>Mon, 01 Dec 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;SpringAI笔记&lt;/h1&gt;
 </content:encoded></item><item><title>自学第九月份总结</title><link>https://thrinisty.github.io/posts/%E8%87%AA%E5%AD%A6%E7%AC%AC%E4%B9%9D%E6%9C%88%E4%BB%BD%E6%80%BB%E7%BB%93/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/%E8%87%AA%E5%AD%A6%E7%AC%AC%E4%B9%9D%E6%9C%88%E4%BB%BD%E6%80%BB%E7%BB%93/</guid><description>面试、八股、算法</description><pubDate>Mon, 01 Dec 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;自学第九月份总结&lt;/h1&gt;
 &lt;h2&gt;秋招情况&lt;/h2&gt;
-&lt;p&gt;面试逐渐多起来了，但是暂时还没有offer，维信金科二面过了，12.4号终面，虾皮12.1号面的，好像发挥不是很好也不知道会不会通过，再看看吧，新凯莱一面过了，等后边主管面（非技术）&lt;/p&gt;
+&lt;p&gt;面试逐渐多起来了，但是暂时还没有offer，维信金科二面过了，12.4号终面，虾皮12.1号面的，好像发挥不是很好也不知道会不会通过，再看看吧，新凯来一面过了，等后边主管面（非技术）&lt;/p&gt;
 &lt;p&gt;另外的华为复活，12.3号重新笔试，这段时间也做了深蓝互动和作业帮的笔试（编程题都AC了，希望约面），小红书的笔试挺难的（1 + 0.18 + 0.09）暂时不抱期望约面了，面试了有个6、7场了，慢慢找到感觉了希望后续顺利&lt;/p&gt;
 &lt;h2&gt;技术学习&lt;/h2&gt;
 &lt;p&gt;这个月看了看Redis的剩余部分，主要是场景题目，因为面试喜欢考，也有在积累面试的场景题目&lt;/p&gt;
@@ -3106,7 +3760,7 @@ public class ProcessController {
 &lt;p&gt;SQL的50道题目也快刷完了（44/50），但是没什么记忆点，后续应该还会二刷&lt;/p&gt;
 &lt;h2&gt;总结&lt;/h2&gt;
 &lt;p&gt;11月份面试体验下来感觉难度还算可以，临时背的八股题目被问到了也可以答的不错，小公司的面试基本可以凭借八股、学校title、以及实习经验乱杀，中公司面试的压力就稍微有点大了，还得再多看看，目前也是在上升期，希望12月份能得到好的消息&lt;/p&gt;
-&lt;p&gt;笔试积累量也蛮不错的，简单的基本能做出来了，困难的也多多少少有点思路，明年尝试下字节把，把算法掌握的牢固一点&lt;/p&gt;
+&lt;p&gt;笔试积累量也蛮不错的，简单的基本能做出来了，困难的也多多少少有点思路，明年尝试下字节吧，把算法掌握的牢固一点，I have a dream&lt;/p&gt;
 </content:encoded></item><item><title>LeetCode刷题（两数相除、最大的单词长度乘积）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E4%B8%A4%E6%95%B0%E7%9B%B8%E9%99%A4%E6%9C%80%E5%A4%A7%E7%9A%84%E5%8D%95%E8%AF%8D%E9%95%BF%E5%BA%A6%E4%B9%98%E7%A7%AF/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E4%B8%A4%E6%95%B0%E7%9B%B8%E9%99%A4%E6%9C%80%E5%A4%A7%E7%9A%84%E5%8D%95%E8%AF%8D%E9%95%BF%E5%BA%A6%E4%B9%98%E7%A7%AF/</guid><description>两数相除、最大的单词长度乘积</description><pubDate>Sun, 30 Nov 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;两数相除&lt;/h1&gt;
 &lt;h2&gt;题目描述&lt;/h2&gt;
 &lt;p&gt;给定两个整数 &lt;code&gt;a&lt;/code&gt; 和 &lt;code&gt;b&lt;/code&gt; ，求它们的除法的商 &lt;code&gt;a/b&lt;/code&gt; ，要求不得使用乘号 &lt;code&gt;&apos;*&apos;&lt;/code&gt;、除号 &lt;code&gt;&apos;/&apos;&lt;/code&gt; 以及求余符号 &lt;code&gt;&apos;%&apos;&lt;/code&gt; 。&lt;/p&gt;
@@ -22859,6 +23513,7 @@ public List&amp;lt;User&amp;gt; returnBean() {
      偷窃到的最高金额 = 2 + 9 + 1 = 12 。
 &lt;/code&gt;&lt;/pre&gt;
 &lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;解法一：递归结果判断&lt;/p&gt;
 &lt;p&gt;之前做过运用二叉树存储结果的一道题目，这一道题目运用的是数组进行存储，仿照类似的解法，用一个长度为2的数组存储结果，在方法的内部递归的调用方法求出打劫下一个房屋的结果集，根据结果集分别给0不打劫的情况，1打劫的情况分别赋值，即可正确地求出结果&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;class Solution {
     public int rob(int[] nums) {
@@ -22875,6 +23530,26 @@ public List&amp;lt;User&amp;gt; returnBean() {
         result[0] = Math.max(nextTarget[0], nextTarget[1]);
         result[1] = nums[index] + nextTarget[0];
         return result;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;解法二：动态规划&lt;/p&gt;
+&lt;p&gt;有点像买卖股票那道题，一样的两个数组动态规划即可&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public int rob(int[] nums) {
+        int n = nums.length;
+        return rob(nums, 0, nums.length - 1);
+    }
+
+    public int rob(int[] nums, int start, int end) {
+        int preRob = 0, preNoRob = 0;
+        for(int i = start; i &amp;lt;= end; i++) {
+            int curRob = preNoRob + nums[i];
+            int curNoRob = Math.max(preNoRob, preRob);
+            preNoRob = curNoRob;
+            preRob = curRob;
+        }
+        return Math.max(preNoRob, preRob);
     }
 }
 &lt;/code&gt;&lt;/pre&gt;

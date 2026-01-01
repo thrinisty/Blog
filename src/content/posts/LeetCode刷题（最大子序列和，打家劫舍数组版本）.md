@@ -97,6 +97,8 @@ class Solution {
 
 ## 题解
 
+解法一：递归结果判断
+
 之前做过运用二叉树存储结果的一道题目，这一道题目运用的是数组进行存储，仿照类似的解法，用一个长度为2的数组存储结果，在方法的内部递归的调用方法求出打劫下一个房屋的结果集，根据结果集分别给0不打劫的情况，1打劫的情况分别赋值，即可正确地求出结果
 
 ```java
@@ -115,6 +117,30 @@ class Solution {
         result[0] = Math.max(nextTarget[0], nextTarget[1]);
         result[1] = nums[index] + nextTarget[0];
         return result;
+    }
+}
+```
+
+解法二：动态规划
+
+有点像买卖股票那道题，一样的两个数组动态规划即可
+
+```java
+class Solution {
+    public int rob(int[] nums) {
+        int n = nums.length;
+        return rob(nums, 0, nums.length - 1);
+    }
+
+    public int rob(int[] nums, int start, int end) {
+        int preRob = 0, preNoRob = 0;
+        for(int i = start; i <= end; i++) {
+            int curRob = preNoRob + nums[i];
+            int curNoRob = Math.max(preNoRob, preRob);
+            preNoRob = curNoRob;
+            preRob = curRob;
+        }
+        return Math.max(preNoRob, preRob);
     }
 }
 ```
