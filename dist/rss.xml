@@ -1,4 +1,619 @@
-<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Thrinisty&apos;s Blog</title><description>New Blog</description><link>https://thrinisty.github.io/</link><language>zh_CN</language><item><title>LeetCode刷题（模板）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E6%A8%A1%E6%9D%BF/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E6%A8%A1%E6%9D%BF/</guid><pubDate>Thu, 01 Jan 2026 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;题目&lt;/h1&gt;
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Thrinisty&apos;s Blog</title><description>New Blog</description><link>https://thrinisty.github.io/</link><language>zh_CN</language><item><title>LeetCode刷题（所有可能的路径）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E6%89%80%E6%9C%89%E5%8F%AF%E8%83%BD%E7%9A%84%E8%B7%AF%E5%BE%84/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E6%89%80%E6%9C%89%E5%8F%AF%E8%83%BD%E7%9A%84%E8%B7%AF%E5%BE%84/</guid><description>所有可能的路径</description><pubDate>Sun, 11 Jan 2026 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;所有可能的路径&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;给定一个有 &lt;code&gt;n&lt;/code&gt; 个节点的有向无环图，用二维数组 &lt;code&gt;graph&lt;/code&gt; 表示，请找到所有从 &lt;code&gt;0&lt;/code&gt; 到 &lt;code&gt;n-1&lt;/code&gt; 的路径并输出（不要求按顺序）。&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;graph&lt;/code&gt; 的第 &lt;code&gt;i&lt;/code&gt; 个数组中的单元都表示有向图中 &lt;code&gt;i&lt;/code&gt; 号节点所能到达的下一些结点（译者注：有向图是有方向的，即规定了 a→b 你就不能从 b→a ），若为空，就是没有下一个节点了。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/519.jpg&quot; alt=&quot;519&quot; /&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：graph = [[1,2],[3],[3],[]]
+输出：[[0,1,3],[0,2,3]]
+解释：有两条路径 0 -&amp;gt; 1 -&amp;gt; 3 和 0 -&amp;gt; 2 -&amp;gt; 3
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/520.jpg&quot; alt=&quot;520&quot; /&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：graph = [[4,3,1],[3,2,4],[3],[4],[]]
+输出：[[0,4],[0,3,4],[0,1,3,4],[0,1,2,3,4],[0,1,4]]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 3：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：graph = [[1],[]]
+输出：[[0,1]]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 4：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：graph = [[1,2,3],[2],[3],[]]
+输出：[[0,1,2,3],[0,2,3],[0,3]]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 5：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：graph = [[1,3],[2],[3],[]]
+输出：[[0,1,2,3],[0,3]]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;运用回溯法，依次尝试将下一个节点放入list中尝试下一步，直到最后一个节点被遍历到放入result中&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    List&amp;lt;List&amp;lt;Integer&amp;gt;&amp;gt; result = new ArrayList&amp;lt;&amp;gt;();
+    List&amp;lt;Integer&amp;gt; list = new ArrayList&amp;lt;&amp;gt;();
+    public List&amp;lt;List&amp;lt;Integer&amp;gt;&amp;gt; allPathsSourceTarget(int[][] graph) {
+        dfs(0, graph);
+        return result;
+    }
+
+    public void dfs(int node, int[][] graph) {
+        list.add(node);
+        if(node == graph.length - 1) {
+            result.add(new ArrayList&amp;lt;&amp;gt;(list));
+        } else {
+            for(int next : graph[node]) {
+                dfs(next, graph);
+            }
+        }
+        list.remove(list.size() - 1);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+</content:encoded></item><item><title>LeetCode刷题（打开转盘锁）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E6%89%93%E5%BC%80%E8%BD%AC%E7%9B%98%E9%94%81/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E6%89%93%E5%BC%80%E8%BD%AC%E7%9B%98%E9%94%81/</guid><description>打开转盘锁</description><pubDate>Sat, 10 Jan 2026 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;打开转盘锁&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;一个密码锁由 4 个环形拨轮组成，每个拨轮都有 10 个数字： &lt;code&gt;&apos;0&apos;, &apos;1&apos;, &apos;2&apos;, &apos;3&apos;, &apos;4&apos;, &apos;5&apos;, &apos;6&apos;, &apos;7&apos;, &apos;8&apos;, &apos;9&apos;&lt;/code&gt; 。每个拨轮可以自由旋转：例如把 &lt;code&gt;&apos;9&apos;&lt;/code&gt; 变为 &lt;code&gt;&apos;0&apos;&lt;/code&gt;，&lt;code&gt;&apos;0&apos;&lt;/code&gt; 变为 &lt;code&gt;&apos;9&apos;&lt;/code&gt; 。每次旋转都只能旋转一个拨轮的一位数字。&lt;/p&gt;
+&lt;p&gt;锁的初始数字为 &lt;code&gt;&apos;0000&apos;&lt;/code&gt; ，一个代表四个拨轮的数字的字符串。&lt;/p&gt;
+&lt;p&gt;列表 &lt;code&gt;deadends&lt;/code&gt; 包含了一组死亡数字，一旦拨轮的数字和列表里的任何一个元素相同，这个锁将会被永久锁定，无法再被旋转。&lt;/p&gt;
+&lt;p&gt;字符串 &lt;code&gt;target&lt;/code&gt; 代表可以解锁的数字，请给出解锁需要的最小旋转次数，如果无论如何不能解锁，返回 &lt;code&gt;-1&lt;/code&gt; 。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：deadends = [&quot;0201&quot;,&quot;0101&quot;,&quot;0102&quot;,&quot;1212&quot;,&quot;2002&quot;], target = &quot;0202&quot;
+输出：6
+解释：
+可能的移动序列为 &quot;0000&quot; -&amp;gt; &quot;1000&quot; -&amp;gt; &quot;1100&quot; -&amp;gt; &quot;1200&quot; -&amp;gt; &quot;1201&quot; -&amp;gt; &quot;1202&quot; -&amp;gt; &quot;0202&quot;。
+注意 &quot;0000&quot; -&amp;gt; &quot;0001&quot; -&amp;gt; &quot;0002&quot; -&amp;gt; &quot;0102&quot; -&amp;gt; &quot;0202&quot; 这样的序列是不能解锁的，因为当拨动到 &quot;0102&quot; 时这个锁就会被锁定。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入: deadends = [&quot;8888&quot;], target = &quot;0009&quot;
+输出：1
+解释：
+把最后一位反向旋转一次即可 &quot;0000&quot; -&amp;gt; &quot;0009&quot;。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 3：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入: deadends = [&quot;8887&quot;,&quot;8889&quot;,&quot;8878&quot;,&quot;8898&quot;,&quot;8788&quot;,&quot;8988&quot;,&quot;7888&quot;,&quot;9888&quot;], target = &quot;8888&quot;
+输出：-1
+解释：
+无法旋转到目标数字且不被锁定。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 4：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入: deadends = [&quot;0000&quot;], target = &quot;8888&quot;
+输出：-1
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;提供一个get方法提供所有拨动一个轮可以到达的status，用广搜来找到最小的步数能到达目标&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public int openLock(String[] deadends, String target) {
+        if(target.equals(&quot;0000&quot;)) return 0;
+        Set&amp;lt;String&amp;gt; dead = new HashSet&amp;lt;&amp;gt;();
+        for(String deadend : deadends) {
+            dead.add(deadend);
+        }
+        if(dead.contains(&quot;0000&quot;)) {
+            return -1;
+        }
+        int step = 0;
+        Queue&amp;lt;String&amp;gt; queue = new LinkedList&amp;lt;&amp;gt;();
+        queue.offer(&quot;0000&quot;);
+        Set&amp;lt;String&amp;gt; visited = new HashSet&amp;lt;&amp;gt;();
+        queue.offer(&quot;0000&quot;);
+        while(!queue.isEmpty()) {
+            step++;
+            int size = queue.size();
+            for(int i = 0; i &amp;lt; size; i++) {
+                String status = queue.poll();
+                for(String nextStatus : get(status)) {
+                    if(!visited.contains(nextStatus) &amp;amp;&amp;amp; !dead.contains(nextStatus)) {
+                        if(target.equals(nextStatus)) {
+                            return step;
+                        }
+                        queue.offer(nextStatus);
+                        visited.add(nextStatus);
+                    }
+                }
+            }
+        }
+        return -1;
+    }
+
+    public char prev(char num) {
+        return num == &apos;0&apos; ? &apos;9&apos; : (char)(num - 1);
+    }
+
+    public char next(char num) {
+        return num == &apos;9&apos; ? &apos;0&apos; : (char)(num + 1);
+    }
+
+    public List&amp;lt;String&amp;gt; get(String status) {
+        List&amp;lt;String&amp;gt; result = new ArrayList&amp;lt;&amp;gt;();
+        char[] array = status.toCharArray();
+        for(int i = 0; i &amp;lt; 4; i++) {
+            char num = array[i];
+            array[i] = prev(num);
+            result.add(new String(array));
+            array[i] = next(num);
+            result.add(new String(array));
+            array[i] = num;
+        }
+        return result;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+</content:encoded></item><item><title>LeetCode刷题（单词接龙）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E5%8D%95%E8%AF%8D%E6%8E%A5%E9%BE%99/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E5%8D%95%E8%AF%8D%E6%8E%A5%E9%BE%99/</guid><description>单词接龙</description><pubDate>Thu, 08 Jan 2026 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;单词接龙&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;在字典（单词列表） &lt;code&gt;wordList&lt;/code&gt; 中，从单词 &lt;code&gt;beginWord&lt;/code&gt; 和 &lt;code&gt;endWord&lt;/code&gt; 的 &lt;strong&gt;转换序列&lt;/strong&gt; 是一个按下述规格形成的序列：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;序列中第一个单词是 &lt;code&gt;beginWord&lt;/code&gt; 。&lt;/li&gt;
+&lt;li&gt;序列中最后一个单词是 &lt;code&gt;endWord&lt;/code&gt; 。&lt;/li&gt;
+&lt;li&gt;每次转换只能改变一个字母。&lt;/li&gt;
+&lt;li&gt;转换过程中的中间单词必须是字典 &lt;code&gt;wordList&lt;/code&gt; 中的单词。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;给定两个长度相同但内容不同的单词 &lt;code&gt;beginWord&lt;/code&gt; 和 &lt;code&gt;endWord&lt;/code&gt; 和一个字典 &lt;code&gt;wordList&lt;/code&gt; ，找到从 &lt;code&gt;beginWord&lt;/code&gt; 到 &lt;code&gt;endWord&lt;/code&gt; 的 &lt;strong&gt;最短转换序列&lt;/strong&gt; 中的 &lt;strong&gt;单词数目&lt;/strong&gt; 。如果不存在这样的转换序列，返回 0。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：beginWord = &quot;hit&quot;, endWord = &quot;cog&quot;, wordList = [&quot;hot&quot;,&quot;dot&quot;,&quot;dog&quot;,&quot;lot&quot;,&quot;log&quot;,&quot;cog&quot;]
+输出：5
+解释：一个最短转换序列是 &quot;hit&quot; -&amp;gt; &quot;hot&quot; -&amp;gt; &quot;dot&quot; -&amp;gt; &quot;dog&quot; -&amp;gt; &quot;cog&quot;, 返回它的长度 5。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：beginWord = &quot;hit&quot;, endWord = &quot;cog&quot;, wordList = [&quot;hot&quot;,&quot;dot&quot;,&quot;dog&quot;,&quot;lot&quot;,&quot;log&quot;]
+输出：0
+解释：endWord &quot;cog&quot; 不在字典中，所以无法进行转换。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;用edge存放可相互转化的边，并将包含开始字符串的字符存到words中，用广度搜索，直到找到目标的字符串为止（即target），每个从队列中出队的元素要找所有的与之有边的字符位置加入队列（并且这个为止没有被访问过）用step记录长度，当访问到目标的时候返回step + 1即可&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public int ladderLength(String beginWord, String endWord, List&amp;lt;String&amp;gt; wordList) {
+        int n = wordList.size();
+        String[] words = new String[n + 1];
+        words[0] = beginWord;
+        int target = -1;
+        for(int i = 0; i &amp;lt; n; i++) {
+            words[i + 1] = wordList.get(i);
+            if(endWord.equals(wordList.get(i))) {
+                target = i + 1;
+            }
+        }
+        if(target == -1) {
+            return 0;
+        }
+        boolean[][] edge = new boolean[n + 1][n + 1];
+        boolean[] visited = new boolean[n + 1];
+        for(int i = 1; i &amp;lt;= n; i++) {
+            for(int j = 0; j &amp;lt;= i; j++) {
+                if(canChange(words[i], words[j])) {
+                    edge[i][j] = true;
+                    edge[j][i] = true;
+                }
+            }
+        }
+        Queue&amp;lt;Integer&amp;gt; queue = new LinkedList&amp;lt;&amp;gt;();
+        queue.offer(0);
+        visited[0] = true;
+        int step = 1;
+        while(!queue.isEmpty()) {
+            int len = queue.size();
+            for(int k = 0; k &amp;lt; len; k++) {
+                int i = queue.poll();
+                for(int j = 0; j &amp;lt;= n; j++) {
+                    if(!visited[j] &amp;amp;&amp;amp; edge[i][j]) {
+                        if(j == target) {
+                            return step + 1;
+                        }
+                        queue.offer(j);
+                        visited[j] = true;
+                    }
+                }
+            }
+            step++;
+        }
+        return 0;
+    }
+
+    public boolean canChange(String s1, String s2) {
+        int n = s1.length();
+        int count = 0;
+        for(int i = 0; i &amp;lt; n; i++) {
+            if(s1.charAt(i) != s2.charAt(i)) {
+                count++;
+                if(count &amp;gt; 1) {
+                    return false;
+                }
+            }
+        }
+        return count == 1;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+</content:encoded></item><item><title>LeetCode刷题（01矩阵）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%9801%E7%9F%A9%E9%98%B5/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%9801%E7%9F%A9%E9%98%B5/</guid><description>01矩阵</description><pubDate>Wed, 07 Jan 2026 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;01矩阵&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;给定一个由 &lt;code&gt;0&lt;/code&gt; 和 &lt;code&gt;1&lt;/code&gt; 组成的矩阵 &lt;code&gt;mat&lt;/code&gt; ，请输出一个大小相同的矩阵，其中每一个格子是 &lt;code&gt;mat&lt;/code&gt; 中对应位置元素到最近的 &lt;code&gt;0&lt;/code&gt; 的距离。&lt;/p&gt;
+&lt;p&gt;两个相邻元素间的距离为 &lt;code&gt;1&lt;/code&gt;。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/517.png&quot; alt=&quot;517&quot; /&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：mat = [[0,0,0],[0,1,0],[0,0,0]]
+输出：[[0,0,0],[0,1,0],[0,0,0]]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/518.png&quot; alt=&quot;518&quot; /&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：mat = [[0,0,0],[0,1,0],[1,1,1]]
+输出：[[0,0,0],[0,1,0],[1,2,1]]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;正难则反，从每个0开始出发，进过的非0位置记录最近一个0到这里的距离，在运用队列初始将每个0放入，依次广搜即可&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    private int[][] arr = new int[][] { { -1, 0 }, { 1, 0 }, { 0, -1 }, { 0, 1 } };
+
+    public int[][] updateMatrix(int[][] mat) {
+        int m = mat.length;
+        int n = mat[0].length;
+        int[][] result = new int[m][n];
+        boolean[][] visited = new boolean[m][n];
+        Queue&amp;lt;int[]&amp;gt; queue = new LinkedList&amp;lt;&amp;gt;();
+        for (int i = 0; i &amp;lt; m; i++) {
+            for (int j = 0; j &amp;lt; n; j++) {
+                if (mat[i][j] == 0) {
+                    queue.offer(new int[] { i, j });
+                    visited[i][j] = true;
+                }
+            }
+        }
+        while (!queue.isEmpty()) {
+            int[] place = queue.poll();
+            int px = place[0];
+            int py = place[1];
+            for (int d = 0; d &amp;lt; arr.length; d++) {
+                int i = px + arr[d][0];
+                int j = py + arr[d][1];
+                if (i &amp;gt;= 0 &amp;amp;&amp;amp; i &amp;lt; m &amp;amp;&amp;amp; j &amp;gt;= 0 &amp;amp;&amp;amp; j &amp;lt; n &amp;amp;&amp;amp; !visited[i][j]) {
+                    result[i][j] = result[px][py] + 1;
+                    queue.offer(new int[] { i, j });
+                    visited[i][j] = true;
+                }
+            }
+        }
+        return result;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+</content:encoded></item><item><title>LeetCode刷题（判断二分图）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E5%88%A4%E6%96%AD%E4%BA%8C%E5%88%86%E5%9B%BE/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E5%88%A4%E6%96%AD%E4%BA%8C%E5%88%86%E5%9B%BE/</guid><pubDate>Tue, 06 Jan 2026 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;判断二分图&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;存在一个 &lt;strong&gt;无向图&lt;/strong&gt; ，图中有 &lt;code&gt;n&lt;/code&gt; 个节点。其中每个节点都有一个介于 &lt;code&gt;0&lt;/code&gt; 到 &lt;code&gt;n - 1&lt;/code&gt; 之间的唯一编号。&lt;/p&gt;
+&lt;p&gt;给定一个二维数组 &lt;code&gt;graph&lt;/code&gt; ，表示图，其中 &lt;code&gt;graph[u]&lt;/code&gt; 是一个节点数组，由节点 &lt;code&gt;u&lt;/code&gt; 的邻接节点组成。形式上，对于 &lt;code&gt;graph[u]&lt;/code&gt; 中的每个 &lt;code&gt;v&lt;/code&gt; ，都存在一条位于节点 &lt;code&gt;u&lt;/code&gt; 和节点 &lt;code&gt;v&lt;/code&gt; 之间的无向边。该无向图同时具有以下属性：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;不存在自环（&lt;code&gt;graph[u]&lt;/code&gt; 不包含 &lt;code&gt;u&lt;/code&gt;）。&lt;/li&gt;
+&lt;li&gt;不存在平行边（&lt;code&gt;graph[u]&lt;/code&gt; 不包含重复值）。&lt;/li&gt;
+&lt;li&gt;如果 &lt;code&gt;v&lt;/code&gt; 在 &lt;code&gt;graph[u]&lt;/code&gt; 内，那么 &lt;code&gt;u&lt;/code&gt; 也应该在 &lt;code&gt;graph[v]&lt;/code&gt; 内（该图是无向图）&lt;/li&gt;
+&lt;li&gt;这个图可能不是连通图，也就是说两个节点 &lt;code&gt;u&lt;/code&gt; 和 &lt;code&gt;v&lt;/code&gt; 之间可能不存在一条连通彼此的路径。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;二分图&lt;/strong&gt; 定义：如果能将一个图的节点集合分割成两个独立的子集 &lt;code&gt;A&lt;/code&gt; 和 &lt;code&gt;B&lt;/code&gt; ，并使图中的每一条边的两个节点一个来自 &lt;code&gt;A&lt;/code&gt; 集合，一个来自 &lt;code&gt;B&lt;/code&gt; 集合，就将这个图称为 &lt;strong&gt;二分图&lt;/strong&gt; 。&lt;/p&gt;
+&lt;p&gt;如果图是二分图，返回 &lt;code&gt;true&lt;/code&gt; ；否则，返回 &lt;code&gt;false&lt;/code&gt; 。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/515.jpg&quot; alt=&quot;515&quot; /&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：graph = [[1,2,3],[0,2],[0,1,3],[0,2]]
+输出：false
+解释：不能将节点分割成两个独立的子集，以使每条边都连通一个子集中的一个节点与另一个子集中的一个节点。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/516.jpg&quot; alt=&quot;516&quot; /&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：graph = [[1,3],[0,2],[1,3],[0,2]]
+输出：true
+解释：可以将节点分成两组: {0, 2} 和 {1, 3} 。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;运用并查集，对于一条边而言，两侧的节点不能够在一个图中，如果在同一个图中则返回false&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    int[] parent;
+    public boolean isBipartite(int[][] graph) {
+        parent = new int[graph.length];
+        for(int i = 0; i &amp;lt; parent.length; i++) {
+            parent[i] = i;
+        }
+        for(int i = 0; i &amp;lt; graph.length; i++) {
+            for(int node : graph[i]) {
+                if(find(i) == find(node)) {
+                    return false;
+                }
+                union(graph[i][0], node);
+            }
+        }
+        return true;
+    }
+
+    public int find(int num) {
+        if(parent[num] != num) {
+            parent[num] = find(parent[num]);
+        }
+        return parent[num];
+    }
+
+    public void union(int x, int y) {
+        parent[find(x)] = find(y);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+</content:encoded></item><item><title>LeetCode刷题（IPO、冗余连接）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98ipo%E5%86%97%E4%BD%99%E8%BF%9E%E6%8E%A5/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98ipo%E5%86%97%E4%BD%99%E8%BF%9E%E6%8E%A5/</guid><description>IPO、冗余连接</description><pubDate>Mon, 05 Jan 2026 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;IPO&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;假设 力扣（LeetCode）即将开始 &lt;strong&gt;IPO&lt;/strong&gt; 。为了以更高的价格将股票卖给风险投资公司，力扣 希望在 IPO 之前开展一些项目以增加其资本。 由于资源有限，它只能在 IPO 之前完成最多 &lt;code&gt;k&lt;/code&gt; 个不同的项目。帮助 力扣 设计完成最多 &lt;code&gt;k&lt;/code&gt; 个不同项目后得到最大总资本的方式。&lt;/p&gt;
+&lt;p&gt;给你 &lt;code&gt;n&lt;/code&gt; 个项目。对于每个项目 &lt;code&gt;i&lt;/code&gt; ，它都有一个纯利润 &lt;code&gt;profits[i]&lt;/code&gt; ，和启动该项目需要的最小资本 &lt;code&gt;capital[i]&lt;/code&gt; 。&lt;/p&gt;
+&lt;p&gt;最初，你的资本为 &lt;code&gt;w&lt;/code&gt; 。当你完成一个项目时，你将获得纯利润，且利润将被添加到你的总资本中。&lt;/p&gt;
+&lt;p&gt;总而言之，从给定项目中选择 &lt;strong&gt;最多&lt;/strong&gt; &lt;code&gt;k&lt;/code&gt; 个不同项目的列表，以 &lt;strong&gt;最大化最终资本&lt;/strong&gt; ，并输出最终可获得的最多资本。&lt;/p&gt;
+&lt;p&gt;答案保证在 32 位有符号整数范围内。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：k = 2, w = 0, profits = [1,2,3], capital = [0,1,1]
+输出：4
+解释：
+由于你的初始资本为 0，你仅可以从 0 号项目开始。
+在完成后，你将获得 1 的利润，你的总资本将变为 1。
+此时你可以选择开始 1 号或 2 号项目。
+由于你最多可以选择两个项目，所以你需要完成 2 号项目以获得最大的资本。
+因此，输出最后最大化的资本，为 0 + 1 + 3 = 4。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：k = 3, w = 0, profits = [1,2,3], capital = [0,1,2]
+输出：6
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;将成本与纯利益放置一个二维数组中，将其对应，再按照成本从小到大排序，保证成本能满足后面的项目放入heap的话前面的也能&lt;/p&gt;
+&lt;p&gt;循环k次，在累加利益之前，放入所有成本能够满足的项目，项目用current标识，之后用heap取出最大的利益项目迭代资本w&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public int findMaximizedCapital(int k, int w, int[] profits, int[] capital) {
+        int n = profits.length;
+        int[][] arr = new int[n][2];
+        for(int i = 0; i &amp;lt; n; i++) {
+            arr[i][0] = capital[i];
+            arr[i][1] = profits[i];
+        }
+        Arrays.sort(arr, (a, b) -&amp;gt; a[0] - b[0]);
+        PriorityQueue&amp;lt;Integer&amp;gt; heap = new PriorityQueue&amp;lt;&amp;gt;((a, b) -&amp;gt; b - a);
+        int current = 0;
+        for(int i = 0; i &amp;lt; k; i++) {
+            while(current &amp;lt; n &amp;amp;&amp;amp; arr[current][0] &amp;lt;= w) {
+                heap.add(arr[current][1]);
+                current++;
+            }
+            if(!heap.isEmpty()) {
+                w += heap.poll();
+            } else {
+                break;
+            }
+        }
+        return w;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1&gt;冗余连接&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;树可以看成是一个连通且 &lt;strong&gt;无环&lt;/strong&gt; 的 &lt;strong&gt;无向&lt;/strong&gt; 图。&lt;/p&gt;
+&lt;p&gt;给定往一棵 &lt;code&gt;n&lt;/code&gt; 个节点 (节点值 &lt;code&gt;1～n&lt;/code&gt;) 的树中添加一条边后的图。添加的边的两个顶点包含在 &lt;code&gt;1&lt;/code&gt; 到 &lt;code&gt;n&lt;/code&gt; 中间，且这条附加的边不属于树中已存在的边。图的信息记录于长度为 &lt;code&gt;n&lt;/code&gt; 的二维数组 &lt;code&gt;edges&lt;/code&gt; ，&lt;code&gt;edges[i] = [ai, bi]&lt;/code&gt; 表示图中在 &lt;code&gt;ai&lt;/code&gt; 和 &lt;code&gt;bi&lt;/code&gt; 之间存在一条边。&lt;/p&gt;
+&lt;p&gt;请找出一条可以删去的边，删除后可使得剩余部分是一个有着 &lt;code&gt;n&lt;/code&gt; 个节点的树。如果有多个答案，则返回数组 &lt;code&gt;edges&lt;/code&gt; 中最后出现的边。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/513.png&quot; alt=&quot;513&quot; /&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入: edges = [[1,2],[1,3],[2,3]]
+输出: [2,3]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/514.png&quot; alt=&quot;514&quot; /&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入: edges = [[1,2],[2,3],[3,4],[1,4],[1,5]]
+输出: [1,4]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;并查集，查找第一个能形成环的边，如果find的两个结果是一样的则代表两个数字已经连接，这条边是冗余的，如果不一样，则合并两个图union一下&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    int[] parent;
+    public int[] findRedundantConnection(int[][] edges) {
+        int n = edges.length;
+        parent = new int[n + 1];
+        for(int i = 1; i &amp;lt;= n; i++) {
+            parent[i] = i;
+        }
+        for(int[] edge : edges) {
+            int x = edge[0];
+            int y = edge[1];
+            if(find(x) == find(y)) {
+                return edge;
+            } else {
+                union(x, y);
+            }
+        }
+        return new int[0];
+    }
+
+    int find(int index) {
+        if(parent[index] != index) {
+            parent[index] = find(parent[index]);
+        }
+        return parent[index];
+    }
+
+    void union(int x, int y) {
+        parent[find(x)] = find(y);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+</content:encoded></item><item><title>LeetCode刷题（数据流的中位数）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E6%95%B0%E6%8D%AE%E6%B5%81%E7%9A%84%E4%B8%AD%E4%BD%8D%E6%95%B0/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E6%95%B0%E6%8D%AE%E6%B5%81%E7%9A%84%E4%B8%AD%E4%BD%8D%E6%95%B0/</guid><description>数据流的中位数</description><pubDate>Sun, 04 Jan 2026 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;数据流的中位数&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;&lt;strong&gt;中位数&lt;/strong&gt;是有序整数列表中的中间值。如果列表的大小是偶数，则没有中间值，中位数是两个中间值的平均值。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;例如 &lt;code&gt;arr = [2,3,4]&lt;/code&gt; 的中位数是 &lt;code&gt;3&lt;/code&gt; 。&lt;/li&gt;
+&lt;li&gt;例如 &lt;code&gt;arr = [2,3]&lt;/code&gt; 的中位数是 &lt;code&gt;(2 + 3) / 2 = 2.5&lt;/code&gt; 。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;实现 MedianFinder 类:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;MedianFinder()&lt;/code&gt; 初始化 &lt;code&gt;MedianFinder&lt;/code&gt; 对象。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;void addNum(int num)&lt;/code&gt; 将数据流中的整数 &lt;code&gt;num&lt;/code&gt; 添加到数据结构中。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;double findMedian()&lt;/code&gt; 返回到目前为止所有元素的中位数。与实际答案相差 &lt;code&gt;10-5&lt;/code&gt; 以内的答案将被接受。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入
+[&quot;MedianFinder&quot;, &quot;addNum&quot;, &quot;addNum&quot;, &quot;findMedian&quot;, &quot;addNum&quot;, &quot;findMedian&quot;]
+[[], [1], [2], [], [3], []]
+输出
+[null, null, null, 1.5, null, 2.0]
+
+解释
+MedianFinder medianFinder = new MedianFinder();
+medianFinder.addNum(1);    // arr = [1]
+medianFinder.addNum(2);    // arr = [1, 2]
+medianFinder.findMedian(); // 返回 1.5 ((1 + 2) / 2)
+medianFinder.addNum(3);    // arr[1, 2, 3]
+medianFinder.findMedian(); // return 2.0
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;构造两个堆，一个最大堆存放元素较小的部分，一个最小堆存放元素较大的那部分，维护两个队，使其平衡并保证最大堆的最大值效益最小堆的最小值&lt;/p&gt;
+&lt;p&gt;即先放元素到最大堆，将最大堆中的最大值移除放入最小堆（如此保证最大堆的最大值放入最小堆不会违反最大堆的最大值效益最小堆的最小值），反之亦然（要保证元素平衡放置）&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class MedianFinder {
+    PriorityQueue&amp;lt;Integer&amp;gt; minHeap = new PriorityQueue&amp;lt;&amp;gt;();
+    PriorityQueue&amp;lt;Integer&amp;gt; maxHeap = new PriorityQueue&amp;lt;&amp;gt;((a, b) -&amp;gt; (b - a));    
+    public void addNum(int num) {
+        if(minHeap.size() == maxHeap.size()) {
+            maxHeap.add(num);
+            minHeap.add(maxHeap.poll());
+        } else {
+            minHeap.add(num);
+            maxHeap.add(minHeap.poll());
+        }
+    }
+    
+    public double findMedian() {
+        return minHeap.size() == maxHeap.size() ? (minHeap.peek() + maxHeap.peek()) / 2.0 : minHeap.peek();
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+</content:encoded></item><item><title>LeetCode刷题（岛屿的最大面积）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E5%B2%9B%E5%B1%BF%E7%9A%84%E6%9C%80%E5%A4%A7%E9%9D%A2%E7%A7%AF/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E5%B2%9B%E5%B1%BF%E7%9A%84%E6%9C%80%E5%A4%A7%E9%9D%A2%E7%A7%AF/</guid><description>岛屿的最大面积</description><pubDate>Sat, 03 Jan 2026 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;岛屿的最大面积&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;给定一个由 &lt;code&gt;0&lt;/code&gt; 和 &lt;code&gt;1&lt;/code&gt; 组成的非空二维数组 &lt;code&gt;grid&lt;/code&gt; ，用来表示海洋岛屿地图。&lt;/p&gt;
+&lt;p&gt;一个 &lt;strong&gt;岛屿&lt;/strong&gt; 是由一些相邻的 &lt;code&gt;1&lt;/code&gt; (代表土地) 构成的组合，这里的「相邻」要求两个 &lt;code&gt;1&lt;/code&gt; 必须在水平或者竖直方向上相邻。你可以假设 &lt;code&gt;grid&lt;/code&gt; 的四个边缘都被 &lt;code&gt;0&lt;/code&gt;（代表水）包围着。&lt;/p&gt;
+&lt;p&gt;找到给定的二维数组中最大的岛屿面积。如果没有岛屿，则返回面积为 &lt;code&gt;0&lt;/code&gt; 。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/512.png&quot; alt=&quot;512&quot; /&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入: grid = 
+[[0,0,1,0,0,0,0,1,0,0,0,0,0],[0,0,0,0,0,0,0,1,1,1,0,0,0],[0,1,1,0,1,0,0,0,0,0,0,0,0],[0,1,0,0,1,1,0,0,1,0,1,0,0],[0,1,0,0,1,1,0,0,1,1,1,0,0],[0,0,0,0,0,0,0,0,0,0,1,0,0],[0,0,0,0,0,0,0,1,1,1,0,0,0],[0,0,0,0,0,0,0,1,1,0,0,0,0]]
+输出: 6
+解释: 对于上面这个给定矩阵应返回 6。注意答案不应该是 11 ，因为岛屿只能包含水平或垂直的四个方向的 1 。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入: grid = [[0,0,0,0,0,0,0,0]]
+输出: 0
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;运用递归进行求解，当满足条件的时候计算上下左右的贡献，将其相加，再加上本格的结果1返回即可，在主函数种迭代result岛屿最大面积即可&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public int maxAreaOfIsland(int[][] grid) {
+        int result = 0;
+        for(int i = 0; i &amp;lt; grid.length; i++) {
+            for(int j = 0; j &amp;lt; grid[0].length; j++) {
+                if(grid[i][j] == 1) {
+                    result = Math.max(result, dfs(grid, i, j));
+                }
+            }
+        }
+        return result;
+    }
+
+    public int dfs(int[][] grid, int i, int j) {
+        if(i &amp;gt;= 0 &amp;amp;&amp;amp; i &amp;lt; grid.length &amp;amp;&amp;amp; j &amp;gt;= 0 &amp;amp;&amp;amp; j &amp;lt; grid[0].length &amp;amp;&amp;amp; grid[i][j] == 1) {
+            grid[i][j] = 0;
+            int up = dfs(grid, i - 1, j);
+            int down = dfs(grid, i + 1, j);
+            int left = dfs(grid, i, j - 1);
+            int right = dfs(grid, i, j + 1);
+            return 1 + up + down + left + right;
+        }
+        return 0;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+</content:encoded></item><item><title>LeetCode刷题（不同的子序列、组合总数Ⅳ）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E4%B8%8D%E5%90%8C%E7%9A%84%E5%AD%90%E5%BA%8F%E5%88%97%E7%BB%84%E5%90%88%E6%80%BB%E6%95%B0%E2%85%B3/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E4%B8%8D%E5%90%8C%E7%9A%84%E5%AD%90%E5%BA%8F%E5%88%97%E7%BB%84%E5%90%88%E6%80%BB%E6%95%B0%E2%85%B3/</guid><description>不同的子序列、组合总数Ⅳ</description><pubDate>Fri, 02 Jan 2026 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;不同的子序列&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;给定一个字符串 &lt;code&gt;s&lt;/code&gt; 和一个字符串 &lt;code&gt;t&lt;/code&gt; ，计算在 &lt;code&gt;s&lt;/code&gt; 的子序列中 &lt;code&gt;t&lt;/code&gt; 出现的个数。&lt;/p&gt;
+&lt;p&gt;字符串的一个 &lt;strong&gt;子序列&lt;/strong&gt; 是指，通过删除一些（也可以不删除）字符且不干扰剩余字符相对位置所组成的新字符串。（例如，&lt;code&gt;&quot;ACE&quot;&lt;/code&gt; 是 &lt;code&gt;&quot;ABCDE&quot;&lt;/code&gt; 的一个子序列，而 &lt;code&gt;&quot;AEC&quot;&lt;/code&gt; 不是）&lt;/p&gt;
+&lt;p&gt;题目数据保证答案符合 32 位带符号整数范围。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：s = &quot;rabbbit&quot;, t = &quot;rabbit&quot;
+输出：3
+解释：
+如下图所示, 有 3 种可以从 s 中得到 &quot;rabbit&quot; 的方案。
+rabbbit
+rabbbit
+rabbbit
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：s = &quot;babgbag&quot;, t = &quot;bag&quot;
+输出：5
+解释：
+如下图所示, 有 5 种可以从 s 中得到 &quot;bag&quot; 的方案。 
+babgbag
+babgbag
+babgbag
+babgbag
+babgbag
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;dp表示到第i个地方有到j地方的子序列数，初始化s有空字符串子序列都为1种可能&lt;/p&gt;
+&lt;p&gt;如果字符串字符匹配，则子序列数为同时取i j 的子序列数加上不取当前字符对应的子序列数&lt;/p&gt;
+&lt;p&gt;如果不匹配则子序列数为不取i的子序列数&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public int numDistinct(String s, String t) {
+        int m = s.length(), n = t.length();
+        if (m &amp;lt; n) return 0;
+        int[][] dp = new int[m + 1][n + 1];
+        for (int i = 0; i &amp;lt;= m; i++) {
+            dp[i][0] = 1;
+        }
+        for (int i = 0; i &amp;lt; m; i++) {
+            for (int j = 0; j &amp;lt; n; j++) {
+                if (s.charAt(i) == t.charAt(j)) {
+                    dp[i + 1][j + 1] = dp[i][j] + dp[i][j + 1];
+                } else {
+                    dp[i + 1][j + 1] = dp[i][j + 1];
+                }
+            }
+        }
+        
+        return dp[m][n];
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1&gt;组合总数Ⅳ&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;给定一个由 &lt;strong&gt;不同&lt;/strong&gt; 正整数组成的数组 &lt;code&gt;nums&lt;/code&gt; ，和一个目标整数 &lt;code&gt;target&lt;/code&gt; 。请从 &lt;code&gt;nums&lt;/code&gt; 中找出并返回总和为 &lt;code&gt;target&lt;/code&gt; 的元素组合的个数。数组中的数字可以在一次排列中出现任意次，但是顺序不同的序列被视作不同的组合。&lt;/p&gt;
+&lt;p&gt;题目数据保证答案符合 32 位整数范围。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：nums = [1,2,3], target = 4
+输出：7
+解释：
+所有可能的组合为：
+(1, 1, 1, 1)
+(1, 1, 2)
+(1, 2, 1)
+(1, 3)
+(2, 1, 1)
+(2, 2)
+(3, 1)
+请注意，顺序不同的序列被视作不同的组合。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：nums = [9], target = 3
+输出：0
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;利用动态规划求解，依次对每一个target值得总和数进行计算对每一种num值看在等于的情况加上当前的总和数&lt;/p&gt;
+&lt;p&gt;:::note&lt;/p&gt;
+&lt;p&gt;注意这里和完全背包做区分，完全背包得到的排列数是不重复的，即122和221等价，其求的是组合数&lt;/p&gt;
+&lt;p&gt;:::&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public int combinationSum4(int[] nums, int target) {
+        int[] dp = new int[target + 1];
+        dp[0] = 1;
+        for(int i = 1; i &amp;lt;= target; i++) {
+            for(int num : nums) {
+                if(i - num &amp;gt;= 0) {
+                    dp[i] += dp[i - num];
+                }
+            }
+        }
+        return dp[target];
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+</content:encoded></item><item><title>LeetCode刷题（模板）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E6%A8%A1%E6%9D%BF/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E6%A8%A1%E6%9D%BF/</guid><pubDate>Thu, 01 Jan 2026 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;题目&lt;/h1&gt;
 &lt;h2&gt;题目描述&lt;/h2&gt;
 &lt;h2&gt;题解&lt;/h2&gt;
 </content:encoded></item><item><title>LeetCode刷题（分割回文串Ⅱ、最长的斐波那契子序列长度）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E5%88%86%E5%89%B2%E5%9B%9E%E6%96%87%E4%B8%B2%E2%85%B1%E6%9C%80%E9%95%BF%E7%9A%84%E6%96%90%E6%B3%A2%E9%82%A3%E5%A5%91%E5%AD%90%E5%BA%8F%E5%88%97%E9%95%BF%E5%BA%A6/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E5%88%86%E5%89%B2%E5%9B%9E%E6%96%87%E4%B8%B2%E2%85%B1%E6%9C%80%E9%95%BF%E7%9A%84%E6%96%90%E6%B3%A2%E9%82%A3%E5%A5%91%E5%AD%90%E5%BA%8F%E5%88%97%E9%95%BF%E5%BA%A6/</guid><description>分割回文串Ⅱ、最长的斐波那契子序列长度</description><pubDate>Thu, 01 Jan 2026 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;分割回文串Ⅱ&lt;/h1&gt;
@@ -18572,20 +19187,15 @@ SADD set2 a b
 &lt;p&gt;建立一个amount + 1大小的int数组其中存放到这个下表的最小硬币数量，逐个遍历，对每个目标i循环中遍历coins数组，当不超过i时，更新min最小硬币数量（用dp[i - coins[i]] + 1进行迭代min）&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;class Solution {
     public int coinChange(int[] coins, int amount) {
-        if(coins.length == 0) {
-            return -1;
-        }
         int[] dp = new int[amount + 1];
         Arrays.fill(dp, Integer.MAX_VALUE);
         dp[0] = 0;
         for(int i = 1; i &amp;lt;= amount; i++) {
-            int min = Integer.MAX_VALUE;
             for(int coin : coins) {
                 if(i &amp;gt;= coin &amp;amp;&amp;amp; dp[i - coin] != Integer.MAX_VALUE) {
-                    min = Math.min(min, dp[i - coin] + 1);
+                    dp[i] = Math.min(dp[i], 1 + dp[i - coin]);
                 }
             }
-            dp[i] = min;
         }
         return dp[amount] == Integer.MAX_VALUE ? -1 : dp[amount];
     }
