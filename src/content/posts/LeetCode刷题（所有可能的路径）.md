@@ -68,20 +68,21 @@ class Solution {
     List<List<Integer>> result = new ArrayList<>();
     List<Integer> list = new ArrayList<>();
     public List<List<Integer>> allPathsSourceTarget(int[][] graph) {
-        dfs(0, graph);
+        list.add(0);
+        dfs(graph, 0);
         return result;
     }
 
-    public void dfs(int node, int[][] graph) {
-        list.add(node);
-        if(node == graph.length - 1) {
+    public void dfs(int[][] graph, int num) {
+        if(num == graph.length - 1) {
             result.add(new ArrayList<>(list));
-        } else {
-            for(int next : graph[node]) {
-                dfs(next, graph);
-            }
+            return;
         }
-        list.remove(list.size() - 1);
+        for(int i : graph[num]) {
+            list.add(i);
+            dfs(graph, i);
+            list.remove(list.size() - 1);
+        }
     }
 }
 ```

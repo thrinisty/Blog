@@ -1,4 +1,392 @@
-<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Thrinisty&apos;s Blog</title><description>New Blog</description><link>https://thrinisty.github.io/</link><language>zh_CN</language><item><title>LeetCode刷题（所有可能的路径）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E6%89%80%E6%9C%89%E5%8F%AF%E8%83%BD%E7%9A%84%E8%B7%AF%E5%BE%84/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E6%89%80%E6%9C%89%E5%8F%AF%E8%83%BD%E7%9A%84%E8%B7%AF%E5%BE%84/</guid><description>所有可能的路径</description><pubDate>Sun, 11 Jan 2026 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;所有可能的路径&lt;/h1&gt;
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Thrinisty&apos;s Blog</title><description>New Blog</description><link>https://thrinisty.github.io/</link><language>zh_CN</language><item><title>LeetCode刷题（腐烂的橘子、划分字母区间）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E8%85%90%E7%83%82%E7%9A%84%E6%A9%98%E5%AD%90%E5%88%92%E5%88%86%E5%AD%97%E6%AF%8D%E5%8C%BA%E9%97%B4/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E8%85%90%E7%83%82%E7%9A%84%E6%A9%98%E5%AD%90%E5%88%92%E5%88%86%E5%AD%97%E6%AF%8D%E5%8C%BA%E9%97%B4/</guid><description>剑指117变种完结撒花，启程hot100，其实之前做过hot150剩下的也就只剩两题了，不过也再复习一遍</description><pubDate>Fri, 16 Jan 2026 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;腐烂的橘子&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;在给定的 &lt;code&gt;m x n&lt;/code&gt; 网格 &lt;code&gt;grid&lt;/code&gt; 中，每个单元格可以有以下三个值之一：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;值 &lt;code&gt;0&lt;/code&gt; 代表空单元格；&lt;/li&gt;
+&lt;li&gt;值 &lt;code&gt;1&lt;/code&gt; 代表新鲜橘子；&lt;/li&gt;
+&lt;li&gt;值 &lt;code&gt;2&lt;/code&gt; 代表腐烂的橘子。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;每分钟，腐烂的橘子 &lt;strong&gt;周围 4 个方向上相邻&lt;/strong&gt; 的新鲜橘子都会腐烂。&lt;/p&gt;
+&lt;p&gt;返回 &lt;em&gt;直到单元格中没有新鲜橘子为止所必须经过的最小分钟数。如果不可能，返回 &lt;code&gt;-1&lt;/code&gt;&lt;/em&gt; 。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/525.png&quot; alt=&quot;525&quot; /&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：grid = [[2,1,1],[1,1,0],[0,1,1]]
+输出：4
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：grid = [[2,1,1],[0,1,1],[1,0,1]]
+输出：-1
+解释：左下角的橘子（第 2 行， 第 0 列）永远不会腐烂，因为腐烂只会发生在 4 个方向上。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 3：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：grid = [[0,2]]
+输出：0
+解释：因为 0 分钟时已经没有新鲜橘子了，所以答案就是 0 。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;广度搜索，并维护一个time时间每次取出后time++，最后判断是否还有剩余的新鲜橘子，如果没有则返回time&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    int[][] arr = new int[][]{{1, 0}, {-1, 0}, {0, 1}, {0, -1}}; 
+    public int orangesRotting(int[][] grid) {
+        int row = grid.length;
+        int col = grid[0].length;
+        Queue&amp;lt;int[]&amp;gt; queue = new LinkedList&amp;lt;&amp;gt;();
+        int rest = 0;
+        for(int i = 0; i &amp;lt; row; i++) {
+            for(int j = 0; j &amp;lt; col; j++) {
+                if(grid[i][j] == 2) {
+                    queue.offer(new int[]{i, j});
+                } else if(grid[i][j] == 1) {
+                    rest++;
+                }
+            }
+        }
+        int time = 0;
+        while(!queue.isEmpty()) {
+            if(rest == 0) {
+                return time;
+            }
+            int n = queue.size();
+            for(int i = 0; i &amp;lt; n; i++) {
+                int[] cur = queue.poll();
+                for(int j = 0; j &amp;lt; 4; j++) {
+                    int x = cur[0] + arr[j][0];
+                    int y = cur[1] + arr[j][1];
+                    if(x &amp;gt;= 0 &amp;amp;&amp;amp; x &amp;lt; row &amp;amp;&amp;amp; y &amp;gt;= 0 &amp;amp;&amp;amp; y &amp;lt; col &amp;amp;&amp;amp; grid[x][y] == 1) {
+                        rest--;
+                        grid[x][y] = 2;
+                        queue.offer(new int[]{x, y});
+                    }
+                } 
+            }
+            time++;
+        }
+        return rest == 0 ? time : -1;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1&gt;划分字母区间&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;给你一个字符串 &lt;code&gt;s&lt;/code&gt; 。我们要把这个字符串划分为尽可能多的片段，同一字母最多出现在一个片段中。例如，字符串 &lt;code&gt;&quot;ababcc&quot;&lt;/code&gt; 能够被分为 &lt;code&gt;[&quot;abab&quot;, &quot;cc&quot;]&lt;/code&gt;，但类似 &lt;code&gt;[&quot;aba&quot;, &quot;bcc&quot;]&lt;/code&gt; 或 &lt;code&gt;[&quot;ab&quot;, &quot;ab&quot;, &quot;cc&quot;]&lt;/code&gt; 的划分是非法的。&lt;/p&gt;
+&lt;p&gt;注意，划分结果需要满足：将所有划分结果按顺序连接，得到的字符串仍然是 &lt;code&gt;s&lt;/code&gt; 。&lt;/p&gt;
+&lt;p&gt;返回一个表示每个字符串片段的长度的列表。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：s = &quot;ababcbacadefegdehijhklij&quot;
+输出：[9,7,8]
+解释：
+划分结果为 &quot;ababcbaca&quot;、&quot;defegde&quot;、&quot;hijhklij&quot; 。
+每个字母最多出现在一个片段中。
+像 &quot;ababcbacadefegde&quot;, &quot;hijhklij&quot; 这样的划分是错误的，因为划分的片段数较少。 
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：s = &quot;eccbbbbdec&quot;
+输出：[10]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;和跳跃游戏有些类似，都是使用贪心算法进行求解：对于每个字符用last数组存储其最后一个位置，在第二次遍历的循环中维护左右标识，遍历到每个字符迭代结束的位置，当遍历到右标识的时候，此时维护的区间的各个字符都不存在于后续位置，即可拆分&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public List&amp;lt;Integer&amp;gt; partitionLabels(String s) {
+        int[] last = new int[26];
+        int n = s.length();
+        for(int i = 0; i &amp;lt; n; i++) {
+            last[s.charAt(i) - &apos;a&apos;] = i;
+        }
+        List&amp;lt;Integer&amp;gt; result = new ArrayList&amp;lt;&amp;gt;();
+        int start = 0, end = 0;
+        for(int i = 0; i &amp;lt; n; i++) {
+            end = Math.max(end, last[s.charAt(i) - &apos;a&apos;]);
+            if(i == end) {
+                result.add(end - start + 1);
+                start = end + 1;
+            }
+        }
+        return result;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+</content:encoded></item><item><title>LeetCode刷题（省份数量、序列重建）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E7%9C%81%E4%BB%BD%E6%95%B0%E9%87%8F%E5%BA%8F%E5%88%97%E9%87%8D%E5%BB%BA/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E7%9C%81%E4%BB%BD%E6%95%B0%E9%87%8F%E5%BA%8F%E5%88%97%E9%87%8D%E5%BB%BA/</guid><description>省份数量、序列重建</description><pubDate>Thu, 15 Jan 2026 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;省份数量&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;有 &lt;code&gt;n&lt;/code&gt; 个城市，其中一些彼此相连，另一些没有相连。如果城市 &lt;code&gt;a&lt;/code&gt; 与城市 &lt;code&gt;b&lt;/code&gt; 直接相连，且城市 &lt;code&gt;b&lt;/code&gt; 与城市 &lt;code&gt;c&lt;/code&gt; 直接相连，那么城市 &lt;code&gt;a&lt;/code&gt; 与城市 &lt;code&gt;c&lt;/code&gt; 间接相连。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;省份&lt;/strong&gt; 是一组直接或间接相连的城市，组内不含其他没有相连的城市。&lt;/p&gt;
+&lt;p&gt;给你一个 &lt;code&gt;n x n&lt;/code&gt; 的矩阵 &lt;code&gt;isConnected&lt;/code&gt; ，其中 &lt;code&gt;isConnected[i][j] = 1&lt;/code&gt; 表示第 &lt;code&gt;i&lt;/code&gt; 个城市和第 &lt;code&gt;j&lt;/code&gt; 个城市直接相连，而 &lt;code&gt;isConnected[i][j] = 0&lt;/code&gt; 表示二者不直接相连。&lt;/p&gt;
+&lt;p&gt;返回矩阵中 &lt;strong&gt;省份&lt;/strong&gt; 的数量。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/523.jpg&quot; alt=&quot;523&quot; /&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：isConnected = [[1,1,0],[1,1,0],[0,0,1]]
+输出：2
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/524.jpg&quot; alt=&quot;524&quot; /&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：isConnected = [[1,0,0],[0,1,0],[0,0,1]]
+输出：3
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;对连接的两点进行合并，最后求联通分量即可，为省份数量&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    int[] parent;
+    public int findCircleNum(int[][] isConnected) {
+        int n = isConnected.length;
+        parent = new int[n];
+        for(int i = 0; i &amp;lt; n; i++) {
+            parent[i] = i;
+        }
+        for(int i = 0; i &amp;lt; n; i++) {
+            for(int j = 0; j &amp;lt; i; j++) {
+                if(isConnected[i][j] == 1) {
+                    union(i, j);
+                }
+            }
+        }
+        int result = 0;
+        for(int i = 0; i &amp;lt; n; i++) {
+            if(parent[i] == i) {
+                result++;
+            }
+        }
+        return result;
+    }
+
+    public void union(int x, int y) {
+        parent[find(x)] = find(y);
+    }
+
+    public int find(int num) {
+        if(parent[num] != num) {
+            parent[num] = find(parent[num]);
+        }
+        return parent[num];
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1&gt;序列重建&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;给定一个长度为 &lt;code&gt;n&lt;/code&gt; 的整数数组 &lt;code&gt;nums&lt;/code&gt; ，其中 &lt;code&gt;nums&lt;/code&gt; 是范围为 &lt;code&gt;[1，n]&lt;/code&gt; 的整数的排列。还提供了一个 2D 整数数组 &lt;code&gt;sequences&lt;/code&gt; ，其中 &lt;code&gt;sequences[i]&lt;/code&gt; 是 &lt;code&gt;nums&lt;/code&gt; 的子序列。
+检查 &lt;code&gt;nums&lt;/code&gt; 是否是唯一的最短 &lt;strong&gt;超序列&lt;/strong&gt; 。最短 &lt;strong&gt;超序列&lt;/strong&gt; 是 &lt;strong&gt;长度最短&lt;/strong&gt; 的序列，并且所有序列 &lt;code&gt;sequences[i]&lt;/code&gt; 都是它的子序列。对于给定的数组 &lt;code&gt;sequences&lt;/code&gt; ，可能存在多个有效的 &lt;strong&gt;超序列&lt;/strong&gt; 。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;例如，对于 &lt;code&gt;sequences = [[1,2],[1,3]]&lt;/code&gt; ，有两个最短的 &lt;strong&gt;超序列&lt;/strong&gt; ，&lt;code&gt;[1,2,3]&lt;/code&gt; 和 &lt;code&gt;[1,3,2]&lt;/code&gt; 。&lt;/li&gt;
+&lt;li&gt;而对于 &lt;code&gt;sequences = [[1,2],[1,3],[1,2,3]]&lt;/code&gt; ，唯一可能的最短 &lt;strong&gt;超序列&lt;/strong&gt; 是 &lt;code&gt;[1,2,3]&lt;/code&gt; 。&lt;code&gt;[1,2,3,4]&lt;/code&gt; 是可能的超序列，但不是最短的。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;em&gt;如果 &lt;code&gt;nums&lt;/code&gt; 是序列的唯一最短 &lt;strong&gt;超序列&lt;/strong&gt; ，则返回 &lt;code&gt;true&lt;/code&gt; ，否则返回 &lt;code&gt;false&lt;/code&gt; 。&lt;/em&gt;
+&lt;strong&gt;子序列&lt;/strong&gt; 是一个可以通过从另一个序列中删除一些元素或不删除任何元素，而不改变其余元素的顺序的序列。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：nums = [1,2,3], sequences = [[1,2],[1,3]]
+输出：false
+解释：有两种可能的超序列：[1,2,3]和[1,3,2]。
+序列 [1,2] 是[1,2,3]和[1,3,2]的子序列。
+序列 [1,3] 是[1,2,3]和[1,3,2]的子序列。
+因为 nums 不是唯一最短的超序列，所以返回false。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：nums = [1,2,3], sequences = [[1,2]]
+输出：false
+解释：最短可能的超序列为 [1,2]。
+序列 [1,2] 是它的子序列：[1,2]。
+因为 nums 不是最短的超序列，所以返回false。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 3：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：nums = [1,2,3], sequences = [[1,2],[1,3],[2,3]]
+输出：true
+解释：最短可能的超序列为[1,2,3]。
+序列 [1,2] 是它的一个子序列：[1,2,3]。
+序列 [1,3] 是它的一个子序列：[1,2,3]。
+序列 [2,3] 是它的一个子序列：[1,2,3]。
+因为 nums 是唯一最短的超序列，所以返回true。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;思路类似于课程表，存储其出度入度，在每一次循环中判断queue元素是否大于1，大于则返回true&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public boolean sequenceReconstruction(int[] nums, int[][] sequences) {
+        int n = nums.length;
+        int[] before = new int[n + 1];
+        Set&amp;lt;Integer&amp;gt;[] after = new Set[n + 1];
+        for(int i = 1; i &amp;lt;= n; i++) {
+            after[i] = new HashSet&amp;lt;Integer&amp;gt;();
+        }
+        for(int i = 0; i &amp;lt; sequences.length; i++) {
+            for(int j = 0; j &amp;lt; sequences[i].length - 1; j++) {
+                int prev = sequences[i][j];
+                int next = sequences[i][j + 1];
+                before[next]++;
+                after[prev].add(next);
+            }
+        }
+        Queue&amp;lt;Integer&amp;gt; queue = new LinkedList&amp;lt;&amp;gt;();
+        for(int i = 1; i &amp;lt;= n; i++) {
+            if(before[i] == 0) {
+                queue.offer(i);
+            }
+        }
+        while(!queue.isEmpty()) {
+            if(queue.size() &amp;gt; 1) {
+                return false;
+            }
+            int num = queue.poll();
+            Set&amp;lt;Integer&amp;gt; set = after[num];
+            for(int next : set) {
+                before[next]--;
+                if(before[next] == 0) {
+                    queue.offer(next);
+                }
+            }
+        }
+        return true;
+
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+</content:encoded></item><item><title>LeetCode刷题（相似字符串组）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E7%9B%B8%E4%BC%BC%E5%AD%97%E7%AC%A6%E4%B8%B2%E7%BB%84/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E7%9B%B8%E4%BC%BC%E5%AD%97%E7%AC%A6%E4%B8%B2%E7%BB%84/</guid><description>相似字符串组</description><pubDate>Wed, 14 Jan 2026 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;相似字符串组&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;如果交换字符串 &lt;code&gt;X&lt;/code&gt; 中的两个不同位置的字母，使得它和字符串 &lt;code&gt;Y&lt;/code&gt; 相等，那么称 &lt;code&gt;X&lt;/code&gt; 和 &lt;code&gt;Y&lt;/code&gt; 两个字符串相似。如果这两个字符串本身是相等的，那它们也是相似的。&lt;/p&gt;
+&lt;p&gt;例如，&lt;code&gt;&quot;tars&quot;&lt;/code&gt; 和 &lt;code&gt;&quot;rats&quot;&lt;/code&gt; 是相似的 (交换 &lt;code&gt;0&lt;/code&gt; 与 &lt;code&gt;2&lt;/code&gt; 的位置)； &lt;code&gt;&quot;rats&quot;&lt;/code&gt; 和 &lt;code&gt;&quot;arts&quot;&lt;/code&gt; 也是相似的，但是 &lt;code&gt;&quot;star&quot;&lt;/code&gt; 不与 &lt;code&gt;&quot;tars&quot;&lt;/code&gt;，&lt;code&gt;&quot;rats&quot;&lt;/code&gt;，或 &lt;code&gt;&quot;arts&quot;&lt;/code&gt; 相似。&lt;/p&gt;
+&lt;p&gt;总之，它们通过相似性形成了两个关联组：&lt;code&gt;{&quot;tars&quot;, &quot;rats&quot;, &quot;arts&quot;}&lt;/code&gt; 和 &lt;code&gt;{&quot;star&quot;}&lt;/code&gt;。注意，&lt;code&gt;&quot;tars&quot;&lt;/code&gt; 和 &lt;code&gt;&quot;arts&quot;&lt;/code&gt; 是在同一组中，即使它们并不相似。形式上，对每个组而言，要确定一个单词在组中，只需要这个词和该组中至少一个单词相似。&lt;/p&gt;
+&lt;p&gt;给定一个字符串列表 &lt;code&gt;strs&lt;/code&gt;。列表中的每个字符串都是 &lt;code&gt;strs&lt;/code&gt; 中其它所有字符串的一个 &lt;strong&gt;字母异位词&lt;/strong&gt; 。请问 &lt;code&gt;strs&lt;/code&gt; 中有多少个相似字符串组？&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;字母异位词（anagram）&lt;/strong&gt;，一种把某个字符串的字母的位置（顺序）加以改换所形成的新词。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：strs = [&quot;tars&quot;,&quot;rats&quot;,&quot;arts&quot;,&quot;star&quot;]
+输出：2
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：strs = [&quot;omv&quot;,&quot;ovm&quot;]
+输出：1
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;运用并交集进行求解，对于每个组合判断其是否是满足check交换位置后相等，如果相等则判断为是同一组，进行合并，之后求联通分量即为结果（组数）&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    int[] parent;
+    public int numSimilarGroups(String[] strs) {
+        int n = strs.length;
+        parent = new int[n];
+        for(int i = 0; i &amp;lt; n; i++) {
+            parent[i] = i;
+        }
+        int result = 0;
+        for(int i = 0; i &amp;lt; n; i++) {
+            for(int j = 0; j &amp;lt; i; j++) {
+                if(check(strs[i], strs[j])) {
+                    union(i, j);
+                }
+            }
+        }
+        for(int i = 0; i &amp;lt; n; i++) {
+            if(parent[i] == i) {
+                result++;
+            }
+        }
+        return result;
+    }
+
+    public void union(int x, int y) {
+        parent[find(x)] = find(y);
+    }
+
+    public int find(int x) {
+        if(parent[x] != x) {
+            parent[x] = find(parent[x]);
+        }
+        return parent[x];
+    }
+
+    public boolean check(String s1, String s2) {
+        int count = 0;
+        for(int i = 0; i &amp;lt; s1.length(); i++) {
+            if(s1.charAt(i) != s2.charAt(i)) {
+                count++;
+                if(count &amp;gt; 2) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+</content:encoded></item><item><title>LeetCode刷题（矩阵中的最长递增路径）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E7%9F%A9%E9%98%B5%E4%B8%AD%E7%9A%84%E6%9C%80%E9%95%BF%E9%80%92%E5%A2%9E%E8%B7%AF%E5%BE%84/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E7%9F%A9%E9%98%B5%E4%B8%AD%E7%9A%84%E6%9C%80%E9%95%BF%E9%80%92%E5%A2%9E%E8%B7%AF%E5%BE%84/</guid><description>矩阵中的最长递增路径</description><pubDate>Tue, 13 Jan 2026 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;矩阵中的最长递增路径&lt;/h1&gt;
+&lt;h2&gt;题目描述&lt;/h2&gt;
+&lt;p&gt;给定一个 &lt;code&gt;m x n&lt;/code&gt; 整数矩阵 &lt;code&gt;matrix&lt;/code&gt; ，找出其中 &lt;strong&gt;最长递增路径&lt;/strong&gt; 的长度。&lt;/p&gt;
+&lt;p&gt;对于每个单元格，你可以往上，下，左，右四个方向移动。 &lt;strong&gt;不能&lt;/strong&gt; 在 &lt;strong&gt;对角线&lt;/strong&gt; 方向上移动或移动到 &lt;strong&gt;边界外&lt;/strong&gt;（即不允许环绕）。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 1：&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/521.jpg&quot; alt=&quot;521&quot; /&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：matrix = [[9,9,4],[6,6,8],[2,1,1]]
+输出：4 
+解释：最长递增路径为 [1, 2, 6, 9]。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 2：&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../images/522.jpg&quot; alt=&quot;522&quot; /&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：matrix = [[3,4,5],[3,2,6],[2,2,1]]
+输出：4 
+解释：最长递增路径是 [3, 4, 5, 6]。注意不允许在对角线方向上移动。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;示例 3：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;输入：matrix = [[1]]
+输出：1
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;题解&lt;/h2&gt;
+&lt;p&gt;用dfs深度搜索，分别向上下左右寻找，从当前位置出发满足条件的最长路径，用最长的路径加上原始的1返回即可&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    public int longestIncreasingPath(int[][] matrix) {
+        int result = 0;
+        for (int i = 0; i &amp;lt; matrix.length; i++) {
+            for (int j = 0; j &amp;lt; matrix[0].length; j++) {
+                result = Math.max(result, dfs(matrix, i, j, Integer.MIN_VALUE));
+            }
+        }
+        return result;
+    }
+
+    public int dfs(int[][] matrix, int x, int y, int prev) {
+        if (x &amp;gt;= 0 &amp;amp;&amp;amp; x &amp;lt; matrix.length &amp;amp;&amp;amp; y &amp;gt;= 0 &amp;amp;&amp;amp; y &amp;lt; matrix[0].length) {
+            int num = matrix[x][y];
+            if (num &amp;gt; prev) {
+                int u = dfs(matrix, x - 1, y, num);
+                int d = dfs(matrix, x + 1, y, num);
+                int l = dfs(matrix, x, y - 1, num);
+                int r = dfs(matrix, x, y + 1, num);
+                int max = Math.max(Math.max(u, d), Math.max(l, r));
+                return max + 1;
+            }
+            return 0;
+        }
+        return 0;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;但是这种方式出现超时，因为到每一个位置都需要重新计算该位置出发时的最长长度，我们用dp二维数组作为记忆，需要求该位置最长长度优先查记忆即可&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution {
+    int[][] dp;
+
+    public int longestIncreasingPath(int[][] matrix) {
+        int result = 0;
+        dp = new int[matrix.length][matrix[0].length];
+        for (int i = 0; i &amp;lt; matrix.length; i++) {
+            for (int j = 0; j &amp;lt; matrix[0].length; j++) {
+                result = Math.max(result, dfs(matrix, i, j, Integer.MIN_VALUE));
+            }
+        }
+        return result;
+    }
+
+    public int dfs(int[][] matrix, int x, int y, int prev) {
+        if (x &amp;gt;= 0 &amp;amp;&amp;amp; x &amp;lt; matrix.length &amp;amp;&amp;amp; y &amp;gt;= 0 &amp;amp;&amp;amp; y &amp;lt; matrix[0].length) {
+            int num = matrix[x][y];
+            if (num &amp;gt; prev) {
+                if(dp[x][y] &amp;gt; 0) {
+                    return dp[x][y];
+                }
+                int u = dfs(matrix, x - 1, y, num);
+                int d = dfs(matrix, x + 1, y, num);
+                int l = dfs(matrix, x, y - 1, num);
+                int r = dfs(matrix, x, y + 1, num);
+                int max = Math.max(Math.max(u, d), Math.max(l, r));
+                dp[x][y] = max + 1;
+                return max + 1;
+            }
+            return 0;
+        }
+        return 0;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+</content:encoded></item><item><title>LeetCode刷题（所有可能的路径）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E6%89%80%E6%9C%89%E5%8F%AF%E8%83%BD%E7%9A%84%E8%B7%AF%E5%BE%84/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E6%89%80%E6%9C%89%E5%8F%AF%E8%83%BD%E7%9A%84%E8%B7%AF%E5%BE%84/</guid><description>所有可能的路径</description><pubDate>Sun, 11 Jan 2026 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;所有可能的路径&lt;/h1&gt;
 &lt;h2&gt;题目描述&lt;/h2&gt;
 &lt;p&gt;给定一个有 &lt;code&gt;n&lt;/code&gt; 个节点的有向无环图，用二维数组 &lt;code&gt;graph&lt;/code&gt; 表示，请找到所有从 &lt;code&gt;0&lt;/code&gt; 到 &lt;code&gt;n-1&lt;/code&gt; 的路径并输出（不要求按顺序）。&lt;/p&gt;
 &lt;p&gt;&lt;code&gt;graph&lt;/code&gt; 的第 &lt;code&gt;i&lt;/code&gt; 个数组中的单元都表示有向图中 &lt;code&gt;i&lt;/code&gt; 号节点所能到达的下一些结点（译者注：有向图是有方向的，即规定了 a→b 你就不能从 b→a ），若为空，就是没有下一个节点了。&lt;/p&gt;
@@ -31,20 +419,21 @@
     List&amp;lt;List&amp;lt;Integer&amp;gt;&amp;gt; result = new ArrayList&amp;lt;&amp;gt;();
     List&amp;lt;Integer&amp;gt; list = new ArrayList&amp;lt;&amp;gt;();
     public List&amp;lt;List&amp;lt;Integer&amp;gt;&amp;gt; allPathsSourceTarget(int[][] graph) {
-        dfs(0, graph);
+        list.add(0);
+        dfs(graph, 0);
         return result;
     }
 
-    public void dfs(int node, int[][] graph) {
-        list.add(node);
-        if(node == graph.length - 1) {
+    public void dfs(int[][] graph, int num) {
+        if(num == graph.length - 1) {
             result.add(new ArrayList&amp;lt;&amp;gt;(list));
-        } else {
-            for(int next : graph[node]) {
-                dfs(next, graph);
-            }
+            return;
         }
-        list.remove(list.size() - 1);
+        for(int i : graph[num]) {
+            list.add(i);
+            dfs(graph, i);
+            list.remove(list.size() - 1);
+        }
     }
 }
 &lt;/code&gt;&lt;/pre&gt;
