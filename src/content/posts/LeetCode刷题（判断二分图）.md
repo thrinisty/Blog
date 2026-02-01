@@ -2,7 +2,7 @@
 title: LeetCode刷题（判断二分图）
 published: 2026-01-06
 updated: 2026-01-06
-description: ''
+description: '判断二分图'
 image: ''
 tags: [LeetCode]
 category: 'LeetCode'

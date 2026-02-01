@@ -1,4 +1,15 @@
-<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Thrinisty&apos;s Blog</title><description>New Blog</description><link>https://thrinisty.github.io/</link><language>zh_CN</language><item><title>LeetCode刷题（腐烂的橘子、划分字母区间）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E8%85%90%E7%83%82%E7%9A%84%E6%A9%98%E5%AD%90%E5%88%92%E5%88%86%E5%AD%97%E6%AF%8D%E5%8C%BA%E9%97%B4/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E8%85%90%E7%83%82%E7%9A%84%E6%A9%98%E5%AD%90%E5%88%92%E5%88%86%E5%AD%97%E6%AF%8D%E5%8C%BA%E9%97%B4/</guid><description>剑指117变种完结撒花，启程hot100，其实之前做过hot150剩下的也就只剩两题了，不过也再复习一遍</description><pubDate>Fri, 16 Jan 2026 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;腐烂的橘子&lt;/h1&gt;
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Thrinisty&apos;s Blog</title><description>New Blog</description><link>https://thrinisty.github.io/</link><language>zh_CN</language><item><title>自学第十一月份总结</title><link>https://thrinisty.github.io/posts/%E8%87%AA%E5%AD%A6%E7%AC%AC%E5%8D%81%E4%B8%80%E6%9C%88%E4%BB%BD%E6%80%BB%E7%BB%93/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/%E8%87%AA%E5%AD%A6%E7%AC%AC%E5%8D%81%E4%B8%80%E6%9C%88%E4%BB%BD%E6%80%BB%E7%BB%93/</guid><description>实习、面试</description><pubDate>Sun, 01 Feb 2026 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;自学第十一月份总结&lt;/h1&gt;
+&lt;h2&gt;秋招情况&lt;/h2&gt;
+&lt;p&gt;实习：在美团待了有一个多月了，除去回学校考试的一个半星期就差不多刚好一个月，给的活算比较基础的，提供MCP服务接口，后训练模型。好在也在有慢慢的看公司的项目，公司里的常见服务，技术文档也大概知道怎么看了，再看再学吧&lt;/p&gt;
+&lt;p&gt;秋招：有点惊喜的是，京东这边月初发起了面试邀约，面试过程也蛮顺利的，两个星期内走完了一二轮技术面试以及hr线下面试，不过从hr面试到现在以及快10天没啥信息了，希望节前能给个答复吧&lt;/p&gt;
+&lt;h2&gt;技术学习&lt;/h2&gt;
+&lt;p&gt;算法方面：变种的剑指offer119刷了刷完了，紧接着开始复习之前做的一些算法了，用的是hot100（74/100）刷的还是蛮快的，之前做过的题目都可以很快的写出来，估计再要个一个星期左右可以把这个题单结束，然后在重新复习下top100，也应该是在3月份前能够结束，为春招做准备吧。&lt;/p&gt;
+&lt;p&gt;实习这边学了SFT微调的训练集制作，模型微调，难度不是很大但是过程有点麻烦，一开始也没啥经验感觉踩了不少坑，下周再继续尝试看下效果吧。&lt;/p&gt;
+&lt;h2&gt;总结&lt;/h2&gt;
+&lt;p&gt;1月份中旬有一些课程考试还有论文的开题报告需要完成，所以请了一周半的假回到了西安那边，原本以为这段时间会特别忙，报告、复习、考试、面试之类的，但是感觉体验下来还好，期末考试也是以及格为目的的复习哈哈哈哈哈，所以其实并没有怎么用心看，开题报告也蛮水的，甚至交报告的前两天才联系到了负责的老师，所以除去面试以外，基本算是休息了一会的&lt;/p&gt;
+&lt;p&gt;京东这边希望能够尽快出结果吧，满意的话我就尽早结束校招了，从去年三月份开始到现在也快满一年了，自学、实习、秋招、实习，换成我大二的时候应该不会想到我会为了找工作忙活这么半天吧，但是回头看来也不算累，起码干的事情是自己想做的&lt;/p&gt;
+&lt;p&gt;希望能有个满意的结果，给我不咋颠沛流离的故事给上一个句号&lt;/p&gt;
+</content:encoded></item><item><title>LeetCode刷题（腐烂的橘子、划分字母区间）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E8%85%90%E7%83%82%E7%9A%84%E6%A9%98%E5%AD%90%E5%88%92%E5%88%86%E5%AD%97%E6%AF%8D%E5%8C%BA%E9%97%B4/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E8%85%90%E7%83%82%E7%9A%84%E6%A9%98%E5%AD%90%E5%88%92%E5%88%86%E5%AD%97%E6%AF%8D%E5%8C%BA%E9%97%B4/</guid><description>剑指117变种完结撒花，启程hot100，其实之前做过hot150剩下的也就只剩两题了，不过也再复习一遍</description><pubDate>Fri, 16 Jan 2026 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;腐烂的橘子&lt;/h1&gt;
 &lt;h2&gt;题目描述&lt;/h2&gt;
 &lt;p&gt;在给定的 &lt;code&gt;m x n&lt;/code&gt; 网格 &lt;code&gt;grid&lt;/code&gt; 中，每个单元格可以有以下三个值之一：&lt;/p&gt;
 &lt;ul&gt;
@@ -661,7 +672,7 @@
     }
 }
 &lt;/code&gt;&lt;/pre&gt;
-</content:encoded></item><item><title>LeetCode刷题（判断二分图）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E5%88%A4%E6%96%AD%E4%BA%8C%E5%88%86%E5%9B%BE/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E5%88%A4%E6%96%AD%E4%BA%8C%E5%88%86%E5%9B%BE/</guid><pubDate>Tue, 06 Jan 2026 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;判断二分图&lt;/h1&gt;
+</content:encoded></item><item><title>LeetCode刷题（判断二分图）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E5%88%A4%E6%96%AD%E4%BA%8C%E5%88%86%E5%9B%BE/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E5%88%A4%E6%96%AD%E4%BA%8C%E5%88%86%E5%9B%BE/</guid><description>判断二分图</description><pubDate>Tue, 06 Jan 2026 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;判断二分图&lt;/h1&gt;
 &lt;h2&gt;题目描述&lt;/h2&gt;
 &lt;p&gt;存在一个 &lt;strong&gt;无向图&lt;/strong&gt; ，图中有 &lt;code&gt;n&lt;/code&gt; 个节点。其中每个节点都有一个介于 &lt;code&gt;0&lt;/code&gt; 到 &lt;code&gt;n - 1&lt;/code&gt; 之间的唯一编号。&lt;/p&gt;
 &lt;p&gt;给定一个二维数组 &lt;code&gt;graph&lt;/code&gt; ，表示图，其中 &lt;code&gt;graph[u]&lt;/code&gt; 是一个节点数组，由节点 &lt;code&gt;u&lt;/code&gt; 的邻接节点组成。形式上，对于 &lt;code&gt;graph[u]&lt;/code&gt; 中的每个 &lt;code&gt;v&lt;/code&gt; ，都存在一条位于节点 &lt;code&gt;u&lt;/code&gt; 和节点 &lt;code&gt;v&lt;/code&gt; 之间的无向边。该无向图同时具有以下属性：&lt;/p&gt;
@@ -28100,7 +28111,6 @@ OrderService proxy = (OrderService) proxyObj;
     }
 }
 &lt;/code&gt;&lt;/pre&gt;
-</content:encoded></item><item><title>MyBatis笔记（模板）</title><link>https://thrinisty.github.io/posts/mybatis%E7%AC%94%E8%AE%B0%E6%A8%A1%E6%9D%BF/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/mybatis%E7%AC%94%E8%AE%B0%E6%A8%A1%E6%9D%BF/</guid><description>MyBatis</description><pubDate>Sun, 01 Jun 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;MyBatis笔记&lt;/h1&gt;
 </content:encoded></item><item><title>LeetCode刷题（回文子串，合并有序列表）</title><link>https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E5%9B%9E%E6%96%87%E5%AD%90%E4%B8%B2%E5%90%88%E5%B9%B6%E6%9C%89%E5%BA%8F%E5%88%97%E8%A1%A8/</link><guid isPermaLink="true">https://thrinisty.github.io/posts/leetcode%E5%88%B7%E9%A2%98%E5%9B%9E%E6%96%87%E5%AD%90%E4%B8%B2%E5%90%88%E5%B9%B6%E6%9C%89%E5%BA%8F%E5%88%97%E8%A1%A8/</guid><description>回文子串，合并两个有序列表</description><pubDate>Sat, 31 May 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;回文子串&lt;/h1&gt;
 &lt;h2&gt;题目描述&lt;/h2&gt;
 &lt;p&gt;给你一个字符串 &lt;code&gt;s&lt;/code&gt; ，请你统计并返回这个字符串中 &lt;strong&gt;回文子串&lt;/strong&gt; 的数目。&lt;/p&gt;
